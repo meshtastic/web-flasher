@@ -10,8 +10,22 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.0.3",
+    "autoprefixer": "^10.4.16",
     "nuxt": "^3.8.2",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.1.1",
+    "@meshtastic/js": "2.2.17-3",
+    "@pinia/nuxt": "^0.5.1",
+    "@zip.js/zip.js": "^2.7.32",
+    "esp-web-tools": "^9.4.3",
+    "flowbite": "^2.2.1",
+    "jszip": "^3.10.1",
+    "mande": "^2.0.8",
+    "pinia": "^2.1.7"
   }
 }
