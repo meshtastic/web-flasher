@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts" setup>
+import { initDropdowns } from 'flowbite';
 import type { DeviceHardware } from '~/types/api';
 
 import { SparklesIcon } from '@heroicons/vue/24/solid';

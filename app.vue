@@ -52,7 +52,19 @@
 <script setup>
 import 'flowbite';
 
+import {
+  initDropdowns,
+  initModals,
+  initTooltips,
+} from 'flowbite';
+
 import { BoltIcon } from '@heroicons/vue/24/solid';
+
+onMounted(() => {
+  initDropdowns();
+  initModals();
+  initTooltips();
+});
 </script>
 
 <style>
