@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   routeRules: {
     // prerender index route by default
-    '/': { prerender: true },
+    '/': { prerender: false },
   },
   // ssr: false,
   css: ['~/assets/css/main.css'],
