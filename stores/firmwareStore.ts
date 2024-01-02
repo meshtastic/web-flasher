@@ -148,7 +148,7 @@ export const useFirmwareStore = defineStore('firmware', {
         async connectEsp32(): Promise<ESPLoader> {
             const port = await navigator.serial.requestPort({});
             const transport = new Transport(port, true);
-            const { Terminal } = await import('xterm')
+            const { Terminal } = await import('xterm');
             const term = new Terminal({ cols: 40, rows: 40 });
             term.open(document.getElementById('terminal')!);
             const loaderOptions = <LoaderOptions> {

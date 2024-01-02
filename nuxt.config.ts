@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import nodePolyfills from 'vite-plugin-node-stdlib-browser';
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   routeRules: {
@@ -16,6 +18,9 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    plugins: [
+      nodePolyfills(),
+    ],
     server: {
       proxy: {
         "^/assets/.*": {
