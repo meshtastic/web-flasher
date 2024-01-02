@@ -1,4 +1,4 @@
 export function createUrl(relativeUrl: string) {
-    const base = process.env.BASE_URL || 'http://localhost:3000';
+    const base = `${window.location.protocol}//${window.location.host}`;
     return `${base}/${relativeUrl}`;
 }
