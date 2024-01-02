@@ -5,23 +5,23 @@
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
         </svg>
     </button>
-    <div id="dropdownFirmware" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700" v-if="!isUpload">
+    <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44" v-if="!isUpload">
         <div class="px-4 py-2 text-sm text-gray-900 dark:text-white">
             <strong>Stable</strong>
         </div>
-        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
+        <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
             <li v-for="release in store.$state.stable">
-                <span class="block px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer" @click="store.setSelectedFirmware(release)">
+                <span class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
                     {{ release.title.replace('Meshtastic Firmware ', '') }}
                 </span>
             </li>
         </ul>
-        <div class="px-4 py-2 text-sm text-gray-900 dark:text-white">
+        <div class="px-4 py-2 text-sm text-gray-900">
             <strong>Alpha</strong>
         </div>
-        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
+        <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
             <li v-for="release in store.$state.alpha">
-                <a href="#" class="block px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer" @click="store.setSelectedFirmware(release)">
+                <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
                     {{ release.title.replace('Meshtastic Firmware ', '') }}
                 </a>
             </li>
@@ -31,7 +31,7 @@
         </div>
         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownInformationButton">
             <li v-for="release in store.$state.pullRequests">
-                <a href="#" class="block px-4 py-1 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer" @click="store.setSelectedFirmware(release)">
+                <a href="#" class="block px-4 py-1 hover:bg-gray-500 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer" @click="store.setSelectedFirmware(release)">
                     {{ release.title }}
                 </a>
             </li>
@@ -40,6 +40,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { FirmwareResource } from '~/types/api';
+
 import { ArrowUpTrayIcon } from '@heroicons/vue/24/solid';
 
 import { useFirmwareStore } from '../stores/firmwareStore';
@@ -56,6 +58,8 @@ const isUpload = ref(false)
 
 const selectedVersion = computed(() => store.$state.selectedFirmware?.id ? store.$state.selectedFirmware?.title : "Select Firmware Version")
 
-// client.createSerialConnection();
-// console.log(client);
+const setSelectedFirmware = (release: FirmwareResource) => {
+    store.setSelectedFirmware(release);
+    document.getElementById('dropdownFirmware')?.classList.toggle('hidden'); // Flowbite bug
+}
 </script>

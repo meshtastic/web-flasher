@@ -7,7 +7,8 @@
                 </h3>
                 <button type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                    data-modal-toggle="flash-modal">
+                    data-modal-toggle="flash-modal"
+                    @click="closeFlashModal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -25,13 +26,17 @@
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                             Enter (UF2) DFU Mode
                         </h3>
-                        <button type="button"
-                            class="mx-2 inline-flex items-center py-2 px-3 text-sm font-medium  focus:outline-none meshtastic-bg rounded-lg border border-gray-200 hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-600">
-                            <FolderArrowDownIcon class="h-4 w-4 text-gray-700" @click="deviceStore.connect()" />
-                        </button>
-                        <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                            <span class="font-medium">For versions &lt; 2.2.17, trigger DFU manually by double-clicking RST button</span>
+                        <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                            <span class="font-medium">
+                                <InformationCircleIcon class="h-4 w-4 inline" />
+                                For versions &lt; 2.2.17, trigger DFU manually by double-clicking RST button
+                            </span>
                         </div>
+                        <button type="button"
+                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none meshtastic-bg rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black">
+                            <FolderArrowDownIcon class="h-4 w-4 text-black" @click="deviceStore.enterDfuMode()" />
+                            Enter DFU Mode
+                        </button>
                     </li>
                     <li class="mb-10 ms-8">
                         <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
@@ -51,6 +56,10 @@
                         <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                             Download UF2 file to DFU drive
                         </h3>
+                        <span>
+                            The name of the UF2 file does not matter.
+                            Firmware should be flashed after the file is downloaded and the device reboots.
+                        </span>
                     </li>
                 </ol>
                 <button
@@ -63,13 +72,20 @@
 </template>
 
 <script lang="ts" setup>
-import { FolderArrowDownIcon } from '@heroicons/vue/24/solid';
+import {
+  FolderArrowDownIcon,
+  InformationCircleIcon,
+} from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';
 
 const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
+
+const closeFlashModal = () => {
+    document.getElementById('flash-modal')?.click(); // Flowbite bug
+}
 
 const downloadUf2 = () => {
     const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')

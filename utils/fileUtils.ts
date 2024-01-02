@@ -8,3 +8,11 @@ export function downloadBlob(url: string, filename: string) {
 	link.click()
 	document.body.removeChild(link);
 }
+
+export function convertToBinaryString(bytes: Uint8Array) {
+	let binaryString = "";
+	for (let i = 0; i < bytes.length; i++) {
+		binaryString += String.fromCharCode(bytes[i]);
+	}
+	return binaryString;
+}

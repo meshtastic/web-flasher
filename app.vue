@@ -1,9 +1,9 @@
 <template>
   <div>
     <section class="text-gray-400 bg-gray-800 body-font">
-      <div class="container px-5 py-4 mx-auto">
+      <div class="container px-5 py-1 mx-auto">
         <div class="flex flex-col content-center justify-center">
-          <div class="flex flex-wrap sm:flex-row flex-col py-2 mb-6">
+          <div class="flex flex-wrap sm:flex-row flex-col py-2 mb-2">
             <div class="mx-auto">
               <img src="@/assets/img/logo.svg" class="h-32 w-32" alt="Meshtastic Logo" />
               <h1 class="text-white mb-4 text-4xl font-extrabold">
@@ -14,14 +14,13 @@
         </div>
         <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
           <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-            <div class="rounded-lg h-72 overflow-hidden flex flex-col items-center">
+            <div class="rounded-lg h-72 overflow-hidden flex flex-col items-center display-inline">
               <img src="@/assets/img/hydra-pcb.svg" class="h-60 mb-2 invert mx-auto" alt="Device" />
               <Device />
             </div>
             <h2 class="text-xl font-medium title-font text-white mt-5">Device</h2>
             <p class="text-base leading-relaxed mt-2">
-              Plug in your device via USB. Please ensure the cable is not a power-only version. 
-              If your device is ESP32-S3 based, you may need to press and hold the boot button while plugging in the USB cable.
+              Plug in your device via USB. Please ensure the cable is not a power-only one. 
             </p>
           </div>
           <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
@@ -54,9 +53,6 @@
 import 'flowbite';
 
 import { BoltIcon } from '@heroicons/vue/24/solid';
-
-// // Always dark mode
-//   document.documentElement.classList.add('dark');
 </script>
 
 <style>
