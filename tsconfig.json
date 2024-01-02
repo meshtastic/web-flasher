@@ -1,4 +1,19 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json"
+  "typeAcquisition": {
+    "enable": true
+    // "include": [
+    //   "@meshtastic/js",
+    //   "@pinia/nuxt",
+    //   "@zip.js/zip.js",
+    //   "esptool-js",
+    // ]
+  },
+  "extends": "./.nuxt/tsconfig.json",
+  "types": [
+    "@meshtastic/js",
+    "@pinia/nuxt",
+    "@zip.js/zip.js",
+    "esptool-js",
+  ]
 }
