@@ -33,6 +33,7 @@ export const useFirmwareStore = defineStore('firmware', {
             shouldCleanInstall: false,
             flashPercentDone: 0,
             isFlashing: false,
+            flashingIndex: 0,
             terminal: <Terminal>{},
         }
     },
@@ -96,12 +97,10 @@ export const useFirmwareStore = defineStore('firmware', {
                 compress: true,
                 enableTracing: false,
                 reportProgress: (fileIndex, written, total) => {
-                    console.log(`Writing ${fileIndex} of ${total}...`);
                     this.flashPercentDone = Math.round((written / total) * 100);
-                    // TODO: Gutter terminal to show output
                     if (written == total) {
                         this.isFlashing = false;
-                        console.log('Done!');
+                        console.log('Done flashing!');
                     }
                 },
                 //calculateMD5Hash: (image) => CryptoJS.MD5(CryptoJS.enc.Latin1.parse(image)),
@@ -125,12 +124,11 @@ export const useFirmwareStore = defineStore('firmware', {
                 compress: true,
                 enableTracing: false,
                 reportProgress: (fileIndex, written, total) => {
-                    console.log(`Writing ${fileIndex} of ${total}...`);
+                    this.flashingIndex = fileIndex;
                     this.flashPercentDone = Math.round((written / total) * 100);
-                    // TODO: Gutter terminal to show output
-                    if (written == total) {
+                    if (written == total && fileIndex > 1) {
                         this.isFlashing = false;
-                        console.log('Done!');
+                        console.log('Done flashing!');
                     }
                 },
                 //calculateMD5Hash: (image) => CryptoJS.MD5(CryptoJS.enc.Latin1.parse(image)),
@@ -148,8 +146,9 @@ export const useFirmwareStore = defineStore('firmware', {
         async connectEsp32(): Promise<ESPLoader> {
             const port = await navigator.serial.requestPort({});
             const transport = new Transport(port, true);
+            // Dynamically import xterm.js to avoid nuxt build errors for SSR
             const { Terminal } = await import('xterm');
-            const term = new Terminal({ cols: 40, rows: 40 });
+            const term = new Terminal({ cols: 40, rows: 40, theme: { background: "#1a202c" }});
             term.open(document.getElementById('terminal')!);
             const loaderOptions = <LoaderOptions> {
                 transport, 
@@ -169,8 +168,7 @@ export const useFirmwareStore = defineStore('firmware', {
             };
             const espLoader = new ESPLoader(loaderOptions);
             const chip = await espLoader.main();
-            // console.log(chip);
-            // await espLoader.connect();
+            console.log(chip);
             return espLoader;
         },
     }

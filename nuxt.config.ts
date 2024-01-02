@@ -5,9 +5,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   routeRules: {
     // prerender index route by default
-    '/': { prerender: false },
+    '/': { prerender: true },
   },
-  ssr: false,
+  // ssr: false,
   css: ['~/assets/css/main.css'],
   modules: [
     '@pinia/nuxt',
