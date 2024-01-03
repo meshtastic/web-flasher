@@ -36,7 +36,12 @@ export const useDeviceStore = defineStore('device', {
                     baudRate: undefined,
                     concurrentLogOutput: true,
                 });
-            await connection.enterDfuMode();
+            connection.events.onFromRadio.subscribe((packet: any) => {
+                if (packet?.payloadVariant?.case === "configCompleteId") {
+                    console.log('Attempting to enter DFU mode');
+                    connection.enterDfuMode();
+                }
+            });
         },
         async autoSelectHardware() {
             this.client = new Client();
