@@ -66,10 +66,10 @@
                         </span>
                     </li>
                 </ol>
-                <button
-                    class="text-black inline-flex w-full justify-center meshtastic-bg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="downloadUf2">
+                <a :href="downloadUf2FileUrl"
+                    class="text-black inline-flex w-full justify-center meshtastic-bg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Download UF2
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -94,6 +94,13 @@ const closeFlashModal = () => {
 const downloadUf2 = () => {
     const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-    firmwareStore.downloadUf2File(firmwareFile);
+    firmwareStore.downloadUf2FileFileSystemAccess(firmwareFile);
 }
+
+const downloadUf2FileUrl = computed(() => {
+    if (!firmwareStore.selectedFirmware?.id) return '';
+    const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
+    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
+    return firmwareStore.getUf2FileUrl(firmwareFile);
+});
 </script>

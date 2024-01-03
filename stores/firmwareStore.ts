@@ -29,7 +29,7 @@ export const useFirmwareStore = defineStore('firmware', {
             alpha: new Array<FirmwareResource>(),
             pullRequests: new Array<FirmwareResource>(),
             selectedFirmware: <FirmwareResource>{},
-            baudRate: 921600,
+            baudRate: 115200,
             shouldCleanInstall: false,
             flashPercentDone: 0,
             isFlashing: false,
@@ -53,8 +53,12 @@ export const useFirmwareStore = defineStore('firmware', {
         setSelectedFirmware(firmware: FirmwareResource) {
             this.selectedFirmware = firmware;
         },
-        async downloadUf2File(fileName: string) {
-            if (!this.selectedFirmware.zip_url) return;
+        getUf2FileUrl(fileName: string): string {
+            if (!this.selectedFirmware.zip_url) return '';
+            const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
+            return `${baseUrl}/${fileName}`;
+        },
+        async downloadUf2FileFileSystemAccess(fileName: string) {
             const options = {
                 suggestedName: "firmware.uf2",
                 types: [
