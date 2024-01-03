@@ -63,10 +63,12 @@ export default defineNuxtConfig({
             "https://api.meshtastic.org/",
           changeOrigin: true,
           followRedirects: true,
-          secure: false,
           rewrite: (path) => path.replace(/^\/api/, ""),
+          secure: false,
           headers: {
-            Accept: "application/octet-stream"
+            Accept: "application/octet-stream",
+            Origin: 'https://flash.meshtastic.org',
+            Referer: 'https://flash.meshtastic.org/'
           },
         }
       }
