@@ -46,6 +46,9 @@
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                             Ensure device DFU mode drive is mounted
                         </h3>
+                        <span>
+                            The drive may have a different name depending on your device and its bootloader.
+                        </span>
                         <div>
                             <img src="@/assets/img/dfu.png" alt="DFU Drive" />
                         </div>
