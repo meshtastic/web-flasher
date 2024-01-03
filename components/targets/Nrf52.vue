@@ -23,7 +23,7 @@
                         <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                             1
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white" @click="deviceStore.enterDfuMode">
                             Enter (UF2) DFU Mode
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
