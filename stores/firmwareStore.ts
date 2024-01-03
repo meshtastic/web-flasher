@@ -56,9 +56,9 @@ export const useFirmwareStore = defineStore('firmware', {
         async downloadUf2File(fileName: string) {
             if (!this.selectedFirmware.zip_url) return;
             const options = {
+                suggestedName: "firmware.uf2",
                 types: [
                     {
-                        suggestedName: fileName,
                         description: "UF2 File",
                         accept: {
                             "application/uf2": ".uf2",

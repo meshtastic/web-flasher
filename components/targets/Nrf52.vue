@@ -23,7 +23,7 @@
                         <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                             1
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white" @click="deviceStore.enterDfuMode">
+                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                             Enter (UF2) DFU Mode
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
@@ -33,8 +33,9 @@
                             </span>
                         </div>
                         <button type="button"
-                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none meshtastic-bg rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black">
-                            <FolderArrowDownIcon class="h-4 w-4 text-black" @click="deviceStore.enterDfuMode()" />
+                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none meshtastic-bg rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+                            @click="deviceStore.enterDfuMode()">
+                            <FolderArrowDownIcon class="h-4 w-4 text-black" />
                             Enter DFU Mode
                         </button>
                     </li>

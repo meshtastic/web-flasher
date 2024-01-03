@@ -21,7 +21,7 @@
             <SparklesIcon class="h-4 w-4 " />
         </button>
         <div id="tooltip-auto" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
-            Attempt to automatically select the correct device type if Meshtastic is already installed on device.
+            Attempt to automatically select the device type if Meshtastic > (2.1.X) is already installed.
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
     </div>
