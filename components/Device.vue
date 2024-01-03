@@ -8,9 +8,9 @@
         </button>
         <div id="dropdownDevices" class="z-10 hidden bg-gray-200 divide-y divide-gray-500 rounded-lg shadow w-52">
             <ul class="py-2 text-sm text-gray-900" aria-labelledby="dropdownDeviceButton">
-                <li v-for="target in store.$state.targets">
+                <li v-for="target in store.$state.targets.sort((a, b) => a.displayName.localeCompare(b.displayName))">
                     <a class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setTarget(target)">
-                        {{ target.hwModelSlug.replace('_', '-') }}
+                        {{ target.displayName }}
                     </a>
                 </li>
             </ul>
@@ -28,7 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-import { initDropdowns } from 'flowbite';
 import type { DeviceHardware } from '~/types/api';
 
 import { SparklesIcon } from '@heroicons/vue/24/solid';
@@ -38,7 +37,7 @@ import { useDeviceStore } from '../stores/deviceStore';
 const store = useDeviceStore();
 store.fetchList();
 
-const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.hwModelSlug : "Select Target Device")
+const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Target Device")
 
 const setTarget = (target: DeviceHardware) => {
     store.setSelectedTarget(target);
