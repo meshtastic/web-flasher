@@ -61,7 +61,7 @@
                             Download UF2 file to DFU drive
                         </h3>
                         <span>
-                            The name of the UF2 file does not matter.
+                            Download and Copy UF2 file to the DFU drive.
                             Firmware should be flashed after the file is downloaded and the device reboots.
                         </span>
                     </li>
