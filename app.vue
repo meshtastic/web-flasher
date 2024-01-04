@@ -46,7 +46,7 @@
         </div>
       </div>
     </section>
-      <footer class="footer bg-gray-800 text-white">
+      <footer class="footer bg-2C2D3C text-white">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
