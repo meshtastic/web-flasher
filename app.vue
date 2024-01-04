@@ -50,7 +50,7 @@
         </div>
       </div>
     </section>
-      <footer class="footer bg-2C2D3C text-white py-2">
+      <footer class="footer bg-2C2D3C text-white py-4">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
