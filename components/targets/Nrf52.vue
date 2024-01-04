@@ -33,7 +33,7 @@
                             </span>
                         </div>
                         <button type="button"
-                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none meshtastic-bg rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="deviceStore.enterDfuMode()">
                             <FolderArrowDownIcon class="h-4 w-4 text-black" />
                             Enter DFU Mode
@@ -67,7 +67,7 @@
                     </li>
                 </ol>
                 <a :href="downloadUf2FileUrl"
-                    class="text-black inline-flex w-full justify-center meshtastic-bg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Download UF2
                 </a>
             </div>

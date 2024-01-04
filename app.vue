@@ -79,14 +79,14 @@ onMounted(() => {
 
 <style>
 body {
-    background-color: #2C2D3C;
+  background-color: #2C2D3C;
 }
 .invert { 
-    -webkit-filter: invert(1);
-    filter: invert(1);
+  -webkit-filter: invert(1);
+  filter: invert(1);
 }
-.meshtastic-bg {
-    background-color: #67EA94;
+.bg-meshtastic {
+  background-color: #67EA94;
 }
  .footer {
     background-color: #2C2D3C;

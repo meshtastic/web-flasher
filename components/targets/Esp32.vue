@@ -70,16 +70,16 @@
                     </li>
                 </ol>
                 <button v-if="showFlashButton"
-                    class="text-black inline-flex w-full justify-center meshtastic-bg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="flash">
+                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="flash">
                     {{ firmwareStore.$state.shouldCleanInstall ? 'Erase Flash and Install' : 'Update' }}
                 </button>
                 <button v-if="firmwareStore.$state.flashPercentDone > 0 && !firmwareStore.$state.isFlashing"
-                    class="text-black inline-flex w-full justify-center meshtastic-bg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="startOver">
+                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="startOver">
                     Start Over
                 </button>
                 <div v-if="firmwareStore.$state.flashPercentDone > 0" class="mb-1 text-center font-medium text-white">Flashing {{ partition }} {{ firmwareStore.percentDone }} complete</div>
                 <div class="w-fullrounded-full h-2.5 mb-4 bg-gray-700" v-if="firmwareStore.$state.flashPercentDone > 0">
-                    <div class="meshtastic-bg h-2.5 rounded-full" :style=" { 'width': firmwareStore.percentDone }"></div>
+                    <div class="bg-meshtastic h-2.5 rounded-full" :style=" { 'width': firmwareStore.percentDone }"></div>
                 </div>
                 <div id="terminal"></div>
             </div>
