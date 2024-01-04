@@ -69,7 +69,7 @@ onMounted(() => {
 
 <style>
 body {
-    background-color: #2C2D3Cpn;
+    background-color: #2C2D3C;
 }
 .invert { 
     -webkit-filter: invert(1);
