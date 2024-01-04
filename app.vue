@@ -46,7 +46,7 @@
         </div>
       </div>
     </section>
-      <footer class="footer bg-2C2D3C text-white">
+      <footer class="footer bg-2C2D3C text-white py-2">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
@@ -78,16 +78,16 @@ onMounted(() => {
 </script>
 
 <style>
-body {
-  background-color: #2C2D3C;
-}
-.invert { 
-  -webkit-filter: invert(1);
-  filter: invert(1);
-}
-.bg-meshtastic {
-  background-color: #67EA94;
-}
+  body {
+    background-color: #2C2D3C;
+  }
+  .invert { 
+    -webkit-filter: invert(1);
+    filter: invert(1);
+  }
+  .bg-meshtastic {
+    background-color: #67EA94;
+  }
  .footer {
     background-color: #2C2D3C;
   }
