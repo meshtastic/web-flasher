@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="text-gray-400 bg-gray-800 body-font">
+    <section class="text-gray-400 bg-2C2D3C body-font">
       <div class="container px-5 py-1 mx-auto">
         <div class="flex flex-col content-center justify-center">
           <div class="flex flex-wrap sm:flex-row flex-col py-2 mb-2">
@@ -69,7 +69,7 @@ onMounted(() => {
 
 <style>
 body {
-    background-color: #1F2937;
+    background-color: #2C2D3C;
 }
 .invert { 
     -webkit-filter: invert(1);
