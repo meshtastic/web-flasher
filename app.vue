@@ -46,6 +46,16 @@
         </div>
       </div>
     </section>
+      <footer class="footer bg-gray-800 text-white">
+      <div class="container mx-auto px-5 py-4 text-center">
+        <p>
+          Powered by
+          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="text-blue-500 hover:text-blue-700">▲ Vercel</a>
+          | Meshtastic® is a registered trademark of Meshtastic LLC. |
+          <a href="https://meshtastic.org/docs/legal" class="text-blue-500 hover:text-blue-700">Legal Information</a>.
+        </p>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -78,4 +88,13 @@ body {
 .meshtastic-bg {
     background-color: #67EA94;
 }
+ .footer {
+    background-color: #2C2D3C;
+  }
+  .footer a {
+    color: #67EA94;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }
 </style>
