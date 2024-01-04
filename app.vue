@@ -1,5 +1,9 @@
 <template>
   <div>
+    <Head>
+      <Title>Meshtastic Flasher</Title>
+      <Meta name="description" :content="title" />
+    </Head>
     <section class="text-gray-400 bg-2C2D3C body-font">
       <div class="container px-5 py-1 mx-auto">
         <div class="flex flex-col content-center justify-center">
