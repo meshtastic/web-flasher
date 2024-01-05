@@ -2,9 +2,7 @@
   <div>
     <!-- Warning for browsers that do not support WebSerial API -->
     <div v-if="!isWebSerialSupported" class="unsupported-browser-warning">
-      <p>Your browser does not support the WebSerial API. Please switch to a
-      <a href="https://meshtastic.org/docs/software/web-client#serial-usb" class="text-blue-500 hover:text-blue-700">compatible browser</a>
-      for full functionality.</p>
+      <p>Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.</p>
     </div>
     <Head>
       <Title>Meshtastic Flasher</Title>
