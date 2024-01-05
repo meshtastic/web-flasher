@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- Warning for browsers that do not support WebSerial API -->
+    <div v-if="!isWebSerialSupported" class="unsupported-browser-warning">
+      <p>Your browser does not support the WebSerial API. Please switch to a compatible browser for full functionality.</p>
+    </div>
     <Head>
       <Title>Meshtastic Flasher</Title>
       <Meta name="description" :content="title" />
@@ -64,20 +68,23 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import 'flowbite';
-
-import {
-  initDropdowns,
-  initModals,
-  initTooltips,
-} from 'flowbite';
-
+import { initDropdowns, initModals, initTooltips } from 'flowbite';
 import { BoltIcon } from '@heroicons/vue/24/solid';
+
+// WebSerial API support check
+const isWebSerialSupported = ref(false);
+
+const checkWebSerialSupport = () => {
+  isWebSerialSupported.value = 'serial' in navigator;
+};
 
 onMounted(() => {
   initDropdowns();
   initModals();
   initTooltips();
+  checkWebSerialSupport();
 });
 </script>
 
@@ -100,5 +107,11 @@ onMounted(() => {
   }
   .footer a:hover {
     text-decoration: underline;
+  }
+  .unsupported-browser-warning {
+    background-color: #ffcc00;
+    color: black;
+    padding: 10px;
+    text-align: center;
   }
 </style>
