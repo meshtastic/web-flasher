@@ -2,7 +2,9 @@
   <div>
     <!-- Warning for browsers that do not support WebSerial API -->
     <div v-if="!isWebSerialSupported" class="unsupported-browser-warning">
-      <p>Your browser does not support the WebSerial API. Please switch to a compatible browser for full functionality.</p>
+      <p>Your browser does not support the WebSerial API. Please switch to a
+      <a href="https://meshtastic.org/docs/software/web-client#serial-usb" class="text-blue-500 hover:text-blue-700">compatible browser</a>
+      for full functionality.</p>
     </div>
     <Head>
       <Title>Meshtastic Flasher</Title>
@@ -58,9 +60,9 @@
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
-          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="text-blue-500 hover:text-blue-700">▲ Vercel</a>
+          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
           | Meshtastic® is a registered trademark of Meshtastic LLC. |
-          <a href="https://meshtastic.org/docs/legal" class="text-blue-500 hover:text-blue-700">Legal Information</a>.
+          <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
         </p>
       </div>
     </footer>
