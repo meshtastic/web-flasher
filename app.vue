@@ -1,5 +1,9 @@
 <template>
   <div>
+    <!-- Warning for browsers that do not support WebSerial API -->
+    <div v-if="!isWebSerialSupported" class="unsupported-browser-warning">
+      <p>Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.</p>
+    </div>
     <Head>
       <Title>Meshtastic Flasher</Title>
       <Meta name="description" :content="title" />
@@ -54,9 +58,9 @@
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
-          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="text-blue-500 hover:text-blue-700">▲ Vercel</a>
+          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
           | Meshtastic® is a registered trademark of Meshtastic LLC. |
-          <a href="https://meshtastic.org/docs/legal" class="text-blue-500 hover:text-blue-700">Legal Information</a>.
+          <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
         </p>
       </div>
     </footer>
@@ -64,20 +68,23 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import 'flowbite';
-
-import {
-  initDropdowns,
-  initModals,
-  initTooltips,
-} from 'flowbite';
-
+import { initDropdowns, initModals, initTooltips } from 'flowbite';
 import { BoltIcon } from '@heroicons/vue/24/solid';
+
+// WebSerial API support check
+const isWebSerialSupported = ref(false);
+
+const checkWebSerialSupport = () => {
+  isWebSerialSupported.value = 'serial' in navigator;
+};
 
 onMounted(() => {
   initDropdowns();
   initModals();
   initTooltips();
+  checkWebSerialSupport();
 });
 </script>
 
@@ -100,5 +107,11 @@ onMounted(() => {
   }
   .footer a:hover {
     text-decoration: underline;
+  }
+  .unsupported-browser-warning {
+    background-color: #ffcc00;
+    color: black;
+    padding: 10px;
+    text-align: center;
   }
 </style>
