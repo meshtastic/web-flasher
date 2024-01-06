@@ -68,23 +68,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import 'flowbite';
-import { initDropdowns, initModals, initTooltips } from 'flowbite';
+
+import { onMounted } from 'vue';
+
+import {
+  initDropdowns,
+  initModals,
+  initTooltips,
+} from 'flowbite';
+
 import { BoltIcon } from '@heroicons/vue/24/solid';
 
 // WebSerial API support check
-const isWebSerialSupported = ref(false);
-
-const checkWebSerialSupport = () => {
-  isWebSerialSupported.value = 'serial' in navigator;
-};
+const isWebSerialSupported = computed(() => {
+  return 'serial' in navigator;
+});
 
 onMounted(() => {
   initDropdowns();
   initModals();
   initTooltips();
-  checkWebSerialSupport();
 });
 </script>
 
