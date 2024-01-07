@@ -29,7 +29,7 @@
                         <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                For versions &lt; 2.2.17, trigger DFU manually by double-clicking RST button
+                                For versions &lt; {{ enterDfuVersion }}, trigger DFU mode manually by {{ dfuStep }}
                             </span>
                         </div>
                         <button type="button"
@@ -47,10 +47,11 @@
                             Ensure device DFU mode drive is mounted
                         </h3>
                         <span>
-                            The drive may have a different name depending on your device and its bootloader.
+                            The drive may have a different name depending on your device hardware and its bootloader.
                         </span>
                         <div>
-                            <img src="@/assets/img/dfu.png" alt="DFU Drive" />
+                            <img v-if="isNrf" src="@/assets/img/dfu.png" alt="DFU Drive" />
+                            <img v-else src="@/assets/img/uf2_rp2040.png" alt="DFU Drive" />
                         </div>
                     </li>
                     <li class="ms-8">
@@ -86,6 +87,26 @@ import { useFirmwareStore } from '../../stores/firmwareStore';
 
 const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
+
+const isNrf = computed(() => {
+    return deviceStore.selectedArchitecture.startsWith('nrf52');
+})
+
+const enterDfuVersion = computed(() => {
+    if (isNrf.value) {
+        return '2.2.1';
+    } else {
+        return '2.2.18';
+    }
+})
+
+const dfuStep = computed(() => {
+    if (isNrf.value) {
+        return 'double-clicking RST button';
+    } else {
+        return 'pressing and holding BOOTSEL button while plugging in USB cable';
+    }
+})
 
 const closeFlashModal = () => {
     document.getElementById('flash-modal')?.click(); // Flowbite bug
