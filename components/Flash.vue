@@ -7,8 +7,8 @@
         </button>
         <div id="flash-modal" tabindex="-1" aria-hidden="true"
             class="dark hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <TargetsNrf52 v-if="deviceStore.$state.selectedTarget?.architecture == 'nrf52840' || deviceStore.$state.selectedTarget?.architecture == 'rp2040'" />
-            <TargetsEsp32 v-if="deviceStore.$state.selectedTarget?.architecture?.includes('esp32')" />
+            <TargetsUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
+            <TargetsEsp32 v-if="deviceStore.selectedArchitecture.startsWith('esp32')" />
         </div>
     </div>
 </template>

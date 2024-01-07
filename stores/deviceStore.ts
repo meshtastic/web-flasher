@@ -16,6 +16,9 @@ export const useDeviceStore = defineStore('device', {
             client: <Client>{},
         }
     },
+    getters: {
+        selectedArchitecture: (state) => state.selectedTarget?.architecture || '',
+    },
     actions: {
         async fetchList() {
             firmwareApi.get<DeviceHardware[]>()
