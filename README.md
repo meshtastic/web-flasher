@@ -24,7 +24,7 @@ pnpm install --shamefully-hoist
 pnpm run dev
 ```
 
-For detailed contribution guidelines, please check our contributing document.
+Check out the full Nuxt [deployment documentation](https://nuxt.com/docs/getting-started/deployment#presets) for more information.
 
 ## Feedback and Support
 For bug reports, feature requests, or general queries, please open an issue in this repository. Your feedback helps us improve and evolve the Meshtastic Web Flasher.
