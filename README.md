@@ -1,48 +1,32 @@
-# Nuxt Example
+# Meshtastic Web Flasher
 
-Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
+## Introduction
+Welcome to the Meshtastic Web Flasher - a user-friendly, robust tool designed for flashing Meshtastic devices. Leveraging the power of Nuxt/Vue and Tailwind CSS, this web application offers an easy-to-use interface for device flashing.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/nuxtjs&template=nuxtjs)
+## Key Features
+- **Espressif's esptool.js Integration**: Incorporates the official JavaScript port of Espressif's esptool for enhanced robustness and compatibility with newer Espressif silicon.
+- **All-in-One Platform Support**: Designed to be a comprehensive solution, supporting a wide range of devices including nRF52 and Pico UF2.
+- **Developer-Friendly Design**: Built with Nuxt/Vue, simplifying the development and maintenance process.
 
-_Live Example: https://nuxtjs-template.vercel.app_
+## Getting Started
+To use the Meshtastic Web Flasher, simply visit [https://flasher.meshtastic.org](https://flasher.meshtastic.org). The website is designed to be intuitive and easy to navigate, allowing you to start flashing your devices right away.
 
-Look at the [Nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+## Contributing
+Interested in contributing? Here's how you can get involved:
 
-## Setup
-
-Make sure to install the dependencies:
-
+1. Clone this repository.
+2. Make sure to install the dependencies:
 ```bash
-# yarn
-yarn
-
-# npm
-npm install
-
-# pnpm
 pnpm install --shamefully-hoist
 ```
-
-## Development Server
-
-Start the development server on http://localhost:3000
-
+3. Start the development server on `http://localhost:3000`:
 ```bash
-npm run dev
+pnpm run dev
 ```
 
-## Production
+Check out the full Nuxt [deployment documentation](https://nuxt.com/docs/getting-started/deployment#presets) for more information.
 
-Build the application for production:
+## Feedback and Support
+For bug reports, feature requests, or general queries, please open an issue in this repository. Your feedback helps us improve and evolve the Meshtastic Web Flasher.
 
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Checkout the [deployment documentation](https://nuxt.com/docs/getting-started/deployment#presets) for more information.
+Thank you for using and supporting the Meshtastic Web Flasher!
