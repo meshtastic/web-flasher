@@ -94,7 +94,7 @@ const isNrf = computed(() => {
 
 const enterDfuVersion = computed(() => {
     if (isNrf.value) {
-        return '2.2.1';
+        return '2.2.17';
     } else {
         return '2.2.18';
     }
