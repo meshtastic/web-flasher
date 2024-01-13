@@ -43,6 +43,8 @@
                         <div>
                             <select class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" v-model="firmwareStore.$state.baudRate">
                                 <option value="115200">115200</option>
+                                <option value="230400">230400</option>
+                                <option value="460800">460800</option>
                                 <option value="921600">921600</option>
                                 <!-- TODO styling and wire this up -->
                             </select>
