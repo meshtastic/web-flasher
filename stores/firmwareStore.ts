@@ -4,12 +4,14 @@ import {
   type LoaderOptions,
   Transport,
 } from 'esptool-js';
+import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import { Terminal } from 'xterm';
 
 import {
   BlobReader,
+  BlobWriter,
   ZipReader,
 } from '@zip.js/zip.js';
 
@@ -28,13 +30,13 @@ export const useFirmwareStore = defineStore('firmware', {
             stable: new Array<FirmwareResource>(),
             alpha: new Array<FirmwareResource>(),
             pullRequests: new Array<FirmwareResource>(),
-            selectedFirmware: <FirmwareResource>{},
+            selectedFirmware: <FirmwareResource | undefined>{},
+            selectedFile: <File | undefined>{},
             baudRate: 115200,
             shouldCleanInstall: false,
             flashPercentDone: 0,
             isFlashing: false,
             flashingIndex: 0,
-            terminal: <Terminal>{},
         }
     },
     getters: {
@@ -52,46 +54,37 @@ export const useFirmwareStore = defineStore('firmware', {
         },
         setSelectedFirmware(firmware: FirmwareResource) {
             this.selectedFirmware = firmware;
+            this.selectedFile = undefined;
         },
         getUf2FileUrl(fileName: string): string {
-            if (!this.selectedFirmware.zip_url) return '';
+            if (!this.selectedFirmware?.zip_url) return '';
             const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
             return `${baseUrl}/${fileName}`;
         },
-        async downloadUf2FileFileSystemAccess(fileName: string) {
-            const options = {
-                suggestedName: "firmware.uf2",
-                types: [
-                    {
-                        description: "UF2 File",
-                        accept: {
-                            "application/uf2": ".uf2",
-                        },
-                    },
-                ],
-                excludeAcceptAllOption: true,
-            };
-               
-            const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
-            const response = await fetch(`${baseUrl}/${fileName}`);
-            const handle = await window.showSaveFilePicker(options);
-            const writable = await handle.createWritable();
-            const content = await response.blob();
-            await writable.write(content);
-            await writable.close();
-        },
-        // TODO: Stub for uploading custom firmware
-        async uploadFirmware(file: File) {
-            const reader = new BlobReader(file);
+        async downloadUf2FileSystem(searchRegex: RegExp) {
+            const reader = new BlobReader(this.selectedFile!);
             const zipReader = new ZipReader(reader);
-            const entries = zipReader.getEntries()
-                .then((entries) => {
-                    console.log(entries);
-                });
+            const entries = await zipReader.getEntries()
+            console.log('Zip entries:', entries);
+            const file = entries.find(entry => searchRegex.test(entry.filename))
+            if (file) {
+                const data = await file.getData!(new BlobWriter());
+                saveAs(data, file.filename);
+            }
+            else {
+                throw new Error(`Could not find file with pattern ${searchRegex} in zip`);
+            }
             zipReader.close();
         },
+        async setFirmwareFile(file: File) {
+            this.selectedFile = file;
+            this.selectedFirmware = undefined;
+        },
         async updateEspFlash(fileName: string) {
-            const espLoader = await this.connectEsp32();
+            const terminal = await openTerminal();
+            const port = await navigator.serial.requestPort({});
+            const transport = new Transport(port, true);
+            const espLoader = await this.connectEsp32(transport, terminal);
             const content = await this.fetchBinaryContent(fileName);
             this.isFlashing = true;
             const flashOptions = <FlashOptions> {
@@ -107,13 +100,21 @@ export const useFirmwareStore = defineStore('firmware', {
                         console.log('Done flashing!');
                     }
                 },
-                //calculateMD5Hash: (image) => CryptoJS.MD5(CryptoJS.enc.Latin1.parse(image)),
             };
             await espLoader.writeFlash(flashOptions);
-            espLoader.softReset();
+            await this.resetEsp32(transport);
+            await this.readSerial(port, terminal);
+        },
+        async resetEsp32(transport: Transport) {
+            await transport.setRTS(true); 
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            await transport.setRTS(false);
         },
         async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string) {
-            const espLoader = await this.connectEsp32();
+            const terminal = await openTerminal();
+            const port = await navigator.serial.requestPort({});
+            const transport = new Transport(port, true);
+            const espLoader = await this.connectEsp32(transport, terminal);
             const appContent = await this.fetchBinaryContent(fileName);
             const otaContent = await this.fetchBinaryContent(otaFileName);
             const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
@@ -135,45 +136,69 @@ export const useFirmwareStore = defineStore('firmware', {
                         console.log('Done flashing!');
                     }
                 },
-                //calculateMD5Hash: (image) => CryptoJS.MD5(CryptoJS.enc.Latin1.parse(image)),
             };
             await espLoader.writeFlash(flashOptions);
-            espLoader.softReset();
+            await this.resetEsp32(transport);
+            await this.readSerial(port, terminal);
         },
         async fetchBinaryContent(fileName: string): Promise<string> {
-            const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url!);
-            const response = await fetch(`${baseUrl}/${fileName}`);
-            const blob = await response.blob();
-            const data = await blob.arrayBuffer();
-            return convertToBinaryString(new Uint8Array(data));
+            if (this.selectedFirmware?.zip_url) {
+                const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware!.zip_url!);
+                const response = await fetch(`${baseUrl}/${fileName}`);
+                const blob = await response.blob();
+                const data = await blob.arrayBuffer();
+                return convertToBinaryString(new Uint8Array(data));
+            } else if (this.selectedFile) {
+                const reader = new BlobReader(this.selectedFile!);
+                const zipReader = new ZipReader(reader);
+                const entries = await zipReader.getEntries()
+                console.log('Zip entries:', entries);
+                console.log('Looking for file matching pattern:', fileName);
+                const file = entries.find(entry => new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin')))
+                if (file) {
+                    console.log('Found file:', file.filename);
+                    const blob = await file.getData!(new BlobWriter());
+                    const arrayBuffer = await blob.arrayBuffer();
+                    return convertToBinaryString(new Uint8Array(arrayBuffer));
+                }
+            }
+            throw new Error('Cannot fetch binary content without a file or firmware selected');
         },
-        async connectEsp32(): Promise<ESPLoader> {
-            const port = await navigator.serial.requestPort({});
-            const transport = new Transport(port, true);
-            // Dynamically import xterm.js to avoid nuxt build errors for SSR
-            const { Terminal } = await import('xterm');
-            const term = new Terminal({ cols: 40, rows: 40, theme: { background: "#1a202c" }});
-            term.open(document.getElementById('terminal')!);
+        async connectEsp32(transport: Transport, terminal: Terminal): Promise<ESPLoader> {
             const loaderOptions = <LoaderOptions> {
                 transport, 
                 baudrate: this.baudRate,
                 enableTracing: false,
                 terminal: {
                     clean() {
-                      term.clear();
+                        terminal.clear();
                     },
                     writeLine(data) {
-                      term.writeln(data);
+                        terminal.writeln(data);
                     },
                     write(data) {
-                      term.write(data);
+                        terminal.write(data);
                     }
                 }
             };
             const espLoader = new ESPLoader(loaderOptions);
             const chip = await espLoader.main();
-            console.log(chip);
+            console.log("Detected chip:", chip);
             return espLoader;
         },
-    }
+        async readSerial(port: SerialPort, terminal: Terminal): Promise<void> {
+            const decoder = new TextDecoderStream();
+            port.readable!.pipeTo(decoder.writable);
+            const inputStream = decoder.readable;
+            const reader = inputStream.getReader();
+            
+            while (true) {
+                const { value } = await reader.read();
+                if (value) {
+                    terminal.write(value);
+                }
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
+        },
+    },
 })

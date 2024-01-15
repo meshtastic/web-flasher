@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+// nuxt.config.ts
+import { defineNuxtConfig } from 'nuxt/config';
 import nodePolyfills from 'vite-plugin-node-stdlib-browser';
 
 export default defineNuxtConfig({
@@ -11,7 +12,11 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   modules: [
     '@pinia/nuxt',
+    '@vite-pwa/nuxt'
   ],
+  pwa: {
+    /* PWA options */
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -24,40 +29,6 @@ export default defineNuxtConfig({
     ],
     server: {
       proxy: {
-        // "^/assets/.*": {
-        //   target: "http://github.com/",
-        //   changeOrigin: true,
-        //   followRedirects: true,
-        //   rewrite: (path) => path.replace(/^\/assets/, ""),
-        //   headers: {
-        //     Accept: "application/octet-stream"
-        //   },
-        //   configure: (proxy, _options) => {
-        //     proxy.on("error", (err, _req, _res) => {
-        //       console.log("proxy error", err);
-        //     });
-        //     proxy.on("proxyReq", (proxyReq, req, _res) => {
-        //       console.log(
-        //         "Sending Request:",
-        //         req.method,
-        //         req.url,
-        //         " => TO THE TARGET =>  ",
-        //         proxyReq.method,
-        //         proxyReq.protocol,
-        //         proxyReq.host,
-        //         proxyReq.path,
-        //       );
-        //     });
-        //     proxy.on("proxyRes", (proxyRes, req, _res) => {
-        //       console.log(
-        //         "Received Response from the Target:",
-        //         proxyRes.statusCode,
-        //         req.url,
-        //         JSON.stringify(proxyRes.headers),
-        //       );
-        //     });
-        //   },
-        // },
         "^/api/.*": {
           target:
             "https://api.meshtastic.org/",
