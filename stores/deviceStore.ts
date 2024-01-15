@@ -22,14 +22,15 @@ export const useDeviceStore = defineStore('device', {
     },
     actions: {
         async fetchList() {
-            firmwareApi.get<DeviceHardware[]>()
-                .then((response: DeviceHardware[]) => {
-                    this.targets = response.filter((target: DeviceHardware) => target.activelySupported);
-                }).catch((error: any) => {
-                    console.error(error);
-                    // Fallback to offline list
-                    return OfflineHardwareList;
-                });
+            try {
+                const targets = await firmwareApi.get<DeviceHardware[]>()
+                this.targets = targets.filter((t: DeviceHardware) => t.activelySupported);
+            }
+            catch (ex) {
+                console.error(ex);
+                // Fallback to offline list
+                this.targets = OfflineHardwareList.filter((t: DeviceHardware) => t.activelySupported);
+            }
         },
         setSelectedTarget(target: DeviceHardware) {
             this.selectedTarget = target;
