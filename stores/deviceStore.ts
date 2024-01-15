@@ -1,5 +1,6 @@
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
+import { OfflineHardwareList } from '~/types/resources';
 
 import { Client } from '@meshtastic/js';
 
@@ -24,7 +25,11 @@ export const useDeviceStore = defineStore('device', {
             firmwareApi.get<DeviceHardware[]>()
                 .then((response: DeviceHardware[]) => {
                     this.targets = response.filter((target: DeviceHardware) => target.activelySupported);
-                })
+                }).catch((error: any) => {
+                    console.error(error);
+                    // Fallback to offline list
+                    return OfflineHardwareList;
+                });
         },
         setSelectedTarget(target: DeviceHardware) {
             this.selectedTarget = target;
