@@ -67,10 +67,14 @@
                         </span>
                     </li>
                 </ol>
-                <a :href="downloadUf2FileUrl"
+                <a :href="downloadUf2FileUrl" v-if="firmwareStore.selectedFirmware?.id"
                     class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Download UF2
                 </a>
+                <button @click="downloadUf2File"
+                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Download UF2
+                </button>
             </div>
         </div>
     </div>
@@ -112,10 +116,9 @@ const closeFlashModal = () => {
     document.getElementById('flash-modal')?.click(); // Flowbite bug
 }
 
-const downloadUf2 = () => {
-    const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
-    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-    firmwareStore.downloadUf2FileFileSystemAccess(firmwareFile);
+const downloadUf2File = () => {
+    const searchRegex = new RegExp(`firmware-${deviceStore.$state.selectedTarget.platformioTarget}-.+.uf2`);
+    firmwareStore.downloadUf2FileSystem(searchRegex);
 }
 
 const downloadUf2FileUrl = computed(() => {

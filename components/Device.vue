@@ -44,6 +44,4 @@ const setTarget = (target: DeviceHardware) => {
     document.getElementById('dropdownDevices')?.classList.toggle('hidden');
 }
 
-// client.createSerialConnection();
-// console.log(client);
 </script>

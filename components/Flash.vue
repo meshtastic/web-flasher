@@ -20,7 +20,11 @@ import { useFirmwareStore } from '../stores/firmwareStore';
 const firmwareStore = useFirmwareStore();
 const deviceStore = useDeviceStore();
 
+// Either we have a custom zip file or a selected firmware release
 const canFlash = computed(() => {
+    if (firmwareStore.$state.selectedFile?.name) {
+        return true;
+    }
     return (firmwareStore.$state.selectedFirmware?.id || '').length > 0 && deviceStore.$state.selectedTarget?.hwModel > 0;
 })
 </script>
