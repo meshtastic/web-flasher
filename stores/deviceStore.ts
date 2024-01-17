@@ -34,9 +34,9 @@ export const useDeviceStore = defineStore('device', {
         },
         dfuStepAction(): string {
             if (this.isSelectedNrf) {
-                return 'double-clicking RST button';
+                return 'double-clicking RST button.';
             } else {
-                return 'pressing and holding BOOTSEL button while plugging in USB cable';
+                return 'pressing and holding BOOTSEL button while plugging in USB cable.';
             }
         },
     },

@@ -29,7 +29,7 @@
                         <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                If your device is ESP32-S3 based, you may need to turn off, press and hold the BOOT / USR button while plugging in the USB cable.
+                                If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.
                             </span>
                         </div>
                     </li>

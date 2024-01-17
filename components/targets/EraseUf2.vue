@@ -29,7 +29,9 @@
                         <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                For versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}
+                                For firmware versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}
+                                <br />
+                                After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.
                             </span>
                         </div>
                         <button type="button"
@@ -64,7 +66,7 @@
                         <div class="py-2">
                             <span>
                                 Download and Copy UF2 file to the DFU drive.
-                                After the file is copied, the drive should disappear.
+                                After the file is copied, the drive should disappear. {{ !deviceStore.isSelectedNrf ? 'The device flash should be erased after this operation.' : '' }}
                             </span>
                         </div>
                         <a :href="uf2File" download="" 
@@ -72,7 +74,7 @@
                             Download Flash Erase UF2
                         </a>
                     </li>
-                    <li class="ms-8 mt-4">
+                    <li class="ms-8 mt-4" v-if="deviceStore.isSelectedNrf">
                         <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                             4
                         </span>
@@ -80,13 +82,14 @@
                             Open Serial Monitor
                         </h3>
                         <span class="py-2">
-                            Opening a serial will finish the erase process.
+                            Opening a serial will complete the erase process.
                         </span>
                         <div>
                         </div>
                     </li>
                 </ol>
-                <button class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" 
+                <button v-if="deviceStore.isSelectedNrf"
+                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" 
                     @click="openSerial">
                     Open Serial Monitor
                 </button>
@@ -119,6 +122,19 @@ const closeModal = () => {
 const openSerial = async () => {
     const terminal = await openTerminal();
     const port = await navigator.serial.requestPort({});
-    await firmwareStore.readSerial(port, terminal);
+    await port.open({ baudRate: 115200 });
+    // read from the serial port
+    const reader = port.readable!.getReader();
+    while (true) {
+        const { value, done } = await reader.read();
+        if (value) {
+            terminal.write(value);
+        }
+        if (done) {
+            console.log('[readLoop] DONE', done);
+            reader.releaseLock();
+            break;
+        }
+    }
 };
 </script>
