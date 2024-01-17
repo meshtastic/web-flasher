@@ -119,7 +119,6 @@ export const useFirmwareStore = defineStore('firmware', {
             const otaContent = await this.fetchBinaryContent(otaFileName);
             const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
             this.isFlashing = true;
-            // await espLoader.eraseFlash();
             const flashOptions = <FlashOptions> {
                 fileArray: [{ data: appContent, address: 0x00 },
                             { data: otaContent, address: 0x260000 },

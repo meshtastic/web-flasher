@@ -38,7 +38,7 @@
             </div>
             <h2 class="text-xl font-medium title-font text-white mt-5">Firmware</h2>
             <p class="text-base leading-relaxed mt-2">
-              Choose from the release options or test an experimental firmware from a pull-request on Github
+              Choose from the release options or upload a release zip downloaded from Github. 
             </p>
           </div>
           <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
