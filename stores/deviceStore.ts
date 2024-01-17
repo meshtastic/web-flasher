@@ -2,7 +2,10 @@ import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import { OfflineHardwareList } from '~/types/resources';
 
-import { Client } from '@meshtastic/js';
+import {
+  Client,
+  SerialConnection,
+} from '@meshtastic/js';
 
 import { type DeviceHardware } from '../types/api';
 import { createUrl } from './store';
@@ -19,6 +22,23 @@ export const useDeviceStore = defineStore('device', {
     },
     getters: {
         selectedArchitecture: (state) => state.selectedTarget?.architecture || '',
+        isSelectedNrf(): boolean {
+            return this.selectedArchitecture.startsWith('nrf52');
+        },
+        enterDfuVersion(): string {
+            if (this.isSelectedNrf) {
+                return '2.2.17';
+            } else {
+                return '2.2.18';
+            }
+        },
+        dfuStepAction(): string {
+            if (this.isSelectedNrf) {
+                return 'double-clicking RST button.';
+            } else {
+                return 'pressing and holding BOOTSEL button while plugging in USB cable.';
+            }
+        },
     },
     actions: {
         async fetchList() {
@@ -35,24 +55,7 @@ export const useDeviceStore = defineStore('device', {
         setSelectedTarget(target: DeviceHardware) {
             this.selectedTarget = target;
         },
-        async enterDfuMode() {
-            this.client = new Client();
-            const port: SerialPort = await navigator.serial.requestPort();
-            const connection = this.client.createSerialConnection();
-            await connection
-                .connect({
-                    port,
-                    baudRate: undefined,
-                    concurrentLogOutput: true,
-                });
-            connection.events.onFromRadio.subscribe((packet: any) => {
-                if (packet?.payloadVariant?.case === "configCompleteId") {
-                    console.log('Attempting to enter DFU mode');
-                    connection.enterDfuMode();
-                }
-            });
-        },
-        async autoSelectHardware() {
+        async openDeviceConnection(): Promise<SerialConnection> {
             this.client = new Client();
             const port: SerialPort = await navigator.serial.requestPort();
             const connection = this.client.createSerialConnection();
@@ -62,6 +65,19 @@ export const useDeviceStore = defineStore('device', {
                     baudRate: 115200,
                     concurrentLogOutput: true,
                 });
+            return connection;
+        },
+        async enterDfuMode() {
+            const connection = await this.openDeviceConnection();
+            connection.events.onFromRadio.subscribe((packet: any) => {
+                if (packet?.payloadVariant?.case === "configCompleteId") {
+                    console.log('Attempting to enter DFU mode');
+                    connection.enterDfuMode();
+                }
+            });
+        },
+        async autoSelectHardware() {
+            const connection = await this.openDeviceConnection();
             connection.events.onDeviceMetadataPacket.subscribe((packet: any) => {   
                 const device = this.targets.find((target: DeviceHardware) => target.hwModel === packet?.data?.hwModel);
                 if (device) {
