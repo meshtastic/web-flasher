@@ -125,10 +125,12 @@ const openSerial = async () => {
     await port.open({ baudRate: 115200 });
     // read from the serial port
     const reader = port.readable!.getReader();
+    const writer = port.writable!.getWriter();
     while (true) {
         const { value, done } = await reader.read();
         if (value) {
             terminal.write(value);
+            writer.write(new Uint8Array([0x01, 0x01]));
         }
         if (done) {
             console.log('[readLoop] DONE', done);
