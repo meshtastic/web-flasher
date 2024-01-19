@@ -8,6 +8,9 @@
       <Title>Meshtastic Flasher</Title>
       <Meta name="description" :content="title" />
     </Head>
+    <div>
+      <div id="terminal"></div>
+    </div>
     <section class="text-gray-400 bg-2C2D3C body-font">
       <div class="container px-5 py-1 mx-auto">
         <div class="flex flex-col content-center justify-center">
@@ -54,7 +57,7 @@
         </div>
       </div>
     </section>
-      <footer class="footer bg-2C2D3C text-white mt-4 py-4">
+    <footer class="footer bg-2C2D3C text-white mt-4 py-4">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
@@ -78,6 +81,7 @@ import {
   initTooltips,
 } from 'flowbite';
 
+import { useCliStore } from '@/stores/cliStore';
 import { BoltIcon } from '@heroicons/vue/24/solid';
 
 // WebSerial API support check
@@ -85,10 +89,13 @@ const isWebSerialSupported = computed(() => {
   return 'serial' in navigator;
 });
 
-onMounted(() => {
+const cliStore = useCliStore();
+
+onMounted(async () => {
   initDropdowns();
   initModals();
   initTooltips();
+  await cliStore.loadTerminal();
 });
 </script>
 

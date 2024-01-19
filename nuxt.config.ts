@@ -10,6 +10,13 @@ export default defineNuxtConfig({
   },
   ssr: false,
   css: ['~/assets/css/main.css'],
+  // app: {
+  //   head: {
+  //     link: [
+  //       {href: 'https://fonts.googleapis.com/css?family=Source Code Pro', rel: 'stylesheet'}
+  //     ],
+  //   },
+  // },
   modules: [
     '@pinia/nuxt',
     '@vite-pwa/nuxt'
