@@ -112,7 +112,7 @@ const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
 
 const uf2File = computed(() => {
-    return deviceStore.isSelectedNrf ? '/uf2/nrf_erase.uf2' : '/uf2/pico_erase.uf2';
+    return deviceStore.isSelectedNrf ? '/uf2/nrf_erase2.uf2' : '/uf2/pico_erase.uf2';
 });
 
 const closeModal = () => {
