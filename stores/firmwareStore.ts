@@ -32,7 +32,7 @@ export const useFirmwareStore = defineStore('firmware', {
             pullRequests: new Array<FirmwareResource>(),
             selectedFirmware: <FirmwareResource | undefined>{},
             selectedFile: <File | undefined>{},
-            baudRate: 115200,
+            baudRate: 460800,
             shouldCleanInstall: false,
             flashPercentDone: 0,
             isFlashing: false,
