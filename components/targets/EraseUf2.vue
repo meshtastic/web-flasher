@@ -35,7 +35,7 @@
                             </span>
                         </div>
                         <button type="button"
-                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+                            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="deviceStore.enterDfuMode()">
                             <FolderArrowDownIcon class="h-4 w-4 text-black" />
                             Enter DFU Mode
@@ -70,7 +70,7 @@
                             </span>
                         </div>
                         <a :href="uf2File" download="" 
-                            class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black">
+                            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black">
                             Download Flash Erase UF2
                         </a>
                     </li>
@@ -81,18 +81,37 @@
                         <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                             Open Serial Monitor
                         </h3>
-                        <span class="py-2">
-                            Opening a serial will complete the erase process.
-                        </span>
+                        <div class="py-2">
+                            Wait for the drive to disappear, then open a serial monitor to complete the erase process.
+                        </div>
                         <div>
+                        <button v-if="deviceStore.isSelectedNrf"
+                            class="text-black inline-flex w-[250px] justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" 
+                            @click="openSerial">
+                            Open Serial Monitor
+                        </button>
+                        
+                        </div>
+                    </li>
+                    <li class="ms-8 mt-4" v-if="deviceStore.isSelectedNrf">
+                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                            5
+                        </span>
+                        <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                            Flash Firmware
+                        </h3>
+                        <div class="py-2">
+                            Close this popup to select a firmware version and begin flashing.
+                        </div>
+                        <div>
+                            <button type="button"
+                            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+                            @click="closeModal">
+                            Return to Flasher
+                        </button>
                         </div>
                     </li>
                 </ol>
-                <button v-if="deviceStore.isSelectedNrf"
-                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" 
-                    @click="openSerial">
-                    Open Serial Monitor
-                </button>
                 <div id="terminal"></div>
             </div>
         </div>
@@ -112,7 +131,7 @@ const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
 
 const uf2File = computed(() => {
-    return deviceStore.isSelectedNrf ? '/uf2/nrf_erase.uf2' : '/uf2/pico_erase.uf2';
+    return deviceStore.isSelectedNrf ? '/uf2/nrf_erase2.uf2' : '/uf2/pico_erase.uf2';
 });
 
 const closeModal = () => {
