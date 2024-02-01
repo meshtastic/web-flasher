@@ -57,8 +57,8 @@ export const useFirmwareStore = defineStore('firmware', {
             this.selectedFile = undefined;
         },
         getUf2FileUrl(fileName: string): string {
-            if (!this.selectedFirmware?.zip_url) return '';
-            const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
+            if (!this.selectedFirmware?.zipUrl) return '';
+            const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zipUrl);
             return `${baseUrl}/${fileName}`;
         },
         async downloadUf2FileSystem(searchRegex: RegExp) {
@@ -141,8 +141,8 @@ export const useFirmwareStore = defineStore('firmware', {
             await this.readSerial(port, terminal);
         },
         async fetchBinaryContent(fileName: string): Promise<string> {
-            if (this.selectedFirmware?.zip_url) {
-                const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware!.zip_url!);
+            if (this.selectedFirmware?.zipUrl) {
+                const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware!.zipUrl!);
                 const response = await fetch(`${baseUrl}/${fileName}`);
                 const blob = await response.blob();
                 const data = await blob.arrayBuffer();
