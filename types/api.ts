@@ -1,8 +1,8 @@
 export interface FirmwareResource {
 	id: string;
 	title: string;
-	pageUrl?: string;
-	zipUrl?: string;
+	page_url?: string;
+	zip_url?: string;
 }
 
 export interface FirmwareReleases {
