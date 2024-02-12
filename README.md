@@ -1,3 +1,5 @@
+[![Vercel](https://img.shields.io/static/v1?label=Powered%20by&message=Vercel&style=flat&logo=vercel&color=000000)](https://vercel.com?utm_source=meshtastic&utm_campaign=oss)
+
 # Meshtastic Web Flasher
 
 ## Introduction
