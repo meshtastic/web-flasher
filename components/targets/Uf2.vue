@@ -71,7 +71,7 @@
                     class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Download UF2
                 </a>
-                <button @click="downloadUf2File" v-else
+                <button @click="downloadUf2FileFs" v-else
                     class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Download UF2
                 </button>
@@ -96,7 +96,7 @@ const closeFlashModal = () => {
     document.getElementById('flash-modal')?.click(); // Flowbite bug
 }
 
-const downloadUf2File = () => {
+const downloadUf2FileFs = () => {
     const searchRegex = new RegExp(`firmware-${deviceStore.$state.selectedTarget.platformioTarget}-.+.uf2`);
     firmwareStore.downloadUf2FileSystem(searchRegex);
 }

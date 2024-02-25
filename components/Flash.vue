@@ -28,6 +28,8 @@
 </template>
 
 <script lang="ts" setup>
+import { checkIfRemoteFileExists } from '~/utils/fileUtils';
+
 import { TrashIcon } from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../stores/deviceStore';
@@ -36,10 +38,49 @@ import { useFirmwareStore } from '../stores/firmwareStore';
 const firmwareStore = useFirmwareStore();
 const deviceStore = useDeviceStore();
 
+const fileExistsOnServer = ref(false);
+
+watch(() => firmwareStore.$state.selectedFirmware, async () => {
+    await preflightCheck();
+});
+
+
+watch(() => deviceStore.$state.selectedTarget, async () => {
+    await preflightCheck();
+});
+
+const preflightCheck = async () => {
+    if (!hasOnlineFirmware.value) {
+        fileExistsOnServer.value = false;
+        return;
+    }
+
+    if (['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)) {
+        const firmwareVersion = firmwareStore.selectedFirmware!.id.replace('v', '')
+        const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
+        fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getUf2FileUrl(firmwareFile));
+    }
+    else if (deviceStore.selectedArchitecture.startsWith('esp32')) {
+        const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`;
+        fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareFile);
+    }
+    else {
+        fileExistsOnServer.value = false;
+    }
+}
+
+const hasOnlineFirmware = computed(() => {
+    return (firmwareStore.selectedFirmware?.id || '').length > 0;
+});
+
+const hasFirmwareFile = computed(() => {
+    return (firmwareStore.selectedFile?.name || '').length > 0;
+});
+
 // Either we have a custom zip file or a selected firmware release
 const canFlash = computed(() => {
-    const hasDevice = deviceStore.$state.selectedTarget?.hwModel > 0;
-    const hasFirmware = (firmwareStore.$state.selectedFirmware?.id || '').length > 0 || (firmwareStore.$state.selectedFile?.name || '').length > 0;
-    return hasDevice && hasFirmware;
-})
+    const hasDevice = deviceStore.selectedTarget?.hwModel > 0;
+    const hasFirmware = hasOnlineFirmware.value || hasFirmwareFile.value;
+    return hasDevice && hasFirmware && (fileExistsOnServer.value || hasFirmwareFile.value);
+});
 </script>

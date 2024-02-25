@@ -16,3 +16,13 @@ export function convertToBinaryString(bytes: Uint8Array) {
 	}
 	return binaryString;
 }
+
+export function checkIfRemoteFileExists(url: string): Promise<boolean> {
+	return fetch(url, { method: 'HEAD' })
+		.then(response => {
+			return response.ok;
+		})
+		.catch(() => {
+			return false;
+		});
+}
