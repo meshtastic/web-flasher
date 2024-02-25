@@ -41,6 +41,7 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     getters: {
         percentDone: (state) =>`${state.flashPercentDone}%`,
+        firmwareVersion: (state) => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     },
     actions: {
         async fetchList() {
