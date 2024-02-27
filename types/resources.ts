@@ -237,8 +237,16 @@ export const OfflineHardwareList = [
         "platformioTarget": "heltec-wireless-tracker",
         "architecture": "esp32-s3",
         "activelySupported": true,
-        "displayName": "Heltec Wireless Tracker"
+        "displayName": "Heltec Wireless Tracker V1.1"
     },
+    {
+        "hwModel": 58,
+        "hwModelSlug": "HELTEC_WIRELESS_TRACKER_V1_0",
+        "platformioTarget": "heltec-wireless-tracker-V1-0",
+        "architecture": "esp32-s3",
+        "activelySupported": true,
+        "displayName": "Heltec Wireless Tracker V1.0",
+      },
     {
         "hwModel": 49,
         "hwModelSlug": "HELTEC_WIRELESS_PAPER",
