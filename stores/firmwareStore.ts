@@ -57,9 +57,10 @@ export const useFirmwareStore = defineStore('firmware', {
             this.selectedFirmware = firmware;
             this.selectedFile = undefined;
         },
-        getUf2FileUrl(fileName: string): string {
+        getReleaseFileUrl(fileName: string): string {
             if (!this.selectedFirmware?.zip_url) return '';
             const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
+            debugger
             return `${baseUrl}/${fileName}`;
         },
         async downloadUf2FileSystem(searchRegex: RegExp) {

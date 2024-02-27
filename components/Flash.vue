@@ -58,11 +58,11 @@ const preflightCheck = async () => {
     if (['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)) {
         const firmwareVersion = firmwareStore.selectedFirmware!.id.replace('v', '')
         const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-        fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getUf2FileUrl(firmwareFile));
+        fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile));
     }
     else if (deviceStore.selectedArchitecture.startsWith('esp32')) {
         const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`;
-        fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareFile);
+        fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile));
     }
     else {
         fileExistsOnServer.value = false;
