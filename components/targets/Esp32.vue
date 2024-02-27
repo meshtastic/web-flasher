@@ -139,7 +139,7 @@ const cleanInstallEsp32 = () => {
 
 const updateEsp32 = () => {
     // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
-    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${getFirmwareVersion()}-update.bin`
+    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}-update.bin`
     firmwareStore.updateEspFlash(firmwareFile);
 }
 </script>
