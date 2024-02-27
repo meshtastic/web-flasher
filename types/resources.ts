@@ -168,6 +168,14 @@ export const OfflineHardwareList = [
         "displayName": "CanaryOne"
     },
     {
+        "hwModel": 30,
+        "hwModelSlug": "RP2040_LORA",
+        "platformioTarget": "rp2040-lora",
+        "architecture": "rp2040",
+        "activelySupported": true,
+        "displayName": "RP2040 LoRa"
+    },
+    {
         "hwModel": 39,
         "hwModelSlug": "DIY_V1",
         "platformioTarget": "meshtastic-diy-v1",
