@@ -8,13 +8,14 @@
       <Title>Meshtastic Flasher</Title>
       <Meta name="description" :content="title" />
     </Head>
+
     <section class="text-gray-400 bg-2C2D3C body-font">
       <div class="container px-5 py-1 mx-auto">
         <div class="flex flex-col content-center justify-center">
-          <div class="flex flex-wrap sm:flex-row flex-col py-2 mb-2">
+          <div class="flex flex-wrap sm:flex-row flex-col py-1">
             <div class="mx-auto">
-              <img src="@/assets/img/logo.svg" class="h-32 w-32" alt="Meshtastic Logo" />
-              <h1 class="text-white mb-4 text-4xl font-extrabold">
+              <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
+              <h1 class="text-white text-6xl font-bold inline-block ml-4 mt-8 align-top">
                 Flasher
               </h1>
             </div>
@@ -53,8 +54,21 @@
           </div>
         </div>
       </div>
+      <div class="container px-2 py-6 mx-auto">
+        <div class="flex flex-col content-center justify-center">
+          <div class="text-center">
+            <button class="inline border border-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 text-meshtastic hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out"
+              type="button" @click="monitorSerial()">
+              Open Serial Monitor <CommandLineIcon class="h-4 w-4 inline" />
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
-      <footer class="footer bg-2C2D3C text-white mt-4 py-4">
+
+    <SerialMonitor />
+
+    <footer class="footer bg-2C2D3C text-white mt-4 py-4">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
@@ -73,12 +87,24 @@ import 'flowbite';
 import { onMounted } from 'vue';
 
 import {
+  initDrawers,
   initDropdowns,
   initModals,
   initTooltips,
 } from 'flowbite';
 
-import { BoltIcon } from '@heroicons/vue/24/solid';
+import {
+  BoltIcon,
+  CommandLineIcon,
+} from '@heroicons/vue/24/solid';
+
+import { useSerialMonitorStore } from './stores/serialMonitorStore';
+
+const serialMonitorStore = useSerialMonitorStore();
+
+const monitorSerial = () => {
+  serialMonitorStore.monitorSerial();
+}
 
 // WebSerial API support check
 const isWebSerialSupported = computed(() => {
@@ -89,6 +115,7 @@ onMounted(() => {
   initDropdowns();
   initModals();
   initTooltips();
+  initDrawers();
 });
 </script>
 
@@ -100,8 +127,14 @@ onMounted(() => {
     -webkit-filter: invert(1);
     filter: invert(1);
   }
+  .text-meshtastic {
+    color: #67EA94;
+  }
   .bg-meshtastic {
     background-color: #67EA94;
+  }
+  .border-meshtastic {
+    border-color: #67EA94;
   }
  .footer {
     background-color: #2C2D3C;
