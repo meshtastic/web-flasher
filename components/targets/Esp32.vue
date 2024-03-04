@@ -48,7 +48,7 @@
                                 <option value="921600">921600</option>
                                 <!-- TODO styling and wire this up -->
                             </select>
-                            <span class="text-sm mt-1">115200 is slower, but can be more reliable for low-quality connections.</span>
+                            <span class="text-sm mt-1">Lower rates are slower, but can be more reliable for low-quality connections.</span>
                         </div>
                     </li>
                     <li class="ms-8">
