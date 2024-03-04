@@ -88,12 +88,13 @@ export const useFirmwareStore = defineStore('firmware', {
             const espLoader = await this.connectEsp32(transport, terminal);
             const content = await this.fetchBinaryContent(fileName);
             this.isFlashing = true;
-            const flashOptions = <FlashOptions> {
+            const flashOptions: FlashOptions = {
                 fileArray: [{ data: content, address: 0x10000 }],
-                flashSize: "keep",
+                flashSize: 'keep',
                 eraseAll: false,
                 compress: true,
-                enableTracing: false,
+                flashMode: 'keep',
+                flashFreq: 'keep',
                 reportProgress: (fileIndex, written, total) => {
                     this.flashPercentDone = Math.round((written / total) * 100);
                     if (written == total) {
@@ -120,14 +121,17 @@ export const useFirmwareStore = defineStore('firmware', {
             const otaContent = await this.fetchBinaryContent(otaFileName);
             const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
             this.isFlashing = true;
-            const flashOptions = <FlashOptions> {
-                fileArray: [{ data: appContent, address: 0x00 },
-                            { data: otaContent, address: 0x260000 },
-                            { data: littleFsContent, address: 0x300000 }],
+            const flashOptions: FlashOptions = {
+                fileArray: [
+                    { data: appContent, address: 0x00 },
+                    { data: otaContent, address: 0x260000 },
+                    { data: littleFsContent, address: 0x300000 }
+                ],
                 flashSize: "keep",
                 eraseAll: true,
                 compress: true,
-                enableTracing: false,
+                flashMode: 'keep',
+                flashFreq: 'keep',
                 reportProgress: (fileIndex, written, total) => {
                     this.flashingIndex = fileIndex;
                     this.flashPercentDone = Math.round((written / total) * 100);
@@ -197,7 +201,7 @@ export const useFirmwareStore = defineStore('firmware', {
                 if (value) {
                     terminal.write(value);
                 }
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await new Promise(resolve => setTimeout(resolve, 5));
             }
         },
     },
