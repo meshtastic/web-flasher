@@ -7,17 +7,43 @@ export const useSerialMonitorStore = defineStore("serialMonitor", {
       isOpen: false,
       terminalBuffer: new Array<string>(),
       isConnected: false,
+      isReaderLocked: false,
+      port: <SerialPort | undefined>{},
     };
   },
   actions: {
+    disconnect() {
+      this.isReaderLocked = false;
+    },
+    async unlockPort(port: SerialPort, reader: ReadableStreamDefaultReader<string>) {
+      try {
+        const textEncoder = new TextEncoderStream();
+        const writer = textEncoder.writable.getWriter();
+        const writableStreamClosed = textEncoder.readable.pipeTo(port.writable!);
+        reader.cancel();
+        writer.close();
+        await writableStreamClosed;
+    
+        await port.close();
+      }
+      catch (e) {
+        console.log(e);
+      }
+    },
     async readSerialMonitor(port: SerialPort): Promise<void> {
       this.terminalBuffer = [];
-      const decoder = new TextDecoderStream();
-      port.readable!.pipeTo(decoder.writable);
-      const inputStream = decoder.readable;
+      const decoderStream = new TextDecoderStream();
+      port.readable!.pipeTo(decoderStream.writable);
+      const inputStream = decoderStream.readable;
       const reader = inputStream.getReader();
+      this.isReaderLocked = true;
 
       while (true) {
+        if (!this.isReaderLocked) {
+          await this.unlockPort(port, reader);
+          this.isConnected = false;
+          return;
+        }
         let { value } = await reader.read();
         if (value) {
           value = value?.replace(/\r/g, "");
@@ -43,14 +69,14 @@ export const useSerialMonitorStore = defineStore("serialMonitor", {
       }
     },
     async monitorSerial() {
-      const port = await navigator.serial.requestPort({});
-      await port.open({ baudRate: this.baudRate });
+      this.port = await navigator.serial.requestPort({});
+      await this.port.open({ baudRate: this.baudRate });
       this.isOpen = true;
       this.isConnected = true;
-      port.ondisconnect = () => {
+      this.port.ondisconnect = () => {
         this.isConnected = false;
       };
-      await this.readSerialMonitor(port);
+      await this.readSerialMonitor(this.port);
     },
   },
 });

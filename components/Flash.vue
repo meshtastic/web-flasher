@@ -34,16 +34,17 @@ import { TrashIcon } from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../stores/deviceStore';
 import { useFirmwareStore } from '../stores/firmwareStore';
+import { useSerialMonitorStore } from '../stores/serialMonitorStore';
 
 const firmwareStore = useFirmwareStore();
 const deviceStore = useDeviceStore();
+const serialMonitorStore = useSerialMonitorStore();
 
 const fileExistsOnServer = ref(false);
 
 watch(() => firmwareStore.$state.selectedFirmware, async () => {
     await preflightCheck();
 });
-
 
 watch(() => deviceStore.$state.selectedTarget, async () => {
     await preflightCheck();
@@ -81,6 +82,6 @@ const hasFirmwareFile = computed(() => {
 const canFlash = computed(() => {
     const hasDevice = deviceStore.selectedTarget?.hwModel > 0;
     const hasFirmware = hasOnlineFirmware.value || hasFirmwareFile.value;
-    return hasDevice && hasFirmware && (fileExistsOnServer.value || hasFirmwareFile.value);
+    return !serialMonitorStore.isConnected && hasDevice && hasFirmware && (fileExistsOnServer.value || hasFirmwareFile.value);
 });
 </script>
