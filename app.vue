@@ -54,7 +54,7 @@
           </div>
         </div>
       </div>
-      <div class="container px-2 py-6 mx-auto">
+      <div class="container px-2 py-5 mx-auto">
         <div class="flex flex-col content-center justify-center">
           <div class="text-center">
             <button class="inline border border-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-5 py-2.5 text-center me-2 mb-2 text-meshtastic hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out"
