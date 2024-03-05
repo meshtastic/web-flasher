@@ -1,19 +1,33 @@
 <template>
   <div class="w-full mt-2" v-if="serialMonitorStore.isOpen">
-    <div class="">
-      <!-- <span class="mb-3 text-xs font-medium me-2 px-2.5 py-0.5 rounded bg-gray-700 text-gray-300">
+    <div class="grid grid-cols-3">
+      <!-- <span class="mb-2 text-xs font-medium me-2 px-2.5 py-0.5 rounded bg-gray-700 text-gray-300">
         {{ serialMonitorStore.isConnected ? 'Connected' : 'Disconnected'}}
       </span> -->
-      <div class="rounded-md shadow-sm flex justify-center" role="group">
-        <button type="button" title="Clear logs" @click="clearTerminal" class="px-4 py-2 text-sm font-medium text-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
-          <TrashIcon class="h-4 w-4 inline" />
-        </button>
-        <button type="button" title="Copy logs to clipboard" @click="copyToClipboard" class="px-4 py-2 text-sm font-medium text-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
-          <ClipboardIcon class="h-4 w-4 inline" />
-        </button>
-        <button type="button" title="Save logs to file" @click="saveToFile" class="px-4 py-2 text-sm font-medium text-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
-          <ArrowDownTrayIcon class="h-4 w-4 inline" />
-        </button>
+      <div class="col"> 
+        <div class="flex items-center justify-start px-2">
+          <button type="button" @click="logLevel = 'all'" class="border focus:ring-4 focus:outline-none rounded-full text-xs font-medium px-5 py-1.5 text-center me-2 mb-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 bg-gray-900 focus:ring-blue-800">All Levels</button>
+          <button type="button" @click="logLevel = 'INFO  |'" class="border :outline-none rounded-full text-xs font-medium px-5 py-1.5 text-center me-2 mb-2 focus:ring-gray-800 text-white hover:bg-blue-500">Info</button>
+          <button type="button" @click="logLevel = 'DEBUG |'" class="border :outline-none rounded-full text-xs font-medium px-5 py-1.5 text-center me-2 mb-2 focus:ring-gray-800 border-blue-300 text-blue-300 hover:bg-blue-500 hover:text-white">Debug</button>
+          <button type="button" @click="logLevel = 'WARN  |'" class="border :outline-none rounded-full text-xs font-medium px-5 py-1.5 text-center me-2 mb-2 focus:ring-gray-800 border-orange-300 text-orange-300 hover:bg-orange-300 hover:text-white">Warn</button>
+          <button type="button" @click="logLevel = 'ERROR |'" class="border :outline-none rounded-full text-xs font-medium px-5 py-1.5 text-center me-2 mb-2 focus:ring-gray-800 border-red-500 text-red-500 hover:bg-red-500 hover:text-white">Error</button>
+        </div>
+      </div>
+      <div class="col">
+        <!-- Auto scroll -->
+      </div>
+      <div class="col">
+        <div class="rounded-md shadow-sm flex justify-end px-2" role="group">
+          <button type="button" title="Clear logs" @click="clearTerminal" class="px-4 py-1.5 text-sm font-medium text-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
+            <TrashIcon class="h-4 w-4 inline" />
+          </button>
+          <button type="button" title="Copy logs to clipboard" @click="copyToClipboard" class="px-4 py-1.5 text-sm font-medium text-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
+            <ClipboardIcon class="h-4 w-4 inline" />
+          </button>
+          <button type="button" title="Save logs to file" @click="saveToFile" class="px-4 py-1.5 text-sm font-medium text-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
+            <ArrowDownTrayIcon class="h-4 w-4 inline" />
+          </button>
+        </div>
       </div>
     </div>
     <div class="inverse-toggle px-5 shadow-lg text-gray-100 text-sm font-mono subpixel-antialiased bg-gray-900 pb-6 pt-4 rounded-lg leading-normal overflow-hidden">
@@ -23,7 +37,7 @@
         <div class="ml-2 h-3 w-3 bg-green-500 rounded-full"></div>
       </div>
       <div class="mt-4">
-        <p v-for="line in serialMonitorStore.terminalBuffer" :class="logLevelClass(line)">
+        <p v-for="line in filteredTerminalBuffer" :class="logLevelClass(line)">
           {{ line }}<br />
         </p>
       </div>
@@ -43,6 +57,15 @@ import {
 import { useSerialMonitorStore } from '../stores/serialMonitorStore';
 
 const serialMonitorStore = useSerialMonitorStore();
+
+const logLevel = ref('all');
+
+const filteredTerminalBuffer = computed(() => {
+  if (logLevel.value === 'all') {
+    return serialMonitorStore.terminalBuffer;
+  }
+  return serialMonitorStore.terminalBuffer.filter((line) => line.includes(logLevel.value.toUpperCase()));
+});
 
 const clearTerminal = () => {
   serialMonitorStore.terminalBuffer = [];
