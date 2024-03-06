@@ -80,11 +80,18 @@
         </p>
       </div>
     </footer>
-    <div data-dial-init class="fixed -end-4 bottom-6 group">
-      <button type="button" :disabled="!isConnected || firmwareStore.isFlashing" @click="disconnect()"
-        :title="isConnected ? 'Disconnect' : 'Not connected'"
-        :class="{ 'border-meshtastic text-meshtastic hover:text-black hover:bg-red-500 hover:border-transparent animate-pulse': isConnected, 'border-gray-700 text-gray-300': !isConnected }" class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2  hover:shadow transition duration-300 ease-in-out">
-        {{ connectionButtonLabel }} <BoltIcon class="h-4 w-4 inline mb-1" v-if="isConnected" /><BoltSlashIcon class="h-4 w-4 inline mb-1" v-if="!isConnected" />
+    <div class="fixed -end-4 bottom-6 group">
+      <button type="button" :disabled="true" 
+        :class="{ 
+          'text-purple-400 border-purple-400 animate-pulse': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
+          'border-meshtastic text-meshtastic animate-pulse': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
+          'border-gray-700 text-gray-300': !isConnected
+        }" 
+        class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 backdrop-blur-sm hover:shadow transition duration-300 ease-in-out">
+        {{ connectionButtonLabel }}
+        <span v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked" class="inline-flex w-2 h-2 me-2 bg-purple-400 rounded-full"></span>
+        <span v-else-if="isConnected" class="inline-flex w-2 h-2 me-2 bg-green-500 rounded-full"></span>
+        <span v-else class="inline-flex w-2 h-2 me-2 bg-gray-300 rounded-full"></span>
       </button>
     </div>
   </div>
@@ -104,12 +111,11 @@ import {
 
 import {
   BoltIcon,
-  BoltSlashIcon,
   CommandLineIcon,
 } from '@heroicons/vue/24/solid';
 
-import { useSerialMonitorStore } from './stores/serialMonitorStore';
 import { useFirmwareStore } from './stores/firmwareStore';
+import { useSerialMonitorStore } from './stores/serialMonitorStore';
 
 const serialMonitorStore = useSerialMonitorStore();
 const firmwareStore = useFirmwareStore();
@@ -118,21 +124,13 @@ const monitorSerial = () => {
   serialMonitorStore.monitorSerial();
 };
 
-const disconnect = () => {
-  if (serialMonitorStore.isConnected) {
-    serialMonitorStore.disconnect();
-  } else if (firmwareStore.isConnected) {
-    firmwareStore.port?.close();
-  }
-};
-
 const connectionButtonLabel = computed(() => {
   if (firmwareStore.isFlashing) {
     return 'Flashing';
   } else if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
     return 'Disconnecting';
   }
-  return isConnected.value ? 'Monitoring' : 'Not connected';
+  return isConnected.value ? 'Connected' : 'Not connected';
 });
 
 const isConnected = computed(() => {

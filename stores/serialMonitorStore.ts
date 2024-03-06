@@ -21,10 +21,11 @@ export const useSerialMonitorStore = defineStore("serialMonitor", {
         const writer = textEncoder.writable.getWriter();
         const writableStreamClosed = textEncoder.readable.pipeTo(port.writable!);
         reader.cancel();
+        
         writer.close();
         await writableStreamClosed;
-    
-        await port.close();
+        await port.forget();
+        this.isConnected = false;
       }
       catch (e) {
         console.log(e);
@@ -41,7 +42,6 @@ export const useSerialMonitorStore = defineStore("serialMonitor", {
       while (true) {
         if (!this.isReaderLocked) {
           await this.unlockPort(port, reader);
-          this.isConnected = false;
           return;
         }
         let { value } = await reader.read();

@@ -29,6 +29,12 @@
         </div>
       </div>
       <div class="col">
+        <div class="flex items-center justify-center">
+          <button v-if="serialMonitorStore.isConnected" @click="disconnect()"
+            class="border focus:ring-4 focus:outline-none font-medium text-purple-400 border-purple-400 hover:text-black hover:border-transparent hover:bg-white rounded-lg text-sm px-4 py-1 text-center me-2 mb-2  hover:shadow transition duration-300 ease-in-out">
+            Disconnect
+          </button>
+        </div>
         <!-- Auto scroll -->
       </div>
       <div class="col">
@@ -80,6 +86,16 @@ const filteredTerminalBuffer = computed(() => {
     return serialMonitorStore.terminalBuffer;
   }
   return serialMonitorStore.terminalBuffer.filter((line) => line.includes(logLevel.value.toUpperCase()));
+});
+
+const disconnect = () => {
+  if (serialMonitorStore.isConnected) {
+    serialMonitorStore.disconnect();
+  } 
+};
+
+const isConnected = computed(() => {
+  return serialMonitorStore.isConnected;
 });
 
 const logCounts = computed(() => {
