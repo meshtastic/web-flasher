@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full mt-2" v-if="serialMonitorStore.isConnected || serialMonitorStore.terminalBuffer.length > 0">
+  <div class="w-full mt-10" v-if="serialMonitorStore.isConnected || serialMonitorStore.terminalBuffer.length > 0">
     <div class="grid grid-cols-3">
       <!-- <span class="mb-2 text-xs font-medium me-2 px-2.5 py-0.5 rounded bg-gray-700 text-gray-300">
         {{ serialMonitorStore.isConnected ? 'Connected' : 'Disconnected'}}
