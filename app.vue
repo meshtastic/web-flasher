@@ -42,7 +42,7 @@
             </div>
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-72 flex flex-col items-center">
-                <FolderArrowDownIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" aria-label="Firmware" />
+                <FolderArrowDownIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" alt="Firmware" />
                 <Firmware />
               </div>
               <h2 class="text-xl font-medium title-font text-white mt-5">Firmware</h2>
