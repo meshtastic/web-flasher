@@ -171,11 +171,19 @@ onMounted(() => {
   .border-meshtastic {
     border-color: #67EA94;
   }
- .footer {
+  .footer {
     background-color: #2C2D3C;
   }
   .footer a {
     color: #67EA94;
+  }
+  h1 {
+    font-size: 2em;
+    color: #FFFFFF;
+  }
+  h2 {
+    font-size: 1.5em;
+    color: #FFFFFF;
   }
   .footer a:hover {
     text-decoration: underline;
@@ -189,12 +197,12 @@ onMounted(() => {
 
   .flash-enter-active ,
   .flash-leave-active {
-    transition: all 0.5s ease-in-out;
+    transition: all 1s ease-in-out;
   }
 
   .flash-enter-from,
   .flash-leave-to {
-    transition: all 0.5s ease-out;
+    transition: all 1s ease-out;
     opacity: 0;
   }
 
