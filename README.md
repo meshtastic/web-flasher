@@ -31,4 +31,4 @@ Check out the full Nuxt [deployment documentation](https://nuxt.com/docs/getting
 ## Feedback and Support
 For bug reports, feature requests, or general queries, please open an issue in this repository. Your feedback helps us improve and evolve the Meshtastic Web Flasher.
 
-Thank you for using and supporting the Meshtastic Web Flasher!
+Thank you for using and supporting the Meshtastic Web Flasher.
