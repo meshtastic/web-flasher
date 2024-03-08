@@ -176,6 +176,14 @@ export const OfflineHardwareList = [
         "displayName": "RP2040 LoRa"
     },
     {
+        "hwModel": 31,
+        "hwModelSlug": "STATION_G2",
+        "platformioTarget": "station-g2",
+        "architecture": "esp32-s3",
+        "activelySupported": true,
+        "displayName": "Station G2",
+      },
+    {
         "hwModel": 39,
         "hwModelSlug": "DIY_V1",
         "platformioTarget": "meshtastic-diy-v1",
