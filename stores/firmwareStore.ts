@@ -33,6 +33,7 @@ export const useFirmwareStore = defineStore('firmware', {
       selectedFirmware: <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
       baudRate: 115200,
+      hasSeenReleaseNotes: false,
       shouldCleanInstall: false,
       flashPercentDone: 0,
       isFlashing: false,
@@ -45,8 +46,12 @@ export const useFirmwareStore = defineStore('firmware', {
   getters: {
     percentDone: (state) => `${state.flashPercentDone}%`,
     firmwareVersion: (state) => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
+    canShowFlash: (state) => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true, 
   },
   actions: {
+    continueToFlash() {
+      this.hasSeenReleaseNotes = true
+    },
     async fetchList() {
       firmwareApi.get<FirmwareReleases>()
         .then((response: FirmwareReleases) => {
@@ -59,6 +64,7 @@ export const useFirmwareStore = defineStore('firmware', {
     setSelectedFirmware(firmware: FirmwareResource) {
       this.selectedFirmware = firmware;
       this.selectedFile = undefined;
+      this.hasSeenReleaseNotes = false;
     },
     getReleaseFileUrl(fileName: string): string {
       if (!this.selectedFirmware?.zip_url) return '';
@@ -110,6 +116,9 @@ export const useFirmwareStore = defineStore('firmware', {
           }
         },
       };
+      await this.startWrite(terminal, espLoader, transport, flashOptions);
+    },
+    async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions);
       await this.resetEsp32(transport);
       await this.readSerial(this.port!, terminal);
@@ -133,11 +142,7 @@ export const useFirmwareStore = defineStore('firmware', {
       const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
       this.isFlashing = true;
       const flashOptions: FlashOptions = {
-        fileArray: [
-          { data: appContent, address: 0x00 },
-          { data: otaContent, address: 0x260000 },
-          { data: littleFsContent, address: 0x300000 }
-        ],
+        fileArray: [{ data: appContent, address: 0x00 }, { data: otaContent, address: 0x260000 }, { data: littleFsContent, address: 0x300000 }],
         flashSize: 'keep',
         eraseAll: true,
         compress: true,
@@ -152,9 +157,7 @@ export const useFirmwareStore = defineStore('firmware', {
           }
         },
       };
-      await espLoader.writeFlash(flashOptions);
-      await this.resetEsp32(transport);
-      await this.readSerial(this.port!, terminal);
+      await this.startWrite(terminal, espLoader, transport, flashOptions);
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
@@ -178,9 +181,6 @@ export const useFirmwareStore = defineStore('firmware', {
         }
       }
       throw new Error('Cannot fetch binary content without a file or firmware selected');
-    },
-    disconnect() {
-      this.isReaderLocked = false;
     },
     async connectEsp32(transport: Transport, terminal: Terminal): Promise<ESPLoader> {
       const loaderOptions = <LoaderOptions>{
@@ -211,31 +211,11 @@ export const useFirmwareStore = defineStore('firmware', {
       const reader = inputStream.getReader();
 
       while (true) {
-        if (!this.isReaderLocked) {
-          await this.unlockPort(port, reader);
-          this.isConnected = false;
-          return;
-        }
-        let { value } = await reader.read();
+        const{ value } = await reader.read();
         if (value) {
           terminal.write(value);
         }
         await new Promise(resolve => setTimeout(resolve, 5));
-      }
-    },
-    async unlockPort(port: SerialPort, reader: ReadableStreamDefaultReader<string>) {
-      try {
-        const textEncoder = new TextEncoderStream();
-        const writer = textEncoder.writable.getWriter();
-        const writableStreamClosed = textEncoder.readable.pipeTo(port.writable!);
-        reader.cancel();
-        writer.close();
-        await writableStreamClosed;
-    
-        await port.close();
-      }
-      catch (e) {
-        console.log(e);
       }
     },
   },

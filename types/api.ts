@@ -3,6 +3,7 @@ export interface FirmwareResource {
 	title: string;
 	page_url?: string;
 	zip_url?: string;
+	release_notes?: string;
 }
 
 export interface FirmwareReleases {
