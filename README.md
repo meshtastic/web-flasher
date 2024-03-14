@@ -1,4 +1,5 @@
 [![Vercel](https://img.shields.io/static/v1?label=Powered%20by&message=Vercel&style=flat&logo=vercel&color=000000)](https://vercel.com?utm_source=meshtastic&utm_campaign=oss)
+[![CLA assistant](https://cla-assistant.io/readme/badge/meshtastic/web-flasher)](https://cla-assistant.io/meshtastic/web-flasher)
 
 # Meshtastic Web Flasher
 
@@ -32,3 +33,7 @@ Check out the full Nuxt [deployment documentation](https://nuxt.com/docs/getting
 For bug reports, feature requests, or general queries, please open an issue in this repository. Your feedback helps us improve and evolve the Meshtastic Web Flasher.
 
 Thank you for using and supporting the Meshtastic Web Flasher.
+
+## Stats
+
+![Alt](https://repobeats.axiom.co/api/embed/b5590d57a9c3443c86121c36ded22aeb28f709d2.svg "Repobeats analytics image")
