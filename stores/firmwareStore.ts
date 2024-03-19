@@ -44,6 +44,8 @@ export const useFirmwareStore = defineStore('firmware', {
     }
   },
   getters: {
+    hasOnlineFirmware: (state) => (state.selectedFirmware?.id || '').length > 0,
+    hasFirmwareFile: (state) => (state.selectedFile?.name || '').length > 0,
     percentDone: (state) => `${state.flashPercentDone}%`,
     firmwareVersion: (state) => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: (state) => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true, 

@@ -17,12 +17,12 @@ export function convertToBinaryString(bytes: Uint8Array) {
 	return binaryString;
 }
 
-export function checkIfRemoteFileExists(url: string): Promise<boolean> {
-	return fetch(url, { method: 'HEAD' })
-		.then(response => {
-			return response.ok;
-		})
-		.catch(() => {
-			return false;
-		});
+export async function checkIfRemoteFileExists(url: string): Promise<boolean> {
+	console.log('Checking if remote file exists: ', url);
+	try {
+		const response = await fetch(url, { method: 'HEAD' });
+		return response.ok;
+	} catch {
+		return false;
+	}
 }

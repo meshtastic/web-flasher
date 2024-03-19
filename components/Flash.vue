@@ -51,7 +51,7 @@ watch(() => deviceStore.$state.selectedTarget, async () => {
 });
 
 const preflightCheck = async () => {
-    if (!hasOnlineFirmware.value) {
+    if (!firmwareStore.hasOnlineFirmware) {
         fileExistsOnServer.value = false;
         return;
     }
@@ -70,18 +70,11 @@ const preflightCheck = async () => {
     }
 }
 
-const hasOnlineFirmware = computed(() => {
-    return (firmwareStore.selectedFirmware?.id || '').length > 0;
-});
-
-const hasFirmwareFile = computed(() => {
-    return (firmwareStore.selectedFile?.name || '').length > 0;
-});
-
 // Either we have a custom zip file or a selected firmware release
 const canFlash = computed(() => {
     const hasDevice = deviceStore.selectedTarget?.hwModel > 0;
-    const hasFirmware = hasOnlineFirmware.value || hasFirmwareFile.value;
-    return !serialMonitorStore.isConnected && hasDevice && hasFirmware && (fileExistsOnServer.value || hasFirmwareFile.value);
+    const hasFirmware = firmwareStore.hasFirmwareFile || firmwareStore.hasOnlineFirmware;
+    return !serialMonitorStore.isConnected && hasDevice && hasFirmware 
+        && (fileExistsOnServer.value || firmwareStore.hasFirmwareFile);
 });
 </script>
