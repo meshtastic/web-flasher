@@ -174,7 +174,13 @@ export const useFirmwareStore = defineStore('firmware', {
         const entries = await zipReader.getEntries()
         console.log('Zip entries:', entries);
         console.log('Looking for file matching pattern:', fileName);
-        const file = entries.find(entry => new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin')))
+        const file = entries.find(entry => 
+          {
+            if (fileName.startsWith('firmware-tbeam-.'))
+              return !entry.filename.includes('s3') && new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
+            else 
+              new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
+          })
         if (file) {
           console.log('Found file:', file.filename);
           const blob = await file.getData!(new BlobWriter());
