@@ -53,7 +53,12 @@
                             This process could take a minute. 
                         </p>
                         <p>
+                        <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                            <span class="font-medium">
+                            <InformationCircleIcon class="h-4 w-4 inline" />
                             After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically.
+                       </span>
+                  </div>
                         </p>
                     </li>
                 </ol>
