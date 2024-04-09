@@ -302,5 +302,12 @@ export const OfflineHardwareList = [
         "architecture": "esp32-c3",
         "activelySupported": true,
         "displayName": "Heltec HT62"
+    },
+        "hwModel": 59,
+        "hwModelSlug": "UNPHONE",
+        "platformioTarget": "unphone",
+        "architecture": "esp32-s3",
+        "activelySupported": true,
+        "displayName": "unPhone",
     }
 ]
