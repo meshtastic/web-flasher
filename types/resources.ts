@@ -303,6 +303,7 @@ export const OfflineHardwareList = [
         "activelySupported": true,
         "displayName": "Heltec HT62"
     },
+    {
         "hwModel": 59,
         "hwModelSlug": "UNPHONE",
         "platformioTarget": "unphone",
