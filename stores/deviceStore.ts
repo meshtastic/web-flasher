@@ -76,6 +76,10 @@ export const useDeviceStore = defineStore('device', {
                 }
             });
         },
+        async baud1200() {
+            const port: SerialPort = await navigator.serial.requestPort();
+            await port.open({ baudRate: 1200 });
+        },
         async autoSelectHardware() {
             const connection = await this.openDeviceConnection();
             connection.events.onDeviceMetadataPacket.subscribe((packet: any) => {   
