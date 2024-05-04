@@ -16,8 +16,17 @@
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.
+                                <br />
+                                Alternatively, you can try the <strong>1200bps Reset</strong> method to place the device in correct mode.
+                                <button type="button"
+                                    class="inline-flex items-center mt-1 mx-1 py-1 px-2 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+                                    @click="deviceStore.baud1200()">
+                                    <CpuChipIcon class="h-4 w-4 text-black" />
+                                    1200bps Reset
+                                </button>
                             </span>
                         </div>
+
                     </li>
                     <li class="mb-10 ms-8">
                         <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
@@ -85,7 +94,10 @@
 <script lang="ts" setup>
 import '@/node_modules/xterm/css/xterm.css';
 
-import { InformationCircleIcon } from '@heroicons/vue/24/solid';
+import {
+  CpuChipIcon,
+  InformationCircleIcon,
+} from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';
