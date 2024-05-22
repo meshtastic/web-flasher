@@ -310,5 +310,13 @@ export const OfflineHardwareList = [
         "architecture": "esp32-s3",
         "activelySupported": true,
         "displayName": "unPhone",
-    }
+    },
+    {
+        "hwModel": 61,
+        "hwModelSlug": "CDEBYTE_EORA_S3",
+        "platformioTarget": "CDEBYTE_EoRa-S3",
+        "architecture": "esp32-s3",
+        "activelySupported": true,
+        "displayName": "EBYTE EoRa-S3",
+    },
 ]
