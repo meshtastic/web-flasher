@@ -319,4 +319,20 @@ export const OfflineHardwareList = [
         "activelySupported": true,
         "displayName": "EBYTE EoRa-S3",
     },
+    {
+        "hwModel": 64,
+        "hwModelSlug": "RADIOMASTER_900_BANDIT_NANO",
+        "platformioTarget": "radiomaster_900_bandit_nano",
+        "architecture": "esp32",
+        "activelySupported": true,
+        "displayName": "RadioMaster 900 Bandit Nano",
+    },
+    {
+        "hwModel": 21,
+        "hwModelSlug": "WIO_WM1110",
+        "platformioTarget": "wio-sdk-wm1110",
+        "architecture": "nrf52840",
+        "activelySupported": true,
+        "displayName": "Seeed Wio WM1110 Tracker",
+    }
 ]
