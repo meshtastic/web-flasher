@@ -106,6 +106,7 @@ import 'flowbite';
 import { onMounted } from 'vue';
 
 import {
+  initAccordions,
   initDrawers,
   initDropdowns,
   initModals,
@@ -151,6 +152,7 @@ onMounted(() => {
   initModals();
   initTooltips();
   initDrawers();
+  initAccordions();
 });
 </script>
 
