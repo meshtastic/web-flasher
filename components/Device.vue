@@ -7,9 +7,9 @@
             </svg>
         </button>
         <div id="dropdownDevices" class="z-10 hidden bg-gray-200 divide-y divide-gray-500 rounded-lg shadow w-52">
-            <div id="accordion-esp" data-accordion="open">
-                <span id="accordion-esp-heading-1">
-                    <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-esp-body-1" aria-expanded="true" aria-controls="accordion-esp-body-1">
+            <div id="accordion-esp" data-accordion="collapse">
+                <span id="accordion-esp-heading">
+                    <button type="button" class="flex items-center justify-between w-full p-3 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-esp-body" aria-expanded="true" aria-controls="accordion-esp-body">
                     <span class="flex items-center">
                         <img src="@/assets/img/espressif.svg" class="w-32 inline-block" />
                     </span>
@@ -19,16 +19,16 @@
                     </button>
                 </span>
             </div>
-            <ul id="accordion-esp-body-1" aria-labelledby="accordion-esp-heading-1" class="py-2 text-xs text-gray-900">
+            <ul id="accordion-esp-body" aria-labelledby="accordion-esp-heading" class="text-xs text-gray-900">
                 <li v-for="target in store.$state.targets.filter(h => h.architecture.includes('esp')).sort((a, b) => a.displayName.localeCompare(b.displayName))">
                     <a class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setTarget(target)">
                         {{ target.displayName }}
                     </a>
                 </li>
             </ul>
-            <div id="accordion-nordic" data-accordion="open">
-                <span id="accordion-nordic-heading-1">
-                    <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-esp-body-1" aria-expanded="true" aria-controls="accordion-esp-body-1">
+            <div id="accordion-nordic" data-accordion="collapse">
+                <span id="accordion-nordic-heading">
+                    <button type="button" class="flex items-center justify-between w-full p-3 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-nordic-body" aria-expanded="true" aria-controls="accordion-esp-body">
                     <span class="flex items-center">
                         <img src="@/assets/img/nordic.svg" class="w-32 inline-block" />
                     </span>
@@ -38,16 +38,16 @@
                     </button>
                 </span>
             </div>
-            <ul id="accordion-nordic-body-1" aria-labelledby="accordion-nordic-heading-1" class="py-2 text-xs text-gray-900">
+            <ul id="accordion-nordic-body" aria-labelledby="accordion-nordic-heading" class="text-xs text-gray-900">
                 <li v-for="target in store.$state.targets.filter(h => h.architecture.includes('nrf')).sort((a, b) => a.displayName.localeCompare(b.displayName))">
                     <a class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setTarget(target)">
                         {{ target.displayName }}
                     </a>
                 </li>
             </ul>
-            <div id="accordion-rp2040" data-accordion="open">
-                <span id="accordion-rp2040-heading-1">
-                    <button type="button" class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-esp-body-1" aria-expanded="true" aria-controls="accordion-esp-body-1">
+            <div id="accordion-rp2040" data-accordion="collapse">
+                <span id="accordion-rp2040-heading">
+                    <button type="button" class="flex items-center justify-between w-full p-3 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-rp2040-body" aria-expanded="true" aria-controls="accordion-esp-body">
                     <span class="flex items-center">
                         <img src="@/assets/img/rp2040.svg" class="w-32 inline-block" />
                     </span>
@@ -57,7 +57,7 @@
                     </button>
                 </span>
             </div>
-            <ul id="accordion-rp2040-body-1" aria-labelledby="accordion-rp2040-heading-1" class="py-2 text-xs text-gray-900">
+            <ul id="accordion-rp2040-body" aria-labelledby="accordion-rp2040-heading" class="py-2 text-xs text-gray-900">
                 <li v-for="target in store.$state.targets.filter(h => h.architecture.includes('rp2040')).sort((a, b) => a.displayName.localeCompare(b.displayName))">
                     <a class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setTarget(target)">
                         {{ target.displayName }}
