@@ -49,6 +49,7 @@ export const useFirmwareStore = defineStore('firmware', {
     percentDone: (state) => `${state.flashPercentDone}%`,
     firmwareVersion: (state) => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: (state) => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true, 
+    isZipFile: (state) => state.selectedFile?.name.endsWith('.zip'),
   },
   actions: {
     continueToFlash() {
@@ -168,7 +169,7 @@ export const useFirmwareStore = defineStore('firmware', {
         const blob = await response.blob();
         const data = await blob.arrayBuffer();
         return convertToBinaryString(new Uint8Array(data));
-      } else if (this.selectedFile) {
+      } else if (this.selectedFile && this.isZipFile) {
         const reader = new BlobReader(this.selectedFile!);
         const zipReader = new ZipReader(reader);
         const entries = await zipReader.getEntries()
@@ -187,6 +188,9 @@ export const useFirmwareStore = defineStore('firmware', {
           const arrayBuffer = await blob.arrayBuffer();
           return convertToBinaryString(new Uint8Array(arrayBuffer));
         }
+      } else if (this.selectedFile && !this.isZipFile) {
+        const buffer = await this.selectedFile.arrayBuffer();
+        return convertToBinaryString(new Uint8Array(buffer));
       }
       throw new Error('Cannot fetch binary content without a file or firmware selected');
     },
