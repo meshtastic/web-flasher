@@ -180,7 +180,7 @@ export const useFirmwareStore = defineStore('firmware', {
             if (fileName.startsWith('firmware-tbeam-.'))
               return !entry.filename.includes('s3') && new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
             else 
-              new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
+              return new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
           })
         if (file) {
           console.log('Found file:', file.filename);
