@@ -34,12 +34,12 @@
         <button data-tooltip-target="tooltip-file" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
             type="button"
             for="file-upload"
-            accept=".zip"
+            accept=".zip,.bin"
             @click="openFile()">
             <FolderOpenIcon class="h-4 w-4 " />
         </button>
         <div id="tooltip-file" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
-            Upload your own firmware release zip.
+            Upload your own firmware release zip or bin.
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
         <input id="file_upload" type="file" class="hidden" @change="setFirmwareFile" />
