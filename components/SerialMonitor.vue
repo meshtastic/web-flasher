@@ -70,7 +70,7 @@
       </div>
       <div class="mt-4">
         <p v-for="line in filteredTerminalBuffer" :class="logLevelClass(line)">
-          {{ line }}<br />
+          {{ line.replaceAll(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "") }}<br />
         </p>
       </div>
     </div>
@@ -108,10 +108,10 @@ const disconnect = () => {
 const logCounts = computed(() => {
   return {
     all: serialMonitorStore.terminalBuffer.length,
-    info: serialMonitorStore.terminalBuffer.filter((line) => line.includes('INFO  |')).length,
-    debug: serialMonitorStore.terminalBuffer.filter((line) => line.includes('DEBUG |')).length,
-    warn: serialMonitorStore.terminalBuffer.filter((line) => line.includes('WARN  |')).length,
-    error: serialMonitorStore.terminalBuffer.filter((line) => line.includes('ERROR |')).length,
+    info: serialMonitorStore.terminalBuffer.filter((line) => line.includes('INFO')).length,
+    debug: serialMonitorStore.terminalBuffer.filter((line) => line.includes('DEBUG')).length,
+    warn: serialMonitorStore.terminalBuffer.filter((line) => line.includes('WARN')).length,
+    error: serialMonitorStore.terminalBuffer.filter((line) => line.includes('ERROR')).length,
   };
 });
 
@@ -134,11 +134,11 @@ const saveToFile = () => {
 }
 
 const logLevelClass = (line) => {
-  if (line.includes('ERROR |')) {
+  if (line.includes('ERROR')) {
     return 'text-red-500';
-  } else if (line.includes('WARN  |')) {
+  } else if (line.includes('WARN')) {
     return 'text-orange-300';
-  } else if (line.includes('DEBUG |')) {
+  } else if (line.includes('DEBUG')) {
     return 'text-blue-300';
   }
   return '';
