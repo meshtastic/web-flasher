@@ -334,5 +334,13 @@ export const OfflineHardwareList = [
         "architecture": "nrf52840",
         "activelySupported": true,
         "displayName": "Seeed Wio WM1110 Tracker",
+    },
+    {
+        "hwModel": 71,
+        "hwModelSlug": "TRACKER_T1000_E",
+        "platformioTarget": "tracker-t1000-e",
+        "architecture": "nrf52840",
+        "activelySupported": true,
+        "displayName": "T1000-E Tracker Card",
     }
 ]
