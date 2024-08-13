@@ -26,6 +26,7 @@
     "@meshtastic/js": "2.2.17-3",
     "@pinia/nuxt": "^0.5.1",
     "@types/w3c-web-serial": "^1.0.6",
+    "@vercel/analytics": "^1.3.1",
     "@zip.js/zip.js": "^2.7.32",
     "crypto-js": "^4.2.0",
     "esp-web-tools": "^9.4.3",
