@@ -16,7 +16,7 @@
             <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
                 <li v-for="release in store.$state.previews">
                     <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                        {{ release.title.replace('Meshtastic Firmware ', '') }}
+                        {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
                     </a>
                 </li>
             </ul>
