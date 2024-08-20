@@ -29,6 +29,7 @@ export const useFirmwareStore = defineStore('firmware', {
     return {
       stable: new Array<FirmwareResource>(),
       alpha: new Array<FirmwareResource>(),
+      previews: new Array<FirmwareResource>(),
       pullRequests: new Array<FirmwareResource>(),
       selectedFirmware: <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
@@ -60,7 +61,8 @@ export const useFirmwareStore = defineStore('firmware', {
         .then((response: FirmwareReleases) => {
           // Only grab the latest 4 releases
           this.stable = response.releases.stable.slice(0, 4);
-          this.alpha = response.releases.alpha.slice(0, 4);
+          this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
+          this.previews = response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4);
           this.pullRequests = response.pullRequests.slice(0, 4);
         })
     },
