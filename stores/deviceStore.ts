@@ -25,6 +25,10 @@ export const useDeviceStore = defineStore('device', {
         isSelectedNrf(): boolean {
             return this.selectedArchitecture.startsWith('nrf52');
         },
+        isSoftDevice7point3(): boolean {
+            const sd73Devices = ['WIO_WM1110', 'TRACKER_T1000_E']
+            return sd73Devices.includes(this.selectedTarget?.hwModelSlug)
+        },
         enterDfuVersion(): string {
             if (this.isSelectedNrf) {
                 return '2.2.17';
