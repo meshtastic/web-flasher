@@ -9,7 +9,7 @@
             type="button"
             data-modal-target="erase-modal" 
             data-modal-toggle="erase-modal">
-            <TrashIcon class="h-4 w-4" />
+            <TrashIcon class="h-4 w-4" :class="{'animate-pulse': deviceStore.$state.selectedTarget?.hwModel }" />
         </button>
         <div id="tooltip-erase" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
             Erase flash of {{ deviceStore.selectedTarget?.displayName }}.
