@@ -43,7 +43,7 @@
                 </ul>
             </div>
             <div class="px-4 py-2 w-96 rounded-lg text-sm text-gray-900 bg-yellow-100" v-if="store.couldntFetchFirmwareApi">
-                <strong>Could not fetch versions from API.</strong>
+                <strong>Could not fetch firmware versions from API.</strong>
                 <br />
                 Refresh the page later to try again.
                 Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the <FolderOpenIcon class="h-3 w-3 inline" /> icon.
