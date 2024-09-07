@@ -21,7 +21,7 @@ Interested in contributing? Here's how you can get involved:
 1. Clone this repository.
 2. Make sure to install the dependencies:
 ```bash
-pnpm install --shamefully-hoist
+pnpm install
 ```
 3. Start the development server on `http://localhost:3000`:
 ```bash
