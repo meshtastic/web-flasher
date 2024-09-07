@@ -68,7 +68,7 @@
         <button data-tooltip-target="tooltip-auto" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
             type="button"
             @click="store.autoSelectHardware">
-            <SparklesIcon class="h-4 w-4 " />
+            <SparklesIcon class="h-4 w-4" :class="{'animate-bounce': !store.$state.selectedTarget?.hwModel }" />
         </button>
         <div id="tooltip-auto" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
             Attempt to automatically select the device type if Meshtastic > (2.1.X) is already installed.

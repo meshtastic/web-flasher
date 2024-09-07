@@ -9,7 +9,7 @@
       <Meta name="description" content="Meshtastic Flasher" />
     </Head>
 
-    <section class="text-gray-400 bg-2C2D3C body-font">
+    <section class="text-gray-400 body-font">
       <transition name="flash" mode="out-in">
         <div class="container px-5 py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
@@ -78,7 +78,7 @@
 
     <SerialMonitor />
 
-    <footer class="footer bg-2C2D3C text-white mt-4 py-4">
+    <footer class="footer text-white mt-4 py-4">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
@@ -120,9 +120,9 @@ import {
 
 import {
   BoltIcon,
+  BookOpenIcon,
   CommandLineIcon,
   FolderArrowDownIcon,
-  BookOpenIcon,
 } from '@heroicons/vue/24/solid';
 
 import { useFirmwareStore } from './stores/firmwareStore';

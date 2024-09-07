@@ -42,6 +42,7 @@ export const useFirmwareStore = defineStore('firmware', {
       isReaderLocked: false,
       isConnected: false,
       port: <SerialPort | undefined>{},
+      couldntFetchFirmwareApi: false,
     }
   },
   getters: {
@@ -65,6 +66,10 @@ export const useFirmwareStore = defineStore('firmware', {
           this.previews = response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4);
           this.pullRequests = response.pullRequests.slice(0, 4);
         })
+        .catch((error) => {
+          console.error('Error fetching firmware list:', error);
+          this.couldntFetchFirmwareApi = true;
+        });
     },
     setSelectedFirmware(firmware: FirmwareResource) {
       this.selectedFirmware = firmware;

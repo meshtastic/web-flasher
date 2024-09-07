@@ -10,43 +10,51 @@
             </svg>
         </button>
         <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
-            <div class="px-4 py-2 text-sm text-gray-900">
-                <strong>Technical Previews</strong>
+            <div v-if="!store.couldntFetchFirmwareApi">
+                <div class="px-4 py-2 text-sm text-gray-900">
+                    <strong>Technical Previews</strong>
+                </div>
+                <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
+                    <li v-for="release in store.$state.previews">
+                        <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
+                            {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
+                        </a>
+                    </li>
+                </ul>
+                <div class="px-4 py-2 text-sm text-gray-900">
+                    <strong>Alpha</strong>
+                </div>
+                <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
+                    <li v-for="release in store.$state.alpha">
+                        <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
+                            {{ release.title.replace('Meshtastic Firmware ', '') }}
+                        </a>
+                    </li>
+                </ul>
+                <div class="px-4 py-2 text-sm text-gray-900 dark:text-white">
+                    <strong>Stable</strong>
+                </div>
+                <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
+                    <li v-for="release in store.$state.stable">
+                        <span class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
+                            {{ release.title.replace('Meshtastic Firmware ', '') }}
+                        </span>
+                    </li>
+                </ul>
             </div>
-            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
-                <li v-for="release in store.$state.previews">
-                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                        {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
-                    </a>
-                </li>
-            </ul>
-            <div class="px-4 py-2 text-sm text-gray-900">
-                <strong>Alpha</strong>
+            <div class="px-4 py-2 w-96 rounded-lg text-sm text-gray-900 bg-yellow-100" v-if="store.couldntFetchFirmwareApi">
+                <strong>Could not fetch firmware versions from API.</strong>
+                <br />
+                Refresh the page later to try again.
+                Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the <FolderOpenIcon class="h-3 w-3 inline" /> icon.
             </div>
-            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
-                <li v-for="release in store.$state.alpha">
-                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                        {{ release.title.replace('Meshtastic Firmware ', '') }}
-                    </a>
-                </li>
-            </ul>
-            <div class="px-4 py-2 text-sm text-gray-900 dark:text-white">
-                <strong>Stable</strong>
-            </div>
-            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
-                <li v-for="release in store.$state.stable">
-                    <span class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                        {{ release.title.replace('Meshtastic Firmware ', '') }}
-                    </span>
-                </li>
-            </ul>
         </div>
-        <button data-tooltip-target="tooltip-file" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
+        <button data-tooltip-target="tooltip-file" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
             type="button"
             for="file-upload"
             accept=".zip,.bin"
             @click="openFile()">
-            <FolderOpenIcon class="h-4 w-4 " />
+            <FolderOpenIcon class="h-4 w-4 " :class="{'animate-bounce': (store.couldntFetchFirmwareApi && canSelectFirmware)}" />
         </button>
         <div id="tooltip-file" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
             Upload your own firmware release zip or bin.
