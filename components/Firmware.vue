@@ -10,38 +10,36 @@
             </svg>
         </button>
         <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
-            <div v-if="!store.couldntFetchFirmwareApi">
-                <div class="px-4 py-2 text-sm text-gray-900">
-                    <strong>Technical Previews</strong>
-                </div>
-                <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
-                    <li v-for="release in store.$state.previews">
-                        <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                            {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
-                        </a>
-                    </li>
-                </ul>
-                <div class="px-4 py-2 text-sm text-gray-900">
-                    <strong>Alpha</strong>
-                </div>
-                <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
-                    <li v-for="release in store.$state.alpha">
-                        <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                            {{ release.title.replace('Meshtastic Firmware ', '') }}
-                        </a>
-                    </li>
-                </ul>
-                <div class="px-4 py-2 text-sm text-gray-900 dark:text-white">
-                    <strong>Stable</strong>
-                </div>
-                <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
-                    <li v-for="release in store.$state.stable">
-                        <span class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                            {{ release.title.replace('Meshtastic Firmware ', '') }}
-                        </span>
-                    </li>
-                </ul>
+            <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
+                <strong>Technical Previews</strong>
             </div>
+            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
+                <li v-for="release in store.$state.previews">
+                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
+                        {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
+                    </a>
+                </li>
+            </ul>
+            <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
+                <strong>Alpha</strong>
+            </div>
+            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
+                <li v-for="release in store.$state.alpha">
+                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
+                        {{ release.title.replace('Meshtastic Firmware ', '') }}
+                    </a>
+                </li>
+            </ul>
+            <div class="px-4 py-2 text-sm text-gray-900 dark:text-white" v-if="!store.couldntFetchFirmwareApi">
+                <strong>Stable</strong>
+            </div>
+            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
+                <li v-for="release in store.$state.stable">
+                    <span class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
+                        {{ release.title.replace('Meshtastic Firmware ', '') }}
+                    </span>
+                </li>
+            </ul>
             <div class="px-4 py-2 w-96 rounded-lg text-sm text-gray-900 bg-yellow-100" v-if="store.couldntFetchFirmwareApi">
                 <strong>Could not fetch firmware versions from API.</strong>
                 <br />
