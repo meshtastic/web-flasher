@@ -51,14 +51,12 @@
                             Download or copy UF2 file to the DFU drive.
                             The device will automatically reboot when the transfer completes and will start with the new firmware.
                         </span>
-                      <span>
-                        </span>
-                      <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                        <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected
                             </span>
-                      </div>
+                        </div>
                     </li>
                 </ol>
                 <div v-if="firmwareStore.canShowFlash">
