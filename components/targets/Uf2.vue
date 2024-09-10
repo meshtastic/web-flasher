@@ -45,16 +45,22 @@
                             3
                         </span>
                         <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-                            Download UF2 file to DFU drive
+                            Download or copy UF2 file to DFU drive
                         </h3>
                         <span>
-                            Download and Copy UF2 file to the DFU drive.
-                            Firmware should be flashed after the file is downloaded and the device reboots.
+                            Download or copy UF2 file to the DFU drive.
+                            The device will automatically reboot when the transfer completes and will start with the new firmware.
                         </span>
+                        <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                            <span class="font-medium">
+                                <InformationCircleIcon class="h-4 w-4 inline" />
+                                The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected
+                            </span>
+                        </div>
                     </li>
                 </ol>
                 <div v-if="firmwareStore.canShowFlash">
-                    <a :href="downloadUf2FileUrl" v-if="firmwareStore.selectedFirmware?.id" 
+                    <a :href="downloadUf2FileUrl" v-if="firmwareStore.selectedFirmware?.id"
                     class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Download UF2
                     </a>
