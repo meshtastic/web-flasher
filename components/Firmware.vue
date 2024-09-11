@@ -10,7 +10,7 @@
             </svg>
         </button>
         <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
-            <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
+            <!-- <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
                 <strong>Technical Previews</strong>
             </div>
             <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
@@ -19,7 +19,7 @@
                         {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
                     </a>
                 </li>
-            </ul>
+            </ul> -->
             <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
                 <strong>Alpha</strong>
             </div>
