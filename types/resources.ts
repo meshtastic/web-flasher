@@ -336,6 +336,14 @@ export const OfflineHardwareList = [
         "displayName": "Seeed Wio WM1110 Tracker",
     },
     {
+        "hwModel": 70,
+        "hwModelSlug": "SENSECAP_INDICATOR",
+        "platformioTarget": "seeed-sensecap-indicator",
+        "architecture": "esp32-s3",
+        "activelySupported": true,
+        "displayName": "SenseCAP Indicator",
+    }
+    {
         "hwModel": 71,
         "hwModelSlug": "TRACKER_T1000_E",
         "platformioTarget": "tracker-t1000-e",
