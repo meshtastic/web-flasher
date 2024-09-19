@@ -342,7 +342,7 @@ export const OfflineHardwareList = [
         "architecture": "esp32-s3",
         "activelySupported": true,
         "displayName": "SenseCAP Indicator",
-    }
+    },
     {
         "hwModel": 71,
         "hwModelSlug": "TRACKER_T1000_E",
