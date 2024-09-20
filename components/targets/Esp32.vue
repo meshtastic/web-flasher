@@ -146,12 +146,12 @@ const cleanInstallEsp32 = () => {
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`;
     const otaFile = deviceStore.$state.selectedTarget.architecture == 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
     const littleFsFile = `littlefs-${firmwareStore.firmwareVersion}.bin`;
-    firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFile);
+    firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFile, deviceStore.$state.selectedTarget);
 }
 
 const updateEsp32 = () => {
     // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}-update.bin`
-    firmwareStore.updateEspFlash(firmwareFile);
+    firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget);
 }
 </script>
