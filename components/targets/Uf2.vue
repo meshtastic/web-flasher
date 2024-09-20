@@ -98,7 +98,7 @@ const downloadUf2FileUrl = computed(() => {
     if (!firmwareStore.selectedFirmware?.id) return '';
     const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-    track('Download', { hardwareModel: deviceStore.$state.selectedTarget.hwModelSlug, arch: deviceStore.$state.selectedTarget.architecture, count: 1 });
+    firmwareStore.trackDownload(deviceStore.$state.selectedTarget, false);
     return firmwareStore.getReleaseFileUrl(firmwareFile);
 });
 </script>

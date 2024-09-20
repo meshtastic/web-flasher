@@ -103,9 +103,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFirmware = undefined;
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
-      if (selectedTarget.hwModelSlug?.length > 0) {
-        track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, count: 1 });
-      }
+      this.trackDownload(selectedTarget, false);
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
@@ -143,10 +141,19 @@ export const useFirmwareStore = defineStore('firmware', {
       await new Promise((resolve) => setTimeout(resolve, 100));
       await transport.setRTS(false);
     },
-    async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
+    trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean) { 
       if (selectedTarget.hwModelSlug?.length > 0) {
-        track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, cleanInstall: true, count: 1 });
+        track('Download', { 
+          hardwareModel: selectedTarget.hwModelSlug, 
+          arch: selectedTarget.architecture, 
+          cleanInstall: isCleanInstall,
+          version: this.selectedFirmware?.id || '',
+          count: 1 
+        });
       }
+    },
+    async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
+      this.trackDownload(selectedTarget, true);
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
