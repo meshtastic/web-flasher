@@ -97,6 +97,6 @@ const downloadUf2FileUrl = computed(() => {
     if (!firmwareStore.selectedFirmware?.id) return '';
     const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-    return firmwareStore.getReleaseFileUrl(firmwareFile);
+    return firmwareStore.getReleaseFileUrl(firmwareFile, deviceStore.$state.selectedTarget);
 });
 </script>

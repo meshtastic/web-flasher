@@ -9,6 +9,7 @@ import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import { Terminal } from 'xterm';
 
+import { track } from '@vercel/analytics';
 import {
   BlobReader,
   BlobWriter,
@@ -16,6 +17,7 @@ import {
 } from '@zip.js/zip.js';
 
 import {
+  type DeviceHardware,
   type FirmwareReleases,
   type FirmwareResource,
   getCorsFriendyReleaseUrl,
@@ -76,7 +78,8 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFile = undefined;
       this.hasSeenReleaseNotes = false;
     },
-    getReleaseFileUrl(fileName: string): string {
+    getReleaseFileUrl(fileName: string, selectedTarget: DeviceHardware): string {
+      track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, count: 1 });
       if (!this.selectedFirmware?.zip_url) return '';
       const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
       return `${baseUrl}/${fileName}`;
@@ -100,7 +103,8 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFile = file;
       this.selectedFirmware = undefined;
     },
-    async updateEspFlash(fileName: string) {
+    async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
+      track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, count: 1 });
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
@@ -138,7 +142,8 @@ export const useFirmwareStore = defineStore('firmware', {
       await new Promise((resolve) => setTimeout(resolve, 100));
       await transport.setRTS(false);
     },
-    async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string) {
+    async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
+      track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, cleanInstall: true, count: 1 });
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
