@@ -79,6 +79,7 @@ import {
   FolderArrowDownIcon,
   InformationCircleIcon,
 } from '@heroicons/vue/24/solid';
+import { track } from '@vercel/analytics';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';
@@ -97,6 +98,7 @@ const downloadUf2FileUrl = computed(() => {
     if (!firmwareStore.selectedFirmware?.id) return '';
     const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-    return firmwareStore.getReleaseFileUrl(firmwareFile, deviceStore.$state.selectedTarget);
+    track('Download', { hardwareModel: deviceStore.$state.selectedTarget.hwModelSlug, arch: deviceStore.$state.selectedTarget.architecture, count: 1 });
+    return firmwareStore.getReleaseFileUrl(firmwareFile);
 });
 </script>

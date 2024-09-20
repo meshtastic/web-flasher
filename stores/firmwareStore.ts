@@ -78,8 +78,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFile = undefined;
       this.hasSeenReleaseNotes = false;
     },
-    getReleaseFileUrl(fileName: string, selectedTarget: DeviceHardware): string {
-      track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, count: 1 });
+    getReleaseFileUrl(fileName: string): string {
       if (!this.selectedFirmware?.zip_url) return '';
       const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
       return `${baseUrl}/${fileName}`;
@@ -104,7 +103,9 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFirmware = undefined;
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
-      track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, count: 1 });
+      if (selectedTarget.hwModelSlug?.length > 0) {
+        track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, count: 1 });
+      }
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
@@ -143,7 +144,9 @@ export const useFirmwareStore = defineStore('firmware', {
       await transport.setRTS(false);
     },
     async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
-      track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, cleanInstall: true, count: 1 });
+      if (selectedTarget.hwModelSlug?.length > 0) {
+        track('Download', { hardwareModel: selectedTarget.hwModelSlug, arch: selectedTarget.architecture, cleanInstall: true, count: 1 });
+      }
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
