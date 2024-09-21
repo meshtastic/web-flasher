@@ -78,7 +78,7 @@
 
     <SerialMonitor />
 
-    <footer class="footer text-white mt-4 py-4">
+    <footer id="footer" class="footer text-white mt-4 py-4">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
@@ -152,6 +152,23 @@ const isConnected = computed(() => {
 const isWebSerialSupported = computed(() => {
   return 'serial' in navigator;
 });
+const konamiKeys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+let konamiCodeIndex = ref(0);
+window.addEventListener('keydown', (event) => {
+  if (event.key == konamiKeys[konamiCodeIndex.value]) {
+    console.log('konami code key match', konamiCodeIndex.value);
+    konamiCodeIndex.value++;
+    if (konamiCodeIndex.value == konamiKeys.length-1) {
+      console.log('Unlocking pre-release section')
+      document.body.classList.add('konami-code');
+      document.getElementById('footer').classList.add('konami-code');
+      firmwareStore.$state.prereleaseUnlocked = true;
+      konamiCodeIndex.value = 0;
+    }
+  } else {
+    konamiCodeIndex.value = 0;
+  }
+});
 
 onMounted(() => {
   initDropdowns();
@@ -163,8 +180,20 @@ onMounted(() => {
 </script>
 
 <style>
+
   body {
     background-color: #2C2D3C;
+  }
+  .konami-code {
+    background-color: #000000;
+    /* Firefox */
+        -moz-transition: all 1s ease-in;
+    /* WebKit */
+    -webkit-transition: all 1s ease-in;
+    /* Opera */
+    -o-transition: all 1s ease-in;
+    /* Standard */
+    transition: all 1s ease-in;
   }
   .invert { 
     -webkit-filter: invert(1);
@@ -179,10 +208,10 @@ onMounted(() => {
   .border-meshtastic {
     border-color: #67EA94;
   }
-  .footer {
+  footer {
     background-color: #2C2D3C;
   }
-  .footer a {
+  footer a {
     color: #67EA94;
   }
   h1 {

@@ -10,6 +10,7 @@ import { defineStore } from 'pinia';
 import { Terminal } from 'xterm';
 
 import { track } from '@vercel/analytics';
+import { useSessionStorage } from '@vueuse/core';
 import {
   BlobReader,
   BlobWriter,
@@ -22,6 +23,7 @@ import {
   type FirmwareResource,
   getCorsFriendyReleaseUrl,
 } from '../types/api';
+import { currentPrerelease } from '../types/resources';
 import { createUrl } from './store';
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
@@ -31,7 +33,7 @@ export const useFirmwareStore = defineStore('firmware', {
     return {
       stable: new Array<FirmwareResource>(),
       alpha: new Array<FirmwareResource>(),
-      previews: new Array<FirmwareResource>(),
+      previews: new Array<FirmwareResource>(currentPrerelease),
       pullRequests: new Array<FirmwareResource>(),
       selectedFirmware: <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
@@ -45,6 +47,7 @@ export const useFirmwareStore = defineStore('firmware', {
       isConnected: false,
       port: <SerialPort | undefined>{},
       couldntFetchFirmwareApi: false,
+      prereleaseUnlocked: useSessionStorage('prereleaseUnlocked', false),
     }
   },
   getters: {
@@ -65,7 +68,7 @@ export const useFirmwareStore = defineStore('firmware', {
           // Only grab the latest 4 releases
           this.stable = response.releases.stable.slice(0, 4);
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
-          this.previews = response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4);
+          this.previews = [...response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4), currentPrerelease];
           this.pullRequests = response.pullRequests.slice(0, 4);
         })
         .catch((error) => {

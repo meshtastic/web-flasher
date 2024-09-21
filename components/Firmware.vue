@@ -2,6 +2,7 @@
     <div>
         <button id="dropdownFirmwareButton" data-dropdown-toggle="dropdownFirmware" 
             class="content-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-gray-500" 
+            :class="{ 'animate-bounce': store.prereleaseUnlocked && !store.$state.selectedFirmware?.id}"
             type="button"
             :disabled="!canSelectFirmware">
             {{ selectedVersion.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
@@ -10,16 +11,16 @@
             </svg>
         </button>
         <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
-            <!-- <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
-                <strong>Technical Previews</strong>
+             <div v-if="store.prereleaseUnlocked" class="px-4 py-2 text-sm text-gray-900">
+                <strong>Pre-release</strong>
             </div>
-            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
+            <ul v-if="store.prereleaseUnlocked" class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton">
                 <li v-for="release in store.$state.previews">
                     <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer" @click="setSelectedFirmware(release)">
-                        {{ release.title.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
+                        {{ release.title.replace('Meshtastic Firmware ', '').replace('Pre-release ', '') }}
                     </a>
                 </li>
-            </ul> -->
+            </ul>
             <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
                 <strong>Alpha</strong>
             </div>
