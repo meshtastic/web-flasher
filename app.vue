@@ -170,6 +170,8 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
+// const themeBackground = firmwareStore.$state.prereleaseUnlocked ? "#000000" : "#2C2D3C";
+
 onMounted(() => {
   initDropdowns();
   initModals();
@@ -183,6 +185,7 @@ onMounted(() => {
 
   body {
     background-color: #2C2D3C;
+    /* background-color: var(themeBackground); */
   }
   .konami-code {
     background-color: #000000;
