@@ -83,7 +83,6 @@ export const useDeviceStore = defineStore('device', {
         },
         async enterDfuMode() {
             const port: SerialPort = await navigator.serial.requestPort();
-            await port.open({ baudRate: 1200 });
             const nrfFlasher = new Nrf52DfuFlasher(port, () => {});
             await nrfFlasher.enterDfuMode();
         },
