@@ -9,6 +9,7 @@ import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import { Terminal } from 'xterm';
 
+import { Nrf52DfuFlasher } from '@/utils/nrfUtil';
 import { track } from '@vercel/analytics';
 import { useSessionStorage } from '@vueuse/core';
 import {
@@ -25,6 +26,7 @@ import {
 } from '../types/api';
 import { createUrl } from './store';
 
+const previews = new Array<FirmwareResource>()// [currentPrerelease]
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
 export const useFirmwareStore = defineStore('firmware', {
@@ -32,7 +34,7 @@ export const useFirmwareStore = defineStore('firmware', {
     return {
       stable: new Array<FirmwareResource>(),
       alpha: new Array<FirmwareResource>(),
-      previews: new Array<FirmwareResource>(),//new Array<FirmwareResource>(currentPrerelease),
+      previews: previews,
       pullRequests: new Array<FirmwareResource>(),
       selectedFirmware: <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
@@ -69,7 +71,7 @@ export const useFirmwareStore = defineStore('firmware', {
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
           this.previews = [
             ...response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4), 
-            // currentPrerelease
+            ...previews
           ];
           this.pullRequests = response.pullRequests.slice(0, 4);
         })
@@ -87,6 +89,32 @@ export const useFirmwareStore = defineStore('firmware', {
       if (!this.selectedFirmware?.zip_url) return '';
       const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
       return `${baseUrl}/${fileName}`;
+    },
+    async flashNrf52(fileName: string, selectedTarget: DeviceHardware): Promise<SerialPort> {
+      this.trackDownload(selectedTarget, false);
+      if (!this.port || !this.isConnected) {
+        this.port = await navigator.serial.requestPort({});
+        this.port.ondisconnect = () => {
+          this.isConnected = false;
+        };
+        await this.port.open({
+          baudRate: 115200,
+        });
+      }
+      this.isConnected = true;
+      this.isFlashing = true;
+      this.flashPercentDone = 1;
+      const nrfFlasher = new Nrf52DfuFlasher(this.port, (percent) => {
+        this.flashPercentDone = percent;
+        if (percent === 100) {
+          this.isFlashing = false;
+          console.log('Done flashing!');
+        }
+      });
+      const firmware = await this.fetchBlob(fileName);
+      await nrfFlasher.flash(firmware);
+      this.isFlashing = false;
+      return this.port;
     },
     async downloadUf2FileSystem(searchRegex: RegExp) {
       const reader = new BlobReader(this.selectedFile!);
@@ -143,7 +171,7 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async resetEsp32(transport: Transport) {
       await transport.setRTS(true);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await waitForMs(100);
       await transport.setRTS(false);
     },
     trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean) { 
@@ -188,6 +216,27 @@ export const useFirmwareStore = defineStore('firmware', {
         },
       };
       await this.startWrite(terminal, espLoader, transport, flashOptions);
+    },
+    async fetchBlob(fileName: string): Promise<Blob> {
+      if (this.selectedFirmware?.zip_url) {
+        const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware!.zip_url!);
+        const response = await fetch(`${baseUrl}/${fileName}`);
+        return await response.blob();
+      } else if (this.selectedFile && this.isZipFile) {
+        const reader = new BlobReader(this.selectedFile!);
+        const zipReader = new ZipReader(reader);
+        const entries = await zipReader.getEntries()
+        console.log('Zip entries:', entries);
+        console.log('Looking for file matching pattern:', fileName);
+        const file = entries.find(entry => new RegExp(fileName).test(entry.filename))
+        if (file) {
+          console.log('Found file:', file.filename);
+          return await file.getData!(new BlobWriter());
+        }
+      } else if (this.selectedFile && !this.isZipFile) {
+        return this.selectedFile;
+      }
+      throw new Error('Cannot fetch blob without a file or firmware selected');
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
@@ -254,7 +303,7 @@ export const useFirmwareStore = defineStore('firmware', {
         if (value) {
           terminal.write(value);
         }
-        await new Promise(resolve => setTimeout(resolve, 5));
+        await waitForMs(5);
       }
     },
   },

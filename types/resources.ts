@@ -357,9 +357,9 @@ export const OfflineHardwareList = [
 
 export const currentPrerelease = <FirmwareResource> 
 {
-    id: 'v2.5.1.0664c09',
-    title: 'Meshtastic Firmware 2.5.1.0664c09 Alpha',
-    zip_url: 'https://github.com/meshtastic/firmware/releases/download/v2.5.1.0664c09/firmware-2.5.1.0664c09.zip',
+    id: 'v2.5.2.771cb52',
+    title: 'Meshtastic Firmware 2.5.2.771cb52 Alpha',
+    zip_url: 'https://github.com/meshtastic/firmware/releases/download/v2.5.2.771cb52/firmware-2.5.2.771cb52.zip',
     release_notes: `## Enhancements
 * Radiomaster Bandit Accelerometer support by @gjelsoe in https://github.com/meshtastic/firmware/pull/4667
 * Beautify GPS_DEBUG getACK logging code by @fifieldt in https://github.com/meshtastic/firmware/pull/4672
