@@ -71,7 +71,8 @@ export const useDeviceStore = defineStore('device', {
                 });
             return connection;
         },
-        async enterDfuMode() {
+        async enterDfuModeLegacy() {
+            // Legacy API mode
             const connection = await this.openDeviceConnection();
             connection.events.onFromRadio.subscribe((packet: any) => {
                 if (packet?.payloadVariant?.case === "configCompleteId") {
@@ -79,6 +80,12 @@ export const useDeviceStore = defineStore('device', {
                     connection.enterDfuMode();
                 }
             });
+        },
+        async enterDfuMode() {
+            const port: SerialPort = await navigator.serial.requestPort();
+            await port.open({ baudRate: 1200 });
+            const nrfFlasher = new Nrf52DfuFlasher(port, () => {});
+            await nrfFlasher.enterDfuMode();
         },
         async baud1200() {
             const port: SerialPort = await navigator.serial.requestPort();
