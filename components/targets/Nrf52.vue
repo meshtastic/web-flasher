@@ -25,7 +25,7 @@
                                 <!-- <InformationCircleIcon class="h-4 w-4 inline" /> -->
                                 <button type="button"
                                     class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
-                                    @click="deviceStore.enterDfuMode()">
+                                    @click="deviceStore.enterDfuMode">
                                     <FolderArrowDownIcon class="h-4 w-4 text-black" />
                                     Enter DFU Mode
                                 </button> or you can optionally enter DFU mode manually by {{ deviceStore.dfuStepAction }}.
