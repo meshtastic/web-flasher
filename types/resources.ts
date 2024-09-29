@@ -130,6 +130,14 @@ export const OfflineHardwareList = [
         "displayName": "T-LoRa T3-S3"
     },
     {
+        "hwModel": 16,
+        "hwModelSlug": "TLORA_T3_S3",
+        "platformioTarget": "tlora-t3s3-epaper",
+        "architecture": "esp32-s3",
+        "activelySupported": true,
+        "displayName": "T-LoRa T3-S3 E-Paper"
+    },
+    {
         "hwModel": 17,
         "hwModelSlug": "NANO_G1_EXPLORER",
         "platformioTarget": "nano-g1-explorer",
