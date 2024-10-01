@@ -158,7 +158,7 @@ window.addEventListener('keydown', (event) => {
   if (event.key == konamiKeys[konamiCodeIndex.value]) {
     console.log('konami code key match', konamiCodeIndex.value);
     konamiCodeIndex.value++;
-    if (konamiCodeIndex.value == konamiKeys.length-1) {
+    if (konamiCodeIndex.value == konamiKeys.length) {
       console.log('Unlocking pre-release section')
       document.body.classList.add('konami-code');
       document.getElementById('footer').classList.add('konami-code');
