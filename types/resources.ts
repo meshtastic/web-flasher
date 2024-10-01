@@ -385,14 +385,6 @@ export const currentPrerelease = <FirmwareResource>
 * Regenerate public key on boot, to avoid accidental mismatch. by @jp-bennett in https://github.com/meshtastic/firmware/pull/4916
 * Fix #4911 : Partially rework some code to remove warnings about potential non-aligned memory accesses by @TheMalkavien in https://github.com/meshtastic/firmware/pull/4912
 
-## New Contributors
-* @panaceya made their first contribution in https://github.com/meshtastic/firmware/pull/4624
-* @RealityAnomaly made their first contribution in https://github.com/meshtastic/firmware/pull/4690
-* @jhps made their first contribution in https://github.com/meshtastic/firmware/pull/4710
-* @Szetya made their first contribution in https://github.com/meshtastic/firmware/pull/4689
-* @augustozanellato made their first contribution in https://github.com/meshtastic/firmware/pull/4767
-* @dahanc made their first contribution in https://github.com/meshtastic/firmware/pull/4772
-
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.5.0.9ac0e26...v2.5.1.0664c09`
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.5.3.a70d5ee...v2.5.4.8d288d5`
 }
 
