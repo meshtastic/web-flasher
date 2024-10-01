@@ -8,6 +8,7 @@ import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import { Terminal } from 'xterm';
+import { currentPrerelease } from '~/types/resources';
 
 import { track } from '@vercel/analytics';
 import { useSessionStorage } from '@vueuse/core';
@@ -32,7 +33,7 @@ export const useFirmwareStore = defineStore('firmware', {
     return {
       stable: new Array<FirmwareResource>(),
       alpha: new Array<FirmwareResource>(),
-      previews: new Array<FirmwareResource>(),//new Array<FirmwareResource>(currentPrerelease),
+      previews: new Array<FirmwareResource>(currentPrerelease),
       pullRequests: new Array<FirmwareResource>(),
       selectedFirmware: <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
@@ -69,7 +70,7 @@ export const useFirmwareStore = defineStore('firmware', {
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
           this.previews = [
             ...response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4), 
-            // currentPrerelease
+            currentPrerelease
           ];
           this.pullRequests = response.pullRequests.slice(0, 4);
         })
