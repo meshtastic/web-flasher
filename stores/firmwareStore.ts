@@ -7,7 +7,7 @@ import {
 import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
-import { Terminal } from 'xterm';
+import type { Terminal } from 'xterm';
 
 import { Nrf52DfuFlasher } from '@/utils/nrfUtil';
 import { track } from '@vercel/analytics';
@@ -26,7 +26,9 @@ import {
 } from '../types/api';
 import { createUrl } from './store';
 
-const previews = new Array<FirmwareResource>()// [currentPrerelease]
+
+const previews = new Array<FirmwareResource>()// new Array<FirmwareResource>(currentPrerelease)
+
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
 export const useFirmwareStore = defineStore('firmware', {
@@ -58,6 +60,7 @@ export const useFirmwareStore = defineStore('firmware', {
     firmwareVersion: (state) => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: (state) => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true, 
     isZipFile: (state) => state.selectedFile?.name.endsWith('.zip'),
+    isFactoryBin: (state) => state.selectedFile?.name.endsWith('.factory.bin'),
   },
   actions: {
     continueToFlash() {
@@ -117,14 +120,19 @@ export const useFirmwareStore = defineStore('firmware', {
       return this.port;
     },
     async downloadUf2FileSystem(searchRegex: RegExp) {
-      const reader = new BlobReader(this.selectedFile!);
+      if (!this.selectedFile) return;
+      const reader = new BlobReader(this.selectedFile);
       const zipReader = new ZipReader(reader);
       const entries = await zipReader.getEntries()
       console.log('Zip entries:', entries);
       const file = entries.find(entry => searchRegex.test(entry.filename))
       if (file) {
-        const data = await file.getData!(new BlobWriter());
-        saveAs(data, file.filename);
+        if (file?.getData) {
+          const data = await file.getData(new BlobWriter());
+          saveAs(data, file.filename);
+        } else {
+          throw new Error(`Could not find file with pattern ${searchRegex} in zip`);
+        }
       }
       else {
         throw new Error(`Could not find file with pattern ${searchRegex} in zip`);
@@ -156,7 +164,7 @@ export const useFirmwareStore = defineStore('firmware', {
         flashFreq: 'keep',
         reportProgress: (fileIndex, written, total) => {
           this.flashPercentDone = Math.round((written / total) * 100);
-          if (written == total) {
+          if (written === total) {
             this.isFlashing = false;
             console.log('Done flashing!');
           }
@@ -167,7 +175,11 @@ export const useFirmwareStore = defineStore('firmware', {
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions);
       await this.resetEsp32(transport);
-      await this.readSerial(this.port!, terminal);
+      if (this.port) {
+        await this.readSerial(this.port, terminal);
+      } else {
+        throw new Error('Serial port is not defined');
+      }
     },
     async resetEsp32(transport: Transport) {
       await transport.setRTS(true);
@@ -209,7 +221,7 @@ export const useFirmwareStore = defineStore('firmware', {
         reportProgress: (fileIndex, written, total) => {
           this.flashingIndex = fileIndex;
           this.flashPercentDone = Math.round((written / total) * 100);
-          if (written == total && fileIndex > 1) {
+          if (written === total && fileIndex > 1) {
             this.isFlashing = false;
             console.log('Done flashing!');
           }
@@ -240,13 +252,14 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
-        const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware!.zip_url!);
+        const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
         const response = await fetch(`${baseUrl}/${fileName}`);
         const blob = await response.blob();
         const data = await blob.arrayBuffer();
         return convertToBinaryString(new Uint8Array(data));
-      } else if (this.selectedFile && this.isZipFile) {
-        const reader = new BlobReader(this.selectedFile!);
+      }
+      if (this.selectedFile && this.isZipFile) {
+        const reader = new BlobReader(this.selectedFile);
         const zipReader = new ZipReader(reader);
         const entries = await zipReader.getEntries()
         console.log('Zip entries:', entries);
@@ -254,15 +267,17 @@ export const useFirmwareStore = defineStore('firmware', {
         const file = entries.find(entry => 
           {
             if (fileName.startsWith('firmware-tbeam-.'))
-              return !entry.filename.includes('s3') && new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
-            else 
-              return new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') == entry.filename.endsWith('update.bin'))
+              return !entry.filename.includes('s3') && new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') === entry.filename.endsWith('update.bin'))
+            return new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') === entry.filename.endsWith('update.bin'))
           })
         if (file) {
           console.log('Found file:', file.filename);
-          const blob = await file.getData!(new BlobWriter());
-          const arrayBuffer = await blob.arrayBuffer();
-          return convertToBinaryString(new Uint8Array(arrayBuffer));
+          if (file?.getData) {
+            const blob = await file.getData(new BlobWriter());
+            const arrayBuffer = await blob.arrayBuffer();
+            return convertToBinaryString(new Uint8Array(arrayBuffer));
+          }
+          throw new Error(`Could not find file with pattern ${fileName} in zip`);
         }
       } else if (this.selectedFile && !this.isZipFile) {
         const buffer = await this.selectedFile.arrayBuffer();
@@ -294,7 +309,11 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async readSerial(port: SerialPort, terminal: Terminal): Promise<void> {
       const decoder = new TextDecoderStream();
-      port.readable!.pipeTo(decoder.writable);
+      if (port.readable) {
+        port.readable.pipeTo(decoder.writable);
+      } else {
+        throw new Error('Serial port is not readable');
+      }
       const inputStream = decoder.readable;
       const reader = inputStream.getReader();
 

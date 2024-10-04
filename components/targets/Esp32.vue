@@ -135,10 +135,9 @@ const flash = () => {
 }
 
 const canFullInstall = () => {
-    // Assume bin file if it's not a zip file and prevent full install
-    if (firmwareStore.hasFirmwareFile && !firmwareStore.isZipFile)
+    // Assume bin file if it's not a zip file and prevent full install if its not a full factory bin
+    if (firmwareStore.hasFirmwareFile && !firmwareStore.isZipFile && !firmwareStore.isFactoryBin)
         return false;
-
     return true;
 }
 
