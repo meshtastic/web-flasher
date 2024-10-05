@@ -119,10 +119,7 @@
   } from 'flowbite';
   
   import {
-    BoltIcon,
     BookOpenIcon,
-    CommandLineIcon,
-    FolderArrowDownIcon,
     FolderOpenIcon
   } from '@heroicons/vue/24/solid';
   
@@ -135,10 +132,6 @@
   const serialMonitorStore = useSerialMonitorStore();
   const firmwareStore = useFirmwareStore();
   
-  const monitorSerial = () => {
-    serialMonitorStore.monitorSerial();
-  };
-
   const disableFlashButton = computed(() => {
     return firmwareStore.isRunningAutoFlash && !firmwareStore.needsInteractiveContinue;
   });
@@ -236,11 +229,14 @@
   const connectionButtonLabel = computed(() => {
     if (firmwareStore.needsInteractiveContinue) {
       return "Apply Update";
-    } else if (firmwareStore.isRunningAutoFlash) {
+    }
+    if (firmwareStore.isRunningAutoFlash) {
       return 'Running...';
-    } else if (firmwareStore.isFlashing) {
+    }
+    if (firmwareStore.isFlashing) {
       return 'Flashing';
-    } else if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
+    }
+    if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
       return 'Disconnecting';
     }
     return isConnected.value ? 'Connected' : 'Start Update Process';
@@ -290,25 +286,6 @@
   const isWebSerialSupported = computed(() => {
     return 'serial' in navigator;
   });
-  const konamiKeys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-  let konamiCodeIndex = ref(0);
-  window.addEventListener('keydown', (event) => {
-    if (event.key == konamiKeys[konamiCodeIndex.value]) {
-      console.log('konami code key match', konamiCodeIndex.value);
-      konamiCodeIndex.value++;
-      if (konamiCodeIndex.value == konamiKeys.length) {
-        console.log('Unlocking pre-release section')
-        document.body.classList.add('konami-code');
-        document.getElementById('footer').classList.add('konami-code');
-        firmwareStore.$state.prereleaseUnlocked = true;
-        konamiCodeIndex.value = 0;
-      }
-    } else {
-      konamiCodeIndex.value = 0;
-    }
-  });
-  
-  // const themeBackground = firmwareStore.$state.prereleaseUnlocked ? "#000000" : "#2C2D3C";
   
   onMounted(() => {
     initDropdowns();
