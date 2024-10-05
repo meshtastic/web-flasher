@@ -12,9 +12,6 @@
       </div>
     </div>
     <div class="grid grid-cols-3">
-      <!-- <span class="mb-2 text-xs font-medium me-2 px-2.5 py-0.5 rounded bg-gray-700 text-gray-300">
-        {{ serialMonitorStore.isConnected ? 'Connected' : 'Disconnected'}}
-      </span> -->
       <div class="col"> 
         <div class="flex items-center justify-start px-2">
           <button type="button" @click="logLevel = 'all'" class="relative border focus:ring-4 focus:outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 bg-gray-900 focus:ring-blue-800">

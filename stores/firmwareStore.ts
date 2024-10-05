@@ -128,7 +128,6 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFirmware = undefined;
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
-      this.trackDownload(selectedTarget, false);
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
@@ -151,6 +150,7 @@ export const useFirmwareStore = defineStore('firmware', {
           if (written === total) {
             this.isFlashing = false;
             console.log('Done flashing!');
+            this.trackDownload(selectedTarget, true);
           }
         },
       };
@@ -182,7 +182,6 @@ export const useFirmwareStore = defineStore('firmware', {
       }
     },
     async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
-      this.trackDownload(selectedTarget, true);
       const terminal = await openTerminal();
       this.port = await navigator.serial.requestPort({});
       this.isConnected = true;
@@ -208,6 +207,7 @@ export const useFirmwareStore = defineStore('firmware', {
           if (written === total && fileIndex > 1) {
             this.isFlashing = false;
             console.log('Done flashing!');
+            this.trackDownload(selectedTarget, true);
           }
         },
       };
