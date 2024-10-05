@@ -8,6 +8,7 @@ import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import type { Terminal } from 'xterm';
+import { timezones } from '~/types/resources';
 
 import { track } from '@vercel/analytics';
 import { useSessionStorage } from '@vueuse/core';
@@ -178,7 +179,18 @@ export const useFirmwareStore = defineStore('firmware', {
       };
       const transport = new Transport(this.port, true);
       const espLoader = await this.connectEsp32(transport, terminal);
-      const appContent = await this.fetchBinaryContent(fileName);
+      let appContent = await this.fetchBinaryContent(fileName, true);
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // get posix timezone string based on browser locale
+      const posixTz = timezones[tz as keyof typeof timezones] || 'CST6CDT,M3.2.0,M11.1.0';
+      appContent.replace('tzplaceholder                                         ', posixTz);
+      const sha256 = new Uint8Array(32);
+      const sha256sum = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(appContent));
+      new Uint8Array(sha256sum).forEach((byte, index) => {
+        sha256[index] = byte;
+      });
+      appContent += convertToBinaryString(sha256);
+
       const otaContent = await this.fetchBinaryContent(otaFileName);
       const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
       this.isFlashing = true;
@@ -201,12 +213,16 @@ export const useFirmwareStore = defineStore('firmware', {
       };
       await this.startWrite(terminal, espLoader, transport, flashOptions);
     },
-    async fetchBinaryContent(fileName: string): Promise<string> {
+    async fetchBinaryContent(fileName: string, truncateLast32 = false): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
         const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
         const response = await fetch(`${baseUrl}/${fileName}`);
         const blob = await response.blob();
-        const data = await blob.arrayBuffer();
+        let data = await blob.arrayBuffer();
+        debugger
+        if (truncateLast32)
+          data = new Uint8Array(data).slice(0, -32);
+
         return convertToBinaryString(new Uint8Array(data));
       }
       if (this.selectedFile && this.isZipFile) {
