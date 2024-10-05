@@ -127,8 +127,8 @@
     FolderArrowDownIcon,
   } from '@heroicons/vue/24/solid';
   
-  import { useFirmwareStore } from './stores/firmwareStore';
-  import { useSerialMonitorStore } from './stores/serialMonitorStore';
+  import { useFirmwareStore } from '@/stores/firmwareStore';
+  import { useSerialMonitorStore } from '@/stores/serialMonitorStore';
   
   const serialMonitorStore = useSerialMonitorStore();
   const firmwareStore = useFirmwareStore();
