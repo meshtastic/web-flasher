@@ -26,6 +26,14 @@
               <div class="p-4 md:w-full sm:mb-0 mb-6">
                 <div class="rounded-lg overflow-hidden flex flex-col items-center display-inline">
                   <img src="@/assets/img/hydra-pcb.svg" class="h-60 mb-2 invert mx-auto" alt="Device" />
+                  <div class="py-1">
+                    <label class="relative inline-flex items-center me-5 cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldCleanInstall">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4  dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-300 dark:text-gray-300">Erase device?</span>
+                    </label>
+                  </div>
+                  <span class="text-sm mb-2 text-center"><i>Erasing your device may be required when upgrading from older firmware (ie. 2.4.2 -> 2.5+).</i></span>
                   <div>
                     <button id="flashButton"
                         class="content-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-gray-500" 
@@ -207,7 +215,7 @@
         setTimeout(() => {
           onUpdateComplete();
         }, 25000);
-        flashEsp32CleanInstall().then(() => {
+        esp32Flash().then(() => {
           onUpdateComplete();
         });
       }
@@ -258,6 +266,13 @@
     return firmwareStore.getReleaseFileUrl(firmwareFile);
   }
 
+  const esp32Flash = () => {
+    if (firmwareStore.shouldCleanInstall) {
+      return flashEsp32CleanInstall();
+    }
+    return updateEsp32();
+  }
+
   const flashEsp32CleanInstall = () => {
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`;
     const otaFile = deviceStore.$state.selectedTarget.architecture == 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
@@ -265,6 +280,12 @@
     return firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFile, deviceStore.$state.selectedTarget);
   }
   
+  const updateEsp32 = () => {
+    // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
+    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}-update.bin`
+    return firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget);
+  }
+
   // WebSerial API support check
   const isWebSerialSupported = computed(() => {
     return 'serial' in navigator;
