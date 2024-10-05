@@ -15,7 +15,7 @@
                         <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                For firmware versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}
+                                For firmware versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}.
                             </span>
                         </div>
                         <button type="button"
@@ -61,8 +61,8 @@
                 </ol>
                 <div v-if="firmwareStore.canShowFlash">
                     <a :href="downloadUf2FileUrl" v-if="firmwareStore.selectedFirmware?.id"
-                    class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                    Download UF2
+                        class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        Download UF2
                     </a>
                     <button @click="downloadUf2FileFs" v-else
                         class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">

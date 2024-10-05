@@ -38,9 +38,9 @@ export const useDeviceStore = defineStore('device', {
         },
         dfuStepAction(): string {
             if (this.isSelectedNrf) {
-                return 'double-clicking RST button.';
+                return 'double-clicking RST button';
             } else {
-                return 'pressing and holding BOOTSEL button while plugging in USB cable.';
+                return 'pressing and holding BOOTSEL button while plugging in USB cable';
             }
         },
     },
@@ -71,7 +71,8 @@ export const useDeviceStore = defineStore('device', {
                 });
             return connection;
         },
-        async enterDfuMode() {
+        async enterDfuModeLegacy() {
+            // Legacy API mode
             const connection = await this.openDeviceConnection();
             connection.events.onFromRadio.subscribe((packet: any) => {
                 if (packet?.payloadVariant?.case === "configCompleteId") {
@@ -79,6 +80,11 @@ export const useDeviceStore = defineStore('device', {
                     connection.enterDfuMode();
                 }
             });
+        },
+        async enterDfuMode() {
+            const port: SerialPort = await navigator.serial.requestPort();
+            const nrfFlasher = new Nrf52DfuFlasher(port, () => {});
+            await nrfFlasher.enterDfuMode();
         },
         async baud1200() {
             const port: SerialPort = await navigator.serial.requestPort();
@@ -93,7 +99,7 @@ export const useDeviceStore = defineStore('device', {
                 }
                 return connection.disconnect();
             });
-            await new Promise(_ => setTimeout(_, 4000));
+            await waitForMs(4000);
             await connection.disconnect();
         }
     },

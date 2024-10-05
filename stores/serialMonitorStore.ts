@@ -65,12 +65,16 @@ export const useSerialMonitorStore = defineStore("serialMonitor", {
             this.terminalBuffer[this.terminalBuffer.length - 1] = newLine;
           }
         }
-        await new Promise((resolve) => setTimeout(resolve, 5));
+        await waitForMs(1);
       }
     },
-    async monitorSerial() {
-      this.port = await navigator.serial.requestPort({});
-      await this.port.open({ baudRate: this.baudRate });
+    async monitorSerial(port: SerialPort | undefined = undefined) {
+      if (port) {
+        this.port = port;
+      } else {
+        this.port = await navigator.serial.requestPort({});
+        await this.port.open({ baudRate: this.baudRate });
+      }
       this.isOpen = true;
       this.isConnected = true;
       this.port.ondisconnect = () => {
