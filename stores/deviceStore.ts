@@ -18,6 +18,7 @@ export const useDeviceStore = defineStore('device', {
             targets: new Array<DeviceHardware>(),
             selectedTarget: <DeviceHardware>{},
             client: <Client>{},
+            hasBaud1200: false,
         }
     },
     getters: {
@@ -42,6 +43,12 @@ export const useDeviceStore = defineStore('device', {
             } else {
                 return 'pressing and holding BOOTSEL button while plugging in USB cable.';
             }
+        },
+        isEsp32(): boolean {
+            return this.selectedArchitecture.startsWith('esp32');
+        },
+        isUf2():  boolean {
+            return ['nrf52840', 'rp2040'].includes(this.selectedArchitecture);
         },
     },
     actions: {
@@ -69,6 +76,7 @@ export const useDeviceStore = defineStore('device', {
                     baudRate: 115200,
                     concurrentLogOutput: true,
                 });
+            this.hasBaud1200 = false;
             return connection;
         },
         async enterDfuMode() {
@@ -83,6 +91,7 @@ export const useDeviceStore = defineStore('device', {
         async baud1200() {
             const port: SerialPort = await navigator.serial.requestPort();
             await port.open({ baudRate: 1200 });
+            this.hasBaud1200 = true;
         },
         async autoSelectHardware() {
             const connection = await this.openDeviceConnection();
@@ -93,8 +102,12 @@ export const useDeviceStore = defineStore('device', {
                 }
                 return connection.disconnect();
             });
-            await new Promise(_ => setTimeout(_, 4000));
-            await connection.disconnect();
-        }
+            await new Promise(_ => setTimeout(_, 5000));
+            try {
+                await connection.disconnect();
+            } catch {
+                console.log("secondary disconnect ignored.")
+            }
+        },
     },
 })
