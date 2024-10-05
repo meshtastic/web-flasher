@@ -9,15 +9,17 @@
       <Meta name="description" content="Meshtastic Flasher" />
     </Head>
 
-    <section class="text-gray-400 body-font">
+    <section class="text-gray-400 body-font halloween-theme">
       <transition name="flash" mode="out-in">
         <div class="container px-5 py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
               <div class="mx-auto">
-                <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
                 <h1 class="text-white text-6xl font-bold inline-block ml-4 mt-8 align-top">
+                  🎃
+                  <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
                   Flasher
+                  🎃
                 </h1>
               </div>
             </div>
@@ -78,7 +80,7 @@
 
     <SerialMonitor />
 
-    <footer id="footer" class="footer text-white mt-4 py-4">
+    <footer id="footer" class="halloween-theme footer text-white mt-4 py-4">
       <div class="container mx-auto px-5 py-4 text-center">
         <p>
           Powered by
@@ -138,7 +140,8 @@ const monitorSerial = () => {
 const connectionButtonLabel = computed(() => {
   if (firmwareStore.isFlashing) {
     return 'Flashing';
-  } else if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
+  }
+  if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
     return 'Disconnecting';
   }
   return isConnected.value ? 'Connected' : 'Not connected';
@@ -153,12 +156,12 @@ const isWebSerialSupported = computed(() => {
   return 'serial' in navigator;
 });
 const konamiKeys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-let konamiCodeIndex = ref(0);
+const konamiCodeIndex = ref(0);
 window.addEventListener('keydown', (event) => {
-  if (event.key == konamiKeys[konamiCodeIndex.value]) {
+  if (event.key === konamiKeys[konamiCodeIndex.value]) {
     console.log('konami code key match', konamiCodeIndex.value);
     konamiCodeIndex.value++;
-    if (konamiCodeIndex.value == konamiKeys.length) {
+    if (konamiCodeIndex.value === konamiKeys.length) {
       console.log('Unlocking pre-release section')
       document.body.classList.add('konami-code');
       document.getElementById('footer').classList.add('konami-code');
@@ -182,9 +185,9 @@ onMounted(() => {
 </script>
 
 <style>
-
   body {
-    background-color: #2C2D3C;
+    /* background-color: #2C2D3C; */
+    background-color: #1a1a1a;
     /* background-color: var(themeBackground); */
   }
   .konami-code {
@@ -211,12 +214,12 @@ onMounted(() => {
   .border-meshtastic {
     border-color: #67EA94;
   }
-  footer {
+  .footer {
     background-color: #2C2D3C;
   }
-  footer a {
+  /* .footer a {
     color: #67EA94;
-  }
+  } */
   h1 {
     font-size: 2em;
     color: #FFFFFF;
@@ -246,4 +249,25 @@ onMounted(() => {
     opacity: 0;
   }
 
+  /* Halloween Theme */
+  .halloween-theme {
+    background-color: #1a1a1a;
+    color: #ff7518;
+  }
+  .halloween-theme h1, .halloween-theme h2 {
+    color: #ff7518;
+  }
+  .halloween-theme .border-meshtastic {
+    border-color: #67EA94;
+  }
+  .halloween-theme footer {
+    background-color: #1a1a1a;
+  }
+  .halloween-theme footer a {
+    color: #ff7518;
+  }
+  .halloween-theme .unsupported-browser-warning {
+    background-color: #ff7518;
+    color: black;
+  }
 </style>
