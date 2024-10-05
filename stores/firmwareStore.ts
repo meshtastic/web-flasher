@@ -43,6 +43,9 @@ export const useFirmwareStore = defineStore('firmware', {
       shouldCleanInstall: false,
       flashPercentDone: 0,
       isFlashing: false,
+      isRunningAutoFlash: false,
+      autoFlashMessage: '',
+      needsInteractiveContinue: false,
       flashingIndex: 0,
       isReaderLocked: false,
       isConnected: false,
@@ -61,11 +64,20 @@ export const useFirmwareStore = defineStore('firmware', {
     isFactoryBin: (state) => state.selectedFile?.name.endsWith('.factory.bin'),
   },
   actions: {
+    setAutoFlashMessage(val: string) {
+      this.autoFlashMessage = val;
+    },
+    setIsRunningAutoFlash(val: boolean) {
+      this.isRunningAutoFlash = val;
+    },
+    setNeedsInteractiveContinue(val: boolean) {
+      this.needsInteractiveContinue = val;
+    },
     continueToFlash() {
       this.hasSeenReleaseNotes = true
     },
     async fetchList() {
-      firmwareApi.get<FirmwareReleases>()
+      await firmwareApi.get<FirmwareReleases>()
         .then((response: FirmwareReleases) => {
           // Only grab the latest 4 releases
           this.stable = response.releases.stable.slice(0, 4);
