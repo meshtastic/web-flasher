@@ -27,8 +27,8 @@ import {
 import { createUrl } from './store';
 
 const previews = new Array<FirmwareResource>()// new Array<FirmwareResource>(currentPrerelease)
-
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
+const TZP_PLACEHOLDER = 'tzplaceholder                                         '
 
 export const useFirmwareStore = defineStore('firmware', {
   state: () => {
@@ -182,8 +182,10 @@ export const useFirmwareStore = defineStore('firmware', {
       let appContent = await this.fetchBinaryContent(fileName, true);
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       // get posix timezone string based on browser locale
-      const posixTz = timezones[tz as keyof typeof timezones] || 'CST6CDT,M3.2.0,M11.1.0';
-      appContent.replace('tzplaceholder                                         ', posixTz);
+      const posixTz = timezones[tz as keyof typeof timezones];
+      if (posixTz)
+        appContent = appContent.replace(TZP_PLACEHOLDER, posixTz.padEnd(TZP_PLACEHOLDER.length, ' '));
+
       const sha256 = new Uint8Array(32);
       const sha256sum = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(appContent));
       new Uint8Array(sha256sum).forEach((byte, index) => {
