@@ -188,10 +188,10 @@ export const useFirmwareStore = defineStore('firmware', {
         appContent = appContent.replace(TZ_PLACEHOLDER, posixTz.padEnd(TZ_PLACEHOLDER.length, ' '));
 
       // The file is padded with zeros until its size is one byte less than a multiple of 16 bytes. A last byte (thus making the file size a multiple of 16) is the checksum of the data of all segments. The checksum is defined as the xor-sum of all bytes and the byte 0xEF.
-      const calculateChecksum = espLoader.checksum(convertToUint8Array(appContent));
-      const appDataWithChecksum = new Uint8Array([...convertToUint8Array(appContent), ...new Uint8Array(calculateChecksum)]);
+      const calculateChecksum = espLoader.checksum(convertToUint8Array(appContent).slice(65536));
+      const appDataWithChecksum = new Uint8Array([...convertToUint8Array(appContent), ...new Uint8Array([calculateChecksum])]);
       // esp32 checksum
-      const sha256sum = await crypto.subtle.digest('SHA-256', appDataWithChecksum);
+      const sha256sum = await crypto.subtle.digest('SHA-256', appDataWithChecksum.slice(65536));
       appContent = convertToBinaryString(new Uint8Array([...appDataWithChecksum, ...new Uint8Array(sha256sum)]));
       console.log(originalAppContent === appContent);
       console.log('Length:', appContent.length);
