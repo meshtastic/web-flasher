@@ -28,7 +28,7 @@ import { createUrl } from './store';
 
 const previews = new Array<FirmwareResource>()// new Array<FirmwareResource>(currentPrerelease)
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
-const TZP_PLACEHOLDER = 'tzplaceholder                                         '
+const TZ_PLACEHOLDER = 'tzplaceholder                                         '
 
 export const useFirmwareStore = defineStore('firmware', {
   state: () => {
@@ -180,23 +180,22 @@ export const useFirmwareStore = defineStore('firmware', {
       const transport = new Transport(this.port, true);
       const espLoader = await this.connectEsp32(transport, terminal);
       let appContent = await this.fetchBinaryContent(fileName, true);
+      const originalAppContent = await this.fetchBinaryContent(fileName);
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       // get posix timezone string based on browser locale
       const posixTz = timezones[tz as keyof typeof timezones];
       if (posixTz)
-        appContent = appContent.replace(TZP_PLACEHOLDER, posixTz.padEnd(TZP_PLACEHOLDER.length, ' '));
+        appContent = appContent.replace(TZ_PLACEHOLDER, posixTz.padEnd(TZ_PLACEHOLDER.length, ' '));
 
       // The file is padded with zeros until its size is one byte less than a multiple of 16 bytes. A last byte (thus making the file size a multiple of 16) is the checksum of the data of all segments. The checksum is defined as the xor-sum of all bytes and the byte 0xEF.
-      const calculateChecksum = this.calculateChecksum(convertToUint8Array(appContent));
-      appContent += convertToBinaryString(new Uint8Array(calculateChecksum));
+      const calculateChecksum = espLoader.checksum(convertToUint8Array(appContent));
+      const appDataWithChecksum = new Uint8Array([...convertToUint8Array(appContent), ...new Uint8Array(calculateChecksum)]);
       // esp32 checksum
-      const sha256 = new Uint8Array(32);
-      const sha256sum = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(appContent));
-      new Uint8Array(sha256sum).forEach((byte, index) => {
-        sha256[index] = byte;
-      });
-      appContent += convertToBinaryString(sha256);
-
+      const sha256sum = await crypto.subtle.digest('SHA-256', appDataWithChecksum);
+      appContent = convertToBinaryString(new Uint8Array([...appDataWithChecksum, ...new Uint8Array(sha256sum)]));
+      console.log(originalAppContent === appContent);
+      console.log('Length:', appContent.length);
+      console.log('Original length:', originalAppContent.length);
       const otaContent = await this.fetchBinaryContent(otaFileName);
       const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
       this.isFlashing = true;
@@ -219,9 +218,6 @@ export const useFirmwareStore = defineStore('firmware', {
       };
       await this.startWrite(terminal, espLoader, transport, flashOptions);
     },
-    calculateChecksum(data: Uint8Array) : number {
-      return data.reduce((acc, byte) => acc ^ byte, 0xEF);
-    },
     async fetchBinaryContent(fileName: string, truncateChecksum = false): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
         const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
@@ -229,7 +225,7 @@ export const useFirmwareStore = defineStore('firmware', {
         const blob = await response.blob();
         let data = await blob.arrayBuffer();
         if (truncateChecksum)
-          data = data.slice(0, -33);
+          data = data.slice(0, data.byteLength - 33);
 
         return convertToBinaryString(new Uint8Array(data));
       }
@@ -293,7 +289,7 @@ export const useFirmwareStore = defineStore('firmware', {
       const reader = inputStream.getReader();
 
       while (true) {
-        const{ value } = await reader.read();
+        const { value } = await reader.read();
         if (value) {
           terminal.write(value);
         }

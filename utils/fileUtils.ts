@@ -19,7 +19,7 @@ export function convertToUint8Array(binaryString: string) {
 
 export function convertToBinaryString(bytes: Uint8Array) {
 	let binaryString = "";
-	for (let i = 0; i < bytes.length; i++) {
+	for (let i = 0; i < bytes.byteLength; i++) {
 		binaryString += String.fromCharCode(bytes[i]);
 	}
 	return binaryString;
