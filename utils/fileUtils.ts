@@ -9,6 +9,14 @@ export function downloadBlob(url: string, filename: string) {
 	document.body.removeChild(link);
 }
 
+export function convertToUint8Array(binaryString: string) {
+	let bytes = new Uint8Array(binaryString.length);
+	for (let i = 0; i < binaryString.length; i++) {
+		bytes[i] = binaryString.charCodeAt(i);
+	}
+	return bytes;
+}
+
 export function convertToBinaryString(bytes: Uint8Array) {
 	let binaryString = "";
 	for (let i = 0; i < bytes.length; i++) {

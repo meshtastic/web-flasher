@@ -186,6 +186,10 @@ export const useFirmwareStore = defineStore('firmware', {
       if (posixTz)
         appContent = appContent.replace(TZP_PLACEHOLDER, posixTz.padEnd(TZP_PLACEHOLDER.length, ' '));
 
+      // The file is padded with zeros until its size is one byte less than a multiple of 16 bytes. A last byte (thus making the file size a multiple of 16) is the checksum of the data of all segments. The checksum is defined as the xor-sum of all bytes and the byte 0xEF.
+      const calculateChecksum = this.calculateChecksum(convertToUint8Array(appContent));
+      appContent += convertToBinaryString(new Uint8Array(calculateChecksum));
+      // esp32 checksum
       const sha256 = new Uint8Array(32);
       const sha256sum = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(appContent));
       new Uint8Array(sha256sum).forEach((byte, index) => {
@@ -215,15 +219,17 @@ export const useFirmwareStore = defineStore('firmware', {
       };
       await this.startWrite(terminal, espLoader, transport, flashOptions);
     },
-    async fetchBinaryContent(fileName: string, truncateLast32 = false): Promise<string> {
+    calculateChecksum(data: Uint8Array) : number {
+      return data.reduce((acc, byte) => acc ^ byte, 0xEF);
+    },
+    async fetchBinaryContent(fileName: string, truncateChecksum = false): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
         const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url);
         const response = await fetch(`${baseUrl}/${fileName}`);
         const blob = await response.blob();
         let data = await blob.arrayBuffer();
-        debugger
-        if (truncateLast32)
-          data = new Uint8Array(data).slice(0, -32);
+        if (truncateChecksum)
+          data = data.slice(0, -33);
 
         return convertToBinaryString(new Uint8Array(data));
       }
