@@ -125,7 +125,28 @@ export const useFirmwareStore = defineStore('firmware', {
       };
       const transport = new Transport(this.port, true);
       const espLoader = await this.connectEsp32(transport, terminal);
-      const content = await this.fetchBinaryContent(fileName);
+      let content = await this.fetchBinaryContent(fileName, true);
+      let originalAppContent = await this.fetchBinaryContent(fileName);
+
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // get posix timezone string based on browser locale
+      const posixTz = timezones[tz as keyof typeof timezones] + "\0";
+      if (posixTz)
+        content = content.replace(TZ_PLACEHOLDER, posixTz.padEnd(TZ_PLACEHOLDER.length, ' '));
+
+      // The file is padded with zeros until its size is one byte less than a multiple of 16 bytes. A last byte (thus making the file size a multiple of 16) is the checksum of the data of all segments. The checksum is defined as the xor-sum of all bytes and the byte 0xEF.
+      // Do all of our devices have 8 segments? Can get that from the 2nd byte of the header
+      const calculateChecksum = calcChecksum(convertToUint8Array(content), 8);
+      const appDataWithChecksum = new Uint8Array([...convertToUint8Array(content), ...new Uint8Array([calculateChecksum])]);
+      console.log(appDataWithChecksum.length)
+      // esp32 checksum
+      const sha256sum = await crypto.subtle.digest('SHA-256', appDataWithChecksum);
+      console.log(appDataWithChecksum.length)
+      content = convertToBinaryString(new Uint8Array([...appDataWithChecksum, ...new Uint8Array(sha256sum)]));
+      console.log(originalAppContent === content);
+      console.log('Length:', content.length);
+      console.log('Original length:', originalAppContent.length);
+
       this.isFlashing = true;
       const flashOptions: FlashOptions = {
         fileArray: [{ data: content, address: 0x10000 }],
@@ -246,13 +267,17 @@ export const useFirmwareStore = defineStore('firmware', {
           console.log('Found file:', file.filename);
           if (file?.getData) {
             const blob = await file.getData(new BlobWriter());
-            const arrayBuffer = await blob.arrayBuffer();
+            let arrayBuffer = await blob.arrayBuffer();
+            if (truncateChecksum)
+              arrayBuffer = arrayBuffer.slice(0, arrayBuffer.byteLength - 33);
             return convertToBinaryString(new Uint8Array(arrayBuffer));
           }
           throw new Error(`Could not find file with pattern ${fileName} in zip`);
         }
       } else if (this.selectedFile && !this.isZipFile) {
-        const buffer = await this.selectedFile.arrayBuffer();
+        let buffer = await this.selectedFile.arrayBuffer();
+        if (truncateChecksum)
+          buffer = buffer.slice(0, buffer.byteLength - 33);
         return convertToBinaryString(new Uint8Array(buffer));
       }
       throw new Error('Cannot fetch binary content without a file or firmware selected');
