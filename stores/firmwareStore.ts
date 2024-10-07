@@ -183,12 +183,13 @@ export const useFirmwareStore = defineStore('firmware', {
       const originalAppContent = await this.fetchBinaryContent(fileName);
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       // get posix timezone string based on browser locale
-      const posixTz = timezones[tz as keyof typeof timezones];
+      const posixTz = timezones[tz as keyof typeof timezones] + "\0";
       if (posixTz)
         appContent = appContent.replace(TZ_PLACEHOLDER, posixTz.padEnd(TZ_PLACEHOLDER.length, ' '));
 
       // The file is padded with zeros until its size is one byte less than a multiple of 16 bytes. A last byte (thus making the file size a multiple of 16) is the checksum of the data of all segments. The checksum is defined as the xor-sum of all bytes and the byte 0xEF.
-      const calculateChecksum = espLoader.checksum(convertToUint8Array(appContent).slice(65536));
+      // Do all of our devices have 8 segments? Can get that from the 2nd byte of the header
+      const calculateChecksum = calcChecksum(convertToUint8Array(appContent).slice(65536), 8);
       const appDataWithChecksum = new Uint8Array([...convertToUint8Array(appContent), ...new Uint8Array([calculateChecksum])]);
       // esp32 checksum
       const sha256sum = await crypto.subtle.digest('SHA-256', appDataWithChecksum.slice(65536));
