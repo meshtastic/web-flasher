@@ -363,28 +363,42 @@ export const OfflineHardwareList = [
     }
 ]
 
-export const currentPrerelease = <FirmwareResource> 
-{
-    id: 'v2.5.4.8d288d5',
-    title: 'Meshtastic Firmware 2.5.4.8d288d5 Alpha',
-    zip_url: 'https://github.com/meshtastic/firmware/releases/download/v2.5.4.8d288d5/firmware-2.5.4.8d288d5.zip',
-    release_notes: `## Enhancements
-* Comment on PR with build artifacts link by @scruplelesswizard in https://github.com/meshtastic/firmware/pull/4896
-* Return queue status on rate limit throttling by @thebentern in https://github.com/meshtastic/firmware/pull/4901
-* Get accelerometerThread running from AdminModule. by @gjelsoe in https://github.com/meshtastic/firmware/pull/4886
-* Construct StoreForwardModule for Portduino as well by @GUVWAF in https://github.com/meshtastic/firmware/pull/4903
-* Update INA3221 to 1.0.1 by @KodinLanewave in https://github.com/meshtastic/firmware/pull/4877
-* Update radiolib to 7.0.1 by @caveman99 in https://github.com/meshtastic/firmware/pull/4905
-* Allow for better target level Radiolib exclude plumbing by @thebentern in https://github.com/meshtastic/firmware/pull/4906
+const markdownContent = `
+## Enhancements
+* Coerce minimum telemetry interval of 30 minutes on defaults and make new default interval one hour by @thebentern in https://github.com/meshtastic/firmware/pull/5086
+* Add buzzer feedback on GPS toggle by @Technologyman00 in https://github.com/meshtastic/firmware/pull/5090
+* Add \`-p\` flag by @madeofstown in https://github.com/meshtastic/firmware/pull/5093
+* Initial NODENUM_BROADCAST_NO_LORA implementation with NeighborInfo module by @thebentern in https://github.com/meshtastic/firmware/pull/5087
+* Move 115200 baud GNSS probe earlier by @thebentern in https://github.com/meshtastic/firmware/pull/5101
+* MPR121 Touch IC Based Keypad Input Module by @aussieklutz in https://github.com/meshtastic/firmware/pull/5103
+* Add RFC 3927 IP address space to private IP checks by @rbrtio in https://github.com/meshtastic/firmware/pull/5115
+* Update meshtasticd.service by @yNosGR in https://github.com/meshtastic/firmware/pull/5118
+* Add Configurable UPLINK_ENABLED and DOWNLINK_ENABLED in userPrefs.h by @panaceya in https://github.com/meshtastic/firmware/pull/5120
+* Add device unique id by @thebentern in https://github.com/meshtastic/firmware/pull/5092
+* Account for port number in MQTT server by @JohnathonMohr in https://github.com/meshtastic/firmware/pull/5084
 
 ## Bug fixes
-* Fix: Not being able to stop Ext. Notification nagging for screenless devices by @thebentern in https://github.com/meshtastic/firmware/pull/4899
-* When importing config, keep Bluetooth on and defer rebooting until co… by @dahanc in https://github.com/meshtastic/firmware/pull/4898
-* Fix duplicate PR comments by @scruplelesswizard in https://github.com/meshtastic/firmware/pull/4908
-* Radiolib 7.0.2 by @caveman99 in https://github.com/meshtastic/firmware/pull/4915
-* Regenerate public key on boot, to avoid accidental mismatch. by @jp-bennett in https://github.com/meshtastic/firmware/pull/4916
-* Fix #4911 : Partially rework some code to remove warnings about potential non-aligned memory accesses by @TheMalkavien in https://github.com/meshtastic/firmware/pull/4912
+* Revert "Permanently engage !CTRL" by @caveman99 in https://github.com/meshtastic/firmware/pull/5095
+* Fix GPS_DEBUG output by @fifieldt in https://github.com/meshtastic/firmware/pull/5100
+* Wide_Lora uses 12 symbols to be compatible with SX1280 by @caveman99 in https://github.com/meshtastic/firmware/pull/5112
+* Fix rebroadcasting encrypted packets when \`KNOWN_ONLY\`/\`LOCAL_ONLY\` is used by @GUVWAF in https://github.com/meshtastic/firmware/pull/5109
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.5.3.a70d5ee...v2.5.4.8d288d5`
-}
+## New Contributors
+* @Technologyman00 made their first contribution in https://github.com/meshtastic/firmware/pull/5090
+* @madeofstown made their first contribution in https://github.com/meshtastic/firmware/pull/5093
+* @aussieklutz made their first contribution in https://github.com/meshtastic/firmware/pull/5103
+* @rbrtio made their first contribution in https://github.com/meshtastic/firmware/pull/5115
+* @yNosGR made their first contribution in https://github.com/meshtastic/firmware/pull/5118
 
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.5.7.f77c87d...v2.5.8.6485f03
+`;
+
+const currentPrereleaseId = '2.5.8.6485f03';
+
+export const currentPrerelease = <FirmwareResource>
+{
+    id: `v${currentPrereleaseId}`,
+    title: `Meshtastic Firmware ${currentPrereleaseId} Alpha`,
+    zip_url: `https://github.com/meshtastic/firmware/releases/download/v${currentPrereleaseId}/firmware-${currentPrereleaseId}.zip`,
+    release_notes: markdownContent,
+};
