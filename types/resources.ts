@@ -395,6 +395,8 @@ const markdownContent = `
 
 const currentPrereleaseId = '2.5.8.6485f03';
 
+export const showPrerelease = false;
+
 export const currentPrerelease = <FirmwareResource>
 {
     id: `v${currentPrereleaseId}`,

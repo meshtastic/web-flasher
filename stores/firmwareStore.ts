@@ -8,7 +8,10 @@ import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import type { Terminal } from 'xterm';
-import { currentPrerelease } from '~/types/resources';
+import {
+  currentPrerelease,
+  showPrerelease,
+} from '~/types/resources';
 
 import { track } from '@vercel/analytics';
 import { useSessionStorage } from '@vueuse/core';
@@ -26,7 +29,7 @@ import {
 } from '../types/api';
 import { createUrl } from './store';
 
-const previews = new Array<FirmwareResource>(currentPrerelease)
+const previews = showPrerelease ? [currentPrerelease] : [];
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
