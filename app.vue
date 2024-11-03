@@ -9,17 +9,15 @@
       <Meta name="description" content="Meshtastic Flasher" />
     </Head>
 
-    <section id="main" class="text-gray-400 body-font halloween-theme">
+    <section id="main" class="text-gray-400 body-font">
       <transition name="flash" mode="out-in">
         <div class="container px-5 py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
               <div class="mx-auto">
                 <h1 class="text-white text-6xl font-bold inline-block ml-4 mt-8 align-top">
-                  <span :class="{ 'animate-punkin': firmwareStore.prereleaseUnlocked }">🎃</span>
                   <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
                   Flasher
-                  <span :class="{ 'animate-punkin': firmwareStore.prereleaseUnlocked }">🎃</span>
                 </h1>
               </div>
             </div>
@@ -59,15 +57,15 @@
         </div>
       </transition>
       <div class="text-center mt-4 flex justify-center gap-4">
-        <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="inline border border-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-meshtastic hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
+        <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="inline border border-gray-300 focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
           Open Serial Monitor <CommandLineIcon class="h-4 w-4 inline mb-1" />
         </button>
-        <a href="https://meshtastic.org/docs" v-if="!serialMonitorStore.isConnected" class="inline-flex items-center border border-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-meshtastic hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
+        <a href="https://meshtastic.org/docs" v-if="!serialMonitorStore.isConnected" class="inline-flex items-center border border-gray-300 focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
           <span class="inline-flex items-center">
             Meshtastic Docs <BookOpenIcon class="h-4 w-4 inline ml-1" />
           </span>
         </a>
-        <a href="https://github.com/meshtastic/web-flasher" v-if="!serialMonitorStore.isConnected" class="inline border border-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-meshtastic hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
+        <a href="https://github.com/meshtastic/web-flasher" v-if="!serialMonitorStore.isConnected" class="inline border border-gray-300 focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
           Contribute on GitHub
           <span class="inline-block">
             <svg width="20" height="20" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="inline mb-1 fill-current">
@@ -174,8 +172,6 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
-// const themeBackground = firmwareStore.$state.prereleaseUnlocked ? "#000000" : "#2C2D3C";
-
 onMounted(() => {
   initDropdowns();
   initModals();
@@ -186,10 +182,10 @@ onMounted(() => {
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..1000&display=swap');
   body {
-    /* background-color: #2C2D3C; */
-    background-color: #1a1a1a;
-    /* background-color: var(themeBackground); */
+    font-family: 'Inter', sans-serif;
+  background-color: #2C2D3C;
   }
   .konami-code {
     background-color: #000000 !important;
@@ -218,9 +214,6 @@ onMounted(() => {
   .footer {
     background-color: #2C2D3C;
   }
-  /* .footer a {
-    color: #67EA94;
-  } */
   h1 {
     font-size: 2em;
     color: #FFFFFF;
@@ -248,31 +241,5 @@ onMounted(() => {
   .flash-leave-to {
     transition: all 1s ease-out;
     opacity: 0;
-  }
-
-  /* Halloween Theme */
-  .halloween-theme {
-    background-color: #1a1a1a;
-    color: #ff7518;
-  }
-  .halloween-theme h1, .halloween-theme h2 {
-    color: #ff7518;
-  }
-  .halloween-theme .border-meshtastic {
-    border-color: #67EA94;
-  }
-  .halloween-theme footer {
-    background-color: #1a1a1a;
-  }
-  .halloween-theme footer a {
-    color: #ff7518;
-  }
-  .halloween-theme .unsupported-browser-warning {
-    background-color: #ff7518;
-    color: black;
-  }
-  .animate-punkin {
-    animation: spin 2s linear infinite;
-    display: inline-block;
   }
 </style>

@@ -70,7 +70,7 @@
             @click="store.autoSelectHardware">
             <SparklesIcon class="h-4 w-4" :class="{'animate-bounce': !store.$state.selectedTarget?.hwModel }" />
         </button>
-        <div id="tooltip-auto" role="tooltip" class="halloween-theme absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
+        <div id="tooltip-auto" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
             Attempt to automatically select the device type if Meshtastic > (2.1.X) is already installed.
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
