@@ -55,7 +55,7 @@
             @click="openFile()">
             <FolderOpenIcon class="h-4 w-4 " :class="{'animate-bounce': (store.couldntFetchFirmwareApi && canSelectFirmware)}" />
         </button>
-        <div id="tooltip-file" role="tooltip" class="halloween-theme absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
+        <div id="tooltip-file" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
             Upload your own firmware release zip or bin.
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
