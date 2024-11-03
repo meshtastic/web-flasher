@@ -172,8 +172,6 @@ window.addEventListener('keydown', (event) => {
   }
 });
 
-// const themeBackground = firmwareStore.$state.prereleaseUnlocked ? "#000000" : "#2C2D3C";
-
 onMounted(() => {
   initDropdowns();
   initModals();
@@ -184,10 +182,10 @@ onMounted(() => {
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..1000&display=swap');
   body {
-    /* background-color: #2C2D3C; */
-    background-color: #1a1a1a;
-    /* background-color: var(themeBackground); */
+    font-family: 'Inter', sans-serif;
+  background-color: #2C2D3C;
   }
   .konami-code {
     background-color: #000000 !important;
@@ -216,9 +214,6 @@ onMounted(() => {
   .footer {
     background-color: #2C2D3C;
   }
-  /* .footer a {
-    color: #67EA94;
-  } */
   h1 {
     font-size: 2em;
     color: #FFFFFF;
@@ -247,31 +242,4 @@ onMounted(() => {
     transition: all 1s ease-out;
     opacity: 0;
   }
-
-  /* Halloween Theme
-  .halloween-theme {
-    background-color: #1a1a1a;
-    color: #ff7518;
-  }
-  .halloween-theme h1, .halloween-theme h2 {
-    color: #ff7518;
-  }
-  .halloween-theme .border-meshtastic {
-    border-color: #67EA94;
-  }
-  .halloween-theme footer {
-    background-color: #1a1a1a;
-  }
-  .halloween-theme footer a {
-    color: #ff7518;
-  }
-  .halloween-theme .unsupported-browser-warning {
-    background-color: #ff7518;
-    color: black;
-  }
-  .animate-punkin {
-    animation: spin 2s linear infinite;
-    display: inline-block;
-  }
-  */
 </style>
