@@ -19,9 +19,38 @@ export const useDeviceStore = defineStore("device", {
       targets: new Array<DeviceHardware>(),
       selectedTarget: <DeviceHardware>{},
       client: <Client>{},
+      tag: undefined as string | undefined,
     };
   },
   getters: {
+    filteredDevices(): DeviceHardware[] {
+      if (this.tag) {
+        return this.targets.filter(t => t.tags?.includes(this.tag ?? '') || t.architecture === this.tag);
+      }
+      return this.targets
+    },
+    sortedDevices(): DeviceHardware[] {
+      return this.filteredDevices
+        .filter(t => t.supportLevel === 1).sort((a, b) => {
+            const hwModelComparison = a.hwModel - b.hwModel;
+            if (hwModelComparison !== 0) return hwModelComparison;
+            return (a.images?.length ?? 0) - (b.images?.length ?? 0);
+          })
+        .concat(this.filteredDevices.filter(t => t.supportLevel === 2)
+          .sort((a, b) => {
+            const hwModelComparison = a.hwModel - b.hwModel;
+            if (hwModelComparison !== 0) return hwModelComparison;
+            return (a.images?.length ?? 0) - (b.images?.length ?? 0);
+          }))
+        .concat(this.filteredDevices.filter(t => (t.supportLevel ?? 3) === 3)
+          .sort((a, b) => a.hwModel - b.hwModel));
+    },
+    allTags(): string[] {
+      return this.targets.flatMap(t => t.tags ?? []).filter((v, i, a) => a.indexOf(v) === i);
+    },
+    allArchs(): string[] {
+      return this.targets.map(t => t.architecture).filter((v, i, a) => a.indexOf(v) === i);
+    },
     selectedArchitecture: (state) => state.selectedTarget?.architecture || "",
     isSelectedNrf(): boolean {
       return this.selectedArchitecture.startsWith("nrf52");
@@ -60,6 +89,18 @@ export const useDeviceStore = defineStore("device", {
     },
     setSelectedTarget(target: DeviceHardware) {
       this.selectedTarget = target;
+      document.getElementById('device-modal')?.click();
+    },
+    setSelectedTag(tag: string) {
+      if (tag === "all") {
+        this.tag = undefined;
+        return;
+      }
+      if (tag === this.tag) {
+        this.tag = undefined;
+      } else {
+        this.tag = tag;
+      }
     },
     async openDeviceConnection(): Promise<SerialConnection> {
       this.client = new Client();
@@ -93,13 +134,14 @@ export const useDeviceStore = defineStore("device", {
         const device = this.targets.find(
           (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
         );
+        console.log("Found device onDeviceMetadataPacket", device);
         if (device) {
           this.setSelectedTarget(device);
         }
-        return connection.disconnect();
       });
-      await new Promise((_) => setTimeout(_, 4000));
+      await new Promise((_) => setTimeout(_, 5000));
       await connection.disconnect();
+      return -1;
     },
   },
 });

@@ -34,6 +34,9 @@ export default defineNuxtConfig({
       nodePolyfills(),
     ],
     server: {
+      hmr: {
+        overlay: true, // Enable HMR overlay for errors
+      },
       proxy: {
         "^/api/.*": {
           target:
