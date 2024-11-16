@@ -67,7 +67,7 @@
                                     Back up the device’s public and private keys before a full erase and install to restore them after re-flashing if needed.
                                 </span>
                             </div>
-                            <div class="flex items-center">
+                            <div class="flex items-center mt-2">
                                 <LinkIcon class="h-4 w-4 mr-1 text-red-800 dark:text-red-400" />
                                 <a href="https://meshtastic.org/docs/configuration/radio/security/#security-keys---backup-and-restore" target="_blank" class="underline text-red-800 dark:text-red-400">
                                     Check out this guide in our documentation.</a>
