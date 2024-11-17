@@ -45,6 +45,7 @@ export const useFirmwareStore = defineStore('firmware', {
       baudRate: 115200,
       hasSeenReleaseNotes: false,
       shouldCleanInstall: false,
+      shouldBundleWebUI: false,
       flashPercentDone: 0,
       isFlashing: false,
       flashingIndex: 0,
