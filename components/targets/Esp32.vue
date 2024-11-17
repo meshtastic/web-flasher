@@ -54,17 +54,20 @@
                         </h3>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canFullInstall()">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldCleanInstall">
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600">
-                            </div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                Full Erase and Install
-                            </span>
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Full Erase and Install</span>
+                        </label>
+                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="firmwareStore.$state.shouldCleanInstall && canBundleWebUI">
+                            <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldBundleWebUI">
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Bundle Web UI</span>
                         </label>
                         <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
                             <div class="flex items-center">
                                 <InformationCircleIcon class="flex-shrink-0 inline w-4 h-4 mr-1" />
                                 <span>
-                                    Back up the device’s public and private keys before a full erase and install to restore them after re-flashing if needed.
+                                    Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.
+                                    <span v-if="firmwareStore.$state.shouldBundleWebUI">Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.</span>
                                 </span>
                             </div>
                             <div class="flex items-center mt-2">
@@ -74,7 +77,7 @@
                             </div>
                         </div>
                         <p>
-                            This process could take a minute. 
+                            This process could take a while. 
                         </p>
                         <div>
                             <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
@@ -114,6 +117,10 @@ import {
   InformationCircleIcon,
   LinkIcon,
 } from '@heroicons/vue/24/solid';
+import {
+  BlobReader,
+  ZipReader,
+} from '@zip.js/zip.js';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';
@@ -124,13 +131,16 @@ const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
 
 const partition = computed(() => {
-    if (firmwareStore.$state.flashingIndex == 0) {
+    if (firmwareStore.$state.flashingIndex === 0) {
         return 'App Partition';
-    } else if (firmwareStore.$state.flashingIndex == 1) {
+    } 
+    if (firmwareStore.$state.flashingIndex === 1) {
         return 'OTA Partition';
-    } else if (firmwareStore.$state.flashingIndex == 2) {
+    } 
+    if (firmwareStore.$state.flashingIndex === 2) {
         return 'File System Partition';
     }
+    return ''
 })
 
 const showFlashButton = computed(() => {
@@ -156,11 +166,29 @@ const canFullInstall = () => {
         return false;
     return true;
 }
+const canBundleWebUI = ref(false);
+
+watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
+    if (firmwareStore.isZipFile && firmwareStore.$state.selectedFile) {
+        const reader = new BlobReader(firmwareStore.$state.selectedFile);
+        const zipReader = new ZipReader(reader);
+        const entries = await zipReader.getEntries();
+        const foundWebUI = entries.find(entry => entry.filename.startsWith('littlefswebui'));
+        canBundleWebUI.value = !!foundWebUI;
+    } else if (firmwareStore.selectedFirmware) {
+        const littleFsFile = `littlefswebui-${firmwareStore.firmwareVersion}.bin`;
+        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFile));
+    }
+    else {
+        canBundleWebUI.value = false;
+    }
+});
 
 const cleanInstallEsp32 = () => {
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`;
-    const otaFile = deviceStore.$state.selectedTarget.architecture == 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
-    const littleFsFile = `littlefs-${firmwareStore.firmwareVersion}.bin`;
+    const otaFile = deviceStore.$state.selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
+    const prefix = firmwareStore.shouldBundleWebUI ? 'littlefswebui' : 'littlefs';
+    const littleFsFile = `${prefix}-${firmwareStore.firmwareVersion}.bin`;
     firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFile, deviceStore.$state.selectedTarget);
 }
 
