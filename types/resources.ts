@@ -69,6 +69,7 @@ export const OfflineHardwareList = [
     displayName: "LILYGO T-Echo",
     tags: ["LilyGo"],
     images: ["t-echo.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 8,
@@ -89,6 +90,7 @@ export const OfflineHardwareList = [
     displayName: "RAK WisBlock 4631",
     tags: ["RAK"],
     images: ["rak4631.svg", "rak4631_case.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 10,
@@ -118,6 +120,7 @@ export const OfflineHardwareList = [
     displayName: "LILYGO T-Beam Supreme",
     tags: ["LilyGo"],
     images: ["tbeam-s3-core.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 13,
@@ -159,6 +162,7 @@ export const OfflineHardwareList = [
     supportLevel: 1,
     tags: ["LilyGo"],
     images: ["tlora-t3s3-v1.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 16,
@@ -170,6 +174,7 @@ export const OfflineHardwareList = [
     displayName: "LILYGO T-LoRa T3-S3 E-Ink",
     tags: ["LilyGo"],
     images: ["tlora-t3s3-epaper.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 17,
@@ -190,6 +195,7 @@ export const OfflineHardwareList = [
     supportLevel: 2,
     displayName: "Nano G2 Ultra",
     tags: ["B&Q"],
+    requiresDfu: true,
   },
   {
     hwModel: 21,
@@ -201,6 +207,7 @@ export const OfflineHardwareList = [
     displayName: "Seeed Wio WM1110 Tracker",
     tags: ["Seeed"],
     images: ["wio-tracker-wm1110.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 25,
@@ -221,6 +228,7 @@ export const OfflineHardwareList = [
     supportLevel: 2,
     displayName: "RAK WisBlock 11310",
     tags: ["RAK"],
+    requiresDfu: true,
   },
   {
     hwModel: 29,
@@ -231,6 +239,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "Canary One",
     tags: ["Canary"],
+    requiresDfu: true,
   },
   {
     hwModel: 30,
@@ -241,6 +250,7 @@ export const OfflineHardwareList = [
     supportLevel: 2,
     displayName: "RP2040 LoRa",
     tags: ["Waveshare"],
+    requiresDfu: true,
   },
   {
     hwModel: 31,
@@ -251,6 +261,7 @@ export const OfflineHardwareList = [
     supportLevel: 2,
     displayName: "Station G2",
     tags: ["B&Q"],
+    requiresDfu: true,
   },
   {
     hwModel: 39,
@@ -322,6 +333,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "Raspberry Pi Pico",
     tags: ["Raspberry Pi", "DIY"],
+    requiresDfu: true,
   },
   {
     hwModel: 47,
@@ -332,6 +344,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "Raspberry Pi Pico W",
     tags: ["Raspberry Pi", "DIY"],
+    requiresDfu: true,
   },
   {
     hwModel: 48,
@@ -343,6 +356,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Wireless Tracker V1.1",
     tags: ["Heltec"],
     images: ["heltec-wireless-tracker.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 58,
@@ -353,6 +367,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "Heltec Wireless Tracker V1.0",
     images: ["heltec-wireless-tracker.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 49,
@@ -375,6 +390,7 @@ export const OfflineHardwareList = [
     displayName: "LILYGO T-Deck",
     tags: ["LilyGo"],
     images: ["t-deck.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 51,
@@ -426,6 +442,7 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 3,
     displayName: "unPhone",
+    requiresDfu: true,
   },
   {
     hwModel: 48,
@@ -435,6 +452,7 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 3,
     displayName: "TrackSenger (small TFT)",
+    requiresDfu: true,
   },
   {
     hwModel: 48,
@@ -444,6 +462,7 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 3,
     displayName: "TrackSenger (big TFT)",
+    requiresDfu: true,
   },
   {
     hwModel: 48,
@@ -463,6 +482,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "EBYTE EoRa-S3",
     tags: ["EByte"],
+    requiresDfu: true,
   },
   {
     hwModel: 64,
@@ -484,6 +504,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Vision Master T190",
     tags: ["Heltec"],
     images: ["heltec-vision-master-t190.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 67,
@@ -495,6 +516,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Vision Master E213",
     tags: ["Heltec"],
     images: ["heltec-vision-master-e213.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 68,
@@ -506,6 +528,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Vision Master E290",
     tags: ["Heltec"],
     images: ["heltec-vision-master-e290.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 69,
@@ -517,6 +540,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Mesh Node T114",
     tags: ["Heltec"],
     images: ["heltec-mesh-node-t114.svg", "heltec-mesh-node-t114-case.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 70,
@@ -539,6 +563,7 @@ export const OfflineHardwareList = [
     displayName: "Seeed Card Tracker T1000-E",
     tags: ["Seeed"],
     images: ["tracker-t1000-e.svg"],
+    requiresDfu: true,
   },
   {
     hwModel: 72,
@@ -550,6 +575,19 @@ export const OfflineHardwareList = [
     displayName: "Seeed Xiao ESP32-S3",
     tags: ["Seeed"],
     images: ["seeed-xiao-s3.svg"],
+    requiresDfu: true,
+  },
+  {
+    hwModel: 84,
+    hwModelSlug: "WISMESH_TAP",
+    platformioTarget: "rak_wismeshtap",
+    architecture: "nrf52840",
+    activelySupported: false,
+    supportLevel: 1,
+    displayName: "RAK WisMesh Tap",
+    tags: ["RAK"],
+    images: ["rak-wismeshtap.svg"],
+    requiresDfu: true,
   },
 ];
 
