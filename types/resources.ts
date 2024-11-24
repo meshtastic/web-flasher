@@ -196,6 +196,7 @@ export const OfflineHardwareList = [
     displayName: "Nano G2 Ultra",
     tags: ["B&Q"],
     requiresDfu: true,
+    images: ["nano-g2-ultra.svg"],
   },
   {
     hwModel: 21,
@@ -228,6 +229,7 @@ export const OfflineHardwareList = [
     supportLevel: 2,
     displayName: "RAK WisBlock 11310",
     tags: ["RAK"],
+    images: ["rak4631.svg"],
     requiresDfu: true,
   },
   {
@@ -262,6 +264,7 @@ export const OfflineHardwareList = [
     displayName: "Station G2",
     tags: ["B&Q"],
     requiresDfu: true,
+    images: ["station-g2.svg"],
   },
   {
     hwModel: 39,
@@ -582,7 +585,7 @@ export const OfflineHardwareList = [
     hwModelSlug: "WISMESH_TAP",
     platformioTarget: "rak_wismeshtap",
     architecture: "nrf52840",
-    activelySupported: false,
+    activelySupported: true,
     supportLevel: 1,
     displayName: "RAK WisMesh Tap",
     tags: ["RAK"],
@@ -631,3 +634,6 @@ export const currentPrerelease = <FirmwareResource>{
   zip_url: `https://github.com/meshtastic/firmware/releases/download/v${currentPrereleaseId}/firmware-${currentPrereleaseId}.zip`,
   release_notes: markdownContent,
 };
+
+export const vendorCobrandingTag = "";
+export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed"];

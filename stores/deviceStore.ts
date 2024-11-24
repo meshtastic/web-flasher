@@ -1,6 +1,9 @@
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
-import { OfflineHardwareList } from '~/types/resources';
+import {
+  OfflineHardwareList,
+  vendorCobrandingTag,
+} from '~/types/resources';
 
 import {
   Client,
@@ -76,14 +79,22 @@ export const useDeviceStore = defineStore("device", {
     async fetchList() {
       try {
         const targets = await firmwareApi.get<DeviceHardware[]>();
-        this.targets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported,
-        );
+        this.setTargetsList(targets);
       } catch (ex) {
         console.error(ex);
         // Fallback to offline list
-        this.targets = OfflineHardwareList.filter(
-          (t: DeviceHardware) => t.activelySupported,
+        this.setTargetsList(OfflineHardwareList);
+      }
+    },
+    setTargetsList(targets: DeviceHardware[]) {
+      if (vendorCobrandingTag.length > 0) {
+        this.targets = targets.filter(
+          (t: DeviceHardware) => t.activelySupported && t.tags?.includes(vendorCobrandingTag)
+        );
+      }
+      else {
+        this.targets = targets.filter(
+          (t: DeviceHardware) => t.activelySupported
         );
       }
     },

@@ -5,7 +5,7 @@
       <p>Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.</p>
     </div>
     <Head>
-      <Title>Meshtastic Flasher</Title>
+      <Title>Meshtastic Web Flasher</Title>
       <Meta name="description" content="Meshtastic Flasher" />
     </Head>
 
@@ -14,18 +14,14 @@
         <div class="container px-5 py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
-              <div class="mx-auto">
-                <h1 class="text-white text-6xl font-bold inline-block ml-4 mt-8 align-top">
-                  <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
-                  Flasher
-                </h1>
-              </div>
+              <LogoHeader />
             </div>
+            <hr class="w-full mx-auto mb-4 border-gray-600" />
           </div>
           <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-72 overflow-hidden flex flex-col items-center display-inline">
-                <img src="@/assets/img/hydra-pcb.svg" class="h-60 mb-2 invert mx-auto" alt="Device" />
+              <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center display-inline">
+                <img :src="selectedDeviceImage" class="h-64 mb-6 mx-auto" alt="Device" />
                 <Device />
               </div>
               <h2 class="text-xl font-medium title-font text-white mt-5">Device</h2>
@@ -34,8 +30,8 @@
               </p>
             </div>
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-72 flex flex-col items-center">
-                <FolderArrowDownIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" alt="Firmware" />
+              <div class="rounded-lg h-80 flex flex-col items-center">
+                <FolderArrowDownIcon class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" alt="Firmware" />
                 <Firmware />
               </div>
               <h2 class="text-xl font-medium title-font text-white mt-5">Firmware</h2>
@@ -44,8 +40,8 @@
               </p>
             </div>
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-72 overflow-hidden flex flex-col items-center">
-                <BoltIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" />
+              <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center">
+                <BoltIcon class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" />
                 <Flash />
               </div>
               <h2 class="text-xl font-medium title-font text-white mt-5">Flash</h2>
@@ -125,15 +121,24 @@ import {
   FolderArrowDownIcon,
 } from '@heroicons/vue/24/solid';
 
+import { useDeviceStore } from './stores/deviceStore';
 import { useFirmwareStore } from './stores/firmwareStore';
 import { useSerialMonitorStore } from './stores/serialMonitorStore';
 
 const serialMonitorStore = useSerialMonitorStore();
 const firmwareStore = useFirmwareStore();
+const deviceStore = useDeviceStore();
 
 const monitorSerial = () => {
   serialMonitorStore.monitorSerial();
 };
+
+const selectedDeviceImage = computed(() => {
+  if (deviceStore.selectedTarget?.images?.length) {
+    return `/img/devices/${deviceStore.selectedTarget.images[0]}`;
+  }
+  return '/img/devices/unknown.svg';
+});
 
 const connectionButtonLabel = computed(() => {
   if (firmwareStore.isFlashing) {
