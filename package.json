@@ -6,17 +6,24 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+     "start": "electron ."
   },
+  "main": "dist-electron/main.js",
   "devDependencies": {
     "@nuxt/devtools": "^1.0.3",
     "@types/file-saver": "^2.0.7",
     "@vite-pwa/nuxt": "^0.4.0",
     "autoprefixer": "^10.4.16",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "node-stdlib-browser": "^1.2.0",
     "nuxt": "^3.11.2",
+    "nuxt-electron": "^0.7.0",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
+    "vite-plugin-electron": "^0.29.0",
+    "vite-plugin-electron-renderer": "^0.14.6",
     "vite-plugin-node-stdlib-browser": "^0.2.1",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
@@ -39,5 +46,6 @@
     "marked": "^12.0.1",
     "pinia": "^2.1.7",
     "xterm": "^5.3.0"
-  }
+  },
+  "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
 }
