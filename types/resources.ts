@@ -229,7 +229,7 @@ export const OfflineHardwareList = [
     supportLevel: 2,
     displayName: "RAK WisBlock 11310",
     tags: ["RAK"],
-    images: ["rak4631.svg"],
+    images: ["rak11310.svg"],
     requiresDfu: true,
   },
   {
@@ -275,6 +275,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "DIY V1",
     tags: ["DIY"],
+    images: ["diy.svg"],
   },
   {
     hwModel: 39,
@@ -337,6 +338,7 @@ export const OfflineHardwareList = [
     displayName: "Raspberry Pi Pico",
     tags: ["Raspberry Pi", "DIY"],
     requiresDfu: true,
+    images: ["pico.svg"],
   },
   {
     hwModel: 47,
@@ -348,6 +350,7 @@ export const OfflineHardwareList = [
     displayName: "Raspberry Pi Pico W",
     tags: ["Raspberry Pi", "DIY"],
     requiresDfu: true,
+    images: ["rpipicow.svg"],
   },
   {
     hwModel: 48,
