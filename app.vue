@@ -5,8 +5,8 @@
       <p>Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.</p>
     </div>
     <Head>
-      <Title>Meshtastic Flasher</Title>
-      <Meta name="description" content="Meshtastic Flasher" />
+      <Title>Meshtastic Custom Firmware Builder</Title>
+      <Meta name="description" content="Meshtastic Builder" />
     </Head>
 
     <section id="main" class="text-gray-400 body-font">
@@ -17,7 +17,7 @@
               <div class="mx-auto">
                 <h1 class="text-white text-6xl font-bold inline-block ml-4 mt-8 align-top">
                   <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
-                  Flasher
+                  Firmware Builder
                 </h1>
               </div>
             </div>
@@ -25,28 +25,28 @@
           <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-72 overflow-hidden flex flex-col items-center display-inline">
-                <img src="@/assets/img/hydra-pcb.svg" class="h-60 mb-2 invert mx-auto" alt="Device" />
-                <Device />
+                <img src="@/assets/img/PlatformIO_logo.svg" class="h-60 mb-2 mx-auto" alt="Device" />
+                <Env />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">Device</h2>
+              <h2 class="text-xl font-medium title-font text-white mt-5">Environment</h2>
               <p class="text-base leading-relaxed mt-2">
-                Plug in your device via USB. Please ensure the cable is not a power-only one. 
+                Select the PlatformIO environment for your custom firmware build.
               </p>
             </div>
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-72 flex flex-col items-center">
-                <FolderArrowDownIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" alt="Firmware" />
-                <Firmware />
+                <TagIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" alt="Version" />
+                <Version />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">Firmware</h2>
+              <h2 class="text-xl font-medium title-font text-white mt-5">Version</h2>
               <p class="text-base leading-relaxed mt-2">
-                Choose from the release options or upload a release zip downloaded from Github. 
+                Optionally choose from a release tag or the latest changes from master.
               </p>
             </div>
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-72 overflow-hidden flex flex-col items-center">
-                <BoltIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" />
-                <Flash />
+                <WrenchScrewdriverIcon class="h-60 w-60 p-5 mb-2 mx-auto text-white" />
+                <Build/>
               </div>
               <h2 class="text-xl font-medium title-font text-white mt-5">Flash</h2>
               <p class="text-base leading-relaxed mt-2">
@@ -122,7 +122,8 @@ import {
   BoltIcon,
   BookOpenIcon,
   CommandLineIcon,
-  FolderArrowDownIcon,
+  TagIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/vue/24/solid';
 
 import { useFirmwareStore } from './stores/firmwareStore';

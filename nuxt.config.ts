@@ -37,17 +37,25 @@ export default defineNuxtConfig({
       proxy: {
         "^/api/.*": {
           target:
-            "https://api.meshtastic.org/",
+            "http://localhost:6942/",
           changeOrigin: true,
           followRedirects: true,
           rewrite: (path) => path.replace(/^\/api/, ""),
           secure: false,
-          headers: {
-            Accept: "application/octet-stream",
-            Origin: 'https://flash.meshtastic.org',
-            Referer: 'https://flash.meshtastic.org/'
-          },
         }
+        // "^/api/.*": {
+        //   target:
+        //     "https://api.meshtastic.org/",
+        //   changeOrigin: true,
+        //   followRedirects: true,
+        //   rewrite: (path) => path.replace(/^\/api/, ""),
+        //   secure: false,
+        //   headers: {
+        //     Accept: "application/octet-stream",
+        //     Origin: 'https://flash.meshtastic.org',
+        //     Referer: 'https://flash.meshtastic.org/'
+        //   },
+        // }
       }
     }
   },

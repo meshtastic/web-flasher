@@ -1,7 +1,7 @@
 <template>
-    <div v-if="firmwareStore.canShowFlash" class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+    <div v-if="store.$state.selectedEnv" class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Flash {{ deviceStore.$state.selectedTarget?.displayName }}
+            Build {{ store.$state.selectedEnv }}
         </h3>
         <button type="button"
             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -18,14 +18,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useDeviceStore } from '../../stores/deviceStore';
-import { useFirmwareStore } from '../../stores/firmwareStore';
-
-const deviceStore = useDeviceStore();
-const firmwareStore = useFirmwareStore();
-
+import { useBuilderStore } from '../stores/builderStore';
+const store = useBuilderStore();
 const closeFlashModal = () => {
     document.getElementById('flash-modal')?.click(); // Flowbite bug
 }
-
 </script>

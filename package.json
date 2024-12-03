@@ -1,6 +1,6 @@
 {
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -34,6 +34,7 @@
     "file-saver": "^2.0.5",
     "flowbite": "^2.2.1",
     "flowbite-vue": "^0.1.2",
+    "json-editor-vue": "^0.17.3",
     "jszip": "^3.10.1",
     "mande": "^2.0.8",
     "marked": "^12.0.1",
