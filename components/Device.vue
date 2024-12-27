@@ -25,16 +25,16 @@
                     </div>
                     <div v-if="vendorCobrandingTag.length === 0" class="p-2 m-2 flex flex-wrap items-center justify-center">
                         <div class="w-full text-center">
-                            <h2>Premier Support Devices</h2>
+                            <h2>Supported Devices</h2>
                         </div>
-                        <div v-for="device in store.sortedDevices.filter(isSupporterDevice)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-[0_35px_60px_-15px_rgba(200,200,200,.3)]" @click="store.setSelectedTarget(device)">
+                        <div v-for="device in store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-[0_35px_60px_-15px_rgba(200,200,200,.3)]" @click="setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
                         </div>
                         <hr class="w-full border-gray-400 my-4" />
-                        <div v-if="store.sortedDevices.filter(d => !isSupporterDevice(d)).length > 0"class="w-full text-center">
+                        <div v-if="store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"class="w-full text-center">
                             <h2 class="text-yellow-400">DIY and Community Devices</h2>
                         </div>
-                        <div v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d))" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-2xl" @click="store.setSelectedTarget(device)">
+                        <div v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-2xl" @click="setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
                         </div>
                     </div>
@@ -62,15 +62,21 @@ import {
 } from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../stores/deviceStore';
+import { useFirmwareStore } from '../stores/firmwareStore';
 import DeviceDetail from './DeviceDetail.vue';
 
 const store = useDeviceStore();
+const firmwareStore = useFirmwareStore();
 store.fetchList();
 
 const isSupporterDevice = (device: DeviceHardware) => {
   return device.tags?.some((tag: string) => supportedVendorDeviceTags.includes(tag));
 }
 
-const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Target Device")
+const setSelectedTarget = (device: DeviceHardware) => {
+  store.setSelectedTarget(device);
+}
+
+const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Device")
 
 </script>

@@ -112,7 +112,7 @@ export const OfflineHardwareList = [
   },
   {
     hwModel: 12,
-    hwModelSlug: "TBEAM_S3_CORE",
+    hwModelSlug: "LILYGO_TBEAM_S3_CORE",
     platformioTarget: "tbeam-s3-core",
     architecture: "esp32-s3",
     activelySupported: true,
@@ -336,7 +336,7 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 3,
     displayName: "Raspberry Pi Pico",
-    tags: ["Raspberry Pi", "DIY"],
+    tags: ["RPi", "DIY"],
     requiresDfu: true,
     images: ["pico.svg"],
   },
@@ -348,7 +348,7 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 3,
     displayName: "Raspberry Pi Pico W",
-    tags: ["Raspberry Pi", "DIY"],
+    tags: ["RPi", "DIY"],
     requiresDfu: true,
     images: ["rpipicow.svg"],
   },
@@ -369,7 +369,7 @@ export const OfflineHardwareList = [
     hwModelSlug: "HELTEC_WIRELESS_TRACKER_V1_0",
     platformioTarget: "heltec-wireless-tracker-V1-0",
     architecture: "esp32-s3",
-    activelySupported: true,
+    activelySupported: false,
     supportLevel: 3,
     displayName: "Heltec Wireless Tracker V1.0",
     images: ["heltec-wireless-tracker.svg"],
@@ -434,7 +434,7 @@ export const OfflineHardwareList = [
     hwModelSlug: "HELTEC_WIRELESS_PAPER_V1_0",
     platformioTarget: "heltec-wireless-paper-v1_0",
     architecture: "esp32-s3",
-    activelySupported: true,
+    activelySupported: false,
     supportLevel: 3,
     tags: ["Heltec"],
     displayName: "Heltec Wireless Paper V1.0",
@@ -455,7 +455,7 @@ export const OfflineHardwareList = [
     hwModelSlug: "HELTEC_WIRELESS_TRACKER",
     platformioTarget: "tracksenger",
     architecture: "esp32-s3",
-    activelySupported: true,
+    activelySupported: false,
     supportLevel: 3,
     displayName: "TrackSenger (small TFT)",
     requiresDfu: true,
@@ -465,7 +465,7 @@ export const OfflineHardwareList = [
     hwModelSlug: "HELTEC_WIRELESS_TRACKER",
     platformioTarget: "tracksenger-lcd",
     architecture: "esp32-s3",
-    activelySupported: true,
+    activelySupported: false,
     supportLevel: 3,
     displayName: "TrackSenger (big TFT)",
     requiresDfu: true,
@@ -475,7 +475,7 @@ export const OfflineHardwareList = [
     hwModelSlug: "HELTEC_WIRELESS_TRACKER",
     platformioTarget: "tracksenger-oled",
     architecture: "esp32-s3",
-    activelySupported: true,
+    activelySupported: false,
     supportLevel: 3,
     displayName: "TrackSenger (big OLED)",
   },
@@ -572,8 +572,8 @@ export const OfflineHardwareList = [
     requiresDfu: true,
   },
   {
-    hwModel: 72,
-    hwModelSlug: "Seeed_XIAO_S3",
+    hwModel: 81,
+    hwModelSlug: "SEEED_XIAO_S3",
     platformioTarget: "seeed-xiao-s3",
     architecture: "esp32-s3",
     activelySupported: true,
@@ -595,6 +595,18 @@ export const OfflineHardwareList = [
     images: ["rak-wismeshtap.svg"],
     requiresDfu: true,
   },
+  {
+    hwModel: 63,
+    hwModelSlug: "NRF52_PROMICRO_DIY",
+    platformioTarget: "nrf52_promicro_diy_tcxo",
+    architecture: "nrf52840",
+    activelySupported: true,
+    supportLevel: 3,
+    displayName: "NRF52 Pro-micro DIY",
+    tags: ["DIY"],
+    images: ["promicro.svg"],
+    requiresDfu: true,
+  }
 ];
 
 const markdownContent = `
@@ -639,4 +651,4 @@ export const currentPrerelease = <FirmwareResource>{
 };
 
 export const vendorCobrandingTag = "";
-export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed"];
+export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY"];

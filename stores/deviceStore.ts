@@ -13,6 +13,7 @@ import {
 // biome-ignore lint/style/useImportType: WUT?
 import { type DeviceHardware } from '../types/api';
 import { createUrl } from './store';
+import { useFirmwareStore } from './firmwareStore';
 
 const firmwareApi = mande(createUrl("api/resource/deviceHardware"));
 
@@ -98,9 +99,15 @@ export const useDeviceStore = defineStore("device", {
         );
       }
     },
-    setSelectedTarget(target: DeviceHardware) {
+    async setSelectedTarget(target: DeviceHardware) {
       this.selectedTarget = target;
       document.getElementById('device-modal')?.click();
+      const firmwareStore = useFirmwareStore();
+
+      await new Promise((_) => setTimeout(_, 250));
+      if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && firmwareStore.stable.length > 0) {
+        firmwareStore.setSelectedFirmware(firmwareStore.stable[0]);
+      }
     },
     setSelectedTag(tag: string) {
       if (tag === "all") {
