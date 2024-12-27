@@ -3,6 +3,11 @@
         <button id="selectDeviceButton" data-modal-target="device-modal" data-modal-toggle="device-modal" class="display-inline content-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center" type="button">
             {{ selectedTarget.replace('_', '-') }}
         </button>
+        <button data-tooltip-target="tooltip-auto" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
+            type="button"
+            @click="store.autoSelectHardware">
+            <RocketLaunchIcon class="h-4 w-4" :class="{'animate-bounce': !store.$state.selectedTarget?.hwModel }" />
+        </button>
         <div id="device-modal" tabindex="-1" aria-hidden="true" class="dark hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-h-full" :class="{ 'max-w-4xl': vendorCobrandingTag.length > 0, 'max-w-8xl': vendorCobrandingTag.length == 0 }">
                 <div class="relative rounded-lg shadow bg-gray-700">
@@ -20,7 +25,7 @@
                     <div class="p-4 mb-1 m-2 text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
                         <span class="font-medium">
                             <InformationCircleIcon class="h-4 w-4 inline" />
-                            If your connected device already has Meshtastic installed, you can automatically detect it: <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><SparklesIcon class="h-4 w-4 text-black" /> Auto-detect</button>
+                            If your connected device already has Meshtastic installed, you can automatically detect it: <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><RocketLaunchIcon class="h-4 w-4 text-black" /> Auto-detect</button>
                         </span>
                     </div>
                     <div v-if="vendorCobrandingTag.length === 0" class="p-2 m-2 flex flex-wrap items-center justify-center">
@@ -58,7 +63,7 @@ import {
 
 import {
   InformationCircleIcon,
-  SparklesIcon,
+  RocketLaunchIcon,
 } from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../stores/deviceStore';
@@ -77,6 +82,6 @@ const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device);
 }
 
-const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Device")
+const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Target Device")
 
 </script>
