@@ -22,7 +22,7 @@
                 </li>
             </ul>
             <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
-                <strong>Alpha</strong>
+                <strong>Unstable (Alpha)</strong>
             </div>
             <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
                 <li v-for="release in store.$state.alpha">
@@ -32,7 +32,7 @@
                 </li>
             </ul>
             <div class="px-4 py-2 text-sm text-gray-900 dark:text-white" v-if="!store.couldntFetchFirmwareApi">
-                <strong>Stable</strong>
+                <strong>Stable (Beta)</strong>
             </div>
             <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton" v-if="!store.couldntFetchFirmwareApi">
                 <li v-for="release in store.$state.stable">
