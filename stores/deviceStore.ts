@@ -147,9 +147,15 @@ export const useDeviceStore = defineStore("device", {
     },
     async autoSelectHardware() {
       const connection = await this.openDeviceConnection();
+      // connection.events.onFromRadio.subscribe((packet: any) => {
+      //   console.log("Packet", packet);
+      // });
       // biome-ignore lint/suspicious/noExplicitAny: FUGGEDABOUTIT
       connection.events.onDeviceMetadataPacket.subscribe((packet: any) => {
+        // Try to find the device by pio env name first, then hw model if that fails
         const device = this.targets.find(
+          (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
+        ) || this.targets.find(
           (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
         );
         console.log("Found device onDeviceMetadataPacket", device);
