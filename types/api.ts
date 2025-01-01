@@ -21,6 +21,9 @@ export interface DeviceHardware {
 	architecture: string;
 	activelySupported: boolean;
 	displayName: string;
+	supportLevel?: number;
+	tags?: string[];
+	images?: string[];
 }
 
 export function getCorsFriendyReleaseUrl(url: string) {
