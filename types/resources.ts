@@ -596,6 +596,18 @@ export const OfflineHardwareList = [
     requiresDfu: true,
   },
   {
+    hwModel: 22,
+    hwModelSlug: "WISMESH_HUB",
+    platformioTarget: "rak2560",
+    architecture: "nrf52840",
+    activelySupported: true,
+    supportLevel: 1,
+    displayName: "RAK WisMesh Repeater",
+    tags: ["RAK"],
+    images: ["rak2560.svg"],
+    requiresDfu: true,
+  },
+  {
     hwModel: 63,
     hwModelSlug: "NRF52_PROMICRO_DIY",
     platformioTarget: "nrf52_promicro_diy_tcxo",
@@ -606,7 +618,7 @@ export const OfflineHardwareList = [
     tags: ["DIY"],
     images: ["promicro.svg"],
     requiresDfu: true,
-  }
+  },
 ];
 
 const markdownContent = `
