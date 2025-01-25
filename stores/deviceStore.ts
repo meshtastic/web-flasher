@@ -155,7 +155,7 @@ export const useDeviceStore = defineStore("device", {
         // Try to find the device by pio env name first, then hw model if that fails
         const device = this.targets.find(
           (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
-        ) || this.targets.find(
+        ) || this.targets.sort((a, b) => a.hwModel - b.hwModel).find(
           (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
         );
         console.log("Found device onDeviceMetadataPacket", device);
