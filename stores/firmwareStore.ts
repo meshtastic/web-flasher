@@ -46,6 +46,8 @@ export const useFirmwareStore = defineStore('firmware', {
       hasSeenReleaseNotes: false,
       shouldCleanInstall: false,
       shouldBundleWebUI: false,
+      shouldInstallMui: false,
+      partitionScheme: <String | undefined>{},
       flashPercentDone: 0,
       isFlashing: false,
       flashingIndex: 0,
@@ -66,6 +68,12 @@ export const useFirmwareStore = defineStore('firmware', {
     isFactoryBin: (state) => state.selectedFile?.name.endsWith('.factory.bin'),
   },
   actions: {
+    clearState() {
+      this.shouldCleanInstall = false;
+      this.shouldBundleWebUI = false;
+      this.shouldInstallMui = false;
+      this.partitionScheme = undefined;
+    },
     continueToFlash() {
       this.hasSeenReleaseNotes = true
     },
@@ -186,9 +194,27 @@ export const useFirmwareStore = defineStore('firmware', {
       const appContent = await this.fetchBinaryContent(fileName);
       const otaContent = await this.fetchBinaryContent(otaFileName);
       const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
+
+      let otaOffset = 0x260000;
+      let spiffsOffset = 0x300000;
+      if (this.shouldInstallMui && this.partitionScheme == "8MB") {
+        // 8mb
+        otaOffset = 0x340000;
+        spiffsOffset = 0x670000;
+      }
+      else if (this.shouldInstallMui && this.partitionScheme == "16MB") {
+        // 16mb
+        otaOffset = 0x650000;
+        spiffsOffset = 0xc90000;
+      }
+
       this.isFlashing = true;
       const flashOptions: FlashOptions = {
-        fileArray: [{ data: appContent, address: 0x00 }, { data: otaContent, address: 0x260000 }, { data: littleFsContent, address: 0x300000 }],
+        fileArray: [
+          { data: appContent, address: 0x00 },
+          { data: otaContent, address: otaOffset },
+          { data: littleFsContent, address: spiffsOffset }
+        ],
         flashSize: 'keep',
         eraseAll: true,
         compress: true,

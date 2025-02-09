@@ -153,13 +153,19 @@ export const useDeviceStore = defineStore("device", {
       // biome-ignore lint/suspicious/noExplicitAny: FUGGEDABOUTIT
       connection.events.onDeviceMetadataPacket.subscribe((packet: any) => {
         // Try to find the device by pio env name first, then hw model if that fails
-        const device = this.targets.find(
-          (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
-        ) || this.targets.find(
-          (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
-        );
-        console.log("Found device onDeviceMetadataPacket", device);
+        let device = <undefined | DeviceHardware> undefined;
+        if (packet?.data?.platformioTarget?.length > 0) {
+          device = this.targets.find(
+            (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
+          );
+        }
+        if (!device) {
+          device = this.targets.find(
+            (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
+          );
+        }
         if (device) {
+          console.log("Found device onDeviceMetadataPacket", device);
           this.setSelectedTarget(device);
         }
       });

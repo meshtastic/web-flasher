@@ -149,7 +149,7 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 2,
     displayName: "LILYGO T-LoRa V2.1-1.8",
-    tags: ["LilyGo", "2.4G LoRA"],
+    tags: ["LilyGo", "2.4GHz"],
     images: ["tlora-v2-1-1_8.svg"],
   },
   {
@@ -397,6 +397,8 @@ export const OfflineHardwareList = [
     tags: ["LilyGo"],
     images: ["t-deck.svg"],
     requiresDfu: true,
+    hasMui: true,
+    partitionScheme: "16MB",
   },
   {
     hwModel: 51,
@@ -417,6 +419,8 @@ export const OfflineHardwareList = [
     activelySupported: true,
     supportLevel: 3,
     displayName: "Pi Computer S3",
+    hasMui: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 53,
@@ -449,6 +453,8 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "unPhone",
     requiresDfu: true,
+    hasMui: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 48,
@@ -558,6 +564,8 @@ export const OfflineHardwareList = [
     displayName: "Seeed SenseCAP Indicator",
     tags: ["Seeed"],
     images: ["seeed-sensecap-indicator.svg"],
+    hasMui: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 71,
@@ -618,7 +626,7 @@ export const OfflineHardwareList = [
     tags: ["DIY"],
     images: ["promicro.svg"],
     requiresDfu: true,
-  },
+  }
 ];
 
 const markdownContent = `
