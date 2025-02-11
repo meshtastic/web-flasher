@@ -58,7 +58,15 @@
                             </span>
                         </div>
                     </li>
+                    <li>
+                        <label class="relative inline-flex items-center me-5 ml-8 my-2 cursor-pointer" v-if="canInstallInkHud">
+                            <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.shouldInstallInkHud">
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Install InkHUD display</span>
+                        </label>
+                    </li>
                 </ol>
+
                 <div v-if="firmwareStore.canShowFlash">
                     <a :href="downloadUf2FileUrl" v-if="firmwareStore.selectedFirmware?.id"
                     class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
@@ -90,14 +98,34 @@ const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
 
 const downloadUf2FileFs = () => {
+    if (canInstallInkHud.value) {
+    }
     const searchRegex = new RegExp(`firmware-${deviceStore.$state.selectedTarget.platformioTarget}-.+.uf2`);
     firmwareStore.downloadUf2FileSystem(searchRegex);
 }
 
+const isNewFirmware = computed(() => {
+    // Just check for *not* 2.5 firmware version for now
+    return !firmwareStore.firmwareVersion.includes('2.5');
+});
+
+const canInstallInkHud = computed(() => {
+    if (!firmwareStore.$state.prereleaseUnlocked)
+        return false;
+    if (!isNewFirmware.value)
+        return false;
+    return deviceStore.$state.selectedTarget.hasInkHud === true;
+});
+
+
 const downloadUf2FileUrl = computed(() => {
     if (!firmwareStore.selectedFirmware?.id) return '';
     const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
-    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
+    let suffix = "";
+    if (firmwareStore.shouldInstallInkHud) {
+        suffix = "-inkhud";
+    }
+    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}${suffix}-${firmwareVersion}.uf2`
     firmwareStore.trackDownload(deviceStore.$state.selectedTarget, false);
     return firmwareStore.getReleaseFileUrl(firmwareFile);
 });

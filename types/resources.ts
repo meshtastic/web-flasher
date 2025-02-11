@@ -70,6 +70,7 @@ export const OfflineHardwareList = [
     tags: ["LilyGo"],
     images: ["t-echo.svg"],
     requiresDfu: true,
+    hasInkHud: true,
   },
   {
     hwModel: 8,
@@ -385,6 +386,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Wireless Paper",
     tags: ["Heltec"],
     images: ["heltec-wireless-paper.svg"],
+    hasInkHud: true,
   },
   {
     hwModel: 50,
@@ -529,6 +531,7 @@ export const OfflineHardwareList = [
     tags: ["Heltec"],
     images: ["heltec-vision-master-e213.svg"],
     requiresDfu: true,
+    hasInkHud: true,
   },
   {
     hwModel: 68,
@@ -541,6 +544,7 @@ export const OfflineHardwareList = [
     tags: ["Heltec"],
     images: ["heltec-vision-master-e290.svg"],
     requiresDfu: true,
+    hasInkHud: true,
   },
   {
     hwModel: 69,

@@ -47,6 +47,7 @@ export const useFirmwareStore = defineStore('firmware', {
       shouldCleanInstall: false,
       shouldBundleWebUI: false,
       shouldInstallMui: false,
+      shouldInstallInkHud: false,
       partitionScheme: <String | undefined>{},
       flashPercentDone: 0,
       isFlashing: false,
@@ -72,6 +73,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.shouldCleanInstall = false;
       this.shouldBundleWebUI = false;
       this.shouldInstallMui = false;
+      this.shouldInstallInkHud = false;
       this.partitionScheme = undefined;
     },
     continueToFlash() {
@@ -98,6 +100,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFirmware = firmware;
       this.selectedFile = undefined;
       this.hasSeenReleaseNotes = false;
+      this.clearState();
     },
     getReleaseFileUrl(fileName: string): string {
       if (!this.selectedFirmware?.zip_url) return '';
@@ -127,6 +130,7 @@ export const useFirmwareStore = defineStore('firmware', {
     async setFirmwareFile(file: File) {
       this.selectedFile = file;
       this.selectedFirmware = undefined;
+      this.clearState();
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal();
