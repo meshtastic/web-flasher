@@ -223,7 +223,7 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
 const targetPrefix = computed(() => {
     let pioSuffix = "";
     if (firmwareStore.$state.shouldInstallMui) {
-        pioSuffix = "-mui";
+        pioSuffix = "-tft";
     } else if (firmwareStore.$state.shouldInstallInkHud) {
         pioSuffix = "-inkhud";
     }
@@ -233,18 +233,19 @@ const targetPrefix = computed(() => {
 const cleanInstallEsp32 = () => {
     const firmwareFile = `firmware-${targetPrefix.value}.bin`;
     const otaFile = deviceStore.$state.selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
-
+    console.log(firmwareFile, otaFile, littleFsFileName.value);
     firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFileName.value, deviceStore.$state.selectedTarget);
 }
 const littleFsFileName = computed(() => {
     let prefix = firmwareStore.shouldBundleWebUI ? 'littlefswebui' : 'littlefs';
-    const littleFsInfix = isNewFirmware.value ? firmwareStore.firmwareVersion : `${targetPrefix.value}`;
+    const littleFsInfix = isNewFirmware.value ? `${targetPrefix.value}` : firmwareStore.firmwareVersion;
     return `${prefix}-${littleFsInfix}.bin`;
 });
 
 const updateEsp32 = () => {
     // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
     const firmwareFile = `firmware-${targetPrefix.value}-update.bin`;
+    console.log(firmwareFile);
     firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget);
 }
 </script>

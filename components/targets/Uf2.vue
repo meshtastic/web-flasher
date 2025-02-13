@@ -98,9 +98,12 @@ const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
 
 const downloadUf2FileFs = () => {
-    if (canInstallInkHud.value) {
+    let suffix = "";
+    if (firmwareStore.shouldInstallInkHud) {
+        suffix = "-inkhud";
     }
-    const searchRegex = new RegExp(`firmware-${deviceStore.$state.selectedTarget.platformioTarget}-.+.uf2`);
+    const searchRegex = new RegExp(`firmware-${deviceStore.$state.selectedTarget.platformioTarget}${suffix}-.+.uf2`);
+    console.log(searchRegex);
     firmwareStore.downloadUf2FileSystem(searchRegex);
 }
 
@@ -127,6 +130,7 @@ const downloadUf2FileUrl = computed(() => {
     }
     const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}${suffix}-${firmwareVersion}.uf2`
     firmwareStore.trackDownload(deviceStore.$state.selectedTarget, false);
+    console.log(firmwareFile);
     return firmwareStore.getReleaseFileUrl(firmwareFile);
 });
 </script>
