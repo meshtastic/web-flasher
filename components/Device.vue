@@ -80,6 +80,7 @@ const isSupporterDevice = (device: DeviceHardware) => {
 
 const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device);
+  firmwareStore.clearState();
 }
 
 const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Target Device")

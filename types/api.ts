@@ -24,6 +24,9 @@ export interface DeviceHardware {
 	supportLevel?: number;
 	tags?: string[];
 	images?: string[];
+	partitionScheme?: string;
+	hasMui?: boolean;
+	hasInkHud?: boolean;
 }
 
 export function getCorsFriendyReleaseUrl(url: string) {

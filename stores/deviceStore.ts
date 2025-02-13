@@ -154,14 +154,13 @@ export const useDeviceStore = defineStore("device", {
       connection.events.onDeviceMetadataPacket.subscribe((packet: any) => {
         // Try to find the device by pio env name first, then hw model if that fails
         let device = <undefined | DeviceHardware> undefined;
-        const targets = [...this.targets].sort((a, b) => a.hwModel - b.hwModel);
         if (packet?.data?.platformioTarget?.length > 0) {
-          device = targets.find(
+          device = this.targets.find(
             (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
           );
         }
         if (!device) {
-          device = targets.find(
+          device = this.targets.find(
             (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
           );
         }

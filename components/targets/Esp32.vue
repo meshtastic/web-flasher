@@ -62,6 +62,16 @@
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
                             <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Bundle Web UI</span>
                         </label>
+                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallMui">
+                            <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallMui">
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                            <img src="/img/Meshtastic-UI-Long.svg" class="h-6 mx-1" alt="Meshtastic UI" />
+                        </label>
+                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallInkHud">
+                            <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallInkHud">
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Install InkHUD display</span>
+                        </label>
                         <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
                             <div class="flex items-center">
                                 <InformationCircleIcon class="flex-shrink-0 inline w-4 h-4 mr-1" />
@@ -168,6 +178,33 @@ const canFullInstall = () => {
 }
 const canBundleWebUI = ref(false);
 
+const isNewFirmware = computed(() => {
+    // Just check for *not* 2.5 firmware version for now
+    return !firmwareStore.firmwareVersion.includes('2.5');
+});
+
+const canInstallMui = computed(() => {
+    if (!firmwareStore.$state.prereleaseUnlocked)
+        return false;
+    if (!isNewFirmware.value)
+        return false;
+    // Can't install MUI if we're installing the WebUI
+    return deviceStore.$state.selectedTarget.hasMui === true && !firmwareStore.shouldBundleWebUI;
+});
+
+const canInstallInkHud = computed(() => {
+    if (!firmwareStore.$state.prereleaseUnlocked)
+        return false;
+    if (!isNewFirmware.value)
+        return false;
+    return deviceStore.$state.selectedTarget.hasInkHud === true;
+});
+
+watch(() => firmwareStore.$state.shouldInstallMui, () => {
+    canBundleWebUI.value = !firmwareStore.$state.shouldInstallMui;
+    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
+});
+
 watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
     if (firmwareStore.isZipFile && firmwareStore.$state.selectedFile) {
         const reader = new BlobReader(firmwareStore.$state.selectedFile);
@@ -176,25 +213,39 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
         const foundWebUI = entries.find(entry => entry.filename.startsWith('littlefswebui'));
         canBundleWebUI.value = !!foundWebUI;
     } else if (firmwareStore.selectedFirmware) {
-        const littleFsFile = `littlefswebui-${firmwareStore.firmwareVersion}.bin`;
-        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFile));
+        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value));
     }
     else {
         canBundleWebUI.value = false;
     }
 });
 
+const targetPrefix = computed(() => {
+    let pioSuffix = "";
+    if (firmwareStore.$state.shouldInstallMui) {
+        pioSuffix = "-tft";
+    } else if (firmwareStore.$state.shouldInstallInkHud) {
+        pioSuffix = "-inkhud";
+    }
+    return `${deviceStore.$state.selectedTarget.platformioTarget}${pioSuffix}-${firmwareStore.firmwareVersion}`;
+});
+
 const cleanInstallEsp32 = () => {
-    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`;
+    const firmwareFile = `firmware-${targetPrefix.value}.bin`;
     const otaFile = deviceStore.$state.selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
-    const prefix = firmwareStore.shouldBundleWebUI ? 'littlefswebui' : 'littlefs';
-    const littleFsFile = `${prefix}-${firmwareStore.firmwareVersion}.bin`;
-    firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFile, deviceStore.$state.selectedTarget);
+    console.log(firmwareFile, otaFile, littleFsFileName.value);
+    firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFileName.value, deviceStore.$state.selectedTarget);
 }
+const littleFsFileName = computed(() => {
+    let prefix = firmwareStore.shouldBundleWebUI ? 'littlefswebui' : 'littlefs';
+    const littleFsInfix = isNewFirmware.value ? `${targetPrefix.value}` : firmwareStore.firmwareVersion;
+    return `${prefix}-${littleFsInfix}.bin`;
+});
 
 const updateEsp32 = () => {
     // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
-    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}-update.bin`
+    const firmwareFile = `firmware-${targetPrefix.value}-update.bin`;
+    console.log(firmwareFile);
     firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget);
 }
 </script>
