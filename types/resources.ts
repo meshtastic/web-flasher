@@ -128,9 +128,10 @@ export const OfflineHardwareList = [
     hwModelSlug: "RAK11200",
     platformioTarget: "rak11200",
     architecture: "esp32",
-    activelySupported: false,
+    activelySupported: true,
     displayName: "RAK WisBlock 11200",
     tags: ["RAK"],
+    images: ["rak11200.svg"],
   },
   {
     hwModel: 14,
