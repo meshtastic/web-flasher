@@ -142,8 +142,21 @@ export const useDeviceStore = defineStore("device", {
       });
     },
     async baud1200() {
-      const port: SerialPort = await navigator.serial.requestPort();
-      await port.open({ baudRate: 1200 });
+      try {
+        const port: SerialPort = await navigator.serial.requestPort();
+        
+        // Check if the port is already open and close it if necessary
+        if (port.readable || port.writable) {
+          await port.close();
+          console.log("Serial port closed successfully.");
+        }
+
+        await port.open({ baudRate: 1200 });
+        console.log("Serial port opened successfully at 1200 baud rate.");
+      } catch (error) {
+        console.error("Failed to open serial port:", error);
+        // ads an error message
+      }
     },
     async autoSelectHardware() {
       const connection = await this.openDeviceConnection();
