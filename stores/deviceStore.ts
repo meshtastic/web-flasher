@@ -154,8 +154,11 @@ export const useDeviceStore = defineStore("device", {
         await port.open({ baudRate: 1200 });
         console.log("Serial port opened successfully at 1200 baud rate.");
       } catch (error) {
-        console.error("Failed to open serial port:", error);
-        // ads an error message
+        console.error("Failed to open serial port:");
+        console.error(`Error message: ${error.message}`);
+        console.error(`Error name: ${error.name}`);
+        console.error(`Error stack: ${error.stack}`);
+        // Add any additional error handling or user notification here
       }
     },
     async autoSelectHardware() {
