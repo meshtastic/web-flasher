@@ -143,16 +143,26 @@ export const useDeviceStore = defineStore("device", {
     },
     async baud1200() {
       try {
+        console.log("Requesting serial port...");
         const port: SerialPort = await navigator.serial.requestPort();
-        
+        console.log("Serial port requested successfully.");
+
         // Check if the port is already open and close it if necessary
         if (port.readable || port.writable) {
+          console.log("Port is already open. Closing port...");
           await port.close();
           console.log("Serial port closed successfully.");
         }
 
+        console.log("Creating client instance...");
         this.client = new Client();
+        console.log("Client instance created.");
+
+        console.log("Creating serial connection...");
         const connection = this.client.createSerialConnection();
+        console.log("Serial connection created.");
+
+        console.log("Connecting to serial port with baud rate 1200...");
         await connection.connect({
           port,
           baudRate: 1200,
