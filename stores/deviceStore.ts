@@ -151,7 +151,13 @@ export const useDeviceStore = defineStore("device", {
           console.log("Serial port closed successfully.");
         }
 
-        await port.open({ baudRate: 1200 });
+        this.client = new Client();
+        const connection = this.client.createSerialConnection();
+        await connection.connect({
+          port,
+          baudRate: 1200,
+          concurrentLogOutput: true,
+        });
         console.log("Serial port opened successfully at 1200 baud rate.");
       } catch (error) {
         console.error("Failed to open serial port:");
