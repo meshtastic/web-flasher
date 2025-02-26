@@ -645,6 +645,8 @@ const markdownContent = `
 * Improvements to LoRA slot-time calculation
 * More robust device state file strategy
 
+🚨 **Flashing the 2.6 Preview Requires a Configuration Wipe: Back Up Your Config/Keys** 🚨
+
 See [blog post](https://meshtastic.org/blog/meshtastic-2-6-preview/) for more details.
 `;
 
