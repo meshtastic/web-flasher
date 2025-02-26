@@ -38,7 +38,7 @@ const props = defineProps({
   },
 })
 
-const isPreviewUnlocked = () => false;//firmwareStore.$state.prereleaseUnlocked;
+const isPreviewUnlocked = () => firmwareStore.$state.prereleaseUnlocked;
 const isSupporterDevice = (device: DeviceHardware) => {
     // Add your logic to determine if the device is a supporter device
     return device.tags?.some(t => supportedVendorDeviceTags.includes(t));

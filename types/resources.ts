@@ -635,55 +635,26 @@ export const OfflineHardwareList = [
 ];
 
 const markdownContent = `
-## 🚀 Enhancements
-* Add setting to transmit NeighborInfo over LoRa by @GUVWAF in https://github.com/meshtastic/firmware/pull/5286
-* Fix non-primary channel usage for non-PKC packets by @GUVWAF in https://github.com/meshtastic/firmware/pull/5287
-* Remove scary warning about full NodeDB by @fifieldt in https://github.com/meshtastic/firmware/pull/5292
-* Pin library versions in platform.io by @jp-bennett in https://github.com/meshtastic/firmware/pull/5293
-* Update dependency versions by @fifieldt in https://github.com/meshtastic/firmware/pull/5299
-* Exclude some niche modules by default and populate exclude_modules by @thebentern in https://github.com/meshtastic/firmware/pull/5300
-* Rak10701 (rak wismeshtap)  optimization by @DanielCao0 in https://github.com/meshtastic/firmware/pull/5280
-* Coerce minimum neighborinfo interval on startup by @thebentern in https://github.com/meshtastic/firmware/pull/5314
-* Add back some details to the PhoneAPI logs by @thebentern in https://github.com/meshtastic/firmware/pull/5313
-* Radiolib update by @caveman99 in https://github.com/meshtastic/firmware/pull/5246
-* Fix sending duplicate packets to PhoneAPI/MQTT by @GUVWAF in https://github.com/meshtastic/firmware/pull/5315
-* Don't send to public channel by @gjelsoe in https://github.com/meshtastic/firmware/pull/5310
-* Portduino packaging: Move meshtastic/web out of \`/usr/share/doc\` by @vidplace7 in https://github.com/meshtastic/firmware/pull/5323
-* Reduce the flash usage of wismeshtap platform by @DanielCao0 in https://github.com/meshtastic/firmware/pull/5322
-* Add support for ignoring nodes with \`is_ignored\` field in NodeInfo by @mdesmedt in https://github.com/meshtastic/firmware/pull/5319
-* RP2040: Update core; add mDNS support by @GUVWAF in https://github.com/meshtastic/firmware/pull/5355
 
-## 🐛 Bug fixes
-* Fix memory leak in MQTT by @GUVWAF in https://github.com/meshtastic/firmware/pull/5311
-* Don't attempt to save NodeDB on low-batt shutdown to prevent FS corruption by @thebentern in https://github.com/meshtastic/firmware/pull/5312
-* Fix syntax error with package builds by @fifieldt in https://github.com/meshtastic/firmware/pull/5302
-* Package file move - include dotfiles by @fifieldt in https://github.com/meshtastic/firmware/pull/5303
-* Fix another heap leak by @GUVWAF in https://github.com/meshtastic/firmware/pull/5328
-* Handle repeated packet after potentially canceling previous Tx by @GUVWAF in https://github.com/meshtastic/firmware/pull/5330
-* Read voltage during init fixes #5276 by @Blake-Latchford in https://github.com/meshtastic/firmware/pull/5332
-* Only allow 30 seconds minimum for power.on_battery_shutdown_after_secs by @thebentern in https://github.com/meshtastic/firmware/pull/5337
-* Decrease max nodes for NRF52 to 80 as workaround to prevent FS blowouts by @thebentern in https://github.com/meshtastic/firmware/pull/5338
-* Revert "Decrease max nodes for NRF52 to 80 as workaround to prevent FS blowouts" by @thebentern in https://github.com/meshtastic/firmware/pull/5340
-* Remove log spam when reading INA sensor. by @Mictronics in https://github.com/meshtastic/firmware/pull/5345
-* Migrate NRF52 devices max nodes down to 80 for now to prevent file system blowouts by @thebentern in https://github.com/meshtastic/firmware/pull/5346
-* Adds fixed GPS, BUTTON_PIN and BLE code to userPrefs.h by @gjelsoe in https://github.com/meshtastic/firmware/pull/5341
-* Add sudo to apt-get commands for Raspbian Build by @fifieldt in https://github.com/meshtastic/firmware/pull/5364
-* Typo fix in build_raspbian.yml by @fifieldt in https://github.com/meshtastic/firmware/pull/5365
+## 🚀 Featuring
 
-## New Contributors
-* @mdesmedt made their first contribution in https://github.com/meshtastic/firmware/pull/5319
-* @Blake-Latchford made their first contribution in https://github.com/meshtastic/firmware/pull/5332
+* Next-hop Routing Protocol
+* MUI - A (Fancy) Meshtastic User Interface
+* InkHUD - A new heads-up display mode for e-ink screens
+* Meshtastic over LAN (UDP) on ESP32
+* Improvements to LoRA slot-time calculation
+* More robust device state file strategy
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.5.12.aa184e6...v2.5.13.74d0c58
+See [blog post](https://meshtastic.org/blog/meshtastic-2-6-preview/) for more details.
 `;
 
-const currentPrereleaseId = '2.5.13.74d0c58';
+const currentPrereleaseId = '2.6.0.f5db94e';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
-  title: `Meshtastic Firmware ${currentPrereleaseId} Alpha`,
+  title: `Meshtastic Firmware ${currentPrereleaseId} Tech Preview`,
   zip_url: `https://github.com/meshtastic/firmware/releases/download/v${currentPrereleaseId}/firmware-${currentPrereleaseId}.zip`,
   release_notes: markdownContent,
 };
