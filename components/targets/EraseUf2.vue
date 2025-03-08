@@ -1,12 +1,12 @@
 <template>
     <div class="relative w-full max-w-4xl max-h-full">
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <div class="relative rounded-lg shadow bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
+                <h3 class="text-lg font-semibold text-white">
                     Erase Flash {{ deviceStore.$state.selectedTarget?.displayName }}
                 </h3>
                 <button type="button"
-                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"
                     data-modal-toggle="flash-modal"
                     @click="closeModal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -18,15 +18,15 @@
                 </button>
             </div>
             <div class="p-4 md:p-5">
-                <ol class="relative border-s border-gray-200 dark:border-gray-600 ms-3.5 mb-4 md:mb-5">
+                <ol class="relative border-s border-gray-200 border-gray-600 ms-3.5 mb-4 md:mb-5">
                     <li class="mb-10 ms-8">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             1
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
                             Enter (UF2) DFU Mode
                         </h3>
-                        <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 For firmware versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}
@@ -42,10 +42,10 @@
                         </button>
                     </li>
                     <li class="mb-10 ms-8">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             2
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
                             Ensure device DFU mode drive is mounted
                         </h3>
                         <span>
@@ -57,10 +57,10 @@
                         </div>
                     </li>
                     <li class="ms-8">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             3
                         </span>
-                        <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="mb-1 text-lg font-semibold text-white">
                             Download Flash Erase UF2 file to DFU drive
                         </h3>
                         <div class="py-2">
@@ -75,10 +75,10 @@
                         </a>
                     </li>
                     <li class="ms-8 mt-4" v-if="deviceStore.isSelectedNrf">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             4
                         </span>
-                        <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="mb-1 text-lg font-semibold text-white">
                             Open Serial Monitor
                         </h3>
                         <div class="py-2">
@@ -94,10 +94,10 @@
                         </div>
                     </li>
                     <li class="ms-8 mt-4" v-if="deviceStore.isSelectedNrf">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             5
                         </span>
-                        <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="mb-1 text-lg font-semibold text-white">
                             Flash Firmware
                         </h3>
                         <div class="py-2">

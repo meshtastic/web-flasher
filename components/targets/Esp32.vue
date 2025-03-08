@@ -1,18 +1,18 @@
 <template>
     <div class="relative w-full max-w-4xl max-h-full">
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="relative rounded-lg shadow bg-gray-700">
             <FlashHeader />
             <div class="p-4 md:p-5">
                 <ReleaseNotes />
-                <ol v-if="firmwareStore.canShowFlash" class="relative border-s border-gray-200 dark:border-gray-600 ms-3.5 mb-4 md:mb-5">
+                <ol v-if="firmwareStore.canShowFlash" class="relative border-s border-gray-200 border-gray-600 ms-3.5 mb-4 md:mb-5">
                     <li class="mb-10 ms-8">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             1
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
                             Ensure device is plugged in via USB
                         </h3>
-                        <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.
@@ -28,10 +28,10 @@
                         </div>
                     </li>
                     <li class="mb-10 ms-8">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             2
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
                             Choose baud rate
                         </h3>
                         <div>
@@ -46,33 +46,33 @@
                         </div>
                     </li>
                     <li class="ms-8">
-                        <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             3
                         </span>
-                        <h3 class="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="mb-1 text-lg font-semibold text-white">
                             Flash firmware
                         </h3>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canFullInstall()">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldCleanInstall">
-                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Full Erase and Install</span>
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-100">Full Erase and Install</span>
                         </label>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="firmwareStore.$state.shouldCleanInstall && canBundleWebUI">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldBundleWebUI">
-                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Bundle Web UI</span>
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-100">Bundle Web UI</span>
                         </label>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallMui">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallMui">
-                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
                             <img src="/img/Meshtastic-UI-Long.svg" class="h-6 mx-1" alt="Meshtastic UI" />
                         </label>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallInkHud">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallInkHud">
-                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Install InkHUD display</span>
+                            <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-100">Install InkHUD display</span>
                         </label>
-                        <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400">
+                        <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 bg-gray-800 text-red-400">
                             <div class="flex items-center">
                                 <InformationCircleIcon class="flex-shrink-0 inline w-4 h-4 mr-1" />
                                 <span>
@@ -81,8 +81,8 @@
                                 </span>
                             </div>
                             <div class="flex items-center mt-2">
-                                <LinkIcon class="h-4 w-4 mr-1 text-red-800 dark:text-red-400" />
-                                <a href="https://meshtastic.org/docs/configuration/radio/security/#security-keys---backup-and-restore" target="_blank" class="underline text-red-800 dark:text-red-400">
+                                <LinkIcon class="h-4 w-4 mr-1 text-red-800 text-red-400" />
+                                <a href="https://meshtastic.org/docs/configuration/radio/security/#security-keys---backup-and-restore" target="_blank" class="underline text-red-800 text-red-400">
                                     Check out this guide in our documentation.</a>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                             This process could take a while. 
                         </p>
                         <div>
-                            <div class="p-4 mb-4 my-2 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                            <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                                 <span class="font-medium">
                                     <InformationCircleIcon class="h-4 w-4 inline" />
                                     After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says "waiting to download" in the console.
