@@ -113,8 +113,6 @@ const isNewFirmware = computed(() => {
 });
 
 const canInstallInkHud = computed(() => {
-    if (!firmwareStore.$state.prereleaseUnlocked)
-        return false;
     if (!isNewFirmware.value)
         return false;
     return deviceStore.$state.selectedTarget.hasInkHud === true;

@@ -184,8 +184,6 @@ const isNewFirmware = computed(() => {
 });
 
 const canInstallMui = computed(() => {
-    if (!firmwareStore.$state.prereleaseUnlocked)
-        return false;
     if (!isNewFirmware.value)
         return false;
     // Can't install MUI if we're installing the WebUI
@@ -193,8 +191,6 @@ const canInstallMui = computed(() => {
 });
 
 const canInstallInkHud = computed(() => {
-    if (!firmwareStore.$state.prereleaseUnlocked)
-        return false;
     if (!isNewFirmware.value)
         return false;
     return deviceStore.$state.selectedTarget.hasInkHud === true;
