@@ -631,7 +631,19 @@ export const OfflineHardwareList = [
     tags: ["DIY"],
     images: ["promicro.svg"],
     requiresDfu: true,
-  }
+  },
+  {
+    hwModel: 88,
+    hwModelSlug: "XIAO_NRF52_KIT",
+    platformioTarget: "seeed_xiao_nrf52840_kit",
+    architecture: "nrf52840",
+    activelySupported: true,
+    supportLevel: 1,
+    displayName: "Seeed Xiao NRF52840 Kit",
+    tags: ["Seeed"],
+    requiresDfu: true,
+    images: ["seeed_xiao_nrf52_kit.svg"]
+  },
 ];
 
 const markdownContent = `
