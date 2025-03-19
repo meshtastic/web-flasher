@@ -653,7 +653,7 @@ const markdownContent = `
 🚨 **Flashing 2.6.2 Preview Requires a full erase and wipe ** 🚨
 `;
 
-const currentPrereleaseId = '2.6.2.f7afa9a';
+const currentPrereleaseId = '2.6.2.f8ad02a';
 
 export const showPrerelease = true;
 
