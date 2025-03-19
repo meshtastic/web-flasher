@@ -648,27 +648,18 @@ export const OfflineHardwareList = [
 
 const markdownContent = `
 
-## 🚀 Featuring
+## 🚀 ESP32 big boi partition pre-release
 
-* Next-hop Routing Protocol
-* MUI - A (Fancy) Meshtastic User Interface
-* InkHUD - A new heads-up display mode for e-ink screens
-* Meshtastic over LAN (UDP) on ESP32
-* Improvements to LoRA slot-time calculation
-* More robust device state file strategy
-
-🚨 **Flashing the 2.6 Preview Requires a Configuration Wipe: Back Up Your Config/Keys** 🚨
-
-See [blog post](https://meshtastic.org/blog/meshtastic-2-6-preview/) for more details.
+🚨 **Flashing 2.6.2 Preview Requires a full erase and wipe ** 🚨
 `;
 
-const currentPrereleaseId = '2.6.0.f7afa9a';
+const currentPrereleaseId = '2.6.2.f7afa9a';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
-  title: `Meshtastic Firmware ${currentPrereleaseId} Tech Preview`,
+  title: `Meshtastic Firmware ${currentPrereleaseId} Preview`,
   zip_url: `https://github.com/meshtastic/firmware/releases/download/v${currentPrereleaseId}/firmware-${currentPrereleaseId}.zip`,
   release_notes: markdownContent,
 };
