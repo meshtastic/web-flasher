@@ -122,6 +122,7 @@ export const OfflineHardwareList = [
     tags: ["LilyGo"],
     images: ["tbeam-s3-core.svg"],
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 13,
@@ -267,6 +268,7 @@ export const OfflineHardwareList = [
     tags: ["B&Q"],
     requiresDfu: true,
     images: ["station-g2.svg"],
+    partitionScheme: "16MB",
   },
   {
     hwModel: 39,
@@ -318,6 +320,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec V3",
     tags: ["Heltec"],
     images: ["heltec-v3.svg", "heltec-v3-case.svg"],
+    partitionScheme: "8MB",
   },
   {
     hwModel: 44,
@@ -329,6 +332,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Wireless Stick Lite V3",
     tags: ["Heltec"],
     images: ["heltec-wsl-v3.svg"],
+    partitionScheme: "8MB",
   },
   {
     hwModel: 47,
@@ -365,6 +369,7 @@ export const OfflineHardwareList = [
     tags: ["Heltec"],
     images: ["heltec-wireless-tracker.svg"],
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 58,
@@ -376,6 +381,7 @@ export const OfflineHardwareList = [
     displayName: "Heltec Wireless Tracker V1.0",
     images: ["heltec-wireless-tracker.svg"],
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 49,
@@ -388,6 +394,7 @@ export const OfflineHardwareList = [
     tags: ["Heltec"],
     images: ["heltec-wireless-paper.svg"],
     hasInkHud: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 50,
@@ -413,6 +420,7 @@ export const OfflineHardwareList = [
     displayName: "LILYGO T-Watch S3",
     tags: ["LilyGo"],
     images: ["t-watch-s3.svg"],
+    partitionScheme: "16MB",
   },
   {
     hwModel: 52,
@@ -446,6 +454,7 @@ export const OfflineHardwareList = [
     tags: ["Heltec"],
     displayName: "Heltec Wireless Paper V1.0",
     images: ["heltec-wireless-paper-v1_0.svg"],
+    partitionScheme: "8MB",
   },
   {
     hwModel: 59,
@@ -468,6 +477,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "TrackSenger (small TFT)",
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 48,
@@ -478,6 +488,7 @@ export const OfflineHardwareList = [
     supportLevel: 3,
     displayName: "TrackSenger (big TFT)",
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 48,
@@ -487,6 +498,7 @@ export const OfflineHardwareList = [
     activelySupported: false,
     supportLevel: 3,
     displayName: "TrackSenger (big OLED)",
+    partitionScheme: "8MB",
   },
   {
     hwModel: 61,
@@ -520,6 +532,7 @@ export const OfflineHardwareList = [
     tags: ["Heltec"],
     images: ["heltec-vision-master-t190.svg"],
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 67,
@@ -533,6 +546,7 @@ export const OfflineHardwareList = [
     images: ["heltec-vision-master-e213.svg"],
     requiresDfu: true,
     hasInkHud: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 68,
@@ -546,6 +560,7 @@ export const OfflineHardwareList = [
     images: ["heltec-vision-master-e290.svg"],
     requiresDfu: true,
     hasInkHud: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 69,
@@ -595,6 +610,7 @@ export const OfflineHardwareList = [
     tags: ["Seeed"],
     images: ["seeed-xiao-s3.svg"],
     requiresDfu: true,
+    partitionScheme: "8MB",
   },
   {
     hwModel: 84,
