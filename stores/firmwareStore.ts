@@ -201,12 +201,12 @@ export const useFirmwareStore = defineStore('firmware', {
 
       let otaOffset = 0x260000;
       let spiffsOffset = 0x300000;
-      if (this.shouldInstallMui && this.partitionScheme == "8MB") {
+      if (this.partitionScheme == "8MB") {
         // 8mb
         otaOffset = 0x340000;
         spiffsOffset = 0x670000;
       }
-      else if (this.shouldInstallMui && this.partitionScheme == "16MB") {
+      else if (this.partitionScheme == "16MB") {
         // 16mb
         otaOffset = 0x650000;
         spiffsOffset = 0xc90000;

@@ -229,9 +229,25 @@ const targetPrefix = computed(() => {
 const cleanInstallEsp32 = () => {
     const firmwareFile = `firmware-${targetPrefix.value}.bin`;
     const otaFile = deviceStore.$state.selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin';
+    // Coerce the partition scheme to be the same as the selected target for all 2.6.2+ firmwares
+    if (deviceStore.$state.selectedTarget.partitionScheme && twoPointSixPointTwoOrGreater.value) {
+        firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
+    }
     console.log(firmwareFile, otaFile, littleFsFileName.value);
     firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFileName.value, deviceStore.$state.selectedTarget);
 }
+
+const twoPointSixPointTwoOrGreater = computed(() => {
+    if (!firmwareStore.firmwareVersion) {
+        return false;
+    }
+    if (firmwareStore.firmwareVersion.includes('2.6') &&
+        !firmwareStore.firmwareVersion.includes('2.6.0') && // 2.6.1 is pre-partition scheme
+        !firmwareStore.firmwareVersion.includes('2.6.1')) { // 2.6.0 is pre-partition scheme
+        return true;
+    }
+});
+
 const littleFsFileName = computed(() => {
     let prefix = firmwareStore.shouldBundleWebUI ? 'littlefswebui' : 'littlefs';
     const littleFsInfix = isNewFirmware.value ? `${targetPrefix.value}` : firmwareStore.firmwareVersion;
