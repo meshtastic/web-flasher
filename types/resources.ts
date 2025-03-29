@@ -664,9 +664,8 @@ export const OfflineHardwareList = [
 
 const markdownContent = `
 
-## 🚀 ESP32 big boi partition pre-release
+## Meshtastic Firmware 2.6.4 Secret Alpha Preview
 
-🚨 **Flashing 2.6.2 Preview Requires a full erase and wipe ** 🚨
 `;
 
 const currentPrereleaseId = '2.6.4.b89355f';
@@ -675,7 +674,7 @@ export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
-  title: `Meshtastic Firmware ${currentPrereleaseId} Preview`,
+  title: `Meshtastic Firmware ${currentPrereleaseId} Pre-release`,
   zip_url: `https://github.com/meshtastic/firmware/releases/download/v${currentPrereleaseId}/firmware-${currentPrereleaseId}.zip`,
   release_notes: markdownContent,
 };
