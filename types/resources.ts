@@ -669,9 +669,9 @@ const markdownContent = `
 🚨 **Flashing 2.6.2 Preview Requires a full erase and wipe ** 🚨
 `;
 
-const currentPrereleaseId = '2.6.2.f8ad02a';
+const currentPrereleaseId = '2.6.4.b89355f';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
