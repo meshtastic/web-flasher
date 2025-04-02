@@ -660,6 +660,31 @@ export const OfflineHardwareList = [
     requiresDfu: true,
     images: ["seeed_xiao_nrf52_kit.svg"]
   },
+  {
+    hwModel: 89,
+    hwModelSlug: "THINKNODE_M1",
+    platformioTarget: "thinknode_m1",
+    architecture: "nrf52840",
+    activelySupported: true,
+    supportLevel: 1,
+    displayName: "ThinkNode M1",
+    tags: ["Elecrow"],
+    requiresDfu: true,
+    images: ["thinknode_m1.svg"],
+    hasInkHud: true,
+  },
+  {
+    hwModel: 90,
+    hwModelSlug: "THINKNODE_M2",
+    platformioTarget: "thinknode_m2",
+    architecture: "esp32-s3",
+    activelySupported: true,
+    supportLevel: 1,
+    displayName: "ThinkNode M2",
+    tags: ["Elecrow"],
+    requiresDfu: false,
+    images: ["thinknode_m2.svg"],
+  },
 ];
 
 const markdownContent = `
