@@ -685,6 +685,18 @@ export const OfflineHardwareList = [
     requiresDfu: false,
     images: ["thinknode_m2.svg"],
   },
+  {
+    hwModel: 91,
+    hwModelSlug: "NOMADSTAR_METEOR_PRO",
+    platformioTarget: "rak4631_nomadstar_meteor_pro",
+    architecture: "nrf52840",
+    activelySupported: true,
+    supportLevel: 1,
+    displayName: "NomadStar Meteor Pro",
+    tags: ["NomadStar", "RAK"],
+    requiresDfu: true,
+    images: ["rak4631_nomadstar_meteor_pro.svg"]
+  }
 ];
 
 const markdownContent = `
