@@ -686,7 +686,7 @@ export const OfflineHardwareList = [
     images: ["thinknode_m2.svg"],
   },
   {
-    hwModel: 91,
+    hwModel: 96,
     hwModelSlug: "NOMADSTAR_METEOR_PRO",
     platformioTarget: "rak4631_nomadstar_meteor_pro",
     architecture: "nrf52840",
