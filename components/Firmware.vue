@@ -81,6 +81,9 @@ import { FolderOpenIcon } from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../stores/deviceStore';
 import { useFirmwareStore } from '../stores/firmwareStore';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const store = useFirmwareStore();
 const deviceStore = useDeviceStore();
@@ -92,7 +95,7 @@ const selectedVersion = computed(() => {
     } else if (store.$state.selectedFile?.name) {
         return store.$state.selectedFile?.name;
     }
-    return "Select Firmware Version";
+    return t('firmware.select_firmware');
 });
 
 const canSelectFirmware = computed(() => {

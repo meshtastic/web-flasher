@@ -3,7 +3,7 @@
         <div class="relative rounded-lg shadow bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
                 <h3 class="text-lg font-semibold text-white">
-                    Erase Flash {{ deviceStore.$state.selectedTarget?.displayName }}
+                    {{ $t('flash.erase_flash') }} {{ deviceStore.$state.selectedTarget?.displayName }}
                 </h3>
                 <button type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"

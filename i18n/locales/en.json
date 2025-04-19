@@ -1,0 +1,50 @@
+{
+  "title": "Meshtastic Web Flasher",
+  "header": "Flasher",
+  "description": "A web-based tool for ESP32 firmware flashing",
+  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
+  "header_title": "FLASHER",
+  "language": "Language",
+  "device": {
+    "title": "Device",
+    "header": "Select your connected device",
+    "select_device": "Select Target Device",
+    "all_devices": "All Devices",
+    "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
+    "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
+    "auto_detect": "Auto-detect",
+    "supported_devices": "Supported Devices",
+    "diy_devices": "DIY Devices"
+  },
+  "firmware": {
+    "title": "Firmware",
+    "select_firmware": "Select Firmware",
+    "instructions": "Choose from the release options or upload a release zip downloaded from Github."
+  },
+  "flash": {
+    "title": "Flash",
+    "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
+    "erase_flash": "Erase Flash",
+    "erase_flash_prefix": "Erase Flash of",
+    "release_notes": {
+      "continue": "Continue"
+    },
+    "close_dialog": "Close dialog"
+  },
+  "buttons": {
+    "serial_monitor": "Open Serial Monitor",
+    "meshtastic_docs": "Meshtastic Docs",
+    "contribute": "Contribute on GitHub"
+  },
+  "serial": {
+    "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
+    "disconnect": "Disconnect",
+    "log_levels": {
+      "all": "All",
+      "debug": "Debug",
+      "info": "Info",
+      "warn": "Warn",
+      "error": "Error"
+    }
+  }
+}
