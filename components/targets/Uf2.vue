@@ -10,19 +10,19 @@
                             1
                         </span>
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-                            Enter (UF2) DFU Mode
+                            {{ $t('flash.uf2.enter_dfu_mode') }}
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                For firmware versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}
+                                {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2') }} {{ deviceStore.dfuStepAction }}
                             </span>
                         </div>
                         <button type="button"
                             class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="deviceStore.enterDfuMode()">
                             <FolderArrowDownIcon class="h-4 w-4 text-black" />
-                            Enter DFU Mode
+                            {{ $t('flash.uf2.enter_dfu') }}
                         </button>
                     </li>
                     <li class="mb-10 ms-8">
@@ -30,10 +30,10 @@
                             2
                         </span>
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-                            Ensure device DFU mode drive is mounted
+                            {{ $t('flash.uf2.ensure_drive_mounted') }}
                         </h3>
                         <span>
-                            The drive may have a different name depending on your device hardware and its bootloader.
+                            {{ $t('flash.uf2.drive_name_info') }}
                         </span>
                         <div>
                             <img v-if="deviceStore.isSelectedNrf" src="@/assets/img/dfu.png" alt="DFU Drive" />
@@ -45,16 +45,15 @@
                             3
                         </span>
                         <h3 class="mb-1 text-lg font-semibold text-white">
-                            Download or copy UF2 file to DFU drive
+                            {{ $t('flash.uf2.download_copy_uf2') }}
                         </h3>
                         <span>
-                            Download or copy UF2 file to the DFU drive.
-                            The device will automatically reboot when the transfer completes and will start with the new firmware.
+                            {{ $t('flash.uf2.copy_instructions') }}
                         </span>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected
+                                {{ $t('flash.uf2.auto_reboot_warning') }}
                             </span>
                         </div>
                     </li>
@@ -62,7 +61,7 @@
                         <label class="relative inline-flex items-center me-5 ml-8 my-2 cursor-pointer" v-if="canInstallInkHud">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.shouldInstallInkHud">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-100">Install InkHUD display</span>
+                            <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.uf2.install_inkhud') }}</span>
                         </label>
                     </li>
                 </ol>
@@ -70,11 +69,11 @@
                 <div v-if="firmwareStore.canShowFlash">
                     <a :href="downloadUf2FileUrl" v-if="firmwareStore.selectedFirmware?.id"
                     class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                    Download UF2
+                    {{ $t('flash.uf2.download_uf2') }}
                     </a>
                     <button @click="downloadUf2FileFs" v-else
                         class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        Download UF2
+                        {{ $t('flash.uf2.download_uf2') }}
                     </button>
                 </div>
             </div>
@@ -88,6 +87,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/vue/24/solid';
 import { track } from '@vercel/analytics';
+import { computed } from 'vue';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';

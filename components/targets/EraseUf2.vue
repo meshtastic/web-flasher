@@ -14,7 +14,7 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                     </svg>
-                    <span class="sr-only">Close dialog</span>
+                    <span class="sr-only">{{ $t('actions.close_dialog') }}</span>
                 </button>
             </div>
             <div class="p-4 md:p-5">
@@ -24,21 +24,21 @@
                             1
                         </span>
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-                            Enter (UF2) DFU Mode
+                            {{ $t('flash.uf2.enter_dfu_mode') }}
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                For firmware versions &lt; {{ deviceStore.enterDfuVersion }}, trigger DFU mode manually by {{ deviceStore.dfuStepAction }}
+                                {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2')}} {{ deviceStore.dfuStepAction }}
                                 <br />
-                                After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.
+                                {{ $t('flash.erase_uf2.dfu_warning') }}
                             </span>
                         </div>
                         <button type="button"
                             class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="deviceStore.enterDfuMode()">
                             <FolderArrowDownIcon class="h-4 w-4 text-black" />
-                            Enter DFU Mode
+                            {{ $t('flash.uf2.enter_dfu') }}
                         </button>
                     </li>
                     <li class="mb-10 ms-8">
@@ -46,10 +46,10 @@
                             2
                         </span>
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-                            Ensure device DFU mode drive is mounted
+                            {{ $t('flash.uf2.ensure_drive_mounted') }}
                         </h3>
                         <span>
-                            The drive may have a different name depending on your device hardware and its bootloader.
+                            {{ $t('flash.uf2.drive_name_info') }}
                         </span>
                         <div>
                             <img v-if="deviceStore.isSelectedNrf" src="@/assets/img/dfu.png" alt="DFU Drive" />
@@ -61,17 +61,17 @@
                             3
                         </span>
                         <h3 class="mb-1 text-lg font-semibold text-white">
-                            Download Flash Erase UF2 file to DFU drive
+                            {{ $t('flash.uf2.download_copy_uf2') }}
                         </h3>
                         <div class="py-2">
                             <span>
-                                Download and Copy UF2 file to the DFU drive.
-                                After the file is copied, the drive should disappear. {{ !deviceStore.isSelectedNrf ? 'The device flash should be erased after this operation.' : '' }}
+                                {{ $t('flash.uf2.copy_instructions') }}
+                                {{ !deviceStore.isSelectedNrf ? $t('flash.erase_uf2.warning') : '' }}
                             </span>
                         </div>
                         <a :href="uf2File" download="" 
                             class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black">
-                            Download Flash Erase UF2
+                            {{ $t('flash.uf2.download_uf2') }}
                         </a>
                     </li>
                     <li class="ms-8 mt-4" v-if="deviceStore.isSelectedNrf">
@@ -79,16 +79,16 @@
                             4
                         </span>
                         <h3 class="mb-1 text-lg font-semibold text-white">
-                            Open Serial Monitor
+                            {{ $t('buttons.serial_monitor') }}
                         </h3>
                         <div class="py-2">
-                            Wait for the drive to disappear, then open a serial monitor to complete the erase process.
+                            {{ $t('flash.erase_uf2.wait_for_drive') }}
                         </div>
                         <div>
                         <button v-if="deviceStore.isSelectedNrf"
                             class="text-black inline-flex w-[250px] justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" 
                             @click="openSerial">
-                            Open Serial Monitor
+                            {{ $t('buttons.serial_monitor') }}
                         </button>
                         
                         </div>
@@ -98,16 +98,16 @@
                             5
                         </span>
                         <h3 class="mb-1 text-lg font-semibold text-white">
-                            Flash Firmware
+                            {{ $t('firmware.title') }}
                         </h3>
                         <div class="py-2">
-                            Close this popup to select a firmware version and begin flashing.
+                            {{ $t('flash.erase_uf2.close_instructions') }}
                         </div>
                         <div>
                             <button type="button"
                             class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="closeModal">
-                            Return to Flasher
+                            {{ $t('actions.continue') }}
                         </button>
                         </div>
                     </li>
