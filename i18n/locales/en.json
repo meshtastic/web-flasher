@@ -61,6 +61,7 @@
       "reset_button": "1200bps Reset",
       "full_erase": "Full Erase and Install",
       "bundle_webui": "Bundle Web UI",
+      "install_inkhud": "Install InkHUD",
       "backup_warning": "Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.",
       "webui_space_warning": "Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.",
       "doc_guide": "Check out this guide in our documentation.",
@@ -111,8 +112,5 @@
       "warn": "Warn",
       "error": "Error"
     }
-  },
-  "esp32": {
-    "install_inkhud": "Install InkHUD"
   }
 }
