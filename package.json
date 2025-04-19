@@ -24,6 +24,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
     "@meshtastic/js": "npm:@jsr/meshtastic__js@2.5.9-0",
+    "@nuxtjs/i18n": "^9.5.3",
     "@pinia/nuxt": "^0.10.1",
     "@types/w3c-web-serial": "^1.0.8",
     "@vercel/analytics": "^1.5.0",

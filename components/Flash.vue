@@ -3,7 +3,7 @@
         <button data-modal-target="flash-modal" data-modal-toggle="flash-modal"
             class="inline text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 disabled:bg-gray-500 text-center"
             type="button" :disabled="!canFlash">
-            Flash
+            {{ $t('flash.title') }}
         </button>
         <button v-show="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" data-tooltip-target="tooltip-erase" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
             type="button"
@@ -12,7 +12,7 @@
             <TrashIcon class="h-4 w-4" :class="{'animate-pulse': deviceStore.$state.selectedTarget?.hwModel }" />
         </button>
         <div id="tooltip-erase" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
-            Erase flash of {{ deviceStore.selectedTarget?.displayName }}.
+            {{ $t('flash.erase_flash_prefix') }} {{ deviceStore.selectedTarget?.displayName }}.
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
         <div id="flash-modal" tabindex="-1" aria-hidden="true"

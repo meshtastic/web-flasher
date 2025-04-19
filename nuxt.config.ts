@@ -15,8 +15,34 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
-    '@vite-pwa/nuxt'
+    '@vite-pwa/nuxt',
+    '@nuxtjs/i18n',
   ],
+  i18n: {
+    locales: [
+      {
+        code: 'en',
+        name: 'English',
+        file: 'en.json',
+      },
+      // {
+      //   code: 'es',
+      //   name: 'Español',
+      //   file: 'es.json',
+      // },
+    ],
+    defaultLocale: 'en',
+    lazy: true,
+    strategy: 'no_prefix',
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_lang',
+      redirectOn: 'root',
+    },
+  },
 
   pwa: {
     /* PWA options */
