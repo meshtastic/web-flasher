@@ -52,8 +52,8 @@
                             {{ $t('flash.uf2.drive_name_info') }}
                         </span>
                         <div>
-                            <img v-if="deviceStore.isSelectedNrf" src="@/assets/img/dfu.png" alt="DFU Drive" />
-                            <img v-else src="@/assets/img/uf2_rp2040.png" alt="DFU Drive" />
+                            <img v-if="deviceStore.isSelectedNrf" src="@/assets/img/dfu.png" :alt="$t('flash.uf2.dfu_drive')" />
+                            <img v-else src="@/assets/img/uf2_rp2040.png" :alt="$t('flash.uf2.dfu_drive')" />
                         </div>
                     </li>
                     <li class="ms-8">

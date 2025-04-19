@@ -11,6 +11,15 @@
     "continue": "Continue",
     "close_dialog": "Close dialog"
   },
+  "state": {
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "connecting": "Connecting",
+    "disconnecting": "Disconnecting",
+    "flashing": "Flashing",
+    "flashed": "Flashed",
+    "error": "Error"
+  },
   "device": {
     "title": "Device",
     "header": "Select your connected device",
@@ -25,7 +34,15 @@
   "firmware": {
     "title": "Firmware",
     "select_firmware": "Select Firmware",
-    "instructions": "Choose from the release options or upload a release zip downloaded from Github."
+    "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
+    "stable": "Stable (or Beta)",
+    "unstable": "Unstable (Alpha)",
+    "prerelease": "Pre-release",
+    "error_fetching": "Could not fetch firmware versions from API.",
+    "refresh_later": "Refresh the page later to try again.",
+    "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
+    "upload_tooltip": "Upload your own firmware release zip or bin.",
+    "icon": "icon"
   },
   "flash": {
     "title": "Flash",
@@ -64,6 +81,7 @@
       "dfu_firmware_clause": "For firmware versions",
       "dfu_firmware_clause_2": "trigger DFU mode manually by",
       "drive_name_info": "The drive may have a different name depending on your device hardware and its bootloader.",
+      "dfu_drive": "DFU drive",
       "download_copy_uf2": "Download or copy UF2 file to DFU drive",
       "copy_instructions": "Download or copy UF2 file to the DFU drive. The device will automatically reboot when the transfer completes and will start with the new firmware.",
       "auto_reboot_warning": "The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected",

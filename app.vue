@@ -31,7 +31,7 @@
             </div>
             <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-80 flex flex-col items-center">
-                <FolderArrowDownIcon class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" alt="Firmware" />
+                <FolderArrowDownIcon class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" :alt="$t('firmware.title')" />
                 <Firmware />
               </div>
               <h2 class="text-xl font-medium title-font text-white mt-5">{{ $t('firmware.title') }}</h2>
@@ -103,7 +103,8 @@
 
 <script setup>
 import 'flowbite';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 import { onMounted } from 'vue';
 
 import {
@@ -142,12 +143,12 @@ const selectedDeviceImage = computed(() => {
 
 const connectionButtonLabel = computed(() => {
   if (firmwareStore.isFlashing) {
-    return 'Flashing';
+    return t('state.flashing');
   }
   if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
-    return 'Disconnecting';
+    return t('state.disconnecting');
   }
-  return isConnected.value ? 'Connected' : 'Not connected';
+  return isConnected.value ? t('state.connected') : t('state.disconnected');
 });
 
 const isConnected = computed(() => {
