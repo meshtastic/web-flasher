@@ -214,6 +214,17 @@ export const OfflineHardwareList = [
     requiresDfu: true,
   },
   {
+    hwModel: 24,
+    hwModelSlug: "HELTEC_WIRELESS_BRIDGE",
+    platformioTarget: "heltec-wireless-bridge",
+    architecture: "esp32",
+    activelySupported: false,
+    displayName: "Heltec Wireless Bridge",
+    tags: ["Heltec"],
+    images: ["heltec-wireless-bridge.svg"],
+    partitionScheme: "8MB",
+  },
+  {
     hwModel: 25,
     hwModelSlug: "STATION_G1",
     platformioTarget: "station-g1",
