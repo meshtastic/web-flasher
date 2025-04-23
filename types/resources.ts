@@ -700,14 +700,59 @@ export const OfflineHardwareList = [
 ];
 
 const markdownContent = `
+## 🚀 Enhancements
+* DIY v1/v1_1 add TCXO_OPTIONAL make it so that the firmware can try both TCXO and XTAL by @Andrik45719 in https://github.com/meshtastic/firmware/pull/6534
+* InkHUD support for LilyGo T3S3 E-Paper by @todd-herbert in https://github.com/meshtastic/firmware/pull/6503
+* Feat: Add Electronic Cats variant for Catsniffer by @JahazielLem in https://github.com/meshtastic/firmware/pull/6483
+* Add generic thread module by @tavdog in https://github.com/meshtastic/firmware/pull/5484
+* Add Meshtastic Linux desktop metadata by @vidplace7 in https://github.com/meshtastic/firmware/pull/6568
+* Add new hardware: Heltec MeshPocket by @Heltec-Aaron-Lee in https://github.com/meshtastic/firmware/pull/6533
+* Switch to actually maintained thingsboard pubsubclient by @thebentern in https://github.com/meshtastic/firmware/pull/5204
+* Make startup screen show the short ID by @Heltec-Aaron-Lee in https://github.com/meshtastic/firmware/pull/6591
+* Update platformio.ini to exclude unused modules from t1000-e by @benkyd in https://github.com/meshtastic/firmware/pull/6584
+* Debian: use native-tft compile target by @vidplace7 in https://github.com/meshtastic/firmware/pull/6580
+* Create lora-piggystick-lr1121.yaml by @markbirss in https://github.com/meshtastic/firmware/pull/6600
+* Add TFT docker builds (for CI) by @vidplace7 in https://github.com/meshtastic/firmware/pull/6614
+* FlatHub: bump metainfo.xml on release by @ThatKalle in https://github.com/meshtastic/firmware/pull/6578
 
-## Meshtastic Firmware 2.6.4 Secret Alpha Preview
+## 🐛 Bug fixes and enhancements
+* Fix Ublox GPS for Heltec T114 by @todd-herbert in https://github.com/meshtastic/firmware/pull/6497
+* Portduino: Set C standard to 17 by @vidplace7 in https://github.com/meshtastic/firmware/pull/6561
+* Fix: Correct underlying cause of T-Watch not functioning when set to a 16MB filesystem by @Kealper in https://github.com/meshtastic/firmware/pull/6563
+* Trunk fixes for heltec mesh pocket. by @fifieldt in https://github.com/meshtastic/firmware/pull/6588
+* Fix T-Echo display light blink on LoRa TX by @todd-herbert in https://github.com/meshtastic/firmware/pull/6590
+* Fix: set upload_speed for tlora_v1_3 & tlora_v2_1_16 by @MayNiklas in https://github.com/meshtastic/firmware/pull/6595
+* Fix tlora v1 uploadspeed by @MayNiklas in https://github.com/meshtastic/firmware/pull/6601
+* Fix uninitialised memory read (adminModule) by @benkyd in https://github.com/meshtastic/firmware/pull/6605
+* Add support for Seeed solar panel by @Dylanliacc in https://github.com/meshtastic/firmware/pull/6597
+* Fix compiler error in PowerFSM when WiFi is excluded by @benkyd in https://github.com/meshtastic/firmware/pull/6603
+* Crowpanel support by @caveman99 in https://github.com/meshtastic/firmware/pull/6355
+* Lib Update by @caveman99 in https://github.com/meshtastic/firmware/pull/6510
+* Fix crash when clearing NRF52 BLE bonds  by @todd-herbert in https://github.com/meshtastic/firmware/pull/6609
+* Docker: Fix arg passthrough by @vidplace7 in https://github.com/meshtastic/firmware/pull/6623
+* RPM: Build native-tft target by @vidplace7 in https://github.com/meshtastic/firmware/pull/6613
+* Docker alpine: Add config templates by @vidplace7 in https://github.com/meshtastic/firmware/pull/6631
+* Appdata.xml: Add date to all releases by @vidplace7 in https://github.com/meshtastic/firmware/pull/6632
+* Rak13800 Ethernet works on rak11310 too by @Nivek-domo in https://github.com/meshtastic/firmware/pull/6622
+* Build and deploy event firmwares by @vidplace7 in https://github.com/meshtastic/firmware/pull/6628
+* Publish firmware all together by @vidplace7 in https://github.com/meshtastic/firmware/pull/6642
+* Fix: SenseCAP Indicator: remove buzzer definition by @mverch67 in https://github.com/meshtastic/firmware/pull/6652
+* Correct a typing error in InkHUD display driver by @todd-herbert in https://github.com/meshtastic/firmware/pull/6651
+* Fix preamble detected IRQ flag by @GUVWAF in https://github.com/meshtastic/firmware/pull/6653
 
+## New Contributors
+* @renovate made their first contribution in https://github.com/meshtastic/firmware/pull/6545
+* @JahazielLem made their first contribution in https://github.com/meshtastic/firmware/pull/6483
+* @MayNiklas made their first contribution in https://github.com/meshtastic/firmware/pull/6595
+* @benkyd made their first contribution in https://github.com/meshtastic/firmware/pull/6584
+* @Nivek-domo made their first contribution in https://github.com/meshtastic/firmware/pull/6622
+
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.6.5.fc3d9f2...v2.6.6.b1e35cd
 `;
 
-const currentPrereleaseId = '2.6.4.b89355f';
+const currentPrereleaseId = '2.6.6.b1e35cd';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
