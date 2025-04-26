@@ -749,7 +749,7 @@ const markdownContent = `
 
 `;
 
-const currentPrereleaseId = '2.6.6.03f19bc';
+const currentPrereleaseId = '2.6.6.54c1423';
 
 export const showPrerelease = true;
 
