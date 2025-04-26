@@ -747,10 +747,9 @@ const markdownContent = `
 * @benkyd made their first contribution in https://github.com/meshtastic/firmware/pull/6584
 * @Nivek-domo made their first contribution in https://github.com/meshtastic/firmware/pull/6622
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.6.5.fc3d9f2...v2.6.6.b1e35cd
 `;
 
-const currentPrereleaseId = '2.6.6.b1e35cd';
+const currentPrereleaseId = '2.6.6.03f19bc';
 
 export const showPrerelease = true;
 
