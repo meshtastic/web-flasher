@@ -26,19 +26,19 @@
                     <div class="p-4 mb-1 m-2 text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
                         <span class="font-medium">
                             <InformationCircleIcon class="h-4 w-4 inline" />
-                            If your connected device already has Meshtastic installed, you can automatically detect it: <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><RocketLaunchIcon class="h-4 w-4 text-black" /> Auto-detect</button>
+                            {{ $t('device.subheading') }} <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><RocketLaunchIcon class="h-4 w-4 text-black" /> Auto-detect</button>
                         </span>
                     </div>
                     <div v-if="vendorCobrandingTag.length === 0" class="p-2 m-2 flex flex-wrap items-center justify-center">
                         <div class="w-full text-center">
-                            <h2>Supported Devices</h2>
+                            <h2>{{ $t('device.supported_devices') }}</h2>
                         </div>
                         <div v-for="device in store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-[0_35px_60px_-15px_rgba(200,200,200,.3)]" @click="setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
                         </div>
                         <hr class="w-full border-gray-400 my-4" />
                         <div v-if="store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"class="w-full text-center">
-                            <h2 class="text-yellow-400">DIY and Community Devices</h2>
+                            <h2 class="text-yellow-400">{{ $t('device.diy_devices') }}</h2>
                         </div>
                         <div v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-2xl" @click="setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
@@ -70,6 +70,9 @@ import {
 import { useDeviceStore } from '../stores/deviceStore';
 import { useFirmwareStore } from '../stores/firmwareStore';
 import DeviceDetail from './DeviceDetail.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const store = useDeviceStore();
 const firmwareStore = useFirmwareStore();
@@ -84,6 +87,6 @@ const setSelectedTarget = (device: DeviceHardware) => {
   firmwareStore.clearState();
 }
 
-const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : "Select Target Device")
+const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : t('device.select_device'));
 
 </script>

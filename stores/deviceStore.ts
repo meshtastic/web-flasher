@@ -14,6 +14,7 @@ import {
 import { type DeviceHardware } from '../types/api';
 import { createUrl } from './store';
 import { useFirmwareStore } from './firmwareStore';
+import { useI18n } from 'vue-i18n';
 
 const firmwareApi = mande(createUrl("api/resource/deviceHardware"));
 
@@ -70,10 +71,12 @@ export const useDeviceStore = defineStore("device", {
       return "2.2.18";
     },
     dfuStepAction(): string {
+      const { t } = useI18n();
+
       if (this.isSelectedNrf) {
-        return "double-clicking RST button.";
+        return t('flash.dfu_action_doubleclick');
       }
-      return "pressing and holding BOOTSEL button while plugging in USB cable.";
+      return t('flash.dfu_action_bootsel');
     },
   },
   actions: {

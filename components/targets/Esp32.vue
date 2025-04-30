@@ -10,19 +10,19 @@
                             1
                         </span>
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-                            Ensure device is plugged in via USB
+                            {{ $t('flash.esp32.step_1_usb') }}
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
-                                If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.
+                                {{ $t('flash.esp32.s3_instructions') }}
                                 <br />
-                                Alternatively, you can try the <strong>1200bps Reset</strong> method to place the device in correct mode.
+                                {{ $t('flash.esp32.reset_alternative') }}
                                 <button type="button"
                                     class="inline-flex items-center mt-1 mx-1 py-1 px-2 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                                     @click="deviceStore.baud1200()">
                                     <CpuChipIcon class="h-4 w-4 text-black" />
-                                    1200bps Reset
+                                    {{ $t('flash.esp32.reset_button') }}
                                 </button>
                             </span>
                         </div>
@@ -32,7 +32,7 @@
                             2
                         </span>
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-                            Choose baud rate
+                            {{ $t('flash.esp32.step_2_baud_rate') }}
                         </h3>
                         <div>
                             <select class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" v-model="firmwareStore.$state.baudRate">
@@ -42,7 +42,7 @@
                                 <option value="921600">921600</option>
                                 <!-- TODO styling and wire this up -->
                             </select>
-                            <span class="text-sm mt-1">115200 is slower, but can be more reliable for low-quality connections.</span>
+                            <span class="text-sm mt-1">{{ $t('flash.esp32.slow_reliable') }}</span>
                         </div>
                     </li>
                     <li class="ms-8">
@@ -50,17 +50,17 @@
                             3
                         </span>
                         <h3 class="mb-1 text-lg font-semibold text-white">
-                            Flash firmware
+                            {{ $t('flash.esp32.step_3_flash') }}
                         </h3>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canFullInstall()">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldCleanInstall">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-100">Full Erase and Install</span>
+                            <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.full_erase') }}</span>
                         </label>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="firmwareStore.$state.shouldCleanInstall && canBundleWebUI">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldBundleWebUI">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-100">Bundle Web UI</span>
+                            <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.bundle_webui') }}</span>
                         </label>
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallMui">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallMui">
@@ -70,30 +70,30 @@
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallInkHud">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallInkHud">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-100">Install InkHUD display</span>
+                            <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.install_inkhud') }}</span>
                         </label>
                         <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 bg-gray-800 text-red-400">
                             <div class="flex items-center">
                                 <InformationCircleIcon class="flex-shrink-0 inline w-4 h-4 mr-1" />
                                 <span>
-                                    Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.
-                                    <span v-if="firmwareStore.$state.shouldBundleWebUI">Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.</span>
+                                    {{ $t('flash.esp32.backup_warning') }}
+                                    <span v-if="firmwareStore.$state.shouldBundleWebUI">{{ $t('flash.esp32.webui_space_warning') }}</span>
                                 </span>
                             </div>
                             <div class="flex items-center mt-2">
                                 <LinkIcon class="h-4 w-4 mr-1 text-red-800 text-red-400" />
                                 <a href="https://meshtastic.org/docs/configuration/radio/security/#security-keys---backup-and-restore" target="_blank" class="underline text-red-800 text-red-400">
-                                    Check out this guide in our documentation.</a>
+                                    {{ $t('flash.esp32.doc_guide') }}</a>
                             </div>
                         </div>
                         <p>
-                            This process could take a while. 
+                            {{ $t('flash.esp32.process_warning') }}
                         </p>
                         <div>
                             <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                                 <span class="font-medium">
                                     <InformationCircleIcon class="h-4 w-4 inline" />
-                                    After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says "waiting to download" in the console.
+                                    {{ $t('flash.esp32.reset_after_flash') }}
                                 </span>
                             </div>
                         </div>
@@ -102,13 +102,13 @@
                 <div v-if="firmwareStore.canShowFlash">
                     <button v-if="showFlashButton"
                         class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="flash">
-                        {{ firmwareStore.$state.shouldCleanInstall ? 'Erase Flash and Install' : 'Update' }}
+                        {{ firmwareStore.$state.shouldCleanInstall ? $t('flash.esp32.erase_and_install') : $t('flash.esp32.update') }}
                     </button>
                     <button v-if="firmwareStore.$state.flashPercentDone > 0 && !firmwareStore.$state.isFlashing"
                         class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" @click="startOver">
-                        Start Over
+                        {{ $t('flash.esp32.start_over') }}
                     </button>
-                    <div v-if="firmwareStore.$state.flashPercentDone > 0" class="mb-1 text-center font-medium text-white">Flashing {{ partition }} {{ firmwareStore.percentDone }} complete</div>
+                    <div v-if="firmwareStore.$state.flashPercentDone > 0" class="mb-1 text-center font-medium text-white">{{ $t('flash.esp32.flashing_complete') }} {{ partition }} {{ firmwareStore.percentDone }} {{ $t('flash.esp32.complete') }}</div>
                     <div class="w-fullrounded-full h-2.5 mb-4 bg-gray-700" v-if="firmwareStore.$state.flashPercentDone > 0">
                         <div class="bg-meshtastic h-2.5 rounded-full" :style=" { 'width': firmwareStore.percentDone }"></div>
                     </div>
@@ -121,6 +121,9 @@
 
 <script lang="ts" setup>
 import '@/node_modules/xterm/css/xterm.css';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 import {
   CpuChipIcon,
@@ -132,6 +135,7 @@ import {
   ZipReader,
 } from '@zip.js/zip.js';
 
+
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';
 import FlashHeader from './FlashHeader.vue';
@@ -142,13 +146,13 @@ const firmwareStore = useFirmwareStore();
 
 const partition = computed(() => {
     if (firmwareStore.$state.flashingIndex === 0) {
-        return 'App Partition';
+        return t('esp32.partition_app');
     } 
     if (firmwareStore.$state.flashingIndex === 1) {
-        return 'OTA Partition';
+        return t('esp32.partition_ota');
     } 
     if (firmwareStore.$state.flashingIndex === 2) {
-        return 'File System Partition';
+        return t('esp32.partition_fs');
     }
     return ''
 })
