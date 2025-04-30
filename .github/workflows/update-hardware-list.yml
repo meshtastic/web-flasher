@@ -25,7 +25,7 @@ jobs:
         id: fetch-data
         run: |
           # Fetch data from API
-          curl -s https://api.meshtastic.org/resource/deviceHardware > /tmp/new-hardware-list.json
+          curl -s --fail https://api.meshtastic.org/resource/deviceHardware > /tmp/new-hardware-list.json
           
           # Ensure the output is valid JSON
           if ! jq empty /tmp/new-hardware-list.json 2>/dev/null; then
