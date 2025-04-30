@@ -164,9 +164,7 @@ export const useFirmwareStore = defineStore('firmware', {
         await this.startWrite(terminal, espLoader, transport, flashOptions);
       }
       catch (error) {
-        console.error('Error updating firmware:', error);
-        terminal.writeln('');
-        terminal.writeln('\x1b[38;5;9m' + error + '\x1b[0m');
+        this.handleError(error, terminal, 'Error updating firmware:');
       }
     },
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
