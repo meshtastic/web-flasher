@@ -134,32 +134,43 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal();
-      this.port = await navigator.serial.requestPort({});
-      this.isConnected = true;
-      this.port.ondisconnect = () => {
-        this.isConnected = false;
-      };
-      const transport = new Transport(this.port, true);
-      const espLoader = await this.connectEsp32(transport, terminal);
-      const content = await this.fetchBinaryContent(fileName);
-      this.isFlashing = true;
-      const flashOptions: FlashOptions = {
-        fileArray: [{ data: content, address: 0x10000 }],
-        flashSize: 'keep',
-        eraseAll: false,
-        compress: true,
-        flashMode: 'keep',
-        flashFreq: 'keep',
-        reportProgress: (fileIndex, written, total) => {
-          this.flashPercentDone = Math.round((written / total) * 100);
-          if (written === total) {
-            this.isFlashing = false;
-            console.log('Done flashing!');
-            this.trackDownload(selectedTarget, true);
-          }
-        },
-      };
-      await this.startWrite(terminal, espLoader, transport, flashOptions);
+
+      try {
+        this.port = await navigator.serial.requestPort({});
+        this.isConnected = true;
+        this.port.ondisconnect = () => {
+          this.isConnected = false;
+        };
+        const transport = new Transport(this.port, true);
+        const espLoader = await this.connectEsp32(transport, terminal);
+        const content = await this.fetchBinaryContent(fileName);
+        this.isFlashing = true;
+        const flashOptions: FlashOptions = {
+          fileArray: [{ data: content, address: 0x10000 }],
+          flashSize: 'keep',
+          eraseAll: false,
+          compress: true,
+          flashMode: 'keep',
+          flashFreq: 'keep',
+          reportProgress: (fileIndex, written, total) => {
+            this.flashPercentDone = Math.round((written / total) * 100);
+            if (written === total) {
+              this.isFlashing = false;
+              console.log('Done flashing!');
+              this.trackDownload(selectedTarget, true);
+            }
+          },
+        };
+        await this.startWrite(terminal, espLoader, transport, flashOptions);
+      }
+      catch (error: any) {
+        this.handleError(error, terminal);
+      }
+    },
+    handleError(error: Error, terminal: Terminal) {
+      console.error('Error flashing:', error);
+      terminal.writeln('');
+      terminal.writeln(`\x1b[38;5;9m${error}\x1b[0m`);
     },
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions);
@@ -188,53 +199,58 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal();
-      this.port = await navigator.serial.requestPort({});
-      this.isConnected = true;
-      this.port.ondisconnect = () => {
-        this.isConnected = false;
-      };
-      const transport = new Transport(this.port, true);
-      const espLoader = await this.connectEsp32(transport, terminal);
-      const appContent = await this.fetchBinaryContent(fileName);
-      const otaContent = await this.fetchBinaryContent(otaFileName);
-      const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
 
-      let otaOffset = 0x260000;
-      let spiffsOffset = 0x300000;
-      if (this.partitionScheme == "8MB") {
-        // 8mb
-        otaOffset = 0x340000;
-        spiffsOffset = 0x670000;
-      }
-      else if (this.partitionScheme == "16MB") {
-        // 16mb
-        otaOffset = 0x650000;
-        spiffsOffset = 0xc90000;
-      }
+      try {
+        this.port = await navigator.serial.requestPort({});
+        this.isConnected = true;
+        this.port.ondisconnect = () => {
+          this.isConnected = false;
+        };
+        const transport = new Transport(this.port, true);
+        const espLoader = await this.connectEsp32(transport, terminal);
+        const appContent = await this.fetchBinaryContent(fileName);
+        const otaContent = await this.fetchBinaryContent(otaFileName);
+        const littleFsContent = await this.fetchBinaryContent(littleFsFileName);
 
-      this.isFlashing = true;
-      const flashOptions: FlashOptions = {
-        fileArray: [
-          { data: appContent, address: 0x00 },
-          { data: otaContent, address: otaOffset },
-          { data: littleFsContent, address: spiffsOffset }
-        ],
-        flashSize: 'keep',
-        eraseAll: true,
-        compress: true,
-        flashMode: 'keep',
-        flashFreq: 'keep',
-        reportProgress: (fileIndex, written, total) => {
-          this.flashingIndex = fileIndex;
-          this.flashPercentDone = Math.round((written / total) * 100);
-          if (written === total && fileIndex > 1) {
-            this.isFlashing = false;
-            console.log('Done flashing!');
-            this.trackDownload(selectedTarget, true);
-          }
-        },
-      };
-      await this.startWrite(terminal, espLoader, transport, flashOptions);
+        let otaOffset = 0x260000;
+        let spiffsOffset = 0x300000;
+        if (this.partitionScheme == "8MB") {
+          // 8mb
+          otaOffset = 0x340000;
+          spiffsOffset = 0x670000;
+        }
+        else if (this.partitionScheme == "16MB") {
+          // 16mb
+          otaOffset = 0x650000;
+          spiffsOffset = 0xc90000;
+        }
+
+        this.isFlashing = true;
+        const flashOptions: FlashOptions = {
+          fileArray: [
+            { data: appContent, address: 0x00 },
+            { data: otaContent, address: otaOffset },
+            { data: littleFsContent, address: spiffsOffset }
+          ],
+          flashSize: 'keep',
+          eraseAll: true,
+          compress: true,
+          flashMode: 'keep',
+          flashFreq: 'keep',
+          reportProgress: (fileIndex, written, total) => {
+            this.flashingIndex = fileIndex;
+            this.flashPercentDone = Math.round((written / total) * 100);
+            if (written === total && fileIndex > 1) {
+              this.isFlashing = false;
+              console.log('Done flashing!');
+              this.trackDownload(selectedTarget, true);
+            }
+          },
+        };
+        await this.startWrite(terminal, espLoader, transport, flashOptions);
+      } catch (error: any) {
+        this.handleError(error, terminal);
+      }
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
       if (this.selectedFirmware?.zip_url) {
