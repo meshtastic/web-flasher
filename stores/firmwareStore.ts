@@ -244,9 +244,10 @@ export const useFirmwareStore = defineStore('firmware', {
         };
         await this.startWrite(terminal, espLoader, transport, flashOptions);
       } catch (error) {
-        console.error('Error flashing:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error('Error flashing:', errorMessage);
         terminal.writeln('');
-        terminal.writeln('\x1b[38;5;9m' + error + '\x1b[0m');
+        terminal.writeln('\x1b[38;5;9m' + errorMessage + '\x1b[0m');
       }
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
