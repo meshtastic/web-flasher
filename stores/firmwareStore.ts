@@ -167,6 +167,41 @@ export const useFirmwareStore = defineStore('firmware', {
         this.handleError(error, terminal, 'Error updating firmware:');
       }
     },
+    async cleanInstallEspFlash(fileName: string, selectedTarget: DeviceHardware) {
+      const terminal = await openTerminal();
+
+      try {
+        this.port = await navigator.serial.requestPort({});
+        this.isConnected = true;
+        this.port.ondisconnect = () => {
+          this.isConnected = false;
+        };
+        const transport = new Transport(this.port, true);
+        const espLoader = await this.connectEsp32(transport, terminal);
+        const content = await this.fetchBinaryContent(fileName);
+        this.isFlashing = true;
+        const flashOptions: FlashOptions = {
+          fileArray: [{ data: content, address: 0x10000 }],
+          flashSize: 'keep',
+          eraseAll: true,
+          compress: true,
+          flashMode: 'keep',
+          flashFreq: 'keep',
+          reportProgress: (fileIndex, written, total) => {
+            this.flashPercentDone = Math.round((written / total) * 100);
+            if (written === total) {
+              this.isFlashing = false;
+              console.log('Done flashing!');
+              this.trackDownload(selectedTarget, false);
+            }
+          },
+        };
+        await this.startWrite(terminal, espLoader, transport, flashOptions);
+      }
+      catch (error) {
+        this.handleError(error, terminal, 'Error during clean install:');
+      }
+    },
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions);
       await this.resetEsp32(transport);
