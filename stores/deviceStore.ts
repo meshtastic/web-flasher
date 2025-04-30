@@ -1,7 +1,6 @@
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import {
-  OfflineHardwareList,
   vendorCobrandingTag,
 } from '~/types/resources';
 
@@ -82,12 +81,23 @@ export const useDeviceStore = defineStore("device", {
   actions: {
     async fetchList() {
       try {
+        // First try to fetch from the API
         const targets = await firmwareApi.get<DeviceHardware[]>();
         this.setTargetsList(targets);
       } catch (ex) {
         console.error(ex);
-        // Fallback to offline list
-        this.setTargetsList(OfflineHardwareList);
+        // Fallback to offline list from the JSON file
+        try {
+          const response = await fetch('/data/hardware-list.json');
+          if (response.ok) {
+            const offlineHardwareList = await response.json();
+            this.setTargetsList(offlineHardwareList);
+          } else {
+            console.error('Failed to load hardware list from JSON file');
+          }
+        } catch (error) {
+          console.error('Error loading hardware list from JSON file:', error);
+        }
       }
     },
     setTargetsList(targets: DeviceHardware[]) {
