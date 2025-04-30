@@ -163,44 +163,14 @@ export const useFirmwareStore = defineStore('firmware', {
         };
         await this.startWrite(terminal, espLoader, transport, flashOptions);
       }
-      catch (error) {
-        this.handleError(error, terminal, 'Error updating firmware:');
+      catch (error: any) {
+        this.handleError(error, terminal);
       }
     },
-    async cleanInstallEspFlash(fileName: string, selectedTarget: DeviceHardware) {
-      const terminal = await openTerminal();
-
-      try {
-        this.port = await navigator.serial.requestPort({});
-        this.isConnected = true;
-        this.port.ondisconnect = () => {
-          this.isConnected = false;
-        };
-        const transport = new Transport(this.port, true);
-        const espLoader = await this.connectEsp32(transport, terminal);
-        const content = await this.fetchBinaryContent(fileName);
-        this.isFlashing = true;
-        const flashOptions: FlashOptions = {
-          fileArray: [{ data: content, address: 0x10000 }],
-          flashSize: 'keep',
-          eraseAll: true,
-          compress: true,
-          flashMode: 'keep',
-          flashFreq: 'keep',
-          reportProgress: (fileIndex, written, total) => {
-            this.flashPercentDone = Math.round((written / total) * 100);
-            if (written === total) {
-              this.isFlashing = false;
-              console.log('Done flashing!');
-              this.trackDownload(selectedTarget, false);
-            }
-          },
-        };
-        await this.startWrite(terminal, espLoader, transport, flashOptions);
-      }
-      catch (error) {
-        this.handleError(error, terminal, 'Error during clean install:');
-      }
+    handleError(error: Error, terminal: Terminal) {
+      console.error('Error flashing:', error);
+      terminal.writeln('');
+      terminal.writeln(`\x1b[38;5;9m${error}\x1b[0m`);
     },
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions);
@@ -278,11 +248,8 @@ export const useFirmwareStore = defineStore('firmware', {
           },
         };
         await this.startWrite(terminal, espLoader, transport, flashOptions);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error('Error flashing:', errorMessage);
-        terminal.writeln('');
-        terminal.writeln('\x1b[38;5;9m' + errorMessage + '\x1b[0m');
+      } catch (error: any) {
+        this.handleError(error, terminal);
       }
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
