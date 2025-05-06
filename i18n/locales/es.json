@@ -1,8 +1,8 @@
 {
-  "title": "Flasher Web Meshtastic",
-  "header": "Flasheo",
-  "description": "Una herramienta web para el firmware ESP32",
-  "browser_warning": "Su navegador no soporta la API WebSerial. Por favor, cambie a un navegador compatible, como Chrome o Edge, para una funcionalidad completa.",
+  "title": "Meshtastic Web Flasher",
+  "header": "Flasher",
+  "description": "A web-based tool for ESP32 firmware flashing",
+  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
   "header_title": "FLASHER",
   "language": "Language",
   "actions": {
@@ -13,7 +13,7 @@
   },
   "state": {
     "connected": "Connected",
-    "disconnected": "No conectado",
+    "disconnected": "Not connected",
     "connecting": "Connecting",
     "disconnecting": "Disconnecting",
     "flashing": "Flashing",
@@ -21,7 +21,7 @@
     "error": "Error"
   },
   "device": {
-    "title": "Dispositivo",
+    "title": "Device",
     "header": "Select your connected device",
     "select_device": "Select Target Device",
     "all_devices": "All Devices",
