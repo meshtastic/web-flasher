@@ -8,10 +8,6 @@ import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import type { Terminal } from 'xterm';
-import {
-  currentPrerelease,
-  showPrerelease,
-} from '~/types/resources';
 
 import { track } from '@vercel/analytics';
 import { useSessionStorage } from '@vueuse/core';
@@ -29,7 +25,44 @@ import {
 } from '../types/api';
 import { createUrl } from './store';
 
-const previews = showPrerelease ? [currentPrerelease] : [];
+// Will be loaded dynamically from manifest.json
+let manifestRelease: FirmwareResource | null = null;
+let onlyManifestRelease = false;
+let manifestVendorTag = '';
+
+// Fetch the manifest.json file
+const loadManifest = async () => {
+  try {
+    const response = await fetch('/data/manifest.json');
+    if (response.ok) {
+      const manifest = await response.json();
+      manifestVendorTag = manifest.vendorCobrandingTag || '';
+
+      // Create prerelease from manifest if configured
+      if (manifest.release && manifest.release.version) {
+        const version = manifest.release.version;
+        const isPrerelease = manifest.release.isPrerelease === true;
+        const title = manifest.release.title || `Meshtastic Firmware ${version}`;
+
+        onlyManifestRelease = !isPrerelease;
+
+        if (isPrerelease || manifest.release.githubioPrefix) {
+          manifestRelease = {
+            id: `v${version}`,
+            title: isPrerelease ? `${title} Preview` : title,
+            zip_url: `https://github.com/meshtastic/firmware/releases/download/v${version}/firmware-${version}.zip`,
+            release_notes: manifest.release.release_notes || '',
+          };
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error loading manifest.json:', error);
+  }
+};
+
+// Load manifest immediately
+loadManifest();
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
@@ -38,7 +71,7 @@ export const useFirmwareStore = defineStore('firmware', {
     return {
       stable: new Array<FirmwareResource>(),
       alpha: new Array<FirmwareResource>(),
-      previews: previews,
+      previews: manifestRelease ? [manifestRelease] : [],
       pullRequests: new Array<FirmwareResource>(),
       selectedFirmware: <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
@@ -80,20 +113,32 @@ export const useFirmwareStore = defineStore('firmware', {
       this.hasSeenReleaseNotes = true
     },
     async fetchList() {
+      if (manifestRelease && onlyManifestRelease) {
+        this.previews = [manifestRelease];
+        return;
+      }
       firmwareApi.get<FirmwareReleases>()
         .then((response: FirmwareReleases) => {
           // Only grab the latest 4 releases
           this.stable = response.releases.stable.slice(0, 4);
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
-          this.previews = [
-            ...response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4), 
-            ...previews
-          ];
+
+          // Add prerelease data from manifest if available
+          const prereleaseList = response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4);
+
+          // Add manifestRelease if it exists
+          this.previews = manifestRelease ? [manifestRelease, ...prereleaseList] : [...prereleaseList];
+
           this.pullRequests = response.pullRequests.slice(0, 4);
         })
         .catch((error) => {
           console.error('Error fetching firmware list:', error);
           this.couldntFetchFirmwareApi = true;
+
+          // If we failed to fetch but have a manifest prerelease, still make it available
+          if (manifestRelease) {
+            this.previews = [manifestRelease];
+          }
         });
     },
     setSelectedFirmware(firmware: FirmwareResource) {

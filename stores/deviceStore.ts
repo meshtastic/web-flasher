@@ -1,7 +1,7 @@
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import {
-  vendorCobrandingTag,
+  vendorCobrandingTag as resourcesVendorTag,
 } from '~/types/resources';
 
 import {
@@ -16,6 +16,25 @@ import { useFirmwareStore } from './firmwareStore';
 import { useI18n } from 'vue-i18n';
 
 const firmwareApi = mande(createUrl("api/resource/deviceHardware"));
+
+// Load vendor tag from manifest
+let manifestVendorTag = '';
+
+// Fetch the manifest.json file
+const loadManifestTag = async () => {
+  try {
+    const response = await fetch('/data/manifest.json');
+    if (response.ok) {
+      const manifest = await response.json();
+      manifestVendorTag = manifest.vendorCobrandingTag || '';
+    }
+  } catch (error) {
+    console.error('Error loading manifest.json for vendor tag:', error);
+  }
+};
+
+// Load manifest immediately
+loadManifestTag();
 
 export const useDeviceStore = defineStore("device", {
   state: () => {
@@ -101,9 +120,9 @@ export const useDeviceStore = defineStore("device", {
       }
     },
     setTargetsList(targets: DeviceHardware[]) {
-      if (vendorCobrandingTag.length > 0) {
+      if (manifestVendorTag.length > 0) {
         this.targets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported && t.tags?.includes(vendorCobrandingTag)
+          (t: DeviceHardware) => t.activelySupported && t.tags?.includes(manifestVendorTag)
         );
       }
       else {

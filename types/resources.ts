@@ -26,16 +26,10 @@ const markdownContent = `
 
 `;
 
-const currentPrereleaseId = '2.6.6.54c1423';
-
+// This will be populated from manifest.json
 export const showPrerelease = false;
+export const currentPrerelease: FirmwareResource | null = null;
 
-export const currentPrerelease = <FirmwareResource>{
-  id: `v${currentPrereleaseId}`,
-  title: `Meshtastic Firmware ${currentPrereleaseId} Pre-release`,
-  zip_url: `https://github.com/meshtastic/firmware/releases/download/v${currentPrereleaseId}/firmware-${currentPrereleaseId}.zip`,
-  release_notes: markdownContent,
-};
-
+// This will be populated from manifest.json
 export const vendorCobrandingTag = "";
 export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow"];

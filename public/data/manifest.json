@@ -1,0 +1,16 @@
+{
+  "title": "Dayton Hamvention Flasher",
+  "image": "meshtastic_ham.png",
+  "vendorCobrandingTag": "",
+  "backGroundColor": "#000000",
+  "textColor": "#FFFFFF",
+  "primaryColor": "#FF0000",
+  "secondaryColor": "#00FF00",
+  "release": {
+    "isPrerelease": false,
+    "title": "Hamvention Firmware",
+    "version": "2.6.8.9cd180b",
+    "githubioPrefix": "event/dayton2025",
+    "release_notes": "### Experimental firmware for Hamvention 2025"
+  }
+}

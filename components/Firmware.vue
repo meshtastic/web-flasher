@@ -11,7 +11,18 @@
                     d="m1 1 4 4 4-4" />
             </svg>
         </button>
-        <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
+        <div v-if="showOnlyManifestRelease" id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
+            <ul v-if="store.$state.previews.length > 0" class="py-2 text-sm text-gray-800"
+                aria-labelledby="dropdownInformationButton">
+                <li v-for="release in store.$state.previews">
+                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer"
+                        @click="setSelectedFirmware(release)">
+                        {{ release.title.replace('Meshtastic Firmware ', '').replace('Pre-release ', '') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div v-else id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
             <div v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
                 class="px-4 py-2 text-sm text-gray-900">
                 <strong>{{ $t('firmware.prerelease') }}</strong>
@@ -99,6 +110,10 @@ const selectedVersion = computed(() => {
 
 const canSelectFirmware = computed(() => {
     return deviceStore.selectedTarget?.hwModel > 0;
+});
+
+const showOnlyManifestRelease = computed(() => {
+    return store.stable.length == 0 && store.$state.previews.length > 0;
 });
 
 const openFile = () => {
