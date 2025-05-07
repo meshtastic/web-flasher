@@ -13,7 +13,7 @@
                 <div class="relative rounded-lg shadow bg-gray-700">
                     <DeviceHeader />
                     <div class="flex items-center justify-center py-2 flex-wrap">
-                        <button @click="store.setSelectedTag('all')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-green-800 hover:bg-green-700 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">All Devices</button>
+                        <button @click="store.setSelectedTag('all')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-green-800 hover:bg-green-700 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">{{ $t('device.all_devices') }}</button>
                         <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('RAK')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">RAK</button>
                         <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('B&Q')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">B&Q</button>
                         <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('LilyGo')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">LilyGo</button>
@@ -26,7 +26,7 @@
                     <div class="p-4 mb-1 m-2 text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
                         <span class="font-medium">
                             <InformationCircleIcon class="h-4 w-4 inline" />
-                            {{ $t('device.subheading') }} <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><RocketLaunchIcon class="h-4 w-4 text-black" /> Auto-detect</button>
+                            {{ $t('device.subheading') }} <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><RocketLaunchIcon class="h-4 w-4 text-black" /> {{ $t('device.auto_detect') }}</button>
                         </span>
                     </div>
                     <div v-if="vendorCobrandingTag.length === 0" class="p-2 m-2 flex flex-wrap items-center justify-center">
