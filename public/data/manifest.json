@@ -11,6 +11,6 @@
     "title": "Hamvention Firmware",
     "version": "2.6.8.9cd180b",
     "githubioPrefix": "event/dayton2025",
-    "release_notes": "### Experimental firmware for Hamvention 2025"
+    "release_notes": "### Experimental firmware for Hamvention 2025\n\n⚠️Erase flash and flash the latest experimental firmware for Hamvention 2025.\n\n### Important Notes\n- This firmware is experimental and may not be stable.\n- Use at your own risk.\n- Ensure you have a backup of your current configuration before flashing."
   }
 }
