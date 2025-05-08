@@ -86,7 +86,9 @@ export const useFirmwareStore = defineStore('firmware', {
           this.stable = response.releases.stable.slice(0, 4);
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
           this.previews = [
-            ...response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4), 
+            ...response.releases.alpha
+              .filter(f => f.title.includes('Preview') && !f.title.includes('2.6.0')) // Exclude 2.6.0 preview
+              .slice(0, 4),
             ...previews
           ];
           this.pullRequests = response.pullRequests.slice(0, 4);
