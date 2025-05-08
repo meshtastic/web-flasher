@@ -75,14 +75,16 @@
     <SerialMonitor />
 
     <footer id="footer" class="halloween-theme footer text-white mt-4 py-4">
-      <div class="container mx-auto px-5 py-4 text-center">
-        <p>
-          Powered by
-          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
-          | Meshtastic® is a registered trademark of Meshtastic LLC. |
-          <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
-        </p>
-      </div>
+      <canvas>
+        <div class="container mx-auto px-5 py-4 text-center">
+          <p>
+            Powered by
+            <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
+            | Meshtastic® is a registered trademark of Meshtastic LLC. |
+            <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
+          </p>
+        </div>
+      </canvas>
     </footer>
     <div class="fixed -end-4 bottom-6 group">
       <button type="button" :disabled="true" 

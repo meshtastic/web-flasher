@@ -1,0 +1,26 @@
+
+/* Auto-generated from manifest.json */
+:root {
+  --background-color: #000000;
+  --text-color: #FFFFFF;
+  --primary-color: #FF0000;
+  --secondary-color: #00FF00;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.text-meshtastic {
+  color: var(--primary-color);
+}
+
+.bg-meshtastic {
+  background-color: var(--primary-color);
+}
+
+.border-meshtastic {
+  border-color: var(--primary-color);
+}
+      

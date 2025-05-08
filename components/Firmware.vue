@@ -128,4 +128,60 @@ const setSelectedFirmware = (release: FirmwareResource) => {
     store.setSelectedFirmware(release);
     document.getElementById('dropdownFirmware')?.classList.toggle('hidden'); // Flowbite bug
 }
+
+// Credit: https://codepen.io/yaclive/pen/EayLYO
+function doAnimation() {
+    console.log('doAnimation');
+  // Initialising the canvas
+  var canvas = document.querySelector('canvas');
+  var ctx = canvas?.getContext('2d');
+
+  if (!canvas || !ctx) {
+    return;
+  }
+
+  // Setting the width and height of the canvas
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Setting up the letters
+  let letters = '/\\'.split('');;
+
+  // Setting up the columns
+  const fontSize = 10;
+  const columns = canvas.width / fontSize;
+
+  // Setting up the drops
+  let drops = new Array<number>();
+  for (var i = 0; i < columns; i++) {
+    drops[i] = 1;
+  }
+
+  // Setting up the draw function
+  function draw() {
+    if (!canvas || !ctx) {
+      return;
+    }
+    ctx.fillStyle = 'rgba(0, 0, 0, .1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < drops.length; i++) {
+      var text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillStyle = '#0f0';
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      drops[i]++;
+      if (drops[i] * fontSize > canvas.height && Math.random() > .95) {
+        drops[i] = 0;
+      }
+    }
+  }
+
+  // Loop the animation
+  setInterval(draw, 33);
+}
+
+watch(() => store.$state.selectedFirmware, (value) => {
+  if (value?.id) {
+    // doAnimation();
+  }
+});
 </script>

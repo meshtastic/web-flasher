@@ -124,7 +124,7 @@ export const useFirmwareStore = defineStore('firmware', {
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4);
 
           // Add prerelease data from manifest if available
-          const prereleaseList = response.releases.alpha.filter(f => f.title.includes('Preview')).slice(0, 4);
+          const prereleaseList = response.releases.alpha.filter(f => f.title.includes('Preview') && !f.title.includes('2.6.0')).slice(0, 4);
 
           // Add manifestRelease if it exists
           this.previews = manifestRelease ? [manifestRelease, ...prereleaseList] : [...prereleaseList];
