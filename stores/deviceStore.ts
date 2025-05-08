@@ -1,7 +1,6 @@
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import {
-  OfflineHardwareList,
   vendorCobrandingTag,
 } from '~/types/resources';
 
@@ -14,6 +13,7 @@ import {
 import { type DeviceHardware } from '../types/api';
 import { createUrl } from './store';
 import { useFirmwareStore } from './firmwareStore';
+import { useI18n } from 'vue-i18n';
 
 const firmwareApi = mande(createUrl("api/resource/deviceHardware"));
 
@@ -70,21 +70,34 @@ export const useDeviceStore = defineStore("device", {
       return "2.2.18";
     },
     dfuStepAction(): string {
+      const { t } = useI18n();
+
       if (this.isSelectedNrf) {
-        return "double-clicking RST button.";
+        return t('flash.dfu_action_doubleclick');
       }
-      return "pressing and holding BOOTSEL button while plugging in USB cable.";
+      return t('flash.dfu_action_bootsel');
     },
   },
   actions: {
     async fetchList() {
       try {
+        // First try to fetch from the API
         const targets = await firmwareApi.get<DeviceHardware[]>();
         this.setTargetsList(targets);
       } catch (ex) {
         console.error(ex);
-        // Fallback to offline list
-        this.setTargetsList(OfflineHardwareList);
+        // Fallback to offline list from the JSON file
+        try {
+          const response = await fetch('/data/hardware-list.json');
+          if (response.ok) {
+            const offlineHardwareList = await response.json();
+            this.setTargetsList(offlineHardwareList);
+          } else {
+            console.error('Failed to load hardware list from JSON file');
+          }
+        } catch (error) {
+          console.error('Error loading hardware list from JSON file:', error);
+        }
       }
     },
     setTargetsList(targets: DeviceHardware[]) {
