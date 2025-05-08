@@ -46,6 +46,8 @@ const loadManifest = async () => {
 
         onlyManifestRelease = !isPrerelease;
 
+        console.log('Manifest release:', manifest.release);
+
         if (isPrerelease || manifest.release.githubioPrefix) {
           manifestRelease = {
             id: `v${version}`,
@@ -62,7 +64,7 @@ const loadManifest = async () => {
 };
 
 // Load manifest immediately
-loadManifest();
+await loadManifest();
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
