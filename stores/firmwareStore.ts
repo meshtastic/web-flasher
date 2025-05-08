@@ -64,7 +64,7 @@ const loadManifest = async () => {
 };
 
 // Load manifest immediately
-await loadManifest();
+loadManifest();
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
