@@ -1,7 +1,7 @@
 {
   "title": "Meshtastic Web Flasher",
   "header": "Flasher",
-  "description": "A web-based tool for ESP32 firmware flashing",
+  "description": "Web-pohjainen työkalu ESP32 laiteohjelmiston ohjelmoimiseen",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
   "header_title": "FLASHER",
   "language": "Kieli",
@@ -35,8 +35,8 @@
     "title": "Laiteohjelmisto",
     "select_firmware": "Valitse laiteohjelmisto",
     "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
-    "stable": "Stable (or Beta)",
-    "unstable": "Unstable (Alpha)",
+    "stable": "Vakaa (tai Beta)",
+    "unstable": "Epävakaa (Alpha)",
     "prerelease": "Esijulkaisu",
     "error_fetching": "Could not fetch firmware versions from API.",
     "refresh_later": "Päivitä sivu tai yritä myöhemmin uudelleen.",
@@ -47,25 +47,25 @@
   "flash": {
     "title": "Ohjelmoi",
     "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
-    "erase_flash": "Erase Flash",
+    "erase_flash": "Pyyhi ohjelmointi",
     "erase_flash_prefix": "Erase Flash of",
     "dfu_action_doubleclick": "tuplanapsauta RST-painiketta.",
     "dfu_action_bootsel": "pressing and holding BOOTSEL button while plugging in USB cable.",
     "esp32": {
       "step_1_usb": "Ensure device is plugged in via USB",
-      "step_2_baud_rate": "Choose baud rate",
+      "step_2_baud_rate": "Valitse siirtonopeus",
       "step_3_flash": "Ohjelmoi laiteohjelmisto",
-      "slow_reliable": "115200 is slower, but can be more reliable for low-quality connections.",
+      "slow_reliable": "115200 on hitaampi, mutta se voi olla luotettavampi huonolaatuisille yhteyksille.",
       "s3_instructions": "If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.",
       "reset_alternative": "Alternatively, you can try the 1200bps Reset method to place the device in correct mode.",
-      "reset_button": "1200bps Reset",
+      "reset_button": "1200bps nollaus",
       "full_erase": "Täysi tyhjennys ja asentaminen",
       "bundle_webui": "Bundle Web UI",
-      "install_inkhud": "Install InkHUD",
+      "install_inkhud": "Asenna InkHUD",
       "backup_warning": "Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.",
       "webui_space_warning": "Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.",
-      "doc_guide": "Check out this guide in our documentation.",
-      "process_warning": "This process could take a while.",
+      "doc_guide": "Tutustu tähän oppaaseen dokumentaatiossamme.",
+      "process_warning": "Tämä prosessi voi kestää jonkin aikaa.",
       "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
       "erase_and_install": "Erase Flash and Install",
       "update": "Päivitä",
@@ -77,18 +77,18 @@
       "partition_fs": "fs"
     },
     "uf2": {
-      "enter_dfu_mode": "Enter (UF2) DFU Mode",
-      "ensure_drive_mounted": "Ensure device DFU mode drive is mounted",
-      "dfu_firmware_clause": "For firmware versions",
+      "enter_dfu_mode": "Syötä (UF2) DFU-tila",
+      "ensure_drive_mounted": "Varmista, että DFU-aseman laite on kytketty",
+      "dfu_firmware_clause": "Laiteohjelmistoversioita varten",
       "dfu_firmware_clause_2": "trigger DFU mode manually by",
       "drive_name_info": "The drive may have a different name depending on your device hardware and its bootloader.",
-      "dfu_drive": "DFU drive",
-      "download_copy_uf2": "Download or copy UF2 file to DFU drive",
+      "dfu_drive": "DFU-asema",
+      "download_copy_uf2": "Lataa tai kopioi UF2-tiedosto DFU-asemaan",
       "copy_instructions": "Download or copy UF2 file to the DFU drive. The device will automatically reboot when the transfer completes and will start with the new firmware.",
       "auto_reboot_warning": "The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected",
-      "install_inkhud": "Install InkHUD display",
-      "enter_dfu": "Enter DFU Mode",
-      "download_uf2": "Download UF2"
+      "install_inkhud": "Asenna InkHUD-näyttö",
+      "enter_dfu": "Syötä DFU-tila",
+      "download_uf2": "Lataa UF2"
     },
     "erase_uf2": {
       "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
@@ -98,17 +98,17 @@
     }
   },
   "buttons": {
-    "serial_monitor": "Open Serial Monitor",
+    "serial_monitor": "Avaa sarjavalvontaohjelma",
     "meshtastic_docs": "Meshtastic Docs",
-    "contribute": "Contribute on GitHub"
+    "contribute": "Osallistu GitHubissa"
   },
   "serial": {
-    "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
+    "instructions": "Jos yhteyden katkaiseminen kestää liian kauan, voit poistaa laitteen manuaalisesti.",
     "disconnect": "Katkaise",
     "log_levels": {
       "all": "Kaikki",
-      "debug": "Debug",
-      "info": "Info",
+      "debug": "Vianetsintä",
+      "info": "Tiedot",
       "warn": "Varoitus",
       "error": "Virhe"
     }
