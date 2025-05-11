@@ -34,7 +34,7 @@
   "firmware": {
     "title": "Laiteohjelmisto",
     "select_firmware": "Valitse laiteohjelmisto",
-    "instructions": "Valitse julkaisuasetuksista tai lataa zip-asennuspaketti GitHubista.",
+    "instructions": "Valitse julkaisuvaihtoehdoista tai lataa zip-tiedosto GitHubista.",
     "stable": "Vakaa (tai Beta)",
     "unstable": "Epävakaa (Alpha)",
     "prerelease": "Esijulkaisu",
@@ -46,7 +46,7 @@
   },
   "flash": {
     "title": "Ohjelmoi",
-    "instructions": "Ohjelmoi laitteesi. Valitse haluatko päivittää laitteen, pyyhkiä ohjelmoinnin vai asentaa sen tyhjästä.",
+    "instructions": "Ohjelmoi laite ja valitse haluatko päivittää sen, pyyhkiä edellisen ohjelmoinnin vai asentaa sen tyhjästä.",
     "erase_flash": "Pyyhi ohjelmointi",
     "erase_flash_prefix": "Pyyhi ohjelmointi",
     "dfu_action_doubleclick": "tuplanapsauta RST-painiketta.",
