@@ -98,7 +98,7 @@
     }
   },
   "buttons": {
-    "serial_monitor": "Avaa sarjavalvontaohjelma",
+    "serial_monitor": "Avaa sarjaportin valvonta",
     "meshtastic_docs": "Meshtastic dokumentit",
     "contribute": "Osallistu GitHubissa"
   },
