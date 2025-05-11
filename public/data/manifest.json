@@ -9,7 +9,7 @@
   "release": {
     "isPrerelease": false,
     "title": "Hamvention Firmware",
-    "version": "2.6.8.4dfa876",
+    "version": "2.6.8.6a39d72",
     "githubioPrefix": "event/dayton2025",
     "release_notes": "### Experimental firmware for Hamvention 2025\n\n⚠️ Erase flash and flash the latest experimental firmware for Hamvention 2025.\n\n### Important Notes\n\n - This firmware is experimental and may not be stable.\n - Use at your own risk.\n - Ensure you have a backup of your current configuration before flashing.\n\n### Notable changes in the *Dayton 2025* firmware:\n\n - Preset: `Short_Turbo`\n - Channel: 31 (`917.25` MHz)\n - 3 Default Channels:\n   - Hamvention `OEu8wB3AItGBvza4YSHh+5a3LlW/dCJ+nWr7SNZMsaE=`\n   - NodeChat `TiIdi8MJG+IRnIkS8iUZXRU+MHuGtuzEasOWXp4QndU=`\n   - YardSale `FW/+RtRWY4pUQxPy72xjifAGMFLONl6x6LuG5iZbHVg=`\n\n### Some notable stuff EVENT_MODE does (in general):\n\n - Disables non-standard port numbers\n - Disables public MQTT reporting\n - Does not allow setting hop limit higher than 3\n - Coerces telemetry / nodeinfo reporting intervals to be more conservative"
   }
