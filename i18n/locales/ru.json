@@ -84,10 +84,10 @@
       "drive_name_info": "Диск может иметь другое имя в зависимости от оборудования вашего устройства и его загрузчика.",
       "dfu_drive": "Диск DFU",
       "download_copy_uf2": "Скачать или скопировать файл UF2 на DFU диск",
-      "copy_instructions": "Download or copy UF2 file to the DFU drive. The device will automatically reboot when the transfer completes and will start with the new firmware.",
-      "auto_reboot_warning": "The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected",
-      "install_inkhud": "Install InkHUD display",
-      "enter_dfu": "Enter DFU Mode",
+      "copy_instructions": "Загрузите или скопируйте файл UF2 на DFU диск. Устройство автоматически перезагрузится после завершения передачи и начнет работать на новой прошивке.",
+      "auto_reboot_warning": "Автоперезагрузка может привести к сообщениям о сбоях передачи файлов, ошибках записи или извлечении устройства",
+      "install_inkhud": "Установить дисплей InkHUD",
+      "enter_dfu": "Войти в режим DFU",
       "download_uf2": "Download UF2"
     },
     "erase_uf2": {
