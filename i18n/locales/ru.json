@@ -1,6 +1,6 @@
 {
-  "title": "Веб флешер",
-  "header": "Флешер",
+  "title": "Веб прошиватель",
+  "header": "Прошиватель",
   "description": "Веб программный инструмент для прошивки ESP32",
   "browser_warning": "Ваш браузер не поддерживает WebSerial API. Переключитесь на совместимый браузер, такой как Chrome или Edge, для полной функциональности.",
   "header_title": "Флашер",
@@ -88,29 +88,29 @@
       "auto_reboot_warning": "Автоперезагрузка может привести к сообщениям о сбоях передачи файлов, ошибках записи или извлечении устройства",
       "install_inkhud": "Установить дисплей InkHUD",
       "enter_dfu": "Войти в режим DFU",
-      "download_uf2": "Download UF2"
+      "download_uf2": "Скачать UF2"
     },
     "erase_uf2": {
-      "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
-      "dfu_warning": "This operation will erase your device completely.",
-      "wait_for_drive": "Wait for the drive to disappear, then open a serial monitor to complete the erase process.",
-      "close_instructions": "Close this popup to select a firmware version and begin flashing."
+      "warning": "После стирания прошивки, эта операция не будет доступна, пока на устройстве не прошьют новую прошивку Meshtastic.",
+      "dfu_warning": "Эта операция полностью очистит ваше устройство.",
+      "wait_for_drive": "Дождитесь исчезновения накопителя, затем откройте serial monitor для завершения процесса стирания.",
+      "close_instructions": "Закройте это всплывающее окно, чтобы выбрать версию прошивки и начать прошивку."
     }
   },
   "buttons": {
-    "serial_monitor": "Open Serial Monitor",
-    "meshtastic_docs": "Meshtastic Docs",
-    "contribute": "Contribute on GitHub"
+    "serial_monitor": "Открыть Serial Monitor",
+    "meshtastic_docs": "Документация Meshtastic",
+    "contribute": "Внести свой вклад на GitHub"
   },
   "serial": {
-    "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
-    "disconnect": "Disconnect",
+    "instructions": "Если процесс отключения занимает слишком много времени, вы можете вручную отключить устройство.",
+    "disconnect": "Отключиться",
     "log_levels": {
-      "all": "All",
+      "all": "Всё",
       "debug": "Debug",
-      "info": "Info",
-      "warn": "Warn",
-      "error": "Error"
+      "info": "Информация",
+      "warn": "Предупреждать",
+      "error": "Ошибки"
     }
   }
 }
