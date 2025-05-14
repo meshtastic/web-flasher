@@ -1,5 +1,5 @@
 {
-  "title": "Meshtastic Web Flasher",
+  "title": "Meshtastic Web Flash",
   "header": "Flasher",
   "description": "Web-pohjainen työkalu ESP32 laiteohjelmiston ohjelmoimiseen",
   "browser_warning": "Selaimesi ei tue WebSerial (API) käyttöliittymää. Vaihda yhteensopivaan selaimeen, kuten Chromeen tai Edgeen.",
