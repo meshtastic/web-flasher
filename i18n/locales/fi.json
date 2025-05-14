@@ -1,5 +1,5 @@
 {
-  "title": "Meshtastic Web Flasher ",
+  "title": "Meshtastic Web Flasher",
   "header": "Flasher",
   "description": "Web-pohjainen työkalu ESP32 laiteohjelmiston ohjelmoimiseen",
   "browser_warning": "Selaimesi ei tue WebSerial (API) käyttöliittymää. Vaihda yhteensopivaan selaimeen, kuten Chromeen tai Edgeen.",
@@ -8,7 +8,7 @@
   "actions": {
     "connect": "Yhdistä",
     "disconnect": "Katkaise",
-    "continue": "Jatka",
+    "continue": "Jatka.",
     "close_dialog": "Sulje valintaikkuna"
   },
   "state": {
@@ -16,8 +16,8 @@
     "disconnected": "Ei yhdistetty",
     "connecting": "Yhdistetään",
     "disconnecting": "Katkaistaan",
-    "flashing": "Asennetaan",
-    "flashed": "Asennettu",
+    "flashing": "Ohjelmoidaan",
+    "flashed": "Ohjelmoitu",
     "error": "Virhe"
   },
   "device": {
@@ -108,7 +108,7 @@
     "log_levels": {
       "all": "Kaikki",
       "debug": "Vianetsintä",
-      "info": "Tiedot",
+      "info": "Lisätietoja",
       "warn": "Varoitus",
       "error": "Virhe"
     }
