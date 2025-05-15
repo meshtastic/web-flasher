@@ -146,13 +146,13 @@ const firmwareStore = useFirmwareStore();
 
 const partition = computed(() => {
     if (firmwareStore.$state.flashingIndex === 0) {
-        return t('esp32.partition_app');
+        return t('flash.esp32.partition_app');
     } 
     if (firmwareStore.$state.flashingIndex === 1) {
-        return t('esp32.partition_ota');
+        return t('flash.esp32.partition_ota');
     } 
     if (firmwareStore.$state.flashingIndex === 2) {
-        return t('esp32.partition_fs');
+        return t('flash.esp32.partition_fs');
     }
     return ''
 })
