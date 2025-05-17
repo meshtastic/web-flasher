@@ -4,16 +4,16 @@
   "description": "A web-based tool for ESP32 firmware flashing",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
   "header_title": "FLASHER",
-  "language": "Language",
+  "language": "Langue",
   "actions": {
     "connect": "Connect",
     "disconnect": "Disconnect",
-    "continue": "Continue",
+    "continue": "Continuer",
     "close_dialog": "Close dialog"
   },
   "state": {
-    "connected": "Connected",
-    "disconnected": "Not connected",
+    "connected": "Connecté",
+    "disconnected": "Non connecté",
     "connecting": "Connecting",
     "disconnecting": "Disconnecting",
     "flashing": "Flashing",
@@ -99,18 +99,18 @@
   },
   "buttons": {
     "serial_monitor": "Open Serial Monitor",
-    "meshtastic_docs": "Meshtastic Docs",
+    "meshtastic_docs": "Documentation Meshtastic",
     "contribute": "Contribute on GitHub"
   },
   "serial": {
-    "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
+    "instructions": ".......",
     "disconnect": "Disconnect",
     "log_levels": {
-      "all": "All",
+      "all": "",
       "debug": "Debug",
       "info": "Info",
-      "warn": "Warn",
-      "error": "Error"
+      "warn": "Avertissement",
+      "error": "Erreur"
     }
   }
 }
