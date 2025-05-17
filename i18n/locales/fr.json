@@ -14,11 +14,11 @@
   "state": {
     "connected": "Connecté",
     "disconnected": "Non connecté",
-    "connecting": "Connecting",
+    "connecting": "Connexion en cours…",
     "disconnecting": "Disconnecting",
     "flashing": "Flashing",
     "flashed": "Flashed",
-    "error": "Error"
+    "error": "Erreur"
   },
   "device": {
     "title": "Device",
@@ -42,7 +42,7 @@
     "refresh_later": "Refresh the page later to try again.",
     "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
     "upload_tooltip": "Upload your own firmware release zip or bin.",
-    "icon": "icon"
+    "icon": "icône"
   },
   "flash": {
     "title": "Flash",
