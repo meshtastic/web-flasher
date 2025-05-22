@@ -9,30 +9,30 @@
     "connect": "Verbinding maken",
     "disconnect": "Verbinding verbreken",
     "continue": "Verder gaan",
-    "close_dialog": "Close dialog"
+    "close_dialog": "Dialoogvenster sluiten"
   },
   "state": {
-    "connected": "Connected",
-    "disconnected": "Not connected",
-    "connecting": "Connecting",
-    "disconnecting": "Disconnecting",
-    "flashing": "Flashing",
-    "flashed": "Flashed",
-    "error": "Error"
+    "connected": "Verbonden",
+    "disconnected": "Niet verbonden",
+    "connecting": "Bezig met verbinden",
+    "disconnecting": "Verbinding verbreken",
+    "flashing": "Formatteren",
+    "flashed": "Geformatteerd",
+    "error": "Foutmelding"
   },
   "device": {
-    "title": "Device",
-    "header": "Select your connected device",
-    "select_device": "Select Target Device",
+    "title": "Apparaat",
+    "header": "Selecteer uw verbonden apparaat",
+    "select_device": "Selecteer doelapparaat",
     "all_devices": "Alle Apparaten",
     "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
-    "auto_detect": "Auto-detect",
-    "supported_devices": "Supported Devices",
-    "diy_devices": "DIY Devices"
+    "auto_detect": "Automatisch detecteren",
+    "supported_devices": "Ondersteunde apparaten",
+    "diy_devices": "DIY apparaten"
   },
   "firmware": {
-    "title": "Firmware",
+    "title": "Besturingssysteem",
     "select_firmware": "Select Firmware",
     "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
     "stable": "Stable (or Beta)",
@@ -42,7 +42,7 @@
     "refresh_later": "Refresh the page later to try again.",
     "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
     "upload_tooltip": "Upload your own firmware release zip or bin.",
-    "icon": "icon"
+    "icon": "icoon"
   },
   "flash": {
     "title": "Flash",
@@ -68,7 +68,7 @@
       "process_warning": "This process could take a while.",
       "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
       "erase_and_install": "Erase Flash and Install",
-      "update": "Update",
+      "update": "Bijwerken",
       "start_over": "Start Over",
       "flashing_complete": "Flashing",
       "complete": "complete",
