@@ -4,11 +4,11 @@
   "description": "A web-based tool for ESP32 firmware flashing",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
   "header_title": "FLASHER",
-  "language": "Language",
+  "language": "Taal",
   "actions": {
-    "connect": "Connect",
-    "disconnect": "Disconnect",
-    "continue": "Continue",
+    "connect": "Verbinding maken",
+    "disconnect": "Verbinding verbreken",
+    "continue": "Verder gaan",
     "close_dialog": "Close dialog"
   },
   "state": {
@@ -24,7 +24,7 @@
     "title": "Device",
     "header": "Select your connected device",
     "select_device": "Select Target Device",
-    "all_devices": "All Devices",
+    "all_devices": "Alle Apparaten",
     "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
     "auto_detect": "Auto-detect",
