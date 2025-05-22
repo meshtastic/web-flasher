@@ -15,7 +15,7 @@
     "connected": "Verbunden",
     "disconnected": "Nicht verbunden",
     "connecting": "Wird verbunden",
-    "disconnecting": "Wird getrennt",
+    "disconnecting": "Verbindung wird getrennt",
     "flashing": "Flash läuft",
     "flashed": "Flash beendet",
     "error": "Fehler"
