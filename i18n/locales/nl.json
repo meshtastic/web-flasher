@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic Web Flasher",
+  "header": "Flasher",
+  "description": "A web-based tool for ESP32 firmware flashing",
+  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
+  "header_title": "FLASHER",
+  "language": "Taal",
+  "actions": {
+    "connect": "Verbinding maken",
+    "disconnect": "Verbinding verbreken",
+    "continue": "Verder gaan",
+    "close_dialog": "Dialoogvenster sluiten"
+  },
+  "state": {
+    "connected": "Verbonden",
+    "disconnected": "Niet verbonden",
+    "connecting": "Bezig met verbinden",
+    "disconnecting": "Verbinding verbreken",
+    "flashing": "Formatteren",
+    "flashed": "Geformatteerd",
+    "error": "Foutmelding"
+  },
+  "device": {
+    "title": "Apparaat",
+    "header": "Selecteer uw verbonden apparaat",
+    "select_device": "Selecteer doelapparaat",
+    "all_devices": "Alle Apparaten",
+    "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
+    "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
+    "auto_detect": "Automatisch detecteren",
+    "supported_devices": "Ondersteunde apparaten",
+    "diy_devices": "DIY apparaten"
+  },
+  "firmware": {
+    "title": "Firmware",
+    "select_firmware": "Selecteer Firmware",
+    "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
+    "stable": "Stabiel (of Beta)",
+    "unstable": "Onstabiel (Alpha)",
+    "prerelease": "Pre-release",
+    "error_fetching": "Could not fetch firmware versions from API.",
+    "refresh_later": "Vernieuw de pagina later om het opnieuw te proberen.",
+    "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
+    "upload_tooltip": "Upload your own firmware release zip or bin.",
+    "icon": "icoon"
+  },
+  "flash": {
+    "title": "Formateren",
+    "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
+    "erase_flash": "Erase Flash",
+    "erase_flash_prefix": "Erase Flash of",
+    "dfu_action_doubleclick": "double-clicking RST button.",
+    "dfu_action_bootsel": "pressing and holding BOOTSEL button while plugging in USB cable.",
+    "esp32": {
+      "step_1_usb": "Ensure device is plugged in via USB",
+      "step_2_baud_rate": "Choose baud rate",
+      "step_3_flash": "Flash firmware",
+      "slow_reliable": "115200 is slower, but can be more reliable for low-quality connections.",
+      "s3_instructions": "If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.",
+      "reset_alternative": "Alternatively, you can try the 1200bps Reset method to place the device in correct mode.",
+      "reset_button": "1200bps Reset",
+      "full_erase": "Full Erase and Install",
+      "bundle_webui": "Bundle Web UI",
+      "install_inkhud": "Install InkHUD",
+      "backup_warning": "Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.",
+      "webui_space_warning": "Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.",
+      "doc_guide": "Check out this guide in our documentation.",
+      "process_warning": "This process could take a while.",
+      "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
+      "erase_and_install": "Erase Flash and Install",
+      "update": "Bijwerken",
+      "start_over": "Opnieuw beginnen",
+      "flashing_complete": "Formatteren",
+      "complete": "Klaar",
+      "partition_app": "app",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Enter (UF2) DFU Mode",
+      "ensure_drive_mounted": "Ensure device DFU mode drive is mounted",
+      "dfu_firmware_clause": "For firmware versions",
+      "dfu_firmware_clause_2": "trigger DFU mode manually by",
+      "drive_name_info": "The drive may have a different name depending on your device hardware and its bootloader.",
+      "dfu_drive": "DFU station",
+      "download_copy_uf2": "Download or copy UF2 file to DFU drive",
+      "copy_instructions": "Download or copy UF2 file to the DFU drive. The device will automatically reboot when the transfer completes and will start with the new firmware.",
+      "auto_reboot_warning": "The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected",
+      "install_inkhud": "Install InkHUD display",
+      "enter_dfu": "Enter DFU Mode",
+      "download_uf2": "Download UF2"
+    },
+    "erase_uf2": {
+      "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
+      "dfu_warning": "This operation will erase your device completely.",
+      "wait_for_drive": "Wait for the drive to disappear, then open a serial monitor to complete the erase process.",
+      "close_instructions": "Close this popup to select a firmware version and begin flashing."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Open Serial Monitor",
+    "meshtastic_docs": "Meshtastic Docs",
+    "contribute": "Contribute on GitHub"
+  },
+  "serial": {
+    "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
+    "disconnect": "Disconnect",
+    "log_levels": {
+      "all": "Alles",
+      "debug": "Debug",
+      "info": "Informatie",
+      "warn": "Warn",
+      "error": "Foutmelding"
+    }
+  }
+}
