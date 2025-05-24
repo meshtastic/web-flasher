@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic Web Flasher ",
+  "header": "Flasher",
+  "description": "Web-pohjainen työkalu ESP32 laiteohjelmiston ohjelmoimiseen",
+  "browser_warning": "Selaimesi ei tue WebSerial (API) käyttöliittymää. Vaihda yhteensopivaan selaimeen, kuten Chromeen tai Edgeen.",
+  "header_title": "FLASHER",
+  "language": "Kieli",
+  "actions": {
+    "connect": "Yhdistä",
+    "disconnect": "Katkaise",
+    "continue": "Jatka",
+    "close_dialog": "Sulje valintaikkuna"
+  },
+  "state": {
+    "connected": "Yhdistetty",
+    "disconnected": "Ei yhdistetty",
+    "connecting": "Yhdistetään",
+    "disconnecting": "Katkaistaan",
+    "flashing": "Asennetaan",
+    "flashed": "Asennettu",
+    "error": "Virhe"
+  },
+  "device": {
+    "title": "Laite",
+    "header": "Valitse yhdistettävä laite",
+    "select_device": "Valitse kohdelaite",
+    "all_devices": "Kaikki laitteet",
+    "instructions": "Kytke laite UBS-kaapelilla. Varmista, ettei kaapeli ole tarkoitettu ainoastaan laitteen lataamista varten.",
+    "subheading": "Jos kytkettyyn laitteeseen on jo Meshtastic asennettu, voit tunnistaa sen automaattisesti:",
+    "auto_detect": "Tunnista automaattisesti",
+    "supported_devices": "Tuetut laitteet",
+    "diy_devices": "DIY-laitteet"
+  },
+  "firmware": {
+    "title": "Laiteohjelmisto",
+    "select_firmware": "Valitse laiteohjelmisto",
+    "instructions": "Valitse julkaisuvaihtoehdoista tai lataa zip-tiedosto GitHubista.",
+    "stable": "Vakaa (tai Beta)",
+    "unstable": "Epävakaa (Alpha)",
+    "prerelease": "Esijulkaisu",
+    "error_fetching": "Sovellusliittymän (API) laiteohjelmistoversioita ei voitu noutaa.",
+    "refresh_later": "Päivitä sivu tai yritä myöhemmin uudelleen.",
+    "upload_alternative": "Vaihtoehtoisesti voit ladata firmware.zip tai firmware-update.bin tiedoston GitHubista ESP32 pohjaiselle laitteelle napsauttamalla kuvaketta.",
+    "upload_tooltip": "Lataa oma laiteohjelma zip- tai bin-tiedostosta.",
+    "icon": "kuvake"
+  },
+  "flash": {
+    "title": "Ohjelmoi",
+    "instructions": "Ohjelmoi laite ja valitse haluatko päivittää sen, pyyhkiä edellisen ohjelmoinnin vai asentaa sen tyhjästä.",
+    "erase_flash": "Pyyhi ohjelmointi",
+    "erase_flash_prefix": "Pyyhi ohjelmointi",
+    "dfu_action_doubleclick": "tuplanapsauta RST-painiketta.",
+    "dfu_action_bootsel": "pidä BOOTSEL painiketta pohjassa samaan aikaan kun kytket USB-kaapelin.",
+    "esp32": {
+      "step_1_usb": "Varmista, että laite on kytketty USB:n kautta",
+      "step_2_baud_rate": "Valitse siirtonopeus",
+      "step_3_flash": "Ohjelmoi laiteohjelmisto",
+      "slow_reliable": "115200 on hitaampi, mutta se voi olla luotettavampi huonolaatuisissa yhteyksissä.",
+      "s3_instructions": "Jos laitteesi on ESP32-S3-pohjainen, sinun täytyy ehkä sammuttaa laite ja pitää BOOT / USR-painiketta painettuna samaan aikaan, kun kytket USB-kaapelin.",
+      "reset_alternative": "Voit vaihtoehtoisesti kokeilla 1200 bps:n nollausmenetelmää laitteen asettamiseksi toimivaan tilaan.",
+      "reset_button": "1200bps nollaus",
+      "full_erase": "Tyhjennä laiteohjelmisto ja asenna uudelleen",
+      "bundle_webui": "Bundle Web-käyttöliittymä",
+      "install_inkhud": "Asenna InkHUD",
+      "backup_warning": "Varmuuskopioi laitteen julkiset ja yksityiset avaimet ennen sen täydellistä tyhjentämistä ja palauta ne tarvittaessa uudelleen.",
+      "webui_space_warning": "Verkkokäyttöliittymä saattaa lisätä flash-muistin käyttöä ydintoiminnoilta ja asennus kestää kauemmin.",
+      "doc_guide": "Tutustu tähän oppaaseen dokumentaatiossamme.",
+      "process_warning": "Tämä prosessi voi kestää pidempään.",
+      "reset_after_flash": "Kun ohjelmointiprosessi on valmis, voit joutua ehkä painamaan RST-painiketta jos laite ei käynnistynyt automaattisesti uudelleen tai laite ilmoittaa konsolissa \"waiting for download\".",
+      "erase_and_install": "Tyhjennä laiteohjelmisto ja asenna uudelleen",
+      "update": "Päivitä",
+      "start_over": "Aloita alusta",
+      "flashing_complete": "Ohjelmoidaan",
+      "complete": "valmis",
+      "partition_app": "sovellus",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Syötä (UF2) DFU-tila",
+      "ensure_drive_mounted": "Varmista, että DFU-aseman laite on kytketty",
+      "dfu_firmware_clause": "Laiteohjelmistoversioita varten",
+      "dfu_firmware_clause_2": "ota DFU-tila käyttöön manuaalisti",
+      "drive_name_info": "Asemalla voi olla eri nimi riippuen laitteestasi tai sen käynnistyslataajasta.",
+      "dfu_drive": "DFU-asema",
+      "download_copy_uf2": "Lataa tai kopioi UF2-tiedosto DFU-asemaan",
+      "copy_instructions": "Lataa tai kopioi UF2 tiedosto DFU-asemalle. Laite käynnistyy uudelleen kun tiedonsiirto on valmis ja käynnistyy sen jälkeen uudella laiteohjelmistolla.",
+      "auto_reboot_warning": "Automaattinen uudelleenkäynnistys voi aiheuttaa viestejä tiedostonsiirtovirheistä, kirjoitusvirheistä tai laitteen poistamisesta",
+      "install_inkhud": "Asenna InkHUD-näyttö",
+      "enter_dfu": "Syötä DFU-tila",
+      "download_uf2": "Lataa UF2"
+    },
+    "erase_uf2": {
+      "warning": "Laitteen tyhjentämisen jälkeen Meshtastic ohjelmisto ei ole käytettävissä, ennen kuin siihen on ohjelmoitu uusi laiteohjelmisto.",
+      "dfu_warning": "Tämä toiminto tyhjentää laitteesi kokonaan.",
+      "wait_for_drive": "Odota, että asema ei enää näy ja avaa sen jälkeen sarjavalvontaohjelma tyhjennyksen loppuun saattamiseksi.",
+      "close_instructions": "Sulje tämä ponnahdusikkuna valitaksesi laiteohjelmistoversion ja aloittaaksesi ohjelmoinnin."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Avaa sarjaportin valvonta",
+    "meshtastic_docs": "Meshtastic dokumentit",
+    "contribute": "Osallistu GitHubissa"
+  },
+  "serial": {
+    "instructions": "Jos yhteyden katkaiseminen kestää liian kauan, voit poistaa laitteen manuaalisesti.",
+    "disconnect": "Katkaise",
+    "log_levels": {
+      "all": "Kaikki",
+      "debug": "Vianetsintä",
+      "info": "Tiedot",
+      "warn": "Varoitus",
+      "error": "Virhe"
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic Web Yazılım Yükleyicisi",
+  "header": "Yazılım Yükleyicisi",
+  "description": "ESP32 yazılımı yüklemek için web tabanlı bir araç",
+  "browser_warning": "Tarayıcınız WebSerial API'sını desteklemiyor. Lütfen Chrome veya Edge gibi uyumlu bir tarayıcıya kullanın.",
+  "header_title": "YAZILIM YÜKLEYİCİSİ",
+  "language": "Dil",
+  "actions": {
+    "connect": "Bağlan",
+    "disconnect": "Bağlantıyı Kes",
+    "continue": "Devam Et",
+    "close_dialog": "Pencereyi Kapat"
+  },
+  "state": {
+    "connected": "Bağlandı",
+    "disconnected": "Bağlı Değil",
+    "connecting": "Bağlanıyor",
+    "disconnecting": "Bağlantı Kesiliyor",
+    "flashing": "Yükleniyor",
+    "flashed": "Yüklendi",
+    "error": "Hata"
+  },
+  "device": {
+    "title": "Cihaz",
+    "header": "Bağlı cihazınızı seçin",
+    "select_device": "Hedef Cihazı Seçin",
+    "all_devices": "Tüm Cihazlar",
+    "instructions": "Cihazınızı USB ile bağlayın. Kablonun yalnızca güç ileten bir kablo olmadığından emin olun.",
+    "subheading": "Bağlı cihazınızda hali hazırda Meshtastic yüklüyse, otomatik olarak tespit edebilirsiniz:",
+    "auto_detect": "Otomatik Tespit",
+    "supported_devices": "Desteklenen Cihazlar",
+    "diy_devices": "Kendi Yapımınız Cihazlar"
+  },
+  "firmware": {
+    "title": "Yazılım",
+    "select_firmware": "Yazılımı Seç",
+    "instructions": "Yayınlanan sürümlerden birini seçin veya Github'tan indirilen bir release.zip dosyasını yükleyin.",
+    "stable": "Güvenilir (Beta)",
+    "unstable": "Güvenilmez (Alfa)",
+    "prerelease": "Ön Sürüm",
+    "error_fetching": "API'dan yazılım sürümleri alınamadı.",
+    "refresh_later": "Yeniden denemek için sayfayı daha sonra tekrar yenileyin.",
+    "upload_alternative": "Alternatif olarak, Github'da yayınlanan  firmware.zip dosyalarından bırını veya ESP32 tabanlı bir cihaz için yaratılmış bir firmware-update.bin dosyasını yüklemek için simgeye tıklayabilirsiniz.",
+    "upload_tooltip": "Kendi firmware.zip veya bin dosyanızı yükleyin.",
+    "icon": "simge"
+  },
+  "flash": {
+    "title": "Yükle",
+    "instructions": "Cihazınıza yükleyin. Cihazınızı güncellemek mi yoksa belleği temizleyip sıfırdan kurulum yapmak mı istediğinizi seçin.",
+    "erase_flash": "Cihaz yazılımını Sil",
+    "erase_flash_prefix": "Cihaz yazılımını Sil:",
+    "dfu_action_doubleclick": "RST düğmesine çift tıklayarak.",
+    "dfu_action_bootsel": "USB kablosunu takarken BOOTSEL düğmesine basılı tutarak.",
+    "esp32": {
+      "step_1_usb": "Cihazın USB ile bağlandığından emin olun",
+      "step_2_baud_rate": "Baud hızını seçin",
+      "step_3_flash": "Cihaz yazılımını yükleyin",
+      "slow_reliable": "115200 daha yavaştır, fakat düşük kaliteli bağlantılar için daha güvenilir olabilir.",
+      "s3_instructions": "Cihazınız ESP32-S3 tabanlıysa, kapatın ve USB kablosunu takarken BOOT / USR düğmesine basılı tutun.",
+      "reset_alternative": "Alternatif olarak, cihazı doğru moda geçirmek için 1200bps Reset yöntemini deneyebilirsiniz.",
+      "reset_button": "1200bps Sıfırla",
+      "full_erase": "Tam Sil ve Kur",
+      "bundle_webui": "Web Arayüzünü Dahil Et",
+      "install_inkhud": "InkHUD'u Kur",
+      "backup_warning": "Tam silme ve kurulumdan önce cihazın genel ve özel anahtarlarını, gerekirse yeniden yüklemeden sonra geri yüklemek için, yedekleyin.",
+      "webui_space_warning": "Web arayüzünün dahil edilmesi, flash kullanımını artırır ve kurulum süresini uzatır.",
+      "doc_guide": "Belgelerdeki bu kılavuza göz atın.",
+      "process_warning": "Bu işlem biraz zaman alabilir.",
+      "reset_after_flash": "Yükleme tamamlandıktan sonra, cihaz otomatik olarak yeniden başlamazsa veya konsolda \"waiting to download\" yazıyorsa RST düğmesine basmanız gerekebilir.",
+      "erase_and_install": "Cihaz Sil ve Kur",
+      "update": "Güncelle",
+      "start_over": "Yeniden Başla",
+      "flashing_complete": "Yükleme",
+      "complete": "tamamlandı",
+      "partition_app": "uygulama",
+      "partition_ota": "Kablosuz Güncelleme",
+      "partition_fs": "dosya sistemi"
+    },
+    "uf2": {
+      "enter_dfu_mode": "DFU Moduna (UF2) Gir",
+      "ensure_drive_mounted": "Cihazın DFU sürücüsünün bağlandığından emin olun",
+      "dfu_firmware_clause": "Yazılım sürümleri için",
+      "dfu_firmware_clause_2": "DFU modunu elle tetikleyin:",
+      "drive_name_info": "Sürücü adı, cihaz donanımına ve önyükleyicisine bağlı olarak değişebilir.",
+      "dfu_drive": "DFU sürücüsü",
+      "download_copy_uf2": "UF2 dosyasını indir veya DFU sürücüsüne kopyala",
+      "copy_instructions": "UF2 dosyasını indir veya DFU sürücüsüne kopyalayın. Aktarım tamamlandığında cihaz otomatik olarak yeniden başlatılır ve yeni yazılımla başlar.",
+      "auto_reboot_warning": "Otomatik yeniden başlatma, dosya aktarım hataları veya cihazın çıkarılmasıyla ilgili mesajlara neden olabilir.",
+      "install_inkhud": "InkHUD ekranını kur",
+      "enter_dfu": "DFU Moduna Gir",
+      "download_uf2": "UF2'yi İndir"
+    },
+    "erase_uf2": {
+      "warning": "Flash silindikten sonra, bu işlem yeni bir Meshtastic yazılımı yüklenene kadar tekrar kullanılamaz.",
+      "dfu_warning": "Bu işlem cihazınızı tamamen silecektir.",
+      "wait_for_drive": "Sürücünün kaybolmasını bekleyin, ardından silme işlemini tamamlamak için bir seri monitör açın.",
+      "close_instructions": "Cihaz yaılımı sürümünü seçmek ve yüklemeye başlamak için bu pencereyi kapatın."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Seri Monitörü Aç",
+    "meshtastic_docs": "Meshtastic Belgeleri",
+    "contribute": "GitHub'da Katkıda Bulun"
+  },
+  "serial": {
+    "instructions": "Bağlantı kesme işlemi çok uzun sürüyorsa, cihazın bağlantısını manuel olarak kesebilirsiniz.",
+    "disconnect": "Bağlantıyı Kes",
+    "log_levels": {
+      "all": "Hepsi",
+      "debug": "Hata Ayıklama",
+      "info": "Bilgi",
+      "warn": "Uyarı",
+      "error": "Hata"
+    }
+  }
+}
