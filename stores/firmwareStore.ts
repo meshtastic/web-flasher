@@ -24,47 +24,38 @@ import {
   getCorsFriendyReleaseUrl,
 } from '../types/api';
 import { createUrl } from './store';
+// Import manifest directly instead of fetching it
+import manifestData from '../public/data/manifest.json';
 
-// Will be loaded dynamically from manifest.json
+// Initialize from imported data instead of fetching
 let manifestRelease: FirmwareResource | null = null;
 let onlyManifestRelease = false;
-let manifestVendorTag = '';
+let manifestVendorTag = manifestData.vendorCobrandingTag || '';
 
-// Fetch the manifest.json file
-const loadManifest = async () => {
-  try {
-    const response = await fetch('/data/manifest.json');
-    if (response.ok) {
-      const manifest = await response.json();
-      manifestVendorTag = manifest.vendorCobrandingTag || '';
+// Initialize manifest data from the imported JSON
+const initializeManifest = () => {
+  if (manifestData.release && manifestData.release.version) {
+    const version = manifestData.release.version;
+    const isPrerelease = manifestData.release.isPrerelease === true;
+    const title = manifestData.release.title || `Meshtastic Firmware ${version}`;
 
-      // Create prerelease from manifest if configured
-      if (manifest.release && manifest.release.version) {
-        const version = manifest.release.version;
-        const isPrerelease = manifest.release.isPrerelease === true;
-        const title = manifest.release.title || `Meshtastic Firmware ${version}`;
+    onlyManifestRelease = !isPrerelease;
 
-        onlyManifestRelease = !isPrerelease;
+    console.log('Manifest release:', manifestData.release);
 
-        console.log('Manifest release:', manifest.release);
-
-        if (isPrerelease || manifest.release.githubioPrefix) {
-          manifestRelease = {
-            id: `v${version}`,
-            title: isPrerelease ? `${title} Preview` : title,
-            zip_url: `https://github.com/meshtastic/firmware/releases/download/v${version}/firmware-${version}.zip`,
-            release_notes: manifest.release.release_notes || '',
-          };
-        }
-      }
+    if (isPrerelease || manifestData.release.githubioPrefix) {
+      manifestRelease = {
+        id: `v${version}`,
+        title: isPrerelease ? `${title} Preview` : title,
+        zip_url: `https://github.com/meshtastic/firmware/releases/download/v${version}/firmware-${version}.zip`,
+        release_notes: manifestData.release.release_notes || '',
+      };
     }
-  } catch (error) {
-    console.error('Error loading manifest.json:', error);
   }
 };
 
-// Load manifest immediately
-loadManifest();
+// Initialize manifest immediately
+initializeManifest();
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
