@@ -216,7 +216,7 @@ onMounted(() => {
   }
 
   :root {
-    --bg-color: #2C2D3C;
+    --bg-color: #222222;
     --text-color: #FFFFFF;
     --primary-color: #67EA94;
     --secondary-color: #67EA94;

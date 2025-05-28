@@ -1,7 +1,7 @@
 <template>
   <div class="w-full mt-2" v-if="serialMonitorStore.isConnected || serialMonitorStore.terminalBuffer.length > 0">
     <div class="flex items-center justify-center">
-      <div v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked" class="flex items-center p-4 mb-4 text-sm rounded-lg bg-gray-800 text-blue-400" role="alert">
+      <div v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked" class="flex items-center p-4 mb-4 text-sm rounded-lg bg-zinc-800 text-blue-400" role="alert">
         <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
         </svg>
@@ -14,7 +14,7 @@
     <div class="grid grid-cols-3">
       <div class="col"> 
         <div class="flex items-center justify-start px-2">
-          <button type="button" @click="logLevel = 'all'" class="relative border focus:ring-4 focus:outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 bg-gray-900 focus:ring-blue-800">
+          <button type="button" @click="logLevel = 'all'" class="relative border focus:ring-4 focus:outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 bg-zinc-800 focus:ring-blue-800">
             {{ $t('serial.log_level.all') }}
             <div v-if="logCounts.all > 0" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-blue-500 rounded-full -top-3 -end-3">{{ logCounts.all }}</div>
           </button>
@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="inverse-toggle px-5 shadow-lg text-gray-100 text-sm font-mono subpixel-antialiased bg-gray-900 pb-6 pt-4 rounded-lg leading-normal overflow-hidden">
+    <div class="inverse-toggle px-5 shadow-lg text-gray-100 text-sm font-mono subpixel-antialiased bg-zinc-800 pb-6 pt-4 rounded-lg leading-normal overflow-hidden">
       <div class="top mb-2 flex">
         <div class="h-3 w-3 bg-red-500 rounded-full"></div>
         <div class="ml-2 h-3 w-3 bg-orange-300 rounded-full"></div>

@@ -1,6 +1,6 @@
 <template>
     <div class="relative w-full max-w-4xl max-h-full">
-        <div class="relative rounded-lg shadow bg-gray-700">
+        <div class="relative rounded-lg shadow bg-zinc-800">
             <FlashHeader />
             <div class="p-4 md:p-5">
                 <ReleaseNotes />
@@ -12,7 +12,7 @@
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
                             {{ $t('flash.esp32.step_1_usb') }}
                         </h3>
-                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
+                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-zinc-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 {{ $t('flash.esp32.s3_instructions') }}
@@ -72,7 +72,7 @@
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
                             <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.install_inkhud') }}</span>
                         </label>
-                        <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 bg-gray-800 text-red-400">
+                        <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 bg-zinc-800 text-red-400">
                             <div class="flex items-center">
                                 <InformationCircleIcon class="flex-shrink-0 inline w-4 h-4 mr-1" />
                                 <span>
@@ -90,7 +90,7 @@
                             {{ $t('flash.esp32.process_warning') }}
                         </p>
                         <div>
-                            <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
+                            <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-zinc-800 text-blue-200" role="alert">
                                 <span class="font-medium">
                                     <InformationCircleIcon class="h-4 w-4 inline" />
                                     {{ $t('flash.esp32.reset_after_flash') }}
@@ -109,7 +109,7 @@
                         {{ $t('flash.esp32.start_over') }}
                     </button>
                     <div v-if="firmwareStore.$state.flashPercentDone > 0" class="mb-1 text-center font-medium text-white">{{ $t('flash.esp32.flashing_complete') }} {{ partition }} {{ firmwareStore.percentDone }} {{ $t('flash.esp32.complete') }}</div>
-                    <div class="w-fullrounded-full h-2.5 mb-4 bg-gray-700" v-if="firmwareStore.$state.flashPercentDone > 0">
+                    <div class="w-fullrounded-full h-2.5 mb-4 bg-zinc-800" v-if="firmwareStore.$state.flashPercentDone > 0">
                         <div class="bg-meshtastic h-2.5 rounded-full" :style=" { 'width': firmwareStore.percentDone }"></div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 <template>
     <div class="relative p-4 w-full max-w-4xl max-h-full">
-        <div class="relative rounded-lg shadow bg-gray-700">
+        <div class="relative rounded-lg shadow bg-zinc-800">
             <FlashHeader />
             <div class="p-4 md:p-5">
                 <ReleaseNotes />
@@ -12,7 +12,7 @@
                         <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
                             {{ $t('flash.uf2.enter_dfu_mode') }}
                         </h3>
-                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
+                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-zinc-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2') }} {{ deviceStore.dfuStepAction }}
@@ -50,7 +50,7 @@
                         <span>
                             {{ $t('flash.uf2.copy_instructions') }}
                         </span>
-                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
+                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-zinc-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <InformationCircleIcon class="h-4 w-4 inline" />
                                 {{ $t('flash.uf2.auto_reboot_warning') }}
