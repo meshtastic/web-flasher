@@ -10,7 +10,6 @@
     </Head>
 
     <section id="main" class="text-gray-400 body-font">
-      <transition name="flash" mode="out-in">
         <div class="container px-5 py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
@@ -51,7 +50,6 @@
             </div>
           </div>
         </div>
-      </transition>
       <div class="text-center mt-4 flex justify-center gap-4">
         <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="inline border border-meshtastic text-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
           {{ $t('buttons.serial_monitor') }} <CommandLineIcon class="h-4 w-4 inline mb-1" />
@@ -227,37 +225,46 @@ onMounted(() => {
   body {
     font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
     background-color: var(--bg-color);
-    /* background-image: url('/img/dc33-final-fullcolor.svg');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 60%;
-    background-attachment: fixed;
-    opacity: 0.3; */
     color: var(--text-color);
   }
 
-  /* Apply muted colors and blur effect to background logo */
-  /* body::before {
+  /* Animated background logo with pulse and glow effects */
+  body::before {
     content: '';
     position: fixed;
     bottom: 15rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 60rem;
-    height: 40rem;
-    background-image: url('/img/dc33-final-fullcolor.svg');
+    width: 30rem;
+    height: 20rem;
+    /* background-image: url('/img/dc33-final-fullcolor.svg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
-    opacity: 0.3;
+    opacity: 0.3; */
+    filter: blur(0.125rem) grayscale(50%) saturate(0.4);
     z-index: -1;
     pointer-events: none;
-  } */
+    animation: flashBackground 2s ease-in-out infinite alternate;
+  }
 
-  /* Remove the background image from body since we're using ::before pseudo-element */
-  /* body {
-    background-image: none;
-  } */
+  @keyframes flashBackground {
+    0% {
+      opacity: 0.2;
+      filter: blur(0.125rem) grayscale(70%) saturate(0.3);
+      transform: translateX(-50%) scale(0.95);
+    }
+    50% {
+      opacity: 0.4;
+      filter: blur(0.0625rem) grayscale(30%) saturate(0.6);
+      transform: translateX(-50%) scale(1.02);
+    }
+    100% {
+      opacity: 0.3;
+      filter: blur(0.125rem) grayscale(50%) saturate(0.4);
+      transform: translateX(-50%) scale(1);
+    }
+  }
 
   /* Ensure all interactive elements use Atkinson Hyperlegible for accessibility */
   button, input, select, textarea, .btn {
