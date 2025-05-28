@@ -74,7 +74,7 @@
 
     <SerialMonitor />
 
-    <footer id="footer" class="halloween-theme footer text-white mt-4 py-4">
+    <footer id="footer" class="footer text-white mt-4 py-4">
       <canvas>
         <div class="container mx-auto px-5 py-4 text-center">
           <p>
@@ -127,6 +127,7 @@ import {
 import { useDeviceStore } from './stores/deviceStore';
 import { useFirmwareStore } from './stores/firmwareStore';
 import { useSerialMonitorStore } from './stores/serialMonitorStore';
+import manifestData from './public/data/manifest.json';
 
 const serialMonitorStore = useSerialMonitorStore();
 const firmwareStore = useFirmwareStore();
@@ -186,17 +187,60 @@ onMounted(() => {
   initTooltips();
   initDrawers();
   initAccordions();
+  // Apply manifest colors to CSS custom properties
+  document.documentElement.style.setProperty('--bg-color', manifestData.backGroundColor);
+  document.documentElement.style.setProperty('--text-color', manifestData.textColor);
+  document.documentElement.style.setProperty('--primary-color', manifestData.primaryColor);
+  document.documentElement.style.setProperty('--secondary-color', manifestData.secondaryColor);
 });
 </script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..1000&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+  /* Additional Atkinson Hyperlegible fallback */
+  @font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('https://fonts.gstatic.com/s/atkinsonhyperlegible/v11/9Bt23C1KxNDXMspQ1lPyU89-1h6ONRlW45GE.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('https://fonts.gstatic.com/s/atkinsonhyperlegible/v11/9Bt43C1KxNDXMspQ1lPyU89-1h6ONRlW45G055LkgA.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --bg-color: #2C2D3C;
+    --text-color: #FFFFFF;
+    --primary-color: #67EA94;
+    --secondary-color: #67EA94;
+  }
+
   body {
-    font-family: 'Inter', sans-serif;
-    background-color: #2C2D3C;
+    font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  /* Ensure all interactive elements use Atkinson Hyperlegible for accessibility */
+  button, input, select, textarea, .btn {
+    font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
+  }
+
+  /* Headings can use fallback fonts if Atkinson Hyperlegible doesn't support certain weights */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
   }
   .konami-code {
-    background-color: #000000 !important;
+    background-color: var(--bg-color) !important;
     /* Firefox */
         -moz-transition: all 1s ease-in;
     /* WebKit */
@@ -214,21 +258,21 @@ onMounted(() => {
     color: #67EA94;
   }
   .bg-meshtastic {
-    background-color: #67EA94;
+    background-color: var(--primary-color);
   }
   .border-meshtastic {
-    border-color: #67EA94;
+    border-color: var(--primary-color);
   }
   .footer {
-    background-color: #2C2D3C;
+    background-color: var(--bg-color);
   }
   h1 {
     font-size: 2em;
-    color: #FFFFFF;
+    color: var(--text-color);
   }
   h2 {
     font-size: 1.5em;
-    color: #FFFFFF;
+    color: var(--text-color);
   }
   .footer a:hover {
     text-decoration: underline;

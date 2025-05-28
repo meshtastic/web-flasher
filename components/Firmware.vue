@@ -125,6 +125,7 @@ const setFirmwareFile = (event: any) => {
 }
 
 const setSelectedFirmware = (release: FirmwareResource) => {
+    doAnimation();
     store.setSelectedFirmware(release);
     document.getElementById('dropdownFirmware')?.classList.toggle('hidden'); // Flowbite bug
 }
@@ -143,6 +144,7 @@ function doAnimation() {
   // Setting the width and height of the canvas
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  canvas.style.backgroundColor = '#111';
 
   // Setting up the letters
   let letters = '/\\'.split('');;

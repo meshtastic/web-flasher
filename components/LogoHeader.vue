@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto">
+    <div class="mx-auto font-museo">
         <h1 v-if="vendorCobrandingTag === 'RAK'" class="text-white text-6xl inline-block ml-4 align-top tracking-wide">
             <img src="@/assets/img/logo.svg" class="h-32 w-32 inline-block pt-0 mt-0" alt="Meshtastic Logo" />
             x
