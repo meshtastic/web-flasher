@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "A web-based tool for ESP32 firmware flashing",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
-  "header_title": "x DEFCON Flasher",
+  "header_title": "FLASHER",
   "language": "Language",
   "actions": {
     "connect": "Connect",

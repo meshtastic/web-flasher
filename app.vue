@@ -227,8 +227,37 @@ onMounted(() => {
   body {
     font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
     background-color: var(--bg-color);
+    /* background-image: url('/img/dc33-final-fullcolor.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 60%;
+    background-attachment: fixed;
+    opacity: 0.3; */
     color: var(--text-color);
   }
+
+  /* Apply muted colors and blur effect to background logo */
+  /* body::before {
+    content: '';
+    position: fixed;
+    bottom: 15rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60rem;
+    height: 40rem;
+    background-image: url('/img/dc33-final-fullcolor.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    opacity: 0.3;
+    z-index: -1;
+    pointer-events: none;
+  } */
+
+  /* Remove the background image from body since we're using ::before pseudo-element */
+  /* body {
+    background-image: none;
+  } */
 
   /* Ensure all interactive elements use Atkinson Hyperlegible for accessibility */
   button, input, select, textarea, .btn {
@@ -263,9 +292,6 @@ onMounted(() => {
   .border-meshtastic {
     border-color: var(--primary-color);
   }
-  .footer {
-    background-color: var(--bg-color);
-  }
   h1 {
     font-size: 2em;
     color: var(--text-color);
@@ -280,7 +306,7 @@ onMounted(() => {
   .unsupported-browser-warning {
     background-color: #ffcc00;
     color: black;
-    padding: 10px;
+    padding: 0.625rem;
     text-align: center;
   }
 
