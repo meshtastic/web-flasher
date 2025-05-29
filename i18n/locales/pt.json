@@ -1,0 +1,116 @@
+{
+  "title": "Flasher Web Meshtastic",
+  "header": "Flasher",
+  "description": "Uma ferramenta baseada na web para instalação de firmware do ESP32",
+  "browser_warning": "O seu navegador não oferece suporte à API do WebSerial. Por favor, mude para um navegador compatível, como Chrome ou Edge, para ter todas as funcionalidades.",
+  "header_title": "FLASHER",
+  "language": "eset 1200bps",
+  "actions": {
+    "connect": "Ligar",
+    "disconnect": "Desligar",
+    "continue": "Continuar",
+    "close_dialog": "Fechar janela"
+  },
+  "state": {
+    "connected": "Ligado",
+    "disconnected": "Desligado",
+    "connecting": "A ligar",
+    "disconnecting": "A desligar",
+    "flashing": "A instalar",
+    "flashed": "Instalado",
+    "error": "Erro"
+  },
+  "device": {
+    "title": "Dispositivo",
+    "header": "Selecione o dispositivo conectado",
+    "select_device": "Selecione o dispositivo destino",
+    "all_devices": "Todos os dispositivos",
+    "instructions": "Ligue o seu dispositivo via USB. Certifique-se de que o cabo não seja apenas um de somente energia.",
+    "subheading": "Se o seu dispositivo ligado já tem a Meshtastic instalada, pode detectá-lo automaticamente:",
+    "auto_detect": "Detetar Automaticamente",
+    "supported_devices": "Dispositivos suportados",
+    "diy_devices": "Dispositivos DIY"
+  },
+  "firmware": {
+    "title": "Firmware",
+    "select_firmware": "Selecione o Firmware",
+    "instructions": "Escolha entre as opções de lançamento ou carregue um ficheiro zip descarregado do Github.",
+    "stable": "Estável (ou Beta)",
+    "unstable": "Instável (Alfa)",
+    "prerelease": "Pré-lançamento",
+    "error_fetching": "Não foi possível obter as versões do firmware da API.",
+    "refresh_later": "Atualize a página mais tarde e tente novamente.",
+    "upload_alternative": "Como alternativa, pode fazer o upload de um ficheiro firmware.zip das versões do Github ou de um ficheiro firmware-update.bin para um dispositivo baseado em ESP32 clicando no ícone.",
+    "upload_tooltip": "Carregue seu próprio arquivo zip ou bin de versão de firmware.",
+    "icon": "icon"
+  },
+  "flash": {
+    "title": "Instalar",
+    "instructions": "Instale no seu dispositivo. Escolha se deseja atualizar o dispositivo ou apagar e instalar do zero.",
+    "erase_flash": "Apagar flash",
+    "erase_flash_prefix": "Apagar flash de",
+    "dfu_action_doubleclick": "clicando duas vezes no botão RST.",
+    "dfu_action_bootsel": "pressionar e segurar o botão BOOTSEL ao conectar um cabo USB.",
+    "esp32": {
+      "step_1_usb": "Certifique-se de que o dispositivo esteja ligado por USB",
+      "step_2_baud_rate": "Escolha a taxa de transmissão",
+      "step_3_flash": "Instalar Firmware",
+      "slow_reliable": "115200 é mais lento, mas pode ser mais confiável para ligações de baixa qualidade.",
+      "s3_instructions": "Se o seu dispositivo for baseado em ESP32-S3, talvez precise desligá-lo, em seguida pressione e segure o botão BOOT / USR enquanto liga o cabo USB.",
+      "reset_alternative": "Como alternativa, pode tentar o método de restauração de 1200bps para colocar o dispositivo no modo correto.",
+      "reset_button": "Reset 1200bps",
+      "full_erase": "Apagar tudo e instalar",
+      "bundle_webui": "Juntar Web UI",
+      "install_inkhud": "Instale o InkHUD",
+      "backup_warning": "Faça o backup das chaves públicas e privadas do dispositivo antes de uma limpeza completa para restaurá-las após reinstalar, se necessário.",
+      "webui_space_warning": "Além disso, juntar a interface da Web aumentará a utilização em flash, tirando espaço às funções base e demorará mais para ser instalada.",
+      "doc_guide": "Veja este guia na nossa documentação.",
+      "process_warning": "Este processo poderá demorar um pouco.",
+      "reset_after_flash": "Após o processo de instalação ser concluído, pode precisar de pressionar o botão RST se o dispositivo não reiniciar automaticamente ou se disser \"waiting to download\" na consola.",
+      "erase_and_install": "Apagar Flash e Instalar",
+      "update": "Atualizar",
+      "start_over": "Recomeçar",
+      "flashing_complete": "A instalar",
+      "complete": "completo",
+      "partition_app": "app",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Entrar no modo (UF2) DFU",
+      "ensure_drive_mounted": "Certifique-se de que o dispositivo do modo DFU esteja montado",
+      "dfu_firmware_clause": "Para versões do firmware",
+      "dfu_firmware_clause_2": "ativar modo DFU manualmente por",
+      "drive_name_info": "A unidade pode ter um nome diferente dependendo do hardware do dispositivo e do bootloader.",
+      "dfu_drive": "Unidade DFU",
+      "download_copy_uf2": "Descarregar ou copiar o arquivo UF2 para o drive DFU",
+      "copy_instructions": "Descarregar ou copiar o ficheiro UF2 para a unidade DFU. O dispositivo será reiniciado automaticamente quando a transferência for concluída e iniciará com o novo firmware.",
+      "auto_reboot_warning": "A reinicialização automática pode causar mensagens sobre falhas de transferência de ficheiro, erros de escrita ou o dispositivo ser ejetado",
+      "install_inkhud": "Instalar ecrã InkHUD",
+      "enter_dfu": "Entrar no modo DFU",
+      "download_uf2": "Download de UF2"
+    },
+    "erase_uf2": {
+      "warning": "Depois de apagar o flash, esta operação não estará disponível novamente até que o novo firmware da Meshtastic seja instalado no dispositivo.",
+      "dfu_warning": "Esta operação apagará o seu dispositivo completamente.",
+      "wait_for_drive": "Espere pelo desaparecimento da unidade e, em seguida, abra um monitor de série para concluir o processo de apagamento.",
+      "close_instructions": "Feche este pop-up para selecionar uma versão de firmware e começar a instalar."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Abrir Monitor de Série",
+    "meshtastic_docs": "Documentação Meshtastic",
+    "contribute": "Contribuir no GitHub"
+  },
+  "serial": {
+    "instructions": "Se o processo de desconexão estiver a demorar muito tempo, pode desligar o dispositivo manualmente.",
+    "disconnect": "Desligar",
+    "log_levels": {
+      "all": "Tudo",
+      "debug": "Depuração",
+      "info": "Info",
+      "warn": "Avisos",
+      "error": "Erros"
+    }
+  }
+}
