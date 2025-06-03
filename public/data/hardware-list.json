@@ -918,7 +918,6 @@
       "Seeed"
     ],
     "images": [
-      "wio_tracker_l1.svg",
       "wio_tracker_l1_case.svg"
     ],
     "requiresDfu": true
