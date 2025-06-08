@@ -21,9 +21,9 @@
     "error": "Error"
   },
   "device": {
-    "title": "Device",
-    "header": "Select your connected device",
-    "select_device": "Select Target Device",
+    "title": "Zařízení",
+    "header": "Vyberte vaše připojené zařízení",
+    "select_device": "Vybrat cílové zařízení",
     "all_devices": "All Devices",
     "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
