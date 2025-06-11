@@ -222,7 +222,8 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
 
 const targetPrefix = computed(() => {
     let pioSuffix = "";
-    if (firmwareStore.$state.shouldInstallMui) {
+    // Crowpanel ends with -tft, so don't add -tft suffix
+    if (firmwareStore.$state.shouldInstallMui && !deviceStore.$state.selectedTarget.platformioTarget.endsWith("-tft")) {
         pioSuffix = "-tft";
     } else if (firmwareStore.$state.shouldInstallInkHud) {
         pioSuffix = "-inkhud";
