@@ -121,6 +121,11 @@ export const useDeviceStore = defineStore("device", {
       if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && firmwareStore.stable.length > 0) {
         firmwareStore.setSelectedFirmware(firmwareStore.stable[0]);
       }
+
+      // Auto-select MUI for devices that support it
+      if (target.hasMui === true) {
+        firmwareStore.$state.shouldInstallMui = true;
+      }
     },
     setSelectedTag(tag: string) {
       if (tag === "all") {

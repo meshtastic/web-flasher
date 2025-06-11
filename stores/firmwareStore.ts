@@ -102,7 +102,11 @@ export const useFirmwareStore = defineStore('firmware', {
       this.selectedFirmware = firmware;
       this.selectedFile = undefined;
       this.hasSeenReleaseNotes = false;
+      // Store current MUI setting before clearing state
+      const currentMuiSetting = this.shouldInstallMui;
       this.clearState();
+      // Restore MUI setting if it was enabled (for devices that support it)
+      this.shouldInstallMui = currentMuiSetting;
     },
     getReleaseFileUrl(fileName: string): string {
       if (!this.selectedFirmware?.zip_url) return '';
@@ -132,7 +136,11 @@ export const useFirmwareStore = defineStore('firmware', {
     async setFirmwareFile(file: File) {
       this.selectedFile = file;
       this.selectedFirmware = undefined;
+      // Store current MUI setting before clearing state
+      const currentMuiSetting = this.shouldInstallMui;
       this.clearState();
+      // Restore MUI setting if it was enabled (for devices that support it)
+      this.shouldInstallMui = currentMuiSetting;
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal();
