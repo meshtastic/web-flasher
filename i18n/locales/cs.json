@@ -4,7 +4,7 @@
   "description": "A web-based tool for ESP32 firmware flashing",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
   "header_title": "FLASHER",
-  "language": "Language",
+  "language": "Jazyk",
   "actions": {
     "connect": "Connect",
     "disconnect": "Disconnect",
@@ -18,7 +18,7 @@
     "disconnecting": "Disconnecting",
     "flashing": "Flashing",
     "flashed": "Flashed",
-    "error": "Error"
+    "error": "Chyba"
   },
   "device": {
     "title": "Zařízení",
@@ -33,9 +33,9 @@
   },
   "firmware": {
     "title": "Firmware",
-    "select_firmware": "Select Firmware",
-    "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
-    "stable": "Stable (or Beta)",
+    "select_firmware": "Vybrat firmware",
+    "instructions": "Vyberte z možností vydání nebo nahrajte zip stažený z Githubu.",
+    "stable": "Stabilní (nebo Beta)",
     "unstable": "Unstable (Alpha)",
     "prerelease": "Pre-release",
     "error_fetching": "Could not fetch firmware versions from API.",
