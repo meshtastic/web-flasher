@@ -978,5 +978,21 @@
     ],
     "partitionScheme": "16MB",
     "hasMui": true
+  },
+  {
+    "hwModel": 104,
+    "hwModelSlug": "GAT562_MESH_TRIAL_TRACKER",
+    "platformioTarget": "gat562_mesh_trial_tracker",
+    "architecture": "nrf52840",
+    "activelySupported": true,
+    "supportLevel": 2,
+    "displayName": "GAT562 Mesh Trial Tracker",
+    "tags": [
+      "GAT-IoT"
+    ],
+    "images": [
+      "gat562.svg"
+    ],
+    "requiresDfu": true
   }
 ]
