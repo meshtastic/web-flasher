@@ -877,9 +877,9 @@
   {
     "hwModel": 94,
     "hwModelSlug": "HELTEC_MESH_POCKET",
-    "platformioTarget": "heltec_mesh_pocket",
+    "platformioTarget": "heltec-mesh-pocket-10000",
     "architecture": "nrf52840",
-    "activelySupported": false,
+    "activelySupported": true,
     "supportLevel": 1,
     "displayName": "Heltec MeshPocket",
     "tags": [
@@ -888,7 +888,8 @@
     "images": [
       "heltec_mesh_pocket.svg"
     ],
-    "requiresDfu": true
+    "requiresDfu": true,
+    "hasInkHud": true
   },
   {
     "hwModel": 95,
@@ -938,6 +939,7 @@
       "crowpanel_5_0.svg",
       "crowpanel_7_0.svg"
     ],
+    "partitionScheme": "16MB",
     "hasMui": true
   },
   {
@@ -956,6 +958,7 @@
       "crowpanel_2_4.svg",
       "crowpanel_2_8.svg"
     ],
+    "partitionScheme": "16MB",
     "hasMui": true
   },
   {
@@ -973,6 +976,7 @@
     "images": [
       "crowpanel_3_5.svg"
     ],
+    "partitionScheme": "16MB",
     "hasMui": true
   }
 ]
