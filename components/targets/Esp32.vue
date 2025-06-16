@@ -213,7 +213,7 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
         const foundWebUI = entries.find(entry => entry.filename.startsWith('littlefswebui'));
         canBundleWebUI.value = !!foundWebUI;
     } else if (firmwareStore.selectedFirmware) {
-        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value));
+        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value)) && !firmwareStore.$state.shouldInstallMui;
     }
     else {
         canBundleWebUI.value = false;
