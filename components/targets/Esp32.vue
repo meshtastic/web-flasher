@@ -167,6 +167,7 @@ const startOver = () => {
 }
 
 const flash = () => {
+    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
     if (firmwareStore.$state.shouldCleanInstall) {  
         cleanInstallEsp32();
     } else {
@@ -202,7 +203,6 @@ const canInstallInkHud = computed(() => {
 
 watch(() => firmwareStore.$state.shouldInstallMui, () => {
     canBundleWebUI.value = !firmwareStore.$state.shouldInstallMui;
-    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
 });
 
 watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
