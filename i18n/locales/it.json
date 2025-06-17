@@ -1,30 +1,30 @@
 {
   "title": "Meshtastic Web Flasher",
   "header": "Flasher",
-  "description": "A web-based tool for ESP32 firmware flashing",
-  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
+  "description": "Uno strumento web-based per il flashing del firmware ESP32",
+  "browser_warning": "Il tuo browser non supporta l'API WebSerial. Passa a un browser compatibile, come Chrome o Edge, per avere una funzionalità completa.",
   "header_title": "FLASHER",
-  "language": "Language",
+  "language": "Lingua",
   "actions": {
-    "connect": "Connect",
-    "disconnect": "Disconnect",
-    "continue": "Continue",
-    "close_dialog": "Close dialog"
+    "connect": "Connetti",
+    "disconnect": "Disconnetti",
+    "continue": "Continua",
+    "close_dialog": "Chiudi la finestra di dialogo"
   },
   "state": {
-    "connected": "Connected",
-    "disconnected": "Not connected",
-    "connecting": "Connecting",
-    "disconnecting": "Disconnecting",
-    "flashing": "Flashing",
-    "flashed": "Flashed",
-    "error": "Error"
+    "connected": "Connesso",
+    "disconnected": "Non connesso",
+    "connecting": "Connessione in corso",
+    "disconnecting": "Disconnessione in corso",
+    "flashing": "Flashando",
+    "flashed": "Flash concluso",
+    "error": "Errore"
   },
   "device": {
-    "title": "Device",
-    "header": "Select your connected device",
-    "select_device": "Select Target Device",
-    "all_devices": "All Devices",
+    "title": "Dispositivo",
+    "header": "Seleziona il tuo dispositivo connesso",
+    "select_device": "Seleziona Dispositivo Di Destinazione",
+    "all_devices": "Tutti i dispositivi",
     "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
     "auto_detect": "Auto-detect",
