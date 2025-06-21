@@ -69,6 +69,7 @@
             </svg>
           </span>
         </a>
+        <LanguagePicker v-if="!serialMonitorStore.isConnected" />
       </div>
     </section>
 
