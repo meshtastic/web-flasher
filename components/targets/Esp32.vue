@@ -167,6 +167,7 @@ const startOver = () => {
 }
 
 const flash = () => {
+    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
     if (firmwareStore.$state.shouldCleanInstall) {  
         cleanInstallEsp32();
     } else {
@@ -202,7 +203,6 @@ const canInstallInkHud = computed(() => {
 
 watch(() => firmwareStore.$state.shouldInstallMui, () => {
     canBundleWebUI.value = !firmwareStore.$state.shouldInstallMui;
-    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
 });
 
 watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
@@ -213,7 +213,7 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
         const foundWebUI = entries.find(entry => entry.filename.startsWith('littlefswebui'));
         canBundleWebUI.value = !!foundWebUI;
     } else if (firmwareStore.selectedFirmware) {
-        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value));
+        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value)) && !firmwareStore.$state.shouldInstallMui;
     }
     else {
         canBundleWebUI.value = false;
@@ -222,7 +222,8 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
 
 const targetPrefix = computed(() => {
     let pioSuffix = "";
-    if (firmwareStore.$state.shouldInstallMui) {
+    // Crowpanel ends with -tft, so don't add -tft suffix
+    if (firmwareStore.$state.shouldInstallMui && !deviceStore.$state.selectedTarget.platformioTarget.endsWith("-tft")) {
         pioSuffix = "-tft";
     } else if (firmwareStore.$state.shouldInstallInkHud) {
         pioSuffix = "-inkhud";

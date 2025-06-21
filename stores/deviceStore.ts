@@ -60,7 +60,7 @@ export const useDeviceStore = defineStore("device", {
       return this.selectedArchitecture.startsWith("nrf52");
     },
     isSoftDevice7point3(): boolean {
-      const sd73Devices = ["WIO_WM1110", "TRACKER_T1000_E", "XIAO_NRF52_KIT"];
+      const sd73Devices = ["WIO_WM1110", "TRACKER_T1000_E", "XIAO_NRF52_KIT", "SEEED_SOLAR_NODE"];
       return sd73Devices.includes(this.selectedTarget?.hwModelSlug);
     },
     enterDfuVersion(): string {
@@ -120,6 +120,11 @@ export const useDeviceStore = defineStore("device", {
       await new Promise((_) => setTimeout(_, 250));
       if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && firmwareStore.stable.length > 0) {
         firmwareStore.setSelectedFirmware(firmwareStore.stable[0]);
+      }
+
+      // Auto-select MUI for devices that support it
+      if (target.hasMui === true) {
+        firmwareStore.$state.shouldInstallMui = true;
       }
     },
     setSelectedTag(tag: string) {
