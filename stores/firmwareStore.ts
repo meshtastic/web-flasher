@@ -56,7 +56,7 @@ export const useFirmwareStore = defineStore('firmware', {
       isConnected: false,
       port: <SerialPort | undefined>{},
       couldntFetchFirmwareApi: false,
-      prereleaseUnlocked: useSessionStorage('prereleaseUnlocked', false),
+      prereleaseUnlocked: true,//useSessionStorage('prereleaseUnlocked', false),
     }
   },
   getters: {
