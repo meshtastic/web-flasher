@@ -85,7 +85,7 @@
       "dfu_drive": "DFU 磁碟",
       "download_copy_uf2": "下載或複製 UF2 檔案到 DFU 磁碟",
       "copy_instructions": "請將 UF2 檔案下載或複製到 DFU 磁碟。傳輸完成後，裝置會自動重新啟動並載入新韌體。",
-      "auto_reboot_warning": "自動重啟可能會出現檔案傳輸錯誤、寫入失敗或裝置被退出等訊息，屬正常現象。”",
+      "auto_reboot_warning": "自動重啟可能會出現檔案傳輸錯誤、寫入失敗或裝置被退出等訊息，屬正常現象。",
       "install_inkhud": "安裝 InkHUD 顯示介面",
       "enter_dfu": "啟動 DFU 模式",
       "download_uf2": "下載 UF2 檔案"
