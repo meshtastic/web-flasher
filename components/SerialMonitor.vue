@@ -15,23 +15,23 @@
       <div class="col"> 
         <div class="flex items-center justify-start px-2">
           <button type="button" @click="logLevel = 'all'" class="relative border focus:ring-4 focus:outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 bg-gray-900 focus:ring-blue-800">
-            {{ $t('serial.log_level.all') }}
+            {{ $t('serial.log_levels.all') }}
             <div v-if="logCounts.all > 0" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-blue-500 rounded-full -top-3 -end-3">{{ logCounts.all }}</div>
           </button>
           <button type="button" @click="logLevel = 'INFO  |'" class="relative border :outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 focus:ring-gray-800 text-white hover:bg-blue-500" >
-            {{ $t('serial.log_level.info') }}
+            {{ $t('serial.log_levels.info') }}
             <div v-if="logCounts.info > 0" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-gray-200 rounded-full -top-3 -end-3">{{ logCounts.info }}</div>
           </button>
           <button type="button" @click="logLevel = 'DEBUG |'" class="relative border :outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 focus:ring-gray-800 border-blue-300 text-blue-300 hover:bg-blue-500 hover:text-white">
-            {{ $t('serial.log_level.debug') }}
+            {{ $t('serial.log_levels.debug') }}
             <div v-if="logCounts.debug > 0" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-blue-300 rounded-full -top-3 -end-3">{{ logCounts.debug }}</div>
           </button>
           <button type="button" @click="logLevel = 'WARN  |'" class="relative border :outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 focus:ring-gray-800 border-orange-300 text-orange-300 hover:bg-orange-300 hover:text-white">
-            {{ $t('serial.log_level.warn') }}
+            {{ $t('serial.log_levels.warn') }}
             <div v-if="logCounts.warn > 0" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-orange-300 rounded-full -top-3 -end-3">{{ logCounts.warn }}</div>
           </button>
           <button type="button" @click="logLevel = 'ERROR |'" class="relative border :outline-none rounded-full text-xs font-medium px-4 py-1.5 text-center me-3 mb-2 focus:ring-gray-800 border-red-500 text-red-500 hover:bg-red-500 hover:text-white">
-            {{ $t('serial.log_level.error') }}
+            {{ $t('serial.log_levels.error') }}
             <div v-if="logCounts.error > 0" class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-red-500 rounded-full -top-3 -end-3">{{ logCounts.error }}</div>
           </button>
         </div>
