@@ -95,6 +95,11 @@ export default defineNuxtConfig({
         name: '简体中文',
         file: 'zh-Hans.json',
       },
+      {
+        code: 'zh-Hant',
+        name: '繁體中文',
+        file: 'zh-Hant.json',
+      },
     ],
     defaultLocale: 'en',
     lazy: true,

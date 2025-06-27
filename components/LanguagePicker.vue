@@ -46,6 +46,7 @@ const flagMap = {
   'sv': '🇸🇪',
   'tr': '🇹🇷',
   'zh-Hans': '🇨🇳',
+  'zh-Hant': '🇹🇼',
 }
 
 // Get available locales from Nuxt i18n config with flags
