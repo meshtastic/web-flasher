@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic 網頁版燒錄器",
+  "header": "燒錄",
+  "description": "用於 ESP32 韌體燒錄的 web 工具",
+  "browser_warning": "您的瀏覽器不支援 WebSerial API。請切換到相容的瀏覽器，如Chrome或Edge，取得全部功能。",
+  "header_title": "燒錄器",
+  "language": "語言",
+  "actions": {
+    "connect": "連線",
+    "disconnect": "斷開",
+    "continue": "繼續",
+    "close_dialog": "關閉對話框"
+  },
+  "state": {
+    "connected": "已連接",
+    "disconnected": "未連接",
+    "connecting": "正在連接",
+    "disconnecting": "斷開連接",
+    "flashing": "正在燒錄",
+    "flashed": "已燒錄",
+    "error": "錯誤"
+  },
+  "device": {
+    "title": "裝置",
+    "header": "選擇您已連接的裝置",
+    "select_device": "選擇目標裝置",
+    "all_devices": "所有裝置",
+    "instructions": "透過 USB 插入您的裝置。請確保你的 USB 線材能傳輸資料（而非僅充電）。",
+    "subheading": "如果您所連接的裝置已經安裝了 Meshtastic ，您可以自動偵測：",
+    "auto_detect": "自動偵測",
+    "supported_devices": "支援的裝置",
+    "diy_devices": "DIY 裝置"
+  },
+  "firmware": {
+    "title": "韌體",
+    "select_firmware": "選擇韌體",
+    "instructions": "從 release 選項中選擇或上傳從 Github 下載的發行 zip。",
+    "stable": "穩定 (Beta 版)",
+    "unstable": "不穩定 (Alpha 版)",
+    "prerelease": "預發布 (Pre-release 版)",
+    "error_fetching": "無法從 API 取得韌體版本。",
+    "refresh_later": "稍後重新載入頁面以重試。",
+    "upload_alternative": "或者，您可以透過點擊圖示從 Github 版本上傳一個 firmware.zip 檔案或單獨的 firmware-update.bin 檔案到 ESP32 裝置。",
+    "upload_tooltip": "上傳您自己的韌體版本 zip 或 bin。",
+    "icon": "圖示"
+  },
+  "flash": {
+    "title": "燒錄",
+    "instructions": "燒錄您的裝置。選擇您是要更新您的裝置，還是要刪除裝置快閃記憶體並從頭安裝。",
+    "erase_flash": "刪除裝置快閃記憶體",
+    "erase_flash_prefix": "刪除 Flash",
+    "dfu_action_doubleclick": "雙擊 RST 按鈕",
+    "dfu_action_bootsel": "插入 USB 線時按住 BOTSEL 按鈕。",
+    "esp32": {
+      "step_1_usb": "確保裝置透過 USB 連接",
+      "step_2_baud_rate": "選擇鮑率",
+      "step_3_flash": "寫入韌體",
+      "slow_reliable": "115 200bps 的速度較慢，但對於品質不佳的連線，會更加可靠。",
+      "s3_instructions": "如果您的裝置基於 ESP32-S3，您可能需要關閉它。 接著在插入 USB 線時按住 BOOT / USR 按鈕。",
+      "reset_alternative": "或者，您可以嘗試 1200bps 重置方法，將裝置置於正確模式。",
+      "reset_button": "1200bps 重置",
+      "full_erase": "完全清除並安裝",
+      "bundle_webui": "包含網頁界面",
+      "install_inkhud": "安装 InkHUD",
+      "backup_warning": "在完全清除之前備份裝置的公鑰和私鑰，並在重新燒錄後進行還原。",
+      "webui_space_warning": "此外，包含網路使用者界面會增加快閃記憶體占用，占去 core 使用空間，安裝需要更長時間。",
+      "doc_guide": "在我們的文檔中查看本指南。",
+      "process_warning": "這個過程可能需要一些時間",
+      "reset_after_flash": "在燒錄過程完成之後。如果裝置不會自動重啟或在控制台中說“等待下載”，您可能需要按 RST 按鈕。",
+      "erase_and_install": "清除快取記憶體並安裝",
+      "update": "更新",
+      "start_over": "重來",
+      "flashing_complete": "正在燒錄",
+      "complete": "完成",
+      "partition_app": "應用",
+      "partition_ota": "OTA（空中升级）",
+      "partition_fs": "檔案系统"
+    },
+    "uf2": {
+      "enter_dfu_mode": "進入 (UF2) DFU 模式",
+      "ensure_drive_mounted": "確保裝置在 DFU 模式下的驅動器被掛載",
+      "dfu_firmware_clause": "用於韌體版本",
+      "dfu_firmware_clause_2": "手動觸發 DFU 模式",
+      "drive_name_info": "取決於您的裝置硬體及引導程式（bootloader），驅動器的名稱可能有所不同",
+      "dfu_drive": "DFU 驅動器",
+      "download_copy_uf2": "下載或複製 UF2 檔案到 DFU 驅動器",
+      "copy_instructions": "下載或複製 UF2 檔案到 DFU 驅動器。裝置將在傳輸完成後自動重啟，並載入新的韌體",
+      "auto_reboot_warning": "自動重啟可能導致出現提示，說“檔案傳輸失敗、寫入錯誤，或裝置已被彈出”",
+      "install_inkhud": "安裝 InkHUD 顯示器",
+      "enter_dfu": "進入 DFU 模式",
+      "download_uf2": "下載 UF2 格式的韌體"
+    },
+    "erase_uf2": {
+      "warning": "清除快閃記憶體後，除非你在裝置上燒錄新的 Meshtastic 韌體，否則該選項不再可用。",
+      "dfu_warning": "此操作將完全清除您的裝置。",
+      "wait_for_drive": "等待驅動器“消失”，然後打開序列監控器來完成清除過程。",
+      "close_instructions": "關閉此彈出視窗以選擇一個韌體版本並開始燒錄。"
+    }
+  },
+  "buttons": {
+    "serial_monitor": "打開序列監控器",
+    "meshtastic_docs": "Meshtastic 文檔",
+    "contribute": "在 GitHub 上貢獻"
+  },
+  "serial": {
+    "instructions": "如果斷開連線過程耗時太長，您可以手動斷開裝置。",
+    "disconnect": "斷開",
+    "log_levels": {
+      "all": "全部",
+      "debug": "偵錯",
+      "info": "資訊",
+      "warn": "警告",
+      "error": "錯誤"
+    }
+  }
+}
