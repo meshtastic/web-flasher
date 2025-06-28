@@ -91,9 +91,14 @@ export default defineNuxtConfig({
         file: 'tr.json',
       },
       {
-        code: 'zh',
-        name: '中文',
-        file: 'zh.json',
+        code: 'zh-Hans',
+        name: '简体中文',
+        file: 'zh-Hans.json',
+      },
+      {
+        code: 'zh-Hant',
+        name: '繁體中文',
+        file: 'zh-Hant.json',
       },
     ],
     defaultLocale: 'en',
