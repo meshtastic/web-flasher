@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "如果断开连接过程耗时太长，您可以手动断开设备。",
     "disconnect": "断开",
-    "log_levels": {
+    "log_level": {
       "all": "全部",
       "debug": "调试",
       "info": "信息",

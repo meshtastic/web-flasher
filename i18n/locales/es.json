@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "Si el proceso de desconexión tarda demasiado, puedes desenchufar el dispositivo manualmente.",
     "disconnect": "Desconectar",
-    "log_levels": {
+    "log_level": {
       "all": "Todos",
       "debug": "Depuración",
       "info": "Información",

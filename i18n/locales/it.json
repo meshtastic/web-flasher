@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "Se il processo di disconnessione richiede troppo tempo, è possibile scollegare manualmente il dispositivo.",
     "disconnect": "Disconnetti",
-    "log_levels": {
+    "log_level": {
       "all": "Tutti",
       "debug": "Debug",
       "info": "Info",

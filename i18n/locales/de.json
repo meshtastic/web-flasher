@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "Wenn der Vorgang zu lange dauert, können Sie das Gerät manuell entfernen.",
     "disconnect": "Verbindung trennen",
-    "log_levels": {
+    "log_level": {
       "all": "Alle",
       "debug": "Debug",
       "info": "Info",

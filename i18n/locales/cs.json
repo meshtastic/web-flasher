@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "Pokud proces odpojení trvá příliš dlouho, můžete zařízení odpojit ručně.",
     "disconnect": "Disconnect",
-    "log_levels": {
+    "log_level": {
       "all": "All",
       "debug": "Debug",
       "info": "Info",

@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "如果中斷連線的過程花費過久，您可以手動拔除裝置。",
     "disconnect": "中斷連線",
-    "log_levels": {
+    "log_level": {
       "all": "全部",
       "debug": "除錯",
       "info": "資訊",

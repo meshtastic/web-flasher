@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "Om frånkopplingsprocessen tar för lång tid, kan du koppla ur enheten manuellt.",
     "disconnect": "Koppla från",
-    "log_levels": {
+    "log_level": {
       "all": "Alla",
       "debug": "Felsökning",
       "info": "Info",

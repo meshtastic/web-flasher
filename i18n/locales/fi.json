@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "Jos yhteyden katkaiseminen kestää liian kauan, voit poistaa laitteen manuaalisesti.",
     "disconnect": "Katkaise",
-    "log_levels": {
+    "log_level": {
       "all": "Kaikki",
       "debug": "Vianetsintä",
       "info": "Tiedot",

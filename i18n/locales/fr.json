@@ -105,7 +105,7 @@
   "serial": {
     "instructions": ".......",
     "disconnect": "Disconnect",
-    "log_levels": {
+    "log_level": {
       "all": "",
       "debug": "Debug",
       "info": "Info",

@@ -105,7 +105,7 @@
   "serial": {
     "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
     "disconnect": "Прекъсване",
-    "log_levels": {
+    "log_level": {
       "all": "Всички",
       "debug": "Debug",
       "info": "Инфо",
