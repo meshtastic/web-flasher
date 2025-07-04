@@ -85,11 +85,6 @@ const isSupporterDevice = (device: DeviceHardware) => {
 const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device);
   firmwareStore.clearState();
-
-  // Auto-select MUI for devices that support it (after clearing state)
-  if (device.hasMui === true) {
-    firmwareStore.$state.shouldInstallMui = true;
-  }
 }
 
 const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : t('device.select_device'));

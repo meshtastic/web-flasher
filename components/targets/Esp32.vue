@@ -184,14 +184,20 @@ const canFullInstall = () => {
 const canBundleWebUI = ref(false);
 
 const isNewFirmware = computed(() => {
-    // Just check for *not* 2.5 firmware version for now
-    return !firmwareStore.firmwareVersion.includes('2.5');
+    // Check for versions that don't support MUI: 2.5.X and 2.7.X
+    const version = firmwareStore.firmwareVersion;
+    return !version.includes('2.5') && !version.includes('2.7');
 });
 
 const canInstallMui = computed(() => {
     if (!isNewFirmware.value)
         return false;
     // Can't install MUI if we're installing the WebUI
+    // Also prevent MUI installation on 2.7.X releases
+    const version = firmwareStore.firmwareVersion;
+    if (version.includes('2.7')) {
+        return false;
+    }
     return deviceStore.$state.selectedTarget.hasMui === true && !firmwareStore.shouldBundleWebUI;
 });
 
