@@ -1,9 +1,9 @@
 <template>
   <div class="relative inline-block text-left">
     <button id="languageDropdownButton" data-dropdown-toggle="languageDropdown" type="button" 
-            class="inline border border-meshtastic text-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-2 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
+            class="bottom-button border-meshtastic text-meshtastic">
       {{ currentLanguageFlag }} {{ $t('language') }}
-      <svg class="w-2.5 h-2.5 ml-2 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+      <svg class="w-2.5 h-2.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
       </svg>
     </button>

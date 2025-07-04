@@ -9,9 +9,9 @@
       <Meta name="description" :content="$t('description')" />
     </Head>
 
-    <section id="main" class="text-gray-400 body-font">
+    <section id="main" class="text-gray-400 body-font px-5">
       <transition name="flash" mode="out-in">
-        <div class="container px-5 py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
+        <div class="container py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
               <LogoHeader />
@@ -52,19 +52,17 @@
           </div>
         </div>
       </transition>
-      <div class="text-center mt-4 flex justify-center gap-4">
-        <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="inline border border-meshtastic text-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
-          {{ $t('buttons.serial_monitor') }} <CommandLineIcon class="h-4 w-4 inline mb-1" />
+      <div class="flex max-sm:flex-col justify-center gap-1 mt-4">
+        <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="bottom-button border-meshtastic text-meshtastic">
+          {{ $t('buttons.serial_monitor') }} <CommandLineIcon class="h-4 w-4 shrink-0" />
         </button>
-        <a href="https://meshtastic.org/docs" v-if="!serialMonitorStore.isConnected" class="inline-flex items-center border border-meshtastic text-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
-          <span class="inline-flex items-center">
-            {{ $t('buttons.meshtastic_docs') }} <BookOpenIcon class="h-4 w-4 inline ml-1" />
-          </span>
+        <a href="https://meshtastic.org/docs" v-if="!serialMonitorStore.isConnected" class="bottom-button border-meshtastic text-meshtastic">
+          {{ $t('buttons.meshtastic_docs') }} <BookOpenIcon class="h-4 w-4 shrink-0" />
         </a>
-        <a href="https://github.com/meshtastic/web-flasher" v-if="!serialMonitorStore.isConnected" class="inline border border-meshtastic text-meshtastic focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 text-gray-300 hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out">
+        <a href="https://github.com/meshtastic/web-flasher" v-if="!serialMonitorStore.isConnected" class="bottom-button border-meshtastic text-meshtastic">
           {{ $t('buttons.contribute') }}
-          <span class="inline-block">
-            <svg width="20" height="20" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="inline mb-1 fill-current">
+          <span>
+            <svg width="20" height="20" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline fill-current shrink-0">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" />
             </svg>
           </span>
@@ -199,7 +197,7 @@ onMounted(() => {
   .konami-code {
     background-color: #000000 !important;
     /* Firefox */
-        -moz-transition: all 1s ease-in;
+    -moz-transition: all 1s ease-in;
     /* WebKit */
     -webkit-transition: all 1s ease-in;
     /* Opera */
@@ -220,8 +218,17 @@ onMounted(() => {
   .border-meshtastic {
     border-color: #67EA94;
   }
+  .bottom-button {
+    @apply flex items-center justify-center gap-1;
+    @apply font-medium text-xs text-center rounded-lg px-4 py-2 me-2 mb-2 border;
+    @apply hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out;
+    @apply focus:ring-4 focus:outline-none;
+  }
   .footer {
     background-color: #2C2D3C;
+  }
+  .footer a:hover {
+    text-decoration: underline;
   }
   h1 {
     font-size: 2em;
@@ -230,9 +237,6 @@ onMounted(() => {
   h2 {
     font-size: 1.5em;
     color: #FFFFFF;
-  }
-  .footer a:hover {
-    text-decoration: underline;
   }
   .unsupported-browser-warning {
     background-color: #ffcc00;
