@@ -11,53 +11,55 @@
 
     <section id="main" class="text-gray-400 body-font px-5">
       <transition name="flash" mode="out-in">
-        <div class="container py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
+        <div class="container mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
-            <div class="flex flex-wrap sm:flex-row flex-col py-1">
+            <div class="flex flex-wrap sm:flex-row flex-col py-2">
               <LogoHeader />
             </div>
-            <hr class="w-full mx-auto mb-4 border-gray-600" />
+            <hr class="w-full mb-4 border-gray-600" />
           </div>
-          <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
-            <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center display-inline">
-                <img :src="selectedDeviceImage" class="h-64 w-64 mb-6 mx-auto" :alt="$t('device.title')" />
+          <div class="flex max-md:flex-col gap-6 *:md:w-1/3 [&_h2]:text-white [&_h2]:text-xl [&_p]:leading-relaxed">
+            <div>
+              <div class="h-80 flex flex-col items-center">
+                <img :src="selectedDeviceImage" class="size-64 mb-6" :alt="$t('device.title')" />
                 <Device />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">{{ $t('device.title') }}</h2>
-              <p class="text-base leading-relaxed mt-2">
+              <h2 class="mt-5">{{ $t('device.title') }}</h2>
+              <p class="mt-2">
                 {{ $t('device.instructions') }}
               </p>
             </div>
-            <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-80 flex flex-col items-center">
-                <FolderArrowDownIcon class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" :alt="$t('firmware.title')" />
+            <div>
+              <div class="h-80 flex flex-col items-center">
+                <FolderArrowDownIcon class="w-full p-5 my-10 text-white" :alt="$t('firmware.title')" />
                 <Firmware />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">{{ $t('firmware.title') }}</h2>
-              <p class="text-base leading-relaxed mt-2">
+              <h2 class="mt-5">{{ $t('firmware.title') }}</h2>
+              <p class="mt-2">
                 {{ $t('firmware.instructions') }}
               </p>
             </div>
-            <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center">
-                <BoltIcon class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" />
+            <div>
+              <div class="h-80 flex flex-col items-center">
+                <BoltIcon class="w-full p-5 my-10 text-white" />
                 <Flash />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">Flash</h2>
-              <p class="text-base leading-relaxed mt-2">
+              <h2 class="mt-5">
+                Flash
+              </h2>
+              <p class="mt-2">
                 {{ $t('flash.instructions') }}
               </p>
             </div>
           </div>
         </div>
       </transition>
-      <div class="flex max-sm:flex-col justify-center gap-1 mt-4">
+      <div class="flex max-sm:flex-col justify-center gap-3 mt-4">
         <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="bottom-button border-meshtastic text-meshtastic">
-          {{ $t('buttons.serial_monitor') }} <CommandLineIcon class="h-4 w-4 shrink-0" />
+          {{ $t('buttons.serial_monitor') }} <CommandLineIcon class="size-4 shrink-0" />
         </button>
         <a href="https://meshtastic.org/docs" v-if="!serialMonitorStore.isConnected" class="bottom-button border-meshtastic text-meshtastic">
-          {{ $t('buttons.meshtastic_docs') }} <BookOpenIcon class="h-4 w-4 shrink-0" />
+          {{ $t('buttons.meshtastic_docs') }} <BookOpenIcon class="size-4 shrink-0" />
         </a>
         <a href="https://github.com/meshtastic/web-flasher" v-if="!serialMonitorStore.isConnected" class="bottom-button border-meshtastic text-meshtastic">
           {{ $t('buttons.contribute') }}
@@ -218,7 +220,7 @@ onMounted(() => {
   }
   .bottom-button {
     @apply flex items-center justify-center gap-1;
-    @apply font-medium text-xs text-center rounded-lg px-4 py-2 me-2 mb-2 border;
+    @apply text-xs rounded-lg px-4 py-2 border;
     @apply hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out;
     @apply focus:ring-4 focus:outline-none;
   }
