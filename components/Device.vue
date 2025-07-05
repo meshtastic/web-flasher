@@ -7,16 +7,18 @@
             <button data-tooltip-target="tooltip-auto" class="flex items-center justify-center px-3 text-xs hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-white hover:text-black duration-150"
                 type="button"
                 @click="store.autoSelectHardware">
-                <RocketLaunchIcon class="size-4" :class="{'animate-bounce': !store.$state.selectedTarget?.hwModel }" />
+                <RocketLaunchIcon class="size-4" :class="{'animate-bounce': !store.selectedTarget?.hwModel }" />
             </button>
         </div>
         <div id="device-modal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 size-full">
-            <div class="p-4 size-full overflow-y-scroll" :class="{ 'max-w-4xl': vendorCobrandingTag.length > 0, 'max-w-8xl': vendorCobrandingTag.length === 0 }">
-                <div class="rounded-lg shadow bg-gray-700">
+            <div class="p-4 size-full overflow-y-scroll" :class="[vendorCobrandingEnabled ? 'max-w-4xl' : 'max-w-8xl' ]">
+                <div class="pb-4 rounded-lg shadow bg-gray-700">
                     <DeviceHeader />
                     <div class="mt-2 flex flex-wrap items-center justify-center gap-1">
-                        <button @click="store.setSelectedTag('all')" type="button" class="filter-tag bg-green-800 hover:bg-green-700">{{ $t('device.all_devices') }}</button>
-                        <button v-if="vendorCobrandingTag.length === 0" v-for="vendor in ['RAK', 'B&Q', 'LilyGo', 'Seeed', 'Heltec', 'Elecrow']" @click="store.setSelectedTag(vendor)" :key="vendor" class="filter-tag bg-gray-900 hover:bg-gray-800">
+                        <button @click="store.setSelectedTag('all')" class="filter-tag bg-green-800 hover:bg-green-700">
+                            {{ $t('device.all_devices') }}
+                        </button>
+                        <button v-if="!vendorCobrandingEnabled" v-for="vendor in vendors" @click="store.setSelectedTag(vendor)" :key="vendor" class="filter-tag bg-gray-900 hover:bg-gray-800">
                             {{ vendor }}
                         </button>
                     </div>
@@ -33,23 +35,23 @@
                         </button>
                     </div>
                     <div class="flex flex-wrap items-center justify-center gap-2">
-                        <template v-if="vendorCobrandingTag.length === 0">
+                        <template v-if="!vendorCobrandingEnabled">
                             <div class="w-full text-center">
                                 <h2>{{ $t('device.supported_devices') }}</h2>
                             </div>
-                            <div v-for="device in store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)" class="device-card" @click="setSelectedTarget(device)">
+                            <div v-for="device in supportedDevices" class="device-card" @click="setSelectedTarget(device)">
                                 <DeviceDetail :device="device" />
                             </div>
                             <hr class="w-full border-gray-400 my-2" />
-                            <div v-if="store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0" class="w-full text-center">
+                            <div v-if="diyDevices.length > 0" class="w-full text-center">
                                 <h2 class="text-yellow-400">{{ $t('device.diy_devices') }}</h2>
                             </div>
-                            <div v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)" class="device-card" @click="setSelectedTarget(device)">
+                            <div v-for="device in diyDevices" class="device-card" @click="setSelectedTarget(device)">
                                 <DeviceDetail :device="device" />
                             </div>
                         </template>
                         <template v-else>
-                            <div v-for="device in store.sortedDevices" class="device-card" @click="store.setSelectedTarget(device)">
+                            <div v-for="device in store.sortedDevices" @click="store.setSelectedTarget(device)" class="device-card">
                                 <DeviceDetail :device="device" />
                             </div>
                         </template>
@@ -92,12 +94,15 @@ const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device);
   firmwareStore.clearState();
 }
+const selectedTarget = computed(() => store.selectedTarget?.hwModel ? store.selectedTarget?.displayName : t('device.select_device'));
 
-const selectedTarget = computed(() => store.$state.selectedTarget?.hwModel ? store.$state.selectedTarget?.displayName : t('device.select_device'));
-
+const vendors = ['RAK', 'B&Q', 'LilyGo', 'Seeed', 'Heltec', 'Elecrow']
+const vendorCobrandingEnabled = computed(() => vendorCobrandingTag.length > 0);
+const supportedDevices = computed(() => store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3))
+const diyDevices = computed(() => store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3))
 </script>
 
-<style>
+<style scoped>
     .filter-tag {
         @apply text-gray-100 border-gray-900 hover:border-gray-400 focus:ring focus:ring-gray-200 rounded-md text-xs p-2;
     }
