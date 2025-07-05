@@ -18,7 +18,7 @@
                         <button @click="store.setSelectedTag('all')" class="filter-tag bg-green-800 hover:bg-green-700">
                             {{ $t('device.all_devices') }}
                         </button>
-                        <button v-if="!vendorCobrandingEnabled" v-for="vendor in vendors" @click="store.setSelectedTag(vendor)" :key="vendor" class="filter-tag bg-gray-900 hover:bg-gray-800">
+                        <button v-if="!vendorCobrandingEnabled" v-for="vendor in supportedVendorDeviceTags" @click="store.setSelectedTag(vendor)" :key="vendor" class="filter-tag bg-gray-900 hover:bg-gray-800">
                             {{ vendor }}
                         </button>
                     </div>
@@ -96,7 +96,6 @@ const setSelectedTarget = (device: DeviceHardware) => {
 }
 const selectedTarget = computed(() => store.selectedTarget?.hwModel ? store.selectedTarget?.displayName : t('device.select_device'));
 
-const vendors = ['RAK', 'B&Q', 'LilyGo', 'Seeed', 'Heltec', 'Elecrow']
 const vendorCobrandingEnabled = computed(() => vendorCobrandingTag.length > 0);
 const supportedDevices = computed(() => store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3))
 const diyDevices = computed(() => store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3))
