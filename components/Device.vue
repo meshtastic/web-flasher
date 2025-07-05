@@ -1,11 +1,10 @@
 <template>
     <div>
         <div class="flex gap-1">
-            <button id="selectDeviceButton" data-modal-target="device-modal" data-modal-toggle="device-modal" class="flex justify-center items-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 duration-150" type="button">
+            <button id="selectDeviceButton" data-modal-target="device-modal" data-modal-toggle="device-modal" class="flex justify-center items-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 duration-150">
                 {{ selectedTarget.replace('_', '-') }}
             </button>
             <button data-tooltip-target="tooltip-auto" class="flex items-center justify-center px-3 text-xs hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-white hover:text-black duration-150"
-                type="button"
                 @click="store.autoSelectHardware">
                 <RocketLaunchIcon class="size-4" :class="{'animate-bounce': !store.selectedTarget?.hwModel }" />
             </button>
@@ -18,19 +17,24 @@
                         <button @click="store.setSelectedTag('all')" class="filter-tag bg-green-800 hover:bg-green-700">
                             {{ $t('device.all_devices') }}
                         </button>
-                        <button v-if="!vendorCobrandingEnabled" v-for="vendor in vendors" @click="store.setSelectedTag(vendor)" :key="vendor" class="filter-tag bg-gray-900 hover:bg-gray-800">
-                            {{ vendor }}
-                        </button>
+                        <template v-if="!vendorCobrandingEnabled">
+                            <button @click="store.setSelectedTag('RAK')" class="filter-tag bg-gray-900 hover:bg-gray-800">RAK</button>
+                            <button @click="store.setSelectedTag('B&Q')" class="filter-tag bg-gray-900 hover:bg-gray-800">B&Q</button>
+                            <button @click="store.setSelectedTag('LilyGo')" class="filter-tag bg-gray-900 hover:bg-gray-800">LilyGo</button>
+                            <button @click="store.setSelectedTag('Seeed')" class="filter-tag bg-gray-900 hover:bg-gray-800">Seeed</button>
+                            <button @click="store.setSelectedTag('Heltec')" class="filter-tag bg-gray-900 hover:bg-gray-800">Heltec</button>
+                            <button @click="store.setSelectedTag('Elecrow')" class="filter-tag bg-gray-900 hover:bg-gray-800">Elecrow</button>
+                        </template>
                     </div>
                     <div class="mt-2 flex flex-wrap items-center justify-center gap-1">
-                        <button @click="store.setSelectedTag(arch)" v-for="arch in store.allArchs" type="button" class="filter-tag bg-indigo-500 hover:bg-indigo-400">
+                        <button @click="store.setSelectedTag(arch)" v-for="arch in store.allArchs" class="filter-tag bg-indigo-500 hover:bg-indigo-400">
                             {{ arch }}
                         </button>
                     </div>
                     <div class="p-4 mx-2 my-4 text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
                         <InformationCircleIcon class="size-4 inline" />
                         {{ $t('device.subheading') }}
-                        <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic flex items-center gap-2 py-2 px-3 mt-2 rounded-md hover:bg-white text-black duration-150">
+                        <button @click="store.autoSelectHardware" class="bg-meshtastic flex items-center gap-2 py-2 px-3 mt-2 rounded-md hover:bg-white text-black duration-150">
                             <RocketLaunchIcon class="size-4" /> {{ $t('device.auto_detect') }}
                         </button>
                     </div>
@@ -96,7 +100,6 @@ const setSelectedTarget = (device: DeviceHardware) => {
 }
 const selectedTarget = computed(() => store.selectedTarget?.hwModel ? store.selectedTarget?.displayName : t('device.select_device'));
 
-const vendors = ['RAK', 'B&Q', 'LilyGo', 'Seeed', 'Heltec', 'Elecrow']
 const vendorCobrandingEnabled = computed(() => vendorCobrandingTag.length > 0);
 const supportedDevices = computed(() => store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3))
 const diyDevices = computed(() => store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3))
