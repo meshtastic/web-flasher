@@ -38,7 +38,7 @@
                             <RocketLaunchIcon class="size-4" /> {{ $t('device.auto_detect') }}
                         </button>
                     </div>
-                    <div class="flex flex-wrap items-center justify-center gap-2">
+                    <div class="flex flex-wrap items-center justify-center gap-4">
                         <template v-if="!vendorCobrandingEnabled">
                             <div class="w-full text-center">
                                 <h2>{{ $t('device.supported_devices') }}</h2>
