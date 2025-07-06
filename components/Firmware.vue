@@ -1,75 +1,61 @@
 <template>
-    <div>
+    <div class="flex gap-1 text-sm text-white">
         <button id="dropdownFirmwareButton" data-dropdown-toggle="dropdownFirmware"
-            class="content-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800 disabled:bg-gray-500"
-            :class="{ 'animate-bounce': store.prereleaseUnlocked && !store.$state.selectedFirmware?.id }" type="button"
+            class="min-w-44 flex items-center justify-center gap-2 text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg px-3 py-2.5 disabled:bg-gray-500 duration-150"
+            :class="{ 'animate-bounce': store.prereleaseUnlocked && !store.selectedFirmware?.id && deviceStore.selectedTarget.hwModel }"
             :disabled="!canSelectFirmware">
             {{ selectedVersion.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
-            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 10 6">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m1 1 4 4 4-4" />
-            </svg>
+            <ChevronDownIcon class="size-4 stroke-1.5 stroke-black" />
         </button>
-        <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
-            <div v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
-                class="px-4 py-2 text-sm text-gray-900">
-                <strong>{{ $t('firmware.prerelease') }}</strong>
-            </div>
-            <ul v-if="store.prereleaseUnlocked && store.$state.previews.length > 0" class="py-2 text-sm text-gray-800"
-                aria-labelledby="dropdownInformationButton">
-                <li v-for="release in store.$state.previews">
-                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer"
-                        @click="setSelectedFirmware(release)">
+        <div id="dropdownFirmware" class="hidden z-10 bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44 *:py-2">
+            <template v-if="store.prereleaseUnlocked && store.$state.previews.length > 0">
+                <p class="dropdown-heading">
+                    <strong>{{ $t('firmware.prerelease') }}</strong>
+                </p>
+                <ul aria-labelledby="dropdownInformationButton">
+                    <li v-for="release in store.$state.previews" @click="setSelectedFirmware(release)" class="dropdown-item">
                         {{ release.title.replace('Meshtastic Firmware ', '').replace('Pre-release ', '') }}
-                    </a>
-                </li>
-            </ul>
-            <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
-                <strong>{{ $t('firmware.unstable') }}</strong>
-            </div>
-            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton"
-                v-if="!store.couldntFetchFirmwareApi">
-                <li v-for="release in store.$state.alpha">
-                    <a href="#" class="block px-4 py-1 hover:bg-gray-400 cursor-pointer"
-                        @click="setSelectedFirmware(release)">
+                    </li>
+                </ul>
+            </template>
+            <template v-if="!store.couldntFetchFirmwareApi">
+                <p class="dropdown-heading">
+                    <strong>{{ $t('firmware.unstable') }}</strong>
+                </p>
+                <ul aria-labelledby="dropdownInformationButton">
+                    <li v-for="release in store.alpha" @click="setSelectedFirmware(release)" class="dropdown-item">
                         {{ release.title.replace('Meshtastic Firmware ', '') }}
-                    </a>
-                </li>
-            </ul>
-            <div class="px-4 py-2 text-sm text-gray-900" v-if="!store.couldntFetchFirmwareApi">
-                <strong>{{ $t('firmware.stable') }}</strong>
-            </div>
-            <ul class="py-2 text-sm text-gray-800" aria-labelledby="dropdownInformationButton"
-                v-if="!store.couldntFetchFirmwareApi">
-                <li v-for="release in store.$state.stable">
-                    <span class="block px-4 py-1 hover:bg-gray-400 cursor-pointer"
-                        @click="setSelectedFirmware(release)">
+                    </li>
+                </ul>
+                <p class="dropdown-heading">
+                    <strong>{{ $t('firmware.stable') }}</strong>
+                </p>
+                <ul aria-labelledby="dropdownInformationButton">
+                    <li v-for="release in store.stable" @click="setSelectedFirmware(release)" class="dropdown-item">
                         {{ release.title.replace('Meshtastic Firmware ', '') }}
-                    </span>
-                </li>
-            </ul>
-            <div class="px-4 py-2 w-96 rounded-lg text-sm text-gray-900 bg-yellow-100"
-                v-if="store.couldntFetchFirmwareApi">
+                    </li>
+                </ul>
+            </template>
+            <div v-else class="w-96 p-2 rounded-lg text-gray-900 bg-yellow-100">
                 <strong>{{ $t('firmware.error_fetching') }}</strong>
                 <br />
                 {{ $t('firmware.refresh_later') }}
                 {{ $t('firmware.upload_alternative') }}
-                <FolderOpenIcon class="h-3 w-3 inline" /> {{ $t('firmware.icon') }}
+                <FolderOpenIcon class="size-3 inline" /> {{ $t('firmware.icon') }}
             </div>
         </div>
         <button data-tooltip-target="tooltip-file"
-            class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
-            type="button" for="file-upload" accept=".zip,.bin" @click="openFile()">
-            <FolderOpenIcon class="h-4 w-4 "
+            class="flex items-center px-3 rounded-lg hover:bg-gray-200 focus:ring focus:outline-none focus:ring-blue-300 hover:text-black duration-300"
+            for="file-upload" @click="openFile()">
+            <FolderOpenIcon class="size-4"
                 :class="{ 'animate-bounce': (store.couldntFetchFirmwareApi && canSelectFirmware) }" />
         </button>
         <div id="tooltip-file" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
+            class="tooltip invisible z-10 px-3 py-2 rounded-lg shadow-sm bg-gray-700 transition-opacity duration-300">
             {{ $t('firmware.upload_tooltip') }}
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
-        <input id="file_upload" type="file" class="hidden" @change="setFirmwareFile" />
+        <input id="file_upload" type="file" accept=".zip,.bin" class="hidden" @change="setFirmwareFile" />
     </div>
 </template>
 
@@ -77,6 +63,7 @@
 import type { FirmwareResource } from '~/types/api';
 
 import { FolderOpenIcon } from '@heroicons/vue/24/solid';
+import { ChevronDownIcon } from '@heroicons/vue/24/solid';
 
 import { useDeviceStore } from '../stores/deviceStore';
 import { useFirmwareStore } from '../stores/firmwareStore';
@@ -117,56 +104,67 @@ const setSelectedFirmware = (release: FirmwareResource) => {
 // Credit: https://codepen.io/yaclive/pen/EayLYO
 function doAnimation() {
     console.log('doAnimation');
-  // Initialising the canvas
-  var canvas = document.querySelector('canvas');
-  var ctx = canvas?.getContext('2d');
+    // Initialising the canvas
+    var canvas = document.querySelector('canvas');
+    var ctx = canvas?.getContext('2d');
 
-  if (!canvas || !ctx) {
-    return;
-  }
-
-  // Setting the width and height of the canvas
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  // Setting up the letters
-  let letters = '/\\'.split('');;
-
-  // Setting up the columns
-  const fontSize = 10;
-  const columns = canvas.width / fontSize;
-
-  // Setting up the drops
-  let drops = new Array<number>();
-  for (var i = 0; i < columns; i++) {
-    drops[i] = 1;
-  }
-
-  // Setting up the draw function
-  function draw() {
     if (!canvas || !ctx) {
       return;
     }
-    ctx.fillStyle = 'rgba(0, 0, 0, .1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    for (var i = 0; i < drops.length; i++) {
-      var text = letters[Math.floor(Math.random() * letters.length)];
-      ctx.fillStyle = '#0f0';
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-      drops[i]++;
-      if (drops[i] * fontSize > canvas.height && Math.random() > .95) {
-        drops[i] = 0;
-      }
-    }
-  }
 
-  // Loop the animation
-  setInterval(draw, 33);
+    // Setting the width and height of the canvas
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Setting up the letters
+    let letters = '/\\'.split('');;
+
+    // Setting up the columns
+    const fontSize = 10;
+    const columns = canvas.width / fontSize;
+
+    // Setting up the drops
+    let drops = new Array<number>();
+    for (var i = 0; i < columns; i++) {
+      drops[i] = 1;
+    }
+
+    // Setting up the draw function
+    function draw() {
+          if (!canvas || !ctx) {
+            return;
+          }
+          ctx.fillStyle = 'rgba(0, 0, 0, .1)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          for (var i = 0; i < drops.length; i++) {
+              var text = letters[Math.floor(Math.random() * letters.length)];
+              ctx.fillStyle = '#0f0';
+              ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+              drops[i]++;
+              if (drops[i] * fontSize > canvas.height && Math.random() > .95) {
+                drops[i] = 0;
+              }
+          }
+    }
+
+    // Loop the animation
+    setInterval(draw, 33);
 }
 
 watch(() => store.$state.selectedFirmware, (value) => {
-  if (value?.id) {
-    // doAnimation();
-  }
+    if (value?.id) {
+        // doAnimation();
+    }
 });
 </script>
+
+<style scoped>
+.dropdown-heading {
+    @apply px-4 text-gray-900;
+}
+.dropdown-item {
+    @apply px-4 py-1 cursor-pointer;
+    @apply text-gray-800 hover:bg-gray-400;
+    @apply duration-150;
+}
+</style>
