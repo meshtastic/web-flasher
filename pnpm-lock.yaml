@@ -15,7 +15,7 @@ importers:
         specifier: npm:@jsr/meshtastic__core@^2.6.4
         version: '@jsr/meshtastic__core@2.6.4(buffer@6.0.3)'
       '@meshtastic/transport-web-serial':
-        specifier: npm:@jsr/meshtastic__transport-web-serial@latest
+        specifier: npm:@jsr/meshtastic__transport-web-serial@^0.2.1
         version: '@jsr/meshtastic__transport-web-serial@0.2.1(buffer@6.0.3)'
       '@nuxtjs/i18n':
         specifier: ^9.5.3
