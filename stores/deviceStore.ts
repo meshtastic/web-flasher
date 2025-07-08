@@ -4,10 +4,8 @@ import {
   vendorCobrandingTag,
 } from '~/types/resources';
 
-import {
-  Client,
-  type SerialConnection,
-} from '@meshtastic/js';
+import { MeshDevice } from '@meshtastic/core';
+import { TransportWebSerial } from '@meshtastic/transport-web-serial';
 
 // biome-ignore lint/style/useImportType: WUT?
 import { type DeviceHardware } from '../types/api';
@@ -22,7 +20,7 @@ export const useDeviceStore = defineStore("device", {
     return {
       targets: new Array<DeviceHardware>(),
       selectedTarget: <DeviceHardware>{},
-      client: <Client>{},
+      meshDevice: null as MeshDevice | null,
       tag: undefined as string | undefined,
     };
   },
@@ -138,57 +136,86 @@ export const useDeviceStore = defineStore("device", {
         this.tag = tag;
       }
     },
-    async openDeviceConnection(): Promise<SerialConnection> {
-      this.client = new Client();
+    async openDeviceConnection(shouldConfigure: boolean = true): Promise<MeshDevice> {
+      // Request serial port from user
       const port: SerialPort = await navigator.serial.requestPort();
-      const connection = this.client.createSerialConnection();
-      await connection.connect({
-        port,
-        baudRate: 115200,
-        concurrentLogOutput: true,
-      });
-      return connection;
+
+      // Create transport and device using the new API
+      const transport = await TransportWebSerial.createFromPort(port, 115200);
+      const id = Math.floor(Math.random() * 1e9);
+      const device = new MeshDevice(transport, id);
+
+      // Configure the device connection
+      if (shouldConfigure) {
+        await device.configure();
+      }
+      // Store the device reference
+      this.meshDevice = device;
+
+      return device;
     },
     async enterDfuMode() {
-      const connection = await this.openDeviceConnection();
-      // biome-ignore lint/suspicious/noExplicitAny: FUGGEDABOUTIT
-      connection.events.onFromRadio.subscribe((packet: any) => {
-        if (packet?.payloadVariant?.case === "configCompleteId") {
-          console.log("Attempting to enter DFU mode");
-          connection.enterDfuMode();
-        }
-      });
+      const device = await this.openDeviceConnection(false);
+
+      //await device.configure();
+      // // Subscribe to incoming packets to detect config complete
+      // const subscription = device.events.onFromRadio.subscribe((packet: any) => {
+      //   if (packet?.payloadVariant?.case === "configCompleteId") {
+      //     console.log("Attempting to enter DFU mode");
+      //     // Send DFU command using the new API
+      //     device.enterDfuMode();
+      //   }
+      // });
+      await device.enterDfuMode();
+
+      // Clean up subscription after a timeout
+      // setTimeout(() => {
+      //   if (subscription) {
+      //     device.events.onFromRadio.unsub(subscription);
+      //   }
+      // }, 5000);
     },
     async baud1200() {
       const port: SerialPort = await navigator.serial.requestPort();
       await port.open({ baudRate: 1200 });
     },
     async autoSelectHardware() {
-      const connection = await this.openDeviceConnection();
-      // connection.events.onFromRadio.subscribe((packet: any) => {
-      //   console.log("Packet", packet);
-      // });
-      // biome-ignore lint/suspicious/noExplicitAny: FUGGEDABOUTIT
-      connection.events.onDeviceMetadataPacket.subscribe((packet: any) => {
+      const device = await this.openDeviceConnection(false);
+
+      // Subscribe to device metadata packets
+      const subscription = device.events.onDeviceMetadataPacket.subscribe((packet: any) => {
+        console.log("Received device metadata packet:", packet);
         // Try to find the device by pio env name first, then hw model if that fails
-        let device = <undefined | DeviceHardware> undefined;
+        let targetDevice = <undefined | DeviceHardware> undefined;
         if (packet?.data?.platformioTarget?.length > 0) {
-          device = this.targets.find(
+          targetDevice = this.targets.find(
             (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
           );
         }
-        if (!device) {
-          device = this.targets.find(
+        if (!targetDevice) {
+          targetDevice = this.targets.find(
             (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
           );
         }
-        if (device) {
-          console.log("Found device onDeviceMetadataPacket", device);
-          this.setSelectedTarget(device);
+        if (targetDevice) {
+          console.log("Found device onDeviceMetadataPacket", targetDevice);
+          this.setSelectedTarget(targetDevice);
         }
       });
-      await new Promise((_) => setTimeout(_, 5000));
-      await connection.disconnect();
+      await device.configure();
+
+      // Wait for device metadata, then clean up
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      // Clean up subscription
+      if (subscription) {
+        device.events.onDeviceMetadataPacket.unsub(subscription);
+      }
+      device.transport.toDevice.close();
+
+      // Clean up device connection
+      this.meshDevice = null;
+
       return -1;
     },
   },
