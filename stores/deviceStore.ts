@@ -170,7 +170,7 @@ export const useDeviceStore = defineStore("device", {
       const subscription = device.events.onDeviceMetadataPacket.subscribe((packet: any) => {
         console.log("Received device metadata packet:", packet);
         // Try to find the device by pio env name first, then hw model if that fails
-        let targetDevice = <undefined | DeviceHardware> undefined;
+        let targetDevice: DeviceHardware | undefined = undefined;
         if (packet?.data?.platformioTarget?.length > 0) {
           targetDevice = this.targets.find(
             (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
