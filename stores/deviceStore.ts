@@ -195,7 +195,7 @@ export const useDeviceStore = defineStore("device", {
       if (subscription) {
         device.events.onDeviceMetadataPacket.unsub(subscription);
       }
-      device.transport.toDevice.close();
+      await device.transport.toDevice.close();
 
       // Clean up device connection
       this.meshDevice = null;
