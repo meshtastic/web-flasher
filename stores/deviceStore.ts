@@ -157,23 +157,7 @@ export const useDeviceStore = defineStore("device", {
     async enterDfuMode() {
       const device = await this.openDeviceConnection(false);
 
-      //await device.configure();
-      // // Subscribe to incoming packets to detect config complete
-      // const subscription = device.events.onFromRadio.subscribe((packet: any) => {
-      //   if (packet?.payloadVariant?.case === "configCompleteId") {
-      //     console.log("Attempting to enter DFU mode");
-      //     // Send DFU command using the new API
-      //     device.enterDfuMode();
-      //   }
-      // });
       await device.enterDfuMode();
-
-      // Clean up subscription after a timeout
-      // setTimeout(() => {
-      //   if (subscription) {
-      //     device.events.onFromRadio.unsub(subscription);
-      //   }
-      // }, 5000);
     },
     async baud1200() {
       const port: SerialPort = await navigator.serial.requestPort();
