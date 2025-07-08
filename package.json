@@ -24,7 +24,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
     "@meshtastic/core": "npm:@jsr/meshtastic__core@^2.6.4",
-    "@meshtastic/transport-web-serial": "npm:@jsr/meshtastic__transport-web-serial@latest",
+    "@meshtastic/transport-web-serial": "npm:@jsr/meshtastic__transport-web-serial@^0.2.1",
     "@nuxtjs/i18n": "^9.5.3",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.10.1",
