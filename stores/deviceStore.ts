@@ -157,7 +157,14 @@ export const useDeviceStore = defineStore("device", {
     async enterDfuMode() {
       const device = await this.openDeviceConnection(false);
 
-      await device.enterDfuMode();
+      device.events.onMyNodeInfo.subscribe((packet: any) => {
+        console.log("Received MyNodeInfo packet:", packet);
+        device.enterDfuMode();
+      });
+      await device.configure();
+
+      // Wait for device metadata, then clean up
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     },
     async baud1200() {
       const port: SerialPort = await navigator.serial.requestPort();
