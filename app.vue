@@ -304,7 +304,7 @@ onMounted(() => {
     @apply focus:ring-4 focus:outline-none;
   }
   .footer {
-    background-color: #2C2D3C;
+    background-color: var(--bg-color);
   }
   .footer a:hover {
     text-decoration: underline;
