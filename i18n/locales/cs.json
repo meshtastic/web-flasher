@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic Web Flasher",
+  "header": "Flasher",
+  "description": "A web-based tool for ESP32 firmware flashing",
+  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
+  "header_title": "FLASHER",
+  "language": "Jazyk",
+  "actions": {
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "continue": "Continue",
+    "close_dialog": "Close dialog"
+  },
+  "state": {
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "connecting": "Connecting",
+    "disconnecting": "Disconnecting",
+    "flashing": "Flashing",
+    "flashed": "Flashed",
+    "error": "Chyba"
+  },
+  "device": {
+    "title": "Zařízení",
+    "header": "Vyberte vaše připojené zařízení",
+    "select_device": "Vybrat cílové zařízení",
+    "all_devices": "Všechny zařízení",
+    "instructions": "Připojte zařízení přes USB. Ujistěte se, že kabel není pouze napájecí.",
+    "subheading": "Pokud je již připojené zařízení Meshtastic nainstalováno, můžete ho automaticky detekovat:",
+    "auto_detect": "Automaticky detekovat",
+    "supported_devices": "Podporované zařízení",
+    "diy_devices": "DIY zařízení"
+  },
+  "firmware": {
+    "title": "Firmware",
+    "select_firmware": "Vybrat firmware",
+    "instructions": "Vyberte z možností vydání nebo nahrajte zip stažený z Githubu.",
+    "stable": "Stabilní (nebo Beta)",
+    "unstable": "Nestabilní (Alfa)",
+    "prerelease": "Předběžné vydání",
+    "error_fetching": "Could not fetch firmware versions from API.",
+    "refresh_later": "Refresh the page later to try again.",
+    "upload_alternative": "Alternativně můžete nahrát soubor firmware.zip z Githubu nebo individuální soubor firmware-update.bin pro zařízení založené na ESP32 kliknutím na ikonu.",
+    "upload_tooltip": "Nahrajte vlastní zip nebo binární verzi firmwaru.",
+    "icon": "icon"
+  },
+  "flash": {
+    "title": "Flash",
+    "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
+    "erase_flash": "Erase Flash",
+    "erase_flash_prefix": "Erase Flash of",
+    "dfu_action_doubleclick": "double-clicking RST button.",
+    "dfu_action_bootsel": "pressing and holding BOOTSEL button while plugging in USB cable.",
+    "esp32": {
+      "step_1_usb": "Ujistěte se, že je zařízení připojeno přes USB",
+      "step_2_baud_rate": "Choose baud rate",
+      "step_3_flash": "Flash firmware",
+      "slow_reliable": "115200 is slower, but can be more reliable for low-quality connections.",
+      "s3_instructions": "Pokud je vaše zařízení založeno na ESP32-S3, možná bude nutné vypnout, poté stiskněte a podržte tlačítko BOOT / USR při připojování do kabelu USB.",
+      "reset_alternative": "Alternatively, you can try the 1200bps Reset method to place the device in correct mode.",
+      "reset_button": "1200bps Reset",
+      "full_erase": "Full Erase and Install",
+      "bundle_webui": "Bundle Web UI",
+      "install_inkhud": "Install InkHUD",
+      "backup_warning": "Zálohujte veřejné a soukromé klíče zařízení před úplnou vymazáním a nainstalujte je po reflashování, pokud je potřeba.",
+      "webui_space_warning": "Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.",
+      "doc_guide": "Podívejte se na tento průvodce v naší dokumentaci.",
+      "process_warning": "Tento proces může chvíli trvat.",
+      "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
+      "erase_and_install": "Erase Flash and Install",
+      "update": "Update",
+      "start_over": "Start Over",
+      "flashing_complete": "Flashing",
+      "complete": "complete",
+      "partition_app": "app",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Enter (UF2) DFU Mode",
+      "ensure_drive_mounted": "Ensure device DFU mode drive is mounted",
+      "dfu_firmware_clause": "For firmware versions",
+      "dfu_firmware_clause_2": "trigger DFU mode manually by",
+      "drive_name_info": "Jednotka může mít jiný název v závislosti na hardwaru a jeho zavaděči zařízení.",
+      "dfu_drive": "DFU drive",
+      "download_copy_uf2": "Download or copy UF2 file to DFU drive",
+      "copy_instructions": "Download or copy UF2 file to the DFU drive. The device will automatically reboot when the transfer completes and will start with the new firmware.",
+      "auto_reboot_warning": "The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected",
+      "install_inkhud": "Install InkHUD display",
+      "enter_dfu": "Enter DFU Mode",
+      "download_uf2": "Download UF2"
+    },
+    "erase_uf2": {
+      "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
+      "dfu_warning": "Tato operace zcela vymaže vaše zařízení.",
+      "wait_for_drive": "Wait for the drive to disappear, then open a serial monitor to complete the erase process.",
+      "close_instructions": "Close this popup to select a firmware version and begin flashing."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Open Serial Monitor",
+    "meshtastic_docs": "Meshtastic Docs",
+    "contribute": "Contribute on GitHub"
+  },
+  "serial": {
+    "instructions": "Pokud proces odpojení trvá příliš dlouho, můžete zařízení odpojit ručně.",
+    "disconnect": "Disconnect",
+    "log_levels": {
+      "all": "All",
+      "debug": "Debug",
+      "info": "Info",
+      "warn": "Warn",
+      "error": "Error"
+    }
+  }
+}

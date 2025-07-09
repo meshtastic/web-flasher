@@ -3,17 +3,19 @@
   "typeAcquisition": {
     "enable": true
     // "include": [
-    //   "@meshtastic/js",
+    //   "@meshtastic/core",
+    //   "@meshtastic/transport-web-serial",
     //   "@pinia/nuxt",
     //   "@zip.js/zip.js",
     //   "esptool-js",
     // ]
   },
   "extends": "./.nuxt/tsconfig.json",
-  "types": [
-    "@meshtastic/js",
-    "@pinia/nuxt",
-    "@zip.js/zip.js",
-    "esptool-js",
-  ]
+  "compilerOptions": {
+    "types": [
+      "@pinia/nuxt",
+      "@zip.js/zip.js",
+      "esptool-js"
+    ]
+  }
 }

@@ -11,9 +11,12 @@ importers:
       '@heroicons/vue':
         specifier: ^2.2.0
         version: 2.2.0(vue@3.5.13(typescript@5.7.3))
-      '@meshtastic/js':
-        specifier: npm:@jsr/meshtastic__js@2.5.9-0
-        version: '@jsr/meshtastic__js@2.5.9-0(buffer@6.0.3)'
+      '@meshtastic/core':
+        specifier: npm:@jsr/meshtastic__core@^2.6.4
+        version: '@jsr/meshtastic__core@2.6.4(buffer@6.0.3)'
+      '@meshtastic/transport-web-serial':
+        specifier: npm:@jsr/meshtastic__transport-web-serial@^0.2.1
+        version: '@jsr/meshtastic__transport-web-serial@0.2.1(buffer@6.0.3)'
       '@nuxtjs/i18n':
         specifier: ^9.5.3
         version: 9.5.3(@vue/compiler-dom@3.5.13)(eslint@9.25.0(jiti@2.4.2))(magicast@0.3.5)(rollup@4.36.0)(vue@3.5.13(typescript@5.7.3))
@@ -680,8 +683,8 @@ packages:
     resolution: {integrity: sha512-Y3IR1cRnOxOCDvMmNiym7XpXQ93iGDDPHx+Zj+NM+rg0fBaShfQLkg+hKPaZCEvg5N/LeCo4+Rj/i3FuJsIQaw==}
     engines: {node: '>=6.9.0'}
 
-  '@bufbuild/protobuf@2.2.1':
-    resolution: {integrity: sha512-gdWzq7eX017a1kZCU/bP/sbk4e0GZ6idjsXOcMrQwODCb/rx985fHJJ8+hCu79KpuG7PfZh7bo3BBjPH37JuZw==}
+  '@bufbuild/protobuf@2.6.0':
+    resolution: {integrity: sha512-6cuonJVNOIL7lTj5zgo/Rc2bKAo4/GvN+rKCrUj7GdEHRzCk8zKOfFwUsL9nAVk5rSIsRmlgcpLzTRysopEeeg==}
 
   '@cloudflare/kv-asset-handler@0.4.0':
     resolution: {integrity: sha512-+tv3z+SPp+gqTIcImN9o0hqE9xyfQjI1XD9pL6NuKjua9B1y7mNYv0S9cP+QEbA4ppVgGZEmKOvHX5G5Ei1CVA==}
@@ -1044,11 +1047,14 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@jsr/meshtastic__js@2.5.9-0':
-    resolution: {integrity: sha512-YXrHFBwRUwwkPtD+m6+DlwkSzgnYV9y0jFV337OHZQQDBykSquL+78Z6GBDXZWP4uFLGBvWyitv1AlyQEB/g6Q==, tarball: https://npm.jsr.io/~/11/@jsr/meshtastic__js/2.5.9-0.tgz}
+  '@jsr/meshtastic__core@2.6.4':
+    resolution: {integrity: sha512-1Kz5DK6peFxluHOJR38vFwfgeJzMXTz+3p6TvibjILVhSQC2U1nu8aJbn6w5zhRqS+j79OmtrRvdzL6VNsTkkQ==, tarball: https://npm.jsr.io/~/11/@jsr/meshtastic__core/2.6.4.tgz}
 
-  '@jsr/meshtastic__protobufs@2.5.9':
-    resolution: {integrity: sha512-4peQrF3IfA9/d8u60jPuK6HFar2N8OI5y/CLCvWLS6moS5MVGZy3OGrIGZDndRhyIUf7ZDlYGd4W1WLkxOw3Cg==, tarball: https://npm.jsr.io/~/11/@jsr/meshtastic__protobufs/2.5.9.tgz}
+  '@jsr/meshtastic__protobufs@2.7.0':
+    resolution: {integrity: sha512-ndZhUyB/ADSyjJI+iSeSOoIKqNGZ2+ERVjfY0qnh4jgF740tFTwefC5mzZhOqDLbreGFYS79+429NtH5Ujdzdg==, tarball: https://npm.jsr.io/~/11/@jsr/meshtastic__protobufs/2.7.0.tgz}
+
+  '@jsr/meshtastic__transport-web-serial@0.2.1':
+    resolution: {integrity: sha512-yumjEGLkAuJYOC3aWKvZzbQqi/LnqaKfNpVCY7Ki7oLtAshNiZrBLiwiFhN7+ZR9FfMdJThyBMqREBDRRWTO1Q==, tarball: https://npm.jsr.io/~/11/@jsr/meshtastic__transport-web-serial/0.2.1.tgz}
 
   '@koa/router@12.0.2':
     resolution: {integrity: sha512-sYcHglGKTxGF+hQ6x67xDfkE9o+NhVlRHBqq6gLywaMc6CojK/5vFZByphdonKinYlMLkEkacm+HEse9HzwgTA==}
@@ -6520,7 +6526,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@bufbuild/protobuf@2.2.1': {}
+  '@bufbuild/protobuf@2.6.0': {}
 
   '@cloudflare/kv-asset-handler@0.4.0':
     dependencies:
@@ -6822,19 +6828,25 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@jsr/meshtastic__js@2.5.9-0(buffer@6.0.3)':
+  '@jsr/meshtastic__core@2.6.4(buffer@6.0.3)':
     dependencies:
-      '@bufbuild/protobuf': 2.2.1
-      '@jsr/meshtastic__protobufs': 2.5.9
+      '@bufbuild/protobuf': 2.6.0
+      '@jsr/meshtastic__protobufs': 2.7.0
       crc: 4.3.2(buffer@6.0.3)
       ste-simple-events: 3.0.11
       tslog: 4.9.3
     transitivePeerDependencies:
       - buffer
 
-  '@jsr/meshtastic__protobufs@2.5.9':
+  '@jsr/meshtastic__protobufs@2.7.0':
     dependencies:
-      '@bufbuild/protobuf': 2.2.1
+      '@bufbuild/protobuf': 2.6.0
+
+  '@jsr/meshtastic__transport-web-serial@0.2.1(buffer@6.0.3)':
+    dependencies:
+      '@jsr/meshtastic__core': 2.6.4(buffer@6.0.3)
+    transitivePeerDependencies:
+      - buffer
 
   '@koa/router@12.0.2':
     dependencies:

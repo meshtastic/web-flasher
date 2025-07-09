@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic Web Flasher",
+  "header": "Flasher",
+  "description": "Narzędzie internetowe do flashowania firmware ESP32",
+  "browser_warning": "Twoja przeglądarka nie obsługuje WebSerial API. Przełącz się na zgodną przeglądarkę, taką jak Chrome lub Edge, aby uzyskać pełną funkcjonalność.",
+  "header_title": "FLASHER",
+  "language": "Język",
+  "actions": {
+    "connect": "Połącz",
+    "disconnect": "Rozłącz",
+    "continue": "Kontynuuj",
+    "close_dialog": "Zamknij okno"
+  },
+  "state": {
+    "connected": "Połączony",
+    "disconnected": "Rozłączony",
+    "connecting": "Łączenie",
+    "disconnecting": "Rozłączanie",
+    "flashing": "Flashowanie",
+    "flashed": "Sflashowany",
+    "error": "Błąd"
+  },
+  "device": {
+    "title": "Urządzenie",
+    "header": "Wybierz podłączone urządzenie",
+    "select_device": "Wybierz urządzenie docelowe",
+    "all_devices": "Wszystkie urządzenia",
+    "instructions": "Podłącz urządzenie przez USB. Upewnij się, że kabel nie jest tylko do zasilania.",
+    "subheading": "Jeśli na podłączonym urządzeniu jest już zainstalowany Meshtastic, możesz go automatycznie wykryć:",
+    "auto_detect": "Automatyczne wykrywanie",
+    "supported_devices": "Obsługiwane urządzenia",
+    "diy_devices": "Urządzenia DIY"
+  },
+  "firmware": {
+    "title": "Firmware",
+    "select_firmware": "Wybierz firmware",
+    "instructions": "Wybierz z opcji wydania lub prześlij plik zip wydania pobrany z Github.",
+    "stable": "Stabilny (lub Beta)",
+    "unstable": "Niestabilny (Alpha)",
+    "prerelease": "Wersja wstępna",
+    "error_fetching": "Nie można pobrać wersji firmware z API.",
+    "refresh_later": "Odśwież stronę później, aby spróbować ponownie.",
+    "upload_alternative": "Alternatywnie możesz przesłać plik firmware.zip z wydań Github lub pojedynczy plik firmware-update.bin dla urządzenia opartego na ESP32, klikając ikonę.",
+    "upload_tooltip": "Prześlij własny plik zip wydania firmware lub bin.",
+    "icon": "ikona"
+  },
+  "flash": {
+    "title": "Flash",
+    "instructions": "Przeprowadź flashowanie urządzenia. Wybierz, czy chcesz zaktualizować urządzenie, czy wyczyścić flash i zainstalować od nowa.",
+    "erase_flash": "Wyczyść flash",
+    "erase_flash_prefix": "Wyczyść flash",
+    "dfu_action_doubleclick": "podwójne kliknięcie przycisku RST.",
+    "dfu_action_bootsel": "naciśnięcie i przytrzymanie przycisku BOOTSEL podczas podłączania kabla USB.",
+    "esp32": {
+      "step_1_usb": "Upewnij się, że urządzenie jest podłączone przez USB",
+      "step_2_baud_rate": "Wybierz szybkość transmisji",
+      "step_3_flash": "Sflashuj firmware",
+      "slow_reliable": "115200 jest wolniejsze, ale może być bardziej niezawodne dla połączeń niskiej jakości.",
+      "s3_instructions": "Jeśli urządzenie jest oparte na ESP32-S3, może być konieczne wyłączenie, a następnie naciśnięcie i przytrzymanie przycisku BOOT / USR podczas podłączania kabla USB.",
+      "reset_alternative": "Alternatywnie możesz spróbować metody Reset 1200bps, aby umieścić urządzenie w odpowiednim trybie.",
+      "reset_button": "Reset 1200bps",
+      "full_erase": "Pełne wymazanie i instalacja",
+      "bundle_webui": "Dołącz interfejs Web UI",
+      "install_inkhud": "Zainstaluj InkHUD",
+      "backup_warning": "Wykonaj kopię zapasową kluczy publicznych i prywatnych urządzenia przed pełnym wymazaniem i instalacją, aby przywrócić je po ponownym flashowaniu, jeśli będzie to potrzebne.",
+      "webui_space_warning": "Dodatkowo dołączenie interfejsu Web UI zwiększy wykorzystanie flash, zabierając miejsce z podstawowego użytkowania i wydłuży czas instalacji.",
+      "doc_guide": "Sprawdź ten przewodnik w naszej dokumentacji.",
+      "process_warning": "Ten proces może potrwać chwilę.",
+      "reset_after_flash": "Po zakończeniu procesu flashowania może być konieczne naciśnięcie przycisku RST, jeśli urządzenie nie uruchomi się automatycznie lub wyświetli \"waiting to download\" w konsoli.",
+      "erase_and_install": "Wyczyść flash i zainstaluj",
+      "update": "Aktualizuj",
+      "start_over": "Zacznij od nowa",
+      "flashing_complete": "Flashowanie",
+      "complete": "zakończone",
+      "partition_app": "app",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Wejdź w tryb (UF2) DFU",
+      "ensure_drive_mounted": "Upewnij się, że dysk trybu DFU urządzenia jest zamontowany",
+      "dfu_firmware_clause": "Dla wersji firmware",
+      "dfu_firmware_clause_2": "uruchom tryb DFU ręcznie przez",
+      "drive_name_info": "Dysk może mieć inną nazwę w zależności od sprzętu urządzenia i jego bootloadera.",
+      "dfu_drive": "Dysk DFU",
+      "download_copy_uf2": "Pobierz lub skopiuj plik UF2 na dysk DFU",
+      "copy_instructions": "Pobierz lub skopiuj plik UF2 na dysk DFU. Urządzenie automatycznie uruchomi się ponownie po zakończeniu transferu i rozpocznie pracę z nowym firmware.",
+      "auto_reboot_warning": "Automatyczny restart może spowodować komunikaty o błędach transferu plików, błędach zapisu lub wysunięciu urządzenia",
+      "install_inkhud": "Zainstaluj wyświetlacz InkHUD",
+      "enter_dfu": "Wejdź w tryb DFU",
+      "download_uf2": "Pobierz UF2"
+    },
+    "erase_uf2": {
+      "warning": "Po wymazaniu flash ta operacja nie będzie już dostępna, dopóki nowy firmware Meshtastic nie zostanie sflashowany na urządzeniu.",
+      "dfu_warning": "Ta operacja całkowicie wymaże urządzenie.",
+      "wait_for_drive": "Poczekaj, aż dysk zniknie, następnie otwórz monitor szeregowy, aby zakończyć proces wymazywania.",
+      "close_instructions": "Zamknij to okno, aby wybrać wersję firmware i rozpocząć flashowanie."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Otwórz monitor szeregowy",
+    "meshtastic_docs": "Dokumentacja Meshtastic",
+    "contribute": "Współtwórz na GitHub"
+  },
+  "serial": {
+    "instructions": "Jeśli proces rozłączania trwa zbyt długo, możesz ręcznie odłączyć urządzenie.",
+    "disconnect": "Rozłącz",
+    "log_levels": {
+      "all": "Wszystkie",
+      "debug": "Debug",
+      "info": "Info",
+      "warn": "Ostrzeżenie",
+      "error": "Błąd"
+    }
+  }
+}

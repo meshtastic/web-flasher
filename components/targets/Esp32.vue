@@ -57,11 +57,11 @@
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
                             <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.full_erase') }}</span>
                         </label>
-                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="firmwareStore.$state.shouldCleanInstall && canBundleWebUI">
+                        <!-- <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="firmwareStore.$state.shouldCleanInstall && canBundleWebUI">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldBundleWebUI">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
                             <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.bundle_webui') }}</span>
-                        </label>
+                        </label> -->
                         <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallMui">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallMui">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
@@ -167,6 +167,7 @@ const startOver = () => {
 }
 
 const flash = () => {
+    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
     if (firmwareStore.$state.shouldCleanInstall) {  
         cleanInstallEsp32();
     } else {
@@ -202,7 +203,6 @@ const canInstallInkHud = computed(() => {
 
 watch(() => firmwareStore.$state.shouldInstallMui, () => {
     canBundleWebUI.value = !firmwareStore.$state.shouldInstallMui;
-    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme;
 });
 
 watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
@@ -213,7 +213,7 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
         const foundWebUI = entries.find(entry => entry.filename.startsWith('littlefswebui'));
         canBundleWebUI.value = !!foundWebUI;
     } else if (firmwareStore.selectedFirmware) {
-        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value));
+        canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value)) && !firmwareStore.$state.shouldInstallMui;
     }
     else {
         canBundleWebUI.value = false;
@@ -222,7 +222,8 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
 
 const targetPrefix = computed(() => {
     let pioSuffix = "";
-    if (firmwareStore.$state.shouldInstallMui) {
+    // Crowpanel ends with -tft, so don't add -tft suffix
+    if (firmwareStore.$state.shouldInstallMui && !deviceStore.$state.selectedTarget.platformioTarget.endsWith("-tft")) {
         pioSuffix = "-tft";
     } else if (firmwareStore.$state.shouldInstallInkHud) {
         pioSuffix = "-inkhud";

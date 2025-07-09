@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic Web Flasher",
+  "header": "Programmerare",
+  "description": "Ett webbaserat verktyg för programmering av ESP32-firmware",
+  "browser_warning": "Din webbläsare stöder inte WebSerial API. Vänligen växla till en kompatibel webbläsare, såsom Chrome eller Edge, för full funktionalitet.",
+  "header_title": "PROGRAMMERARE",
+  "language": "Språk",
+  "actions": {
+    "connect": "Anslut",
+    "disconnect": "Koppla från",
+    "continue": "Fortsätt",
+    "close_dialog": "Stäng dialog"
+  },
+  "state": {
+    "connected": "Ansluten",
+    "disconnected": "Ej ansluten",
+    "connecting": "Ansluter",
+    "disconnecting": "Kopplar från",
+    "flashing": "Installerar",
+    "flashed": "Installerad",
+    "error": "Fel"
+  },
+  "device": {
+    "title": "Enhet",
+    "header": "Välj din anslutna enhet",
+    "select_device": "Välj målenhet",
+    "all_devices": "Alla enheter",
+    "instructions": "Koppla in enheten via USB. Se till att kabeln kan överföra data.",
+    "subheading": "Om din anslutna enhet redan har Meshtastic installerat kan du automatiskt identifiera den:",
+    "auto_detect": "Automatisk identifiering",
+    "supported_devices": "Enheter som stöds",
+    "diy_devices": "Gör-det-själv-enheter"
+  },
+  "firmware": {
+    "title": "Firmware",
+    "select_firmware": "Välj firmware",
+    "instructions": "Välj mellan versionsalternativen eller ladda upp en firmware-zip hämtad från Github.",
+    "stable": "Stabila (eller Beta-versioner)",
+    "unstable": "Instabila (Alfa-versioner)",
+    "prerelease": "Förhandsversioner",
+    "error_fetching": "Kunde inte hämta firmware-versioner från API.",
+    "refresh_later": "Uppdatera sidan för att försöka igen.",
+    "upload_alternative": "Du kan alternativt ladda upp en firmware.zip-fil från Github eller en individuell firmware-update.bin-fil för en ESP32-baserad enhet genom att klicka på ikonen.",
+    "upload_tooltip": "Ladda upp din egen firmware-zip eller binärfil.",
+    "icon": "ikon"
+  },
+  "flash": {
+    "title": "Programmera",
+    "instructions": "Programmera enheten. Välj om du vill uppdatera din enhet eller tömma internminnet och installera om från grunden.",
+    "erase_flash": "Radera flashminnet",
+    "erase_flash_prefix": "Radera flashminnet på",
+    "dfu_action_doubleclick": "dubbelklicka på RST-knappen.",
+    "dfu_action_bootsel": "tryck och håll inne BOOTSEL-knappen medan du ansluter USB-kabeln.",
+    "esp32": {
+      "step_1_usb": "Se till att enheten är ansluten via USB",
+      "step_2_baud_rate": "Välj baud rate",
+      "step_3_flash": "Programmera firmware",
+      "slow_reliable": "115200 är långsammare, men kan vara mer tillförlitligt för anslutningar med låg kvalitet.",
+      "s3_instructions": "Om din enhet är ESP32-S3-baserad kan du behöva stänga av och sedan trycka ner och hålla in BOOT / USR knappen medan du ansluter USB-kabeln.",
+      "reset_alternative": "Alternativt kan du prova 1200bps-återställningsmetoden för att placera enheten i rätt läge.",
+      "reset_button": "1200bps-återställning",
+      "full_erase": "Fullständig radering och installation",
+      "bundle_webui": "Inkludera Web UI",
+      "install_inkhud": "Installera InkHUD",
+      "backup_warning": "Säkerhetskopiera enhetens publika och privata nycklar innan en fullständig radering och installation för att återställa dem efter att installationen har slutförts.",
+      "webui_space_warning": "Att inkludera Web UI kommer att öka flashminnets utnyttjande, minska utrymme för övrig användning och ta längre tid att installera.",
+      "doc_guide": "Se denna guide i vår dokumentation.",
+      "process_warning": "Den här processen kan ta ett tag.",
+      "reset_after_flash": "Efter processen är klar, kan du behöva trycka på RST-knappen om enheten inte startar om automatiskt eller visar \"waiting to download\" i terminalen.",
+      "erase_and_install": "Töm flashminnet och installera",
+      "update": "Uppdatera",
+      "start_over": "Börja om",
+      "flashing_complete": "Installerar",
+      "complete": "klart",
+      "partition_app": "app",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Starta (UF2) DFU-läge",
+      "ensure_drive_mounted": "Se till att enhetens DFU-lagringsenhet är monterad",
+      "dfu_firmware_clause": "För firmware-versioner",
+      "dfu_firmware_clause_2": "starta DFU-läge manuellt med",
+      "drive_name_info": "Lagringseheten kan ha ett annat namn beroende på enhetens hårdvara och dess bootloader.",
+      "dfu_drive": "DFU-lagringsenhet",
+      "download_copy_uf2": "Ladda ner eller kopiera UF2-filen till DFU-lagringsenheten",
+      "copy_instructions": "Ladda ner eller kopiera UF2-filen till DFU-lagringsenheten. Enheten startar automatiskt om när överföringen är klar och startar upp med den nya programvaran.",
+      "auto_reboot_warning": "Den automatiska omstarten kan orsaka meddelanden om filöverföringsfel, skrivfel eller att enheten matats ut",
+      "install_inkhud": "Installera InkHUD-gränssnittet",
+      "enter_dfu": "Starta DFU-läge",
+      "download_uf2": "Ladda ner UF2"
+    },
+    "erase_uf2": {
+      "warning": "Efter radering av flashminnet, kommer denna åtgärd inte att vara tillgänglig igen förrän nya Meshtastic-programvara är installerad på enheten.",
+      "dfu_warning": "Denna åtgärd kommer att radera allt på din enhet.",
+      "wait_for_drive": "Vänta på att lagringsenheten försvinner, öppna seda en seriell konsol för att slutföra raderingsprocessen.",
+      "close_instructions": "Stäng denna pop-up för att välja en firmware-version och påbörja installationen."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Öppna seriell konsol",
+    "meshtastic_docs": "Meshtastic Dokumentation",
+    "contribute": "Bidra på GitHub"
+  },
+  "serial": {
+    "instructions": "Om frånkopplingsprocessen tar för lång tid, kan du koppla ur enheten manuellt.",
+    "disconnect": "Koppla från",
+    "log_levels": {
+      "all": "Alla",
+      "debug": "Felsökning",
+      "info": "Info",
+      "warn": "Varning",
+      "error": "Fel"
+    }
+  }
+}
