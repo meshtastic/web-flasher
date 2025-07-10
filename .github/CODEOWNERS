@@ -1,0 +1,7 @@
+# Protect critical files - require admin approval
+types/resources.ts @meshtastic/admins
+public/data/hardware-list.json
+i18n/locales/ @meshtastic/admins
+
+# Translation files are managed via Crowdin
+i18n/locales/*.json @meshtastic/admins

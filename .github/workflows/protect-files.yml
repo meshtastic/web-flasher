@@ -1,0 +1,20 @@
+name: Protect Critical Files
+
+on:
+  pull_request:
+    paths:
+      - types/resources.ts
+      - i18n/locales/**
+
+permissions:
+  contents: read
+
+jobs:
+  block-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block changes to protected files
+        run: |
+          echo "::error::Changes to resources.ts and i18n/locales are not allowed via PR"
+          echo "::error::These files are managed automatically or require special approval"
+          exit 1
