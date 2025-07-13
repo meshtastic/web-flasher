@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic 网页刷写",
+  "header": "刷写",
+  "description": "用于ESP32固件刷入的web工具",
+  "browser_warning": "您的浏览器不支持WebSerial API。请切换到兼容的浏览器，如Chrome或Edge，获取全部功能。",
+  "header_title": "刷写器",
+  "language": "语言",
+  "actions": {
+    "connect": "连接",
+    "disconnect": "断开",
+    "continue": "继续",
+    "close_dialog": "关闭对话框"
+  },
+  "state": {
+    "connected": "已连接",
+    "disconnected": "未连接",
+    "connecting": "正在连接",
+    "disconnecting": "断开连接",
+    "flashing": "正在刷入",
+    "flashed": "已刷入",
+    "error": "错误"
+  },
+  "device": {
+    "title": "设备",
+    "header": "选择您已连接的设备",
+    "select_device": "选择目标设备",
+    "all_devices": "所有设备",
+    "instructions": "通过 USB 插入您的设备。请确保你的USB数据线能传输数据（而非仅充电）。",
+    "subheading": "如果您所连接的设备已经安装了Meshtastic ，您可以自动检测：",
+    "auto_detect": "自动检测",
+    "supported_devices": "支持的设备",
+    "diy_devices": "DIY 设备"
+  },
+  "firmware": {
+    "title": "固件",
+    "select_firmware": "选择固件",
+    "instructions": "从release选项中选择或上传从Github下载的发行zip。",
+    "stable": "稳定(Beta版)",
+    "unstable": "不稳定(Alpha版)",
+    "prerelease": "预发布（Pre-release版）",
+    "error_fetching": "无法从 API 获取固件版本。",
+    "refresh_later": "稍后刷新页面以再试一次。",
+    "upload_alternative": "或者，您可以通过单击图标从 Github 版本上传一个 firmware.zip 文件或单独的 firmware-update.bin 文件到 ESP32 设备。",
+    "upload_tooltip": "上传您自己的固件版本 zip 或 bin。",
+    "icon": "图标"
+  },
+  "flash": {
+    "title": "刷写",
+    "instructions": "刷写您的设备。选择您是要更新您的设备，还是要擦除设备闪存并从头安装。",
+    "erase_flash": "擦除闪存",
+    "erase_flash_prefix": "擦除 Flash",
+    "dfu_action_doubleclick": "双击RST按钮",
+    "dfu_action_bootsel": "插入USB线时按住BOTSEL按钮。",
+    "esp32": {
+      "step_1_usb": "确保设备通过 USB 连接",
+      "step_2_baud_rate": "选择波特率",
+      "step_3_flash": "写入固件",
+      "slow_reliable": "115 200bps的速度较慢，但对于质量低下的连接，会更加可靠。",
+      "s3_instructions": "如果您的设备基于ESP32-S3，您可能需要关闭它。 然后在插入USB电缆时按住BOOT / USR 按钮。",
+      "reset_alternative": "或者，您可以尝试1200bps重置方法，将设备置于正确模式。",
+      "reset_button": "1200bps 重置",
+      "full_erase": "完全擦除并安装",
+      "bundle_webui": "打包网页界面",
+      "install_inkhud": "安装 InkHUD",
+      "backup_warning": "在完全擦除之前备份设备的公钥和私钥，并在重新烧录后进行还原。",
+      "webui_space_warning": "此外，捆绑网络用户界面会增加闪存占用，占去core使用空间，安装需要更长时间。",
+      "doc_guide": "在我们的文档中查看本指南。",
+      "process_warning": "这个过程可能需要一些时间",
+      "reset_after_flash": "在刷入过程完成之后。 如果设备不会自动重启或在控制台中说“等待下载”，您可能需要按RST按钮。",
+      "erase_and_install": "擦除闪存并安装",
+      "update": "更新",
+      "start_over": "重来",
+      "flashing_complete": "正在刷入",
+      "complete": "完成",
+      "partition_app": "应用",
+      "partition_ota": "OTA（空中升级）",
+      "partition_fs": "文件系统"
+    },
+    "uf2": {
+      "enter_dfu_mode": "进入 (UF2) DFU 模式",
+      "ensure_drive_mounted": "确保设备在 DFU 模式下的驱动器被挂载",
+      "dfu_firmware_clause": "用于固件版本",
+      "dfu_firmware_clause_2": "手动触发DFU模式",
+      "drive_name_info": "取决于您的设备硬件及引导程序（bootloader），驱动器的名称可能有所不同",
+      "dfu_drive": "DFU 驱动器",
+      "download_copy_uf2": "下载或复制 UF2 文件到 DFU 驱动器",
+      "copy_instructions": "下载或复制 UF2 文件到 DFU 驱动器。设备将在传输完成后自动重启，并加载新的固件",
+      "auto_reboot_warning": "自动重启可能导致出现提示，说“文件传输失败、写错误，或设备已被弹出”",
+      "install_inkhud": "安装 InkHUD 显示屏",
+      "enter_dfu": "进入 DFU 模式",
+      "download_uf2": "下载 UF2格式的固件"
+    },
+    "erase_uf2": {
+      "warning": "擦除闪存后，除非你在设备上刷入新的Meshtastic 固件，否则该选项将不再可用。",
+      "dfu_warning": "此操作将完全擦除您的设备。",
+      "wait_for_drive": "等待驱动器“消失”，然后打开串行监视器来完成擦除过程。",
+      "close_instructions": "关闭此弹出窗口以选择一个固件版本并开始刷入。"
+    }
+  },
+  "buttons": {
+    "serial_monitor": "打开串行监视器",
+    "meshtastic_docs": "Meshtastic 文档",
+    "contribute": "在 GitHub 上贡献"
+  },
+  "serial": {
+    "instructions": "如果断开连接过程耗时太长，您可以手动断开设备。",
+    "disconnect": "断开",
+    "log_levels": {
+      "all": "全部",
+      "debug": "调试",
+      "info": "信息",
+      "warn": "警告",
+      "error": "错误"
+    }
+  }
+}
