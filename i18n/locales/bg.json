@@ -1,14 +1,14 @@
 {
-  "title": "Meshtastic Web Flasher",
-  "header": "Flasher",
-  "description": "A web-based tool for ESP32 firmware flashing",
-  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
-  "header_title": "FLASHER",
+  "title": "Meshtastic Web програматор",
+  "header": "Програматор",
+  "description": "Web-базиран инструмент за инсталиране на фърмуер на ESP32",
+  "browser_warning": "Вашият браузър не поддържа WebSerial API. Моля, преминете към съвместим браузър, като Chrome или Edge, за пълна функционалност.",
+  "header_title": "ПРОГРАМАТОР",
   "language": "Език",
   "actions": {
     "connect": "Свързване",
     "disconnect": "Прекъсване",
-    "continue": "Continue",
+    "continue": "Продължете",
     "close_dialog": "Затваряне на диалоговия прозорец"
   },
   "state": {
@@ -23,10 +23,10 @@
   "device": {
     "title": "Устройство",
     "header": "Изберете вашето свързано устройство",
-    "select_device": "Select Target Device",
+    "select_device": "Изберете целево устройство",
     "all_devices": "Всички устройства",
     "instructions": "Включете вашето устройство чрез USB. Моля, уверете се, че кабелът не е само за захранване.",
-    "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
+    "subheading": "Ако вашето свързано устройство вече има инсталиран Meshtastic, можете автоматично да го откриете:",
     "auto_detect": "Автоматично откриване",
     "supported_devices": "Поддържани устройства",
     "diy_devices": "DIY устройства"
@@ -34,14 +34,14 @@
   "firmware": {
     "title": "Фърмуер",
     "select_firmware": "Изберете фърмуер",
-    "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
+    "instructions": "Изберете от опциите за избор на релийз или качете zip файл с релийз, изтеглен от Github.",
     "stable": "Стабилна (или Бета)",
     "unstable": "Нестабилна (Алфа)",
     "prerelease": "Предварителна версия",
-    "error_fetching": "Could not fetch firmware versions from API.",
-    "refresh_later": "Refresh the page later to try again.",
-    "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
-    "upload_tooltip": "Upload your own firmware release zip or bin.",
+    "error_fetching": "Не можаха да се извлекат версии на фърмуера от API.",
+    "refresh_later": "Опреснете страницата по-късно, за да опитате отново.",
+    "upload_alternative": "Като алтернатива, можете да качите файл firmware.zip от релийзите на Github или отделен файл firmware-update.bin за устройство, базирано на ESP32, като щракнете върху иконата.",
+    "upload_tooltip": "Качете собствен релийз на фърмуера във формат на файла zip или bin.",
     "icon": "икона"
   },
   "flash": {
@@ -49,46 +49,46 @@
     "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
     "erase_flash": "Erase Flash",
     "erase_flash_prefix": "Erase Flash of",
-    "dfu_action_doubleclick": "double-clicking RST button.",
-    "dfu_action_bootsel": "pressing and holding BOOTSEL button while plugging in USB cable.",
+    "dfu_action_doubleclick": "двукратно щракване върху бутона RST.",
+    "dfu_action_bootsel": "натискане и задържане на бутона BOOTSEL при включване на USB кабела.",
     "esp32": {
       "step_1_usb": "Уверете се, че устройството е свързано чрез USB",
-      "step_2_baud_rate": "Choose baud rate",
+      "step_2_baud_rate": "Изберете скорост на предаване",
       "step_3_flash": "Flash firmware",
-      "slow_reliable": "115200 is slower, but can be more reliable for low-quality connections.",
-      "s3_instructions": "If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.",
-      "reset_alternative": "Alternatively, you can try the 1200bps Reset method to place the device in correct mode.",
-      "reset_button": "1200bps Reset",
-      "full_erase": "Full Erase and Install",
+      "slow_reliable": "115200 е по-бавна, но може да бъде по-надеждна за връзки с ниско качество.",
+      "s3_instructions": "Ако устройството ви е базирано на ESP32-S3, може да се наложи да го изключите, след което да натиснете и задържите бутона BOOT / USR, докато включвате USB кабела.",
+      "reset_alternative": "Като алтернатива, можете да опитате метода за нулиране на 1200bps, за да поставите устройството в правилния режим.",
+      "reset_button": "Нулиране на 1200bps",
+      "full_erase": "Пълно изтриване и инсталиране",
       "bundle_webui": "Bundle Web UI",
-      "install_inkhud": "Install InkHUD",
+      "install_inkhud": "Инсталиране на InkHUD",
       "backup_warning": "Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.",
       "webui_space_warning": "Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.",
-      "doc_guide": "Check out this guide in our documentation.",
-      "process_warning": "This process could take a while.",
+      "doc_guide": "Разгледайте това ръководство в нашата документация.",
+      "process_warning": "Този процес може да отнеме известно време.",
       "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
       "erase_and_install": "Erase Flash and Install",
       "update": "Update",
       "start_over": "Start Over",
       "flashing_complete": "Flashing",
-      "complete": "complete",
+      "complete": "завършени",
       "partition_app": "app",
       "partition_ota": "ota",
       "partition_fs": "fs"
     },
     "uf2": {
-      "enter_dfu_mode": "Enter (UF2) DFU Mode",
+      "enter_dfu_mode": "Влизане в (UF2) DFU режим",
       "ensure_drive_mounted": "Ensure device DFU mode drive is mounted",
-      "dfu_firmware_clause": "For firmware versions",
-      "dfu_firmware_clause_2": "trigger DFU mode manually by",
-      "drive_name_info": "The drive may have a different name depending on your device hardware and its bootloader.",
-      "dfu_drive": "DFU drive",
-      "download_copy_uf2": "Download or copy UF2 file to DFU drive",
-      "copy_instructions": "Download or copy UF2 file to the DFU drive. The device will automatically reboot when the transfer completes and will start with the new firmware.",
-      "auto_reboot_warning": "The auto reboot may cause messages about file transfer failures, write errors, or the device being ejected",
+      "dfu_firmware_clause": "За версии на фърмуера",
+      "dfu_firmware_clause_2": "ръчно задействане на DFU режим чрез",
+      "drive_name_info": "Устройството може да има различно име в зависимост от хардуера на вашето устройство и неговия буутлоудър.",
+      "dfu_drive": "DFU устройство",
+      "download_copy_uf2": "Изтеглете или копирайте UF2 файла на DFU устройството",
+      "copy_instructions": "Изтеглете или копирайте UF2 файла на DFU устройството. Устройството ще се рестартира автоматично, когато прехвърлянето приключи, и ще стартира с новия фърмуер.",
+      "auto_reboot_warning": "Автоматичното рестартиране може да доведе до съобщения за грешки при прехвърляне на файлове, грешки при запис или изваждане на устройството",
       "install_inkhud": "Install InkHUD display",
-      "enter_dfu": "Enter DFU Mode",
-      "download_uf2": "Download UF2"
+      "enter_dfu": "Влизане в DFU режим",
+      "download_uf2": "Изтегляне на UF2"
     },
     "erase_uf2": {
       "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
@@ -98,19 +98,19 @@
     }
   },
   "buttons": {
-    "serial_monitor": "Open Serial Monitor",
-    "meshtastic_docs": "Meshtastic Docs",
+    "serial_monitor": "Отваряне на серийния монитор",
+    "meshtastic_docs": "Документация на Meshtastic",
     "contribute": "Дайте своя принос в GitHub"
   },
   "serial": {
-    "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
+    "instructions": "Ако процесът на прекъсване на връзката отнема твърде много време, можете ръчно да изключите устройството.",
     "disconnect": "Прекъсване",
     "log_levels": {
       "all": "Всички",
-      "debug": "Debug",
+      "debug": "Отстраняване на грешки",
       "info": "Инфо",
-      "warn": "Warn",
-      "error": "Error"
+      "warn": "Предупреждения",
+      "error": "Грешка"
     }
   }
 }

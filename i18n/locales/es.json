@@ -1,5 +1,5 @@
 {
-  "title": "Meshtastic Web Flasher",
+  "title": "Flasher Web Meshtastic",
   "header": "Flasher",
   "description": "Una herramienta web para flashear firmware en ESP32",
   "browser_warning": "Tu navegador no es compatible con la API WebSerial. Por favor, cambia a un navegador compatible, como Chrome o Edge, para una funcionalidad completa.",
@@ -98,7 +98,7 @@
     }
   },
   "buttons": {
-    "serial_monitor": "Abrir monitor serie",
+    "serial_monitor": "Abrir monitor serial",
     "meshtastic_docs": "Documentación de Meshtastic",
     "contribute": "Contribuir en GitHub"
   },
