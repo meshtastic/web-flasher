@@ -23,7 +23,7 @@ const markdownContent = `
 * Add first config override for Native by @jp-bennett in https://github.com/meshtastic/firmware/pull/7306
 * Update meshtastic/device-ui digest to 86a09a7 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7308
 * STM32: Properly ignore OneButton by @vidplace7 in https://github.com/meshtastic/firmware/pull/7311
-* Build: Update platformio with `pkg install` by @vidplace7 in https://github.com/meshtastic/firmware/pull/7315
+* Build: Update platformio with pkg install by @vidplace7 in https://github.com/meshtastic/firmware/pull/7315
 * Bump Framework-native and set version string. by @jp-bennett in https://github.com/meshtastic/firmware/pull/7317
 * userPrefs: Set default ringtone nag time by @vidplace7 in https://github.com/meshtastic/firmware/pull/7314
 * Remove Ubuntu oracular by @vidplace7 in https://github.com/meshtastic/firmware/pull/7322
