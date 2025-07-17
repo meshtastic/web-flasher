@@ -1,21 +1,23 @@
 <template>
     <div class="flex flex-col items-center p-2 w-56">
-        <h5 class="mb-1 text-[0.8rem] text-white" :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }">
+        <p class="text-[0.8rem] text-white" :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }">
             {{ props.device.displayName }}
-            <div class="float-right items-center mx-1">
-              <CheckBadgeIcon v-if="isSupporterDevice(props.device)" class="w-6 h-6 text-green-400 opacity-75" />
-              <ShieldExclamationIcon v-else class="w-6 h-6 text-yellow-400 opacity-75" />
+            <CheckBadgeIcon v-if="isSupporterDevice(props.device)" class="state-badge text-green-400" />
+            <ShieldExclamationIcon v-else class="state-badge text-yellow-400" />
+        </p>
+        <div class="flex flex-wrap self-start items-center gap-1 my-1">
+            <div class="vendor-tag bg-blue-900">
+                {{ props.device.architecture }}
             </div>
-        </h5>
-        <div class="flex justify-start w-full">
-            <span class="text-xs font-medium me-2 px-2.5 py-0.5  h-6 rounded bg-blue-900 text-gray-100">{{ props.device.architecture }}</span>
-            <span v-for="tag in props.device.tags" class="text-xs font-medium px-2.5 py-0.5 h-6 rounded bg-indigo-500 text-gray-100 me-1">{{ tag }}</span>
-            <img v-if="props.device.hasMui" src="/img/Meshtastic-UI-Short.svg" class="h-6 m-1 pb-1" alt="Meshtastic UI" />
+            <div v-for="tag in props.device.tags" class="vendor-tag bg-indigo-500">
+                {{ tag }}
+            </div>
+            <img v-if="props.device.hasMui" src="/img/Meshtastic-UI-Short.svg" class="h-5" alt="Meshtastic UI" />
         </div>
-        <div v-if="props.device.images && isSupporterDevice(props.device)" class="relative w-32 h-32 m-2">
-            <img v-for="(image, index) in props.device.images" :key="image" class="absolute inset-0 w-32 h-32" :style="{ left: `${index * 20}px` }" :src="`/img/devices/${image}`" :alt="props.device.displayName"/>
+        <div v-if="props.device.images && isSupporterDevice(props.device)" class="device-img relative">
+            <img v-for="(image, index) in props.device.images" :key="image" class="absolute inset-0 size-full" :style="{ left: `${index * 20}px` }" :src="`/img/devices/${image}`" :alt="props.device.displayName"/>
         </div>
-        <img v-else class="w-32 h-32 m-2" :src="`/img/devices/unknown.svg`" :alt="props.device.displayName"/>
+        <img v-else class="device-img" :src="`/img/devices/unknown.svg`" :alt="props.device.displayName"/>
     </div>
 </template>
 
@@ -39,7 +41,20 @@ const props = defineProps({
 })
 
 const isSupporterDevice = (device: DeviceHardware) => {
-    // Add your logic to determine if the device is a supporter device
     return device.tags?.some(t => supportedVendorDeviceTags.includes(t));
 };
 </script>
+
+<style scoped>
+.state-badge {
+    @apply inline size-6 opacity-75;
+}
+.vendor-tag {
+    @apply flex items-center;
+    @apply h-6 px-2.5 rounded;
+    @apply text-xs text-gray-100;
+}
+.device-img {
+    @apply size-32 m-2;
+}
+</style>
