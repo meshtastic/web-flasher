@@ -13,6 +13,7 @@ const markdownContent = `
 * GPS for STM32WL by @Stary2001 in https://github.com/meshtastic/firmware/pull/7297
 * Feat: add support for RAK Wismesh Tag hardware platform by @DanielCao0 in https://github.com/meshtastic/firmware/pull/6853
 * Message frame New Message Options and Clock / TDeck / Brightness Refinements by @Xaositek in https://github.com/meshtastic/firmware/pull/7344
+* BaseUI Updates by @Xaositek in https://github.com/meshtastic/firmware/pull/7358
 
 ## 🐛 Bug fixes and maintenance
 * Update RadioLib to v7.2.1 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7287
@@ -41,9 +42,11 @@ const markdownContent = `
 * STM32 PlatformIO cleanup by @vidplace7 in https://github.com/meshtastic/firmware/pull/7339
 * Map report should work over devices which do not have network hardware (with client proxy) by @thebentern in https://github.com/meshtastic/firmware/pull/7341
 * Fix L1 EInk HWModel by @thebentern in https://github.com/meshtastic/firmware/pull/7346
+* Drop NodeInfo packets if the is_licensed bit doesn't match owner by @jp-bennett in https://github.com/meshtastic/firmware/pull/7361
+* Clean up double i2c init/scan code by @caveman99 in https://github.com/meshtastic/firmware/pull/7359
 `;
 
-const currentPrereleaseId = '2.7.3.39716ed';
+const currentPrereleaseId = '2.7.3.71b6508';
 
 export const showPrerelease = true;
 
