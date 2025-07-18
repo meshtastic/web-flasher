@@ -9,7 +9,7 @@
   "release": {
     "isPrerelease": false,
     "title": "DEFCON 33 Firmware",
-    "version": "2.7.3.5976d54",
+    "version": "2.7.3.0560a50",
     "githubioPrefix": "event/defcon33",
     "release_notes": "### Experimental firmware for DEFCON 33\n\n⚠️ Flash and factory reset to use the latest experimental firmware for DEFCON 33.\n\n### Important Notes\n\n - This firmware is experimental and may not be stable.\n - Use at your own risk.\n - Ensure you have a backup of your current configuration before flashing.\n\n\n\n"
   }
