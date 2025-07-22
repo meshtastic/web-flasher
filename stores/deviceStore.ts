@@ -157,14 +157,16 @@ export const useDeviceStore = defineStore("device", {
     async enterDfuMode() {
       const device = await this.openDeviceConnection(false);
 
-      device.events.onMyNodeInfo.subscribe((packet: any) => {
+      device.events.onMyNodeInfo.subscribe(async(packet: any) => {
         console.log("Received MyNodeInfo packet:", packet);
-        device.enterDfuMode();
+        await device.enterDfuMode();
       });
       await device.configure();
 
       // Wait for device metadata, then clean up
       await new Promise((resolve) => setTimeout(resolve, 5000));
+      // Try one last time to enter DFU mode
+      await device.enterDfuMode();
     },
     async baud1200() {
       const port: SerialPort = await navigator.serial.requestPort();
@@ -174,7 +176,7 @@ export const useDeviceStore = defineStore("device", {
       const device = await this.openDeviceConnection(false);
 
       // Subscribe to device metadata packets
-      const subscription = device.events.onDeviceMetadataPacket.subscribe((packet: any) => {
+      const subscription = device.events.onDeviceMetadataPacket.subscribe(async (packet: any) => {
         console.log("Received device metadata packet:", packet);
         // Try to find the device by pio env name first, then hw model if that fails
         let targetDevice: DeviceHardware | undefined = undefined;
@@ -191,6 +193,8 @@ export const useDeviceStore = defineStore("device", {
         if (targetDevice) {
           console.log("Found device onDeviceMetadataPacket", targetDevice);
           this.setSelectedTarget(targetDevice);
+          await device.transport.fromDevice.cancel();
+          await device.transport.toDevice.close();
         }
       });
       await device.configure();
@@ -202,8 +206,8 @@ export const useDeviceStore = defineStore("device", {
       if (subscription) {
         device.events.onDeviceMetadataPacket.unsub(subscription);
       }
+      await device.transport.fromDevice.cancel();
       await device.transport.toDevice.close();
-
       // Clean up device connection
       this.meshDevice = null;
 
