@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic 웹 플래셔",
+  "header": "플래셔",
+  "description": "ESP32 펌웨어 플래싱을 위한 웹 기반 도구",
+  "browser_warning": "귀하의 브라우저는 WebSerial API를 지원하지 않습니다. 완전한 기능을 사용하려면 Chrome 또는 Edge와 같은 호환되는 브라우저로 전환해 주시기 바랍니다.",
+  "header_title": "FLASHER",
+  "language": "언어",
+  "actions": {
+    "connect": "연결",
+    "disconnect": "연결 끊기",
+    "continue": "계속",
+    "close_dialog": "창 닫기"
+  },
+  "state": {
+    "connected": "연결됨",
+    "disconnected": "연결되지 않음",
+    "connecting": "연결 중",
+    "disconnecting": "연결 끊는 중",
+    "flashing": "플래싱 중",
+    "flashed": "플래쉬 완료",
+    "error": "에러"
+  },
+  "device": {
+    "title": "장치",
+    "header": "연결된 장치를 선택하세요.",
+    "select_device": "장치 선택",
+    "all_devices": "모든 장치",
+    "instructions": "USB를 통해 장치를 연결하세요. 케이블이 전원 전용 케이블이 아닌지 확인해 주세요.",
+    "subheading": "연결된 장치에 이미 Meshtastic이 설치되어 있다면, 이를 자동으로 감지할 수 있습니다:",
+    "auto_detect": "자동 감지",
+    "supported_devices": "지원되는 장치",
+    "diy_devices": "DIY 장치"
+  },
+  "firmware": {
+    "title": "펌웨어",
+    "select_firmware": "펌웨어 선택",
+    "instructions": "배포 옵션 중에서 선택하거나 GitHub에서 다운로드한 ZIP 파일을 업로드하세요.",
+    "stable": "안정버전 (또는 Beta)",
+    "unstable": "불안정버전 (Alpha)",
+    "prerelease": "사전 배포",
+    "error_fetching": "API에서 펌웨어 버전을 가져올 수 없습니다.",
+    "refresh_later": "나중에 페이지를 새로 고쳐 다시 시도해 주세요.",
+    "upload_alternative": "대신 GitHub 릴리스에서 firmware.zip 파일을 업로드하거나 ESP32 기반 장치용 개별 firmware-update.bin 파일을 아이콘을 클릭하여 업로드할 수 있습니다.",
+    "upload_tooltip": "펌웨어 릴리스 ZIP 또는 BIN 파일을 업로드하세요.",
+    "icon": "아이콘"
+  },
+  "flash": {
+    "title": "플래시",
+    "instructions": "장치를 플래시하세요. 장치를 업데이트할지, 기존 펌웨어를 지우고 처음부터 설치할지 선택하세요.",
+    "erase_flash": "펌웨어 지우기",
+    "erase_flash_prefix": "펌웨어 지우기",
+    "dfu_action_doubleclick": "RST 버튼 더블클릭",
+    "dfu_action_bootsel": "USB 케이블을 연결할 때 BOOTSEL 버튼을 누른 상태로 유지하세요.",
+    "esp32": {
+      "step_1_usb": "장치가 USB를 통해 연결되어 있는지 확인하십시오.",
+      "step_2_baud_rate": "baud rate 선택",
+      "step_3_flash": "펌웨어 플래시",
+      "slow_reliable": "115200은 속도가 더 느리지만, 저품질 연결 환경에서는 더 신뢰할 수 있습니다.",
+      "s3_instructions": "장치가 ESP32-S3 기반인 경우, USB 케이블을 연결할 때 먼저 전원을 끄고, BOOT/USR 버튼을 누른 상태로 유지해야 할 수 있습니다.",
+      "reset_alternative": "대신 1200bps 리셋 방법을 시도하여 장치를 올바른 모드로 설정할 수 있습니다.",
+      "reset_button": "1200bps 리셋",
+      "full_erase": "완전 삭제 하고 설치",
+      "bundle_webui": "번들 Web UI",
+      "install_inkhud": "InkHUD 설치",
+      "backup_warning": "장치의 공개 키와 개인 키를 전체 삭제 및 재설치 전에 백업해 두세요. 필요 시 재플래싱 후 이를 복원하기 위해 필요합니다.",
+      "webui_space_warning": "또한 Web UI를 번들로 묶으면 플래시 사용률이 증가하여 핵심 사용 공간을 차지하게 되며, 설치 시간이 더 오래 걸릴 것입니다.",
+      "doc_guide": "이 가이드를 저희 문서에서 확인해 보세요.",
+      "process_warning": "이 과정은 시간이 좀 걸릴 수 있습니다.",
+      "reset_after_flash": "플래싱 과정이 완료된 후, 장치가 자동으로 재부팅되지 않거나 콘솔에 \"waiting to download\"이라는 메시지가 표시되면 RST 버튼을 눌러야 할 수 있습니다.",
+      "erase_and_install": "펌웨어 삭제 후 설치",
+      "update": "업데이트",
+      "start_over": "다시 시작",
+      "flashing_complete": "설치 중",
+      "complete": "완료",
+      "partition_app": "app",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "DFU 모드 진입",
+      "ensure_drive_mounted": "장치의 DFU 모드 드라이브가 마운트되었는지 확인하십시오.",
+      "dfu_firmware_clause": "펌웨어 버전",
+      "dfu_firmware_clause_2": "미만의 경우 DFU 모드를 수동으로 진입하세요.",
+      "drive_name_info": "드라이브의 이름은 하드웨어 및 부트로더에 따라 다를 수 있습니다.",
+      "dfu_drive": "DFU 드라이브",
+      "download_copy_uf2": "UF2 파일을 DFU 드라이브에 다운로드하거나 복사하세요.",
+      "copy_instructions": "UF2 파일을 DFU 드라이브에 다운로드하거나 복사하세요. 전송이 완료되면 장치가 자동으로 재부팅되며 새로운 펌웨어로 시작됩니다.",
+      "auto_reboot_warning": "자동 재부팅하면서 파일 전송 실패, 쓰기 오류 또는 장치가 제거되었다는 메시지가 표시될 수 있습니다.",
+      "install_inkhud": "InkHUD 디스플레이 설치",
+      "enter_dfu": "DFU 모드 진입",
+      "download_uf2": "UF2 펌웨어 다운로드"
+    },
+    "erase_uf2": {
+      "warning": "기존 펌웨어를 지운 후에는 이 작업이 다시 사용할 수 없게 되며, 장치에 새로운 Meshtastic 펌웨어를 플래시할 때까지 해당 기능이 복원되지 않습니다.",
+      "dfu_warning": "이 작업은 기기를 완전히 초기화합니다.",
+      "wait_for_drive": "드라이브가 사라질 때까지 기다린 후 시리얼 모니터를 열어 삭제 과정을 완료합니다.",
+      "close_instructions": "이 팝업을 닫고 펌웨어 버전을 선택한 후 플래싱을 시작하세요."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "시리얼 모니터 열기",
+    "meshtastic_docs": "Meshtastic 문서",
+    "contribute": "GitHub에 기여"
+  },
+  "serial": {
+    "instructions": "연결 끊기 과정이 너무 오래 걸린다면, 장치를 수동으로 분리할 수 있습니다.",
+    "disconnect": "연결 끊기",
+    "log_levels": {
+      "all": "All",
+      "debug": "Debug",
+      "info": "Info",
+      "warn": "Warn",
+      "error": "Error"
+    }
+  }
+}

@@ -4,7 +4,7 @@
   "description": "Uma ferramenta baseada na web para instalação de firmware do ESP32",
   "browser_warning": "O seu navegador não oferece suporte à API do WebSerial. Por favor, mude para um navegador compatível, como Chrome ou Edge, para ter todas as funcionalidades.",
   "header_title": "FLASHER",
-  "language": "Idioma",
+  "language": "eset 1200bps",
   "actions": {
     "connect": "Ligar",
     "disconnect": "Desligar",
