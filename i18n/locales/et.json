@@ -1,64 +1,64 @@
 {
-  "title": "Meshtastic Web Flasher",
+  "title": "Meshtastic veebi kirjutaja",
   "header": "Flasher",
-  "description": "A web-based tool for ESP32 firmware flashing",
-  "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
+  "description": "Veebipõhine vahend ESP32 seadmete püsivara laadimiseks",
+  "browser_warning": "Teie brauser ei toeta WebSerial API-t. Täieliku funktsionaalsuse tagamiseks kasuta ühilduvat brauserit, näiteks Chrome'ile või Edge'ile.",
   "header_title": "FLASHER",
-  "language": "Language",
+  "language": "Keel",
   "actions": {
-    "connect": "Connect",
-    "disconnect": "Disconnect",
-    "continue": "Continue",
-    "close_dialog": "Close dialog"
+    "connect": "Ühenda",
+    "disconnect": "Katkesta ühendus",
+    "continue": "Jätka",
+    "close_dialog": "Sulge valik"
   },
   "state": {
-    "connected": "Connected",
-    "disconnected": "Not connected",
-    "connecting": "Connecting",
-    "disconnecting": "Disconnecting",
-    "flashing": "Flashing",
-    "flashed": "Flashed",
-    "error": "Error"
+    "connected": "Ühendatud",
+    "disconnected": "Pole ühendatud",
+    "connecting": "Ühendan",
+    "disconnecting": "Ühenduse katkestamine",
+    "flashing": "Flashib",
+    "flashed": "Paigaldatud",
+    "error": "Tõrge"
   },
   "device": {
-    "title": "Device",
-    "header": "Select your connected device",
-    "select_device": "Select Target Device",
-    "all_devices": "All Devices",
-    "instructions": "Plug in your device via USB. Please ensure the cable is not a power-only one.",
-    "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
-    "auto_detect": "Auto-detect",
-    "supported_devices": "Supported Devices",
-    "diy_devices": "DIY Devices"
+    "title": "Seade",
+    "header": "Vali ühendatud seade",
+    "select_device": "Vali siht seade",
+    "all_devices": "Kõik seadmed",
+    "instructions": "Ühenda seade USB-kaabliga. Kontrolli, et kaabel ei oleks mõeldud ainult seadme laadimise jaoks.",
+    "subheading": "Kui ühendatavas seadmes on juba Meshtastic paigaldatud, võid selle automaatselt leida:",
+    "auto_detect": "Leia automaatselt",
+    "supported_devices": "Toetatud seadmed",
+    "diy_devices": "DIY seadmed"
   },
   "firmware": {
-    "title": "Firmware",
-    "select_firmware": "Select Firmware",
-    "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
-    "stable": "Stable (or Beta)",
-    "unstable": "Unstable (Alpha)",
-    "prerelease": "Pre-release",
+    "title": "Püsivara",
+    "select_firmware": "Vali püsivara",
+    "instructions": "Vali väljalaske valikute hulgast või lae zip-fail alla Githubist.",
+    "stable": "Stabiilne (või Beta)",
+    "unstable": "Ebastabiilne (või Alfa)",
+    "prerelease": "Väljalaske kanditaat",
     "error_fetching": "Could not fetch firmware versions from API.",
-    "refresh_later": "Refresh the page later to try again.",
+    "refresh_later": "Värskenda lehte või proovi hiljem uuesti.",
     "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
     "upload_tooltip": "Upload your own firmware release zip or bin.",
-    "icon": "icon"
+    "icon": "ikoon"
   },
   "flash": {
-    "title": "Flash",
+    "title": "Paigalda",
     "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
-    "erase_flash": "Erase Flash",
-    "erase_flash_prefix": "Erase Flash of",
+    "erase_flash": "Kustuta programm",
+    "erase_flash_prefix": "Kustuta programm",
     "dfu_action_doubleclick": "double-clicking RST button.",
     "dfu_action_bootsel": "pressing and holding BOOTSEL button while plugging in USB cable.",
     "esp32": {
       "step_1_usb": "Ensure device is plugged in via USB",
-      "step_2_baud_rate": "Choose baud rate",
-      "step_3_flash": "Flash firmware",
+      "step_2_baud_rate": "Vali edastuskiirus",
+      "step_3_flash": "Flash püsivara",
       "slow_reliable": "115200 is slower, but can be more reliable for low-quality connections.",
       "s3_instructions": "If your device is ESP32-S3 based, you may need to turn off, then press and hold the BOOT / USR button while plugging in the USB cable.",
       "reset_alternative": "Alternatively, you can try the 1200bps Reset method to place the device in correct mode.",
-      "reset_button": "1200bps Reset",
+      "reset_button": "1200bps nullimine",
       "full_erase": "Full Erase and Install",
       "bundle_webui": "Bundle Web UI",
       "install_inkhud": "Install InkHUD",
@@ -68,11 +68,11 @@
       "process_warning": "This process could take a while.",
       "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
       "erase_and_install": "Erase Flash and Install",
-      "update": "Update",
-      "start_over": "Start Over",
-      "flashing_complete": "Flashing",
-      "complete": "complete",
-      "partition_app": "app",
+      "update": "Värskenda",
+      "start_over": "Alusta uuesti",
+      "flashing_complete": "Flashib",
+      "complete": "valmis",
+      "partition_app": "rakendus",
       "partition_ota": "ota",
       "partition_fs": "fs"
     },
@@ -98,19 +98,19 @@
     }
   },
   "buttons": {
-    "serial_monitor": "Open Serial Monitor",
-    "meshtastic_docs": "Meshtastic Docs",
-    "contribute": "Contribute on GitHub"
+    "serial_monitor": "Ava jadapordi monitor",
+    "meshtastic_docs": "Meshtastic dokumendid",
+    "contribute": "Osale GitHubis"
   },
   "serial": {
     "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
-    "disconnect": "Disconnect",
+    "disconnect": "Katkesta ühendus",
     "log_levels": {
-      "all": "All",
-      "debug": "Debug",
-      "info": "Info",
-      "warn": "Warn",
-      "error": "Error"
+      "all": "Kõik",
+      "debug": "Silumine",
+      "info": "Teave",
+      "warn": "Hoiatus",
+      "error": "Tõrge"
     }
   }
 }
