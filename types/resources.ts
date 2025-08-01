@@ -3,52 +3,72 @@ import type { FirmwareResource } from './api';
 // Remove the OfflineHardwareList since it's now in /public/data/hardware-list.json
 
 const markdownContent = `
-## 🚀 Enhancements
-* Update Screen Wake Default Behavior by @Xaositek in https://github.com/meshtastic/firmware/pull/7282
-* Make the shouldWake function always available, and remove the bool by @jp-bennett in https://github.com/meshtastic/firmware/pull/7300
-* Shorter audio feedback for InkHUD buttons by @todd-herbert in https://github.com/meshtastic/firmware/pull/7301
-* Support native configuration Waveshare Pico LoRa module on Orange Pi Zero3 by @Mictronics in https://github.com/meshtastic/firmware/pull/7295
-* Load ringtone from userPrefs by @vidplace7 in https://github.com/meshtastic/firmware/pull/7298
-* Seesaw Rotary by @jp-bennett in https://github.com/meshtastic/firmware/pull/7310
-* GPS for STM32WL by @Stary2001 in https://github.com/meshtastic/firmware/pull/7297
-* Feat: add support for RAK Wismesh Tag hardware platform by @DanielCao0 in https://github.com/meshtastic/firmware/pull/6853
-* Message frame New Message Options and Clock / TDeck / Brightness Refinements by @Xaositek in https://github.com/meshtastic/firmware/pull/7344
-* BaseUI Updates by @Xaositek in https://github.com/meshtastic/firmware/pull/7358
 
-## 🐛 Bug fixes and maintenance
-* Update RadioLib to v7.2.1 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7287
-* Update platformio.ini by @Kongduino in https://github.com/meshtastic/firmware/pull/7289
-* Update Adafruit BusIO to v1.17.2 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7277
-* Update dorny/test-reporter action to v2.1.1 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7284
-* Update meshtastic/device-ui digest to 404c6e0 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7302
-* Add first config override for Native by @jp-bennett in https://github.com/meshtastic/firmware/pull/7306
-* Update meshtastic/device-ui digest to 86a09a7 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7308
-* STM32: Properly ignore OneButton by @vidplace7 in https://github.com/meshtastic/firmware/pull/7311
-* Build: Update platformio with pkg install by @vidplace7 in https://github.com/meshtastic/firmware/pull/7315
-* Bump Framework-native and set version string. by @jp-bennett in https://github.com/meshtastic/firmware/pull/7317
-* userPrefs: Set default ringtone nag time by @vidplace7 in https://github.com/meshtastic/firmware/pull/7314
-* Remove Ubuntu oracular by @vidplace7 in https://github.com/meshtastic/firmware/pull/7322
-* feat: DIY Seeed XIAO nRF52840 + EBYTE E22 variants, pin-compatible with Wio-SX1262 kit by @ndoo in https://github.com/meshtastic/firmware/pull/7105
-* feat: New variant esp32c3_super_mini by @ndoo in https://github.com/meshtastic/firmware/pull/7133
-* xiao_ble README.md updates by @ndoo in https://github.com/meshtastic/firmware/pull/7283
-* fix(device-update.sh): safely filter args without breaking parsing by @NeilHanlon in https://github.com/meshtastic/firmware/pull/7305
-* NodeDB.cpp: Fix iOS bluetooth crash by ensuring UINT32_MAX is not used by @Styne13 in https://github.com/meshtastic/firmware/pull/7312
-* Improve OLED UI Responsiveness and Force Redraws for Canned message module by @csrutil in https://github.com/meshtastic/firmware/pull/7324
-* add pioenv to version string in debug log by @caveman99 in https://github.com/meshtastic/firmware/pull/7328
-* PPA: Add Ubuntu Questing (25.10) to daily builds by @vidplace7 in https://github.com/meshtastic/firmware/pull/7329
-* get git url part from local repo by @caveman99 in https://github.com/meshtastic/firmware/pull/7331
-* Add heap info via standard mallinfo() function for STM32 by @Stary2001 in https://github.com/meshtastic/firmware/pull/7327
-* The screen display of the heltec wireless tracker is abnormal. by @Quency-D in https://github.com/meshtastic/firmware/pull/7337
-* STM32 PlatformIO cleanup by @vidplace7 in https://github.com/meshtastic/firmware/pull/7339
-* Map report should work over devices which do not have network hardware (with client proxy) by @thebentern in https://github.com/meshtastic/firmware/pull/7341
-* Fix L1 EInk HWModel by @thebentern in https://github.com/meshtastic/firmware/pull/7346
-* Drop NodeInfo packets if the is_licensed bit doesn't match owner by @jp-bennett in https://github.com/meshtastic/firmware/pull/7361
-* Clean up double i2c init/scan code by @caveman99 in https://github.com/meshtastic/firmware/pull/7359
+## 🚀 Enhancements
+* Unify the shutdown proceedure by @jp-bennett in https://github.com/meshtastic/firmware/pull/7393
+* T-Deck Pro support by @mverch67 in https://github.com/meshtastic/firmware/pull/6936
+* Text message rate limiting should return routing error instead by @thebentern in https://github.com/meshtastic/firmware/pull/7365
+* WashTastic variant by @valzzu in https://github.com/meshtastic/firmware/pull/7450
+* Set canned_message.enabled to true when setting defaults by @jp-bennett in https://github.com/meshtastic/firmware/pull/7414
+* Add Trace Route on BaseUI by @whywilson in https://github.com/meshtastic/firmware/pull/7386
+* Add BRT3 timezone option to TZPicker menu by @barbabarros in https://github.com/meshtastic/firmware/pull/7438
+* Set firmware edition (for events) from userprefs by @thebentern in https://github.com/meshtastic/firmware/pull/7488
+* Heartbeat response by @thebentern in https://github.com/meshtastic/firmware/pull/7506
+* Airoha GPS - ignore estimated fixes by @fifieldt in https://github.com/meshtastic/firmware/pull/7429
+* [7353] Add all telemetry fields to json output by @rradillen in https://github.com/meshtastic/firmware/pull/7363
+* Event mode - limit smart position updates to at most every 5m by @powersjcb in https://github.com/meshtastic/firmware/pull/7505
+* Move BLE toggle menu option and add confirmation for canned messages in L1 by @thebentern in https://github.com/meshtastic/firmware/pull/7516
+
+## 🐛 Bug fixes and maintenace
+* ESP32: Initial sort variants by platform by @vidplace7 in https://github.com/meshtastic/firmware/pull/7340
+* ESP32c3: Migrate variants to new structure by @vidplace7 in https://github.com/meshtastic/firmware/pull/7342
+* Misc cppcheck fixes by @jp-bennett in https://github.com/meshtastic/firmware/pull/7370
+* RP2040/RP2350: Migrate variants to new structure by @vidplace7 in https://github.com/meshtastic/firmware/pull/7345
+* STM32: Migrate variants to new structure by @vidplace7 in https://github.com/meshtastic/firmware/pull/7389
+* UDP for RAK4631 Eth Gw and the t-eth-elite. Solves #7149 by @caveman99 in https://github.com/meshtastic/firmware/pull/7385
+* Restore High Resolution Hour Hand by @Xaositek in https://github.com/meshtastic/firmware/pull/7392
+* Fix UDP builds on nRF by @caveman99 in https://github.com/meshtastic/firmware/pull/7394
+* ESP32s3: Migrate variants to new structure by @vidplace7 in https://github.com/meshtastic/firmware/pull/7343
+* ARCH_STM32*WL* by @vidplace7 in https://github.com/meshtastic/firmware/pull/7397
+* Actions: pull_request_target is fun by @vidplace7 in https://github.com/meshtastic/firmware/pull/7398
+* Renovate: Use github-tags for XPowersLib updates by @vidplace7 in https://github.com/meshtastic/firmware/pull/7411
+* nRF52840: Migrate variants to new structure by @vidplace7 in https://github.com/meshtastic/firmware/pull/7396
+* Migrate remaining variants to new dir structure by @vidplace7 in https://github.com/meshtastic/firmware/pull/7412
+* Moves the shutdown thread into the Power class, make shutdown and reboot private by @jp-bennett in https://github.com/meshtastic/firmware/pull/7415
+* Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/7420
+* Add a verbose mode flag to meshtasticd by @jp-bennett in https://github.com/meshtastic/firmware/pull/7416
+* Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/7422
+* AG3335 GPS: Use NAVIC in India/Nepal, L1+L5 elsewhere. by @fifieldt in https://github.com/meshtastic/firmware/pull/7413
+* Use platformio-core to build the matrix by @vidplace7 in https://github.com/meshtastic/firmware/pull/7424
+* Deprecate disable_triple_click config by @jp-bennett in https://github.com/meshtastic/firmware/pull/7425
+* Update meshtastic/device-ui digest to c75d545 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7435
+* Add Nepal 865 MHz to 868 MHz by @WOD-MN in https://github.com/meshtastic/firmware/pull/7380
+* Add BR_902, Brazil 902MHz-907.5MHz by @fifieldt in https://github.com/meshtastic/firmware/pull/7399
+* Add NP_865 and BR_902 to region picker by @barbabarros in https://github.com/meshtastic/firmware/pull/7434
+* Actions: Combine embedded builds // split by variant subdir by @vidplace7 in https://github.com/meshtastic/firmware/pull/7417
+* Take control of our PRs! by @vidplace7 in https://github.com/meshtastic/firmware/pull/7445
+* Fix timezone definition for UTC in TZPicker function by @barbabarros in https://github.com/meshtastic/firmware/pull/7442
+* Fix MHz label by @Xaositek in https://github.com/meshtastic/firmware/pull/7455
+* Build RP2350 (Pi Pico 2) by @vidplace7 in https://github.com/meshtastic/firmware/pull/7441
+* Actions: Enforce PR labels by @vidplace7 in https://github.com/meshtastic/firmware/pull/7379
+* Rename Platformio.ini to platformio.ini | WashTastic by @valzzu in https://github.com/meshtastic/firmware/pull/7468
+* Fix MQTT config bugs by @thebentern in https://github.com/meshtastic/firmware/pull/7446
+* Clear position on GPS deactivation, unless using fixed position by @fifieldt in https://github.com/meshtastic/firmware/pull/7464
+* Validate Serial config console override modes by @thebentern in https://github.com/meshtastic/firmware/pull/7470
+* Bugfix Add rssi and snr to the store and forward code. by @mikecarper in https://github.com/meshtastic/firmware/pull/7462
+* Santa may be checking his list twice, but we only need this in the platformio.ini by @caveman99 in https://github.com/meshtastic/firmware/pull/7490
+* NodeDB count on MyNodeInfo for client progress reporting by @thebentern in https://github.com/meshtastic/firmware/pull/7489
+* Core portnums rebroadcast mode whitelist instead of blacklist by @thebentern in https://github.com/meshtastic/firmware/pull/7487
+* DEBUG_MUTE correctness by @Stary2001 in https://github.com/meshtastic/firmware/pull/7492
+* Workaround Webserver needing to stay up while Wifi is being turned off by @fifieldt in https://github.com/meshtastic/firmware/pull/7484
+* Update platformio/ststm32 to v19.3.0 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7512
+* Bugfix Syntax error: "(" unexpected in device-update.sh by @mikecarper in https://github.com/meshtastic/firmware/pull/7514
+* Remember destination fix by @HarukiToreda in https://github.com/meshtastic/firmware/pull/7427
 `;
 
-const currentPrereleaseId = '2.7.3.71b6508';
+const currentPrereleaseId = '2.7.4.3b6eefa';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
