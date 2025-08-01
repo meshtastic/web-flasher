@@ -1,6 +1,6 @@
 <template>
     <div class="relative w-full max-w-4xl max-h-full">
-        <div class="relative rounded-lg shadow bg-gray-700">
+        <div class="relative rounded-lg shadow bg-zinc-700">
             <FlashHeader />
             <div class="p-4 md:p-5">
                 <ReleaseNotes />
@@ -14,14 +14,14 @@
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
-                                <InformationCircleIcon class="h-4 w-4 inline" />
+                                <Info class="h-4 w-4 inline" />
                                 {{ $t('flash.esp32.s3_instructions') }}
                                 <br />
                                 {{ $t('flash.esp32.reset_alternative') }}
                                 <button type="button"
                                     class="inline-flex items-center mt-1 mx-1 py-1 px-2 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                                     @click="deviceStore.baud1200()">
-                                    <CpuChipIcon class="h-4 w-4 text-black" />
+                                    <Cpu class="h-4 w-4 text-black" />
                                     {{ $t('flash.esp32.reset_button') }}
                                 </button>
                             </span>
@@ -74,14 +74,14 @@
                         </label>
                         <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 bg-gray-800 text-red-400">
                             <div class="flex items-center">
-                                <InformationCircleIcon class="flex-shrink-0 inline w-4 h-4 mr-1" />
+                                <Info class="flex-shrink-0 inline w-4 h-4 mr-1" />
                                 <span>
                                     {{ $t('flash.esp32.backup_warning') }}
                                     <span v-if="firmwareStore.$state.shouldBundleWebUI">{{ $t('flash.esp32.webui_space_warning') }}</span>
                                 </span>
                             </div>
                             <div class="flex items-center mt-2">
-                                <LinkIcon class="h-4 w-4 mr-1 text-red-800 text-red-400" />
+                                <Link class="h-4 w-4 mr-1 text-red-400" />
                                 <a href="https://meshtastic.org/docs/configuration/radio/security/#security-keys---backup-and-restore" target="_blank" class="underline text-red-800 text-red-400">
                                     {{ $t('flash.esp32.doc_guide') }}</a>
                             </div>
@@ -92,7 +92,7 @@
                         <div>
                             <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                                 <span class="font-medium">
-                                    <InformationCircleIcon class="h-4 w-4 inline" />
+                                    <Info class="h-4 w-4 inline" />
                                     {{ $t('flash.esp32.reset_after_flash') }}
                                 </span>
                             </div>
@@ -109,7 +109,7 @@
                         {{ $t('flash.esp32.start_over') }}
                     </button>
                     <div v-if="firmwareStore.$state.flashPercentDone > 0" class="mb-1 text-center font-medium text-white">{{ $t('flash.esp32.flashing_complete') }} {{ partition }} {{ firmwareStore.percentDone }} {{ $t('flash.esp32.complete') }}</div>
-                    <div class="w-fullrounded-full h-2.5 mb-4 bg-gray-700" v-if="firmwareStore.$state.flashPercentDone > 0">
+                    <div class="w-fullrounded-full h-2.5 mb-4 bg-zinc-700" v-if="firmwareStore.$state.flashPercentDone > 0">
                         <div class="bg-meshtastic h-2.5 rounded-full" :style=" { 'width': firmwareStore.percentDone }"></div>
                     </div>
                 </div>
@@ -126,10 +126,10 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 import {
-  CpuChipIcon,
-  InformationCircleIcon,
-  LinkIcon,
-} from '@heroicons/vue/24/solid';
+  Cpu,
+  Info,
+  Link,
+} from 'lucide-vue-next';
 import {
   BlobReader,
   ZipReader,

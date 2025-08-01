@@ -9,9 +9,9 @@
             type="button"
             data-modal-target="erase-modal" 
             data-modal-toggle="erase-modal">
-            <TrashIcon class="h-4 w-4" :class="{'animate-pulse': deviceStore.$state.selectedTarget?.hwModel }" />
+            <Trash class="h-4 w-4" :class="{'animate-pulse': deviceStore.$state.selectedTarget?.hwModel }" />
         </button>
-        <div id="tooltip-erase" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
+        <div id="tooltip-erase" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-zinc-700">
             {{ $t('flash.erase_flash_prefix') }} {{ deviceStore.selectedTarget?.displayName }}.
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { checkIfRemoteFileExists } from '~/utils/fileUtils';
 
-import { TrashIcon } from '@heroicons/vue/24/solid';
+import { Trash } from 'lucide-vue-next';
 
 import { useDeviceStore } from '../stores/deviceStore';
 import { useFirmwareStore } from '../stores/firmwareStore';

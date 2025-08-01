@@ -1,6 +1,6 @@
 <template>
     <div class="relative w-full max-w-4xl max-h-full">
-        <div class="relative rounded-lg shadow bg-gray-700">
+        <div class="relative rounded-lg shadow bg-zinc-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-600">
                 <h3 class="text-lg font-semibold text-white">
                     {{ $t('flash.erase_flash') }} {{ deviceStore.$state.selectedTarget?.displayName }}
@@ -9,11 +9,7 @@
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center hover:bg-gray-600 hover:text-white"
                     data-modal-toggle="flash-modal"
                     @click="closeModal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
+                    <X class="w-3 h-3" />
                     <span class="sr-only">{{ $t('actions.close_dialog') }}</span>
                 </button>
             </div>
@@ -28,7 +24,7 @@
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
-                                <InformationCircleIcon class="h-4 w-4 inline" />
+                                <Info class="h-4 w-4 inline" />
                                 {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2')}} {{ deviceStore.dfuStepAction }}
                                 <br />
                                 {{ $t('flash.erase_uf2.dfu_warning') }}
@@ -37,7 +33,7 @@
                         <button type="button"
                             class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="deviceStore.enterDfuMode()">
-                            <FolderArrowDownIcon class="h-4 w-4 text-black" />
+                            <FolderDown class="h-4 w-4 text-black" />
                             {{ $t('flash.uf2.enter_dfu') }}
                         </button>
                     </li>
@@ -120,9 +116,10 @@
 
 <script lang="ts" setup>
 import {
-  FolderArrowDownIcon,
-  InformationCircleIcon,
-} from '@heroicons/vue/24/solid';
+  FolderDown,
+  Info,
+  X,
+} from 'lucide-vue-next';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';

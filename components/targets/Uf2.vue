@@ -1,6 +1,6 @@
 <template>
     <div class="relative p-4 w-full max-w-4xl max-h-full">
-        <div class="relative rounded-lg shadow bg-gray-700">
+        <div class="relative rounded-lg shadow bg-zinc-700">
             <FlashHeader />
             <div class="p-4 md:p-5">
                 <ReleaseNotes />
@@ -14,14 +14,14 @@
                         </h3>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
-                                <InformationCircleIcon class="h-4 w-4 inline" />
+                                <Info class="h-4 w-4 inline" />
                                 {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2') }} {{ deviceStore.dfuStepAction }}
                             </span>
                         </div>
                         <button type="button"
                             class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                             @click="deviceStore.enterDfuMode()">
-                            <FolderArrowDownIcon class="h-4 w-4 text-black" />
+                            <FolderDown class="h-4 w-4 text-black" />
                             {{ $t('flash.uf2.enter_dfu') }}
                         </button>
                     </li>
@@ -52,7 +52,7 @@
                         </span>
                         <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
-                                <InformationCircleIcon class="h-4 w-4 inline" />
+                                <Info class="h-4 w-4 inline" />
                                 {{ $t('flash.uf2.auto_reboot_warning') }}
                             </span>
                         </div>
@@ -83,9 +83,9 @@
 
 <script lang="ts" setup>
 import {
-  FolderArrowDownIcon,
-  InformationCircleIcon,
-} from '@heroicons/vue/24/solid';
+  FolderDown,
+  Info,
+} from 'lucide-vue-next';
 import { track } from '@vercel/analytics';
 import { computed } from 'vue';
 
