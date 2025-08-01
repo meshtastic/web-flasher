@@ -20,15 +20,9 @@ importers:
       '@nuxtjs/i18n':
         specifier: ^9.5.6
         version: 9.5.6(@vue/compiler-dom@3.5.13)(eslint@9.25.0(jiti@2.4.2))(magicast@0.3.5)(rollup@4.36.0)(vue@3.5.13(typescript@5.7.3))
-      '@nuxtjs/tailwindcss':
-        specifier: ^6.14.0
-        version: 6.14.0(magicast@0.3.5)
       '@pinia/nuxt':
         specifier: ^0.10.1
         version: 0.10.1(magicast@0.3.5)(pinia@3.0.3(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(rollup@4.36.0)(webpack-sources@3.2.3)
-      '@types/w3c-web-serial':
-        specifier: ^1.0.8
-        version: 1.0.8
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
@@ -65,9 +59,18 @@ importers:
       marked:
         specifier: ^15.0.12
         version: 15.0.12
+      nuxt:
+        specifier: ^3.16.0
+        version: 3.16.0(@parcel/watcher@2.5.1)(@types/node@22.8.4)(db0@0.3.1)(encoding@0.1.13)(eslint@9.25.0(jiti@2.4.2))(ioredis@5.6.0)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.36.0)(terser@5.39.0)(typescript@5.7.3)(vite@6.2.2(@types/node@22.8.4)(jiti@2.4.2)(terser@5.39.0)(yaml@2.8.0))(yaml@2.8.0)
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.13(typescript@5.7.3)
+      vue-router:
+        specifier: ^4.5.0
+        version: 4.5.0(vue@3.5.13(typescript@5.7.3))
       xterm:
         specifier: ^5.3.0
         version: 5.3.0
@@ -75,9 +78,15 @@ importers:
       '@nuxt/devtools':
         specifier: ^2.3.0
         version: 2.3.0(vite@6.2.2(@types/node@22.8.4)(jiti@2.4.2)(terser@5.39.0)(yaml@2.8.0))(vue@3.5.13(typescript@5.7.3))
+      '@nuxtjs/tailwindcss':
+        specifier: ^6.14.0
+        version: 6.14.0(magicast@0.3.5)
       '@types/file-saver':
         specifier: ^2.0.7
         version: 2.0.7
+      '@types/w3c-web-serial':
+        specifier: ^1.0.8
+        version: 1.0.8
       '@vite-pwa/nuxt':
         specifier: ^0.10.6
         version: 0.10.6(magicast@0.3.5)(vite@6.2.2(@types/node@22.8.4)(jiti@2.4.2)(terser@5.39.0)(yaml@2.8.0))(workbox-build@7.1.1)(workbox-window@7.1.0)
@@ -87,9 +96,6 @@ importers:
       node-stdlib-browser:
         specifier: ^1.3.1
         version: 1.3.1
-      nuxt:
-        specifier: ^3.16.0
-        version: 3.16.0(@parcel/watcher@2.5.1)(@types/node@22.8.4)(db0@0.3.1)(encoding@0.1.13)(eslint@9.25.0(jiti@2.4.2))(ioredis@5.6.0)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.36.0)(terser@5.39.0)(typescript@5.7.3)(vite@6.2.2(@types/node@22.8.4)(jiti@2.4.2)(terser@5.39.0)(yaml@2.8.0))(yaml@2.8.0)
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
@@ -99,12 +105,6 @@ importers:
       vite-plugin-node-stdlib-browser:
         specifier: ^0.2.1
         version: 0.2.1(node-stdlib-browser@1.3.1)(rollup@4.36.0)(vite@6.2.2(@types/node@22.8.4)(jiti@2.4.2)(terser@5.39.0)(yaml@2.8.0))
-      vue:
-        specifier: ^3.5.13
-        version: 3.5.13(typescript@5.7.3)
-      vue-router:
-        specifier: ^4.5.0
-        version: 4.5.0(vue@3.5.13(typescript@5.7.3))
 
 packages:
 
@@ -5098,6 +5098,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
@@ -6161,7 +6162,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.28.0
       '@babel/helper-validator-option': 7.27.1
-      browserslist: 4.24.4
+      browserslist: 4.25.1
       lru-cache: 5.1.1
       semver: 6.3.1
 
