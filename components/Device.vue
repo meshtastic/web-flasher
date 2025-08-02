@@ -8,6 +8,10 @@
             @click="store.autoSelectHardware">
             <Rocket class="h-4 w-4" :class="{'animate-bounce': !store.$state.selectedTarget?.hwModel }" />
         </button>
+        <div id="tooltip-auto" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
+            {{ $t('device.auto_detect') }}
+            <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
         <div id="device-modal" tabindex="-1" aria-hidden="true" class="dark hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-h-full" :class="{ 'max-w-4xl': vendorCobrandingTag.length > 0, 'max-w-8xl': vendorCobrandingTag.length == 0 }">
                 <div class="relative rounded-lg shadow bg-zinc-700">
