@@ -29,7 +29,7 @@
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
     "auto_detect": "Auto-detect",
     "supported_devices": "Supported Devices",
-    "diy_devices": "DIY Devices"
+    "diy_devices": "Community Supported Devices"
   },
   "firmware": {
     "title": "Firmware",
