@@ -11,14 +11,13 @@ export default defineNuxtPlugin(() => {
       applicationId: config.public.datadogApplicationId || 'YOUR_APPLICATION_ID',
       clientToken: config.public.datadogClientToken || 'YOUR_CLIENT_TOKEN',
       site: 'us5.datadoghq.com',
-      service: 'web-flasher',
+      service: 'meshtastic-web-flasher',
       env: config.public.datadogEnv || 'production',
-      version: '1.0.0',
+      // Specify a version number to identify the deployed version of your application in Datadog
+      // version: '1.0.0',
       sessionSampleRate: 100,
-      trackInteractions: true,
-      trackResources: true,
-      trackLongTasks: true,
-      defaultPrivacyLevel: 'mask-user-input',
+      sessionReplaySampleRate: 20,
+      defaultPrivacyLevel: 'allow',
     });
     
     // Start session replay recording
