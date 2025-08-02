@@ -204,7 +204,7 @@ onMounted(() => {
     font-display: swap;
   }
   :root {
-    --bg-color: #201f21;
+    --bg-color: #1e1f2a;
     --text-color: #FFFFFF;
     --primary-color: #67EA94;
     --secondary-color: #67EA94;

@@ -22,8 +22,8 @@
         <img v-else class="w-32 h-32 m-2" :src="`/img/devices/unknown.svg`" :alt="props.device.displayName"/>
         <div class="flex justify-start w-full">
           <div v-if="props.device.supportLevel! < 3" class="product-link">
-            <a :href="deviceUrl" target="_blank" rel="noopener" title="Purchase this device">
-              <ShoppingBag class="w-6 h-6 text-meshtastic" />
+            <a :href="deviceUrl" target="_blank" rel="noopener" title="Manufacturer page (external link)" class="text-gray-100 hover:text-white">
+              <Link2Icon class="w-6 h-6 text-meshtastic transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-12 cursor-default" />
             </a>
           </div>
         </div>
@@ -41,7 +41,12 @@ const firmwareStore = useFirmwareStore();
 import {
   BadgeCheck,
   ShieldAlert,
-  ShoppingBag,
+  ShoppingCart,
+  ShoppingBasketIcon,
+  ShoppingBasket,
+  ShoppingBagIcon,
+  LinkIcon,
+  Link2Icon
 } from 'lucide-vue-next';
 
 const props = defineProps({
