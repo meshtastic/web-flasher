@@ -157,5 +157,13 @@ export default defineNuxtConfig({
     }
   },
 
+  runtimeConfig: {
+    public: {
+      datadogApplicationId: process.env.DATADOG_APPLICATION_ID || '',
+      datadogClientToken: process.env.DATADOG_CLIENT_TOKEN || '',
+      datadogEnv: process.env.NODE_ENV || 'production',
+    }
+  },
+
   compatibilityDate: '2024-09-03',
 });

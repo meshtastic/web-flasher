@@ -5,11 +5,7 @@
             :class="{ 'animate-bounce': store.prereleaseUnlocked && !store.$state.selectedFirmware?.id }" type="button"
             :disabled="!canSelectFirmware">
             {{ selectedVersion.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
-            <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 10 6">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m1 1 4 4 4-4" />
-            </svg>
+            <ChevronDown class="w-2.5 h-2.5 ms-3" />
         </button>
         <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
             <div v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
@@ -55,17 +51,17 @@
                 <br />
                 {{ $t('firmware.refresh_later') }}
                 {{ $t('firmware.upload_alternative') }}
-                <FolderOpenIcon class="h-3 w-3 inline" /> {{ $t('firmware.icon') }}
+                <FolderOpen class="h-3 w-3 inline" /> {{ $t('firmware.icon') }}
             </div>
         </div>
         <button data-tooltip-target="tooltip-file"
             class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
             type="button" for="file-upload" accept=".zip,.bin" @click="openFile()">
-            <FolderOpenIcon class="h-4 w-4 "
+            <FolderOpen class="h-4 w-4 "
                 :class="{ 'animate-bounce': (store.couldntFetchFirmwareApi && canSelectFirmware) }" />
         </button>
         <div id="tooltip-file" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
+            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-zinc-700">
             {{ $t('firmware.upload_tooltip') }}
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
@@ -76,7 +72,7 @@
 <script lang="ts" setup>
 import type { FirmwareResource } from '~/types/api';
 
-import { FolderOpenIcon } from '@heroicons/vue/24/solid';
+import { FolderOpen, ChevronDown } from 'lucide-vue-next';
 
 import { useDeviceStore } from '../stores/deviceStore';
 import { useFirmwareStore } from '../stores/firmwareStore';

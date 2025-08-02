@@ -2,9 +2,7 @@
   <div class="w-full mt-2" v-if="serialMonitorStore.isConnected || serialMonitorStore.terminalBuffer.length > 0">
     <div class="flex items-center justify-center">
       <div v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked" class="flex items-center p-4 mb-4 text-sm rounded-lg bg-gray-800 text-blue-400" role="alert">
-        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-        </svg>
+        <Info class="flex-shrink-0 inline w-4 h-4 me-3" />
         <span class="sr-only">Info</span>
         <div>
           {{ $t('serial.instructions') }}
@@ -48,13 +46,13 @@
       <div class="col">
         <div class="rounded-md shadow-sm flex justify-end px-2" role="group">
           <button type="button" title="Clear logs" @click="clearTerminal" class="px-4 py-1.5 text-sm font-medium text-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
-            <TrashIcon class="h-4 w-4 inline" />
+            <Trash class="h-4 w-4 inline" />
           </button>
           <button type="button" title="Copy logs to clipboard" @click="copyToClipboard" class="px-4 py-1.5 text-sm font-medium text-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
-            <ClipboardIcon class="h-4 w-4 inline" />
+            <Clipboard class="h-4 w-4 inline" />
           </button>
           <button type="button" title="Save logs to file" @click="saveToFile" class="px-4 py-1.5 text-sm font-medium text-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700">
-            <ArrowDownTrayIcon class="h-4 w-4 inline" />
+            <Download class="h-4 w-4 inline" />
           </button>
         </div>
       </div>
@@ -78,10 +76,11 @@
 import { ref } from 'vue';
 
 import {
-  ArrowDownTrayIcon,
-  ClipboardIcon,
-  TrashIcon,
-} from '@heroicons/vue/24/solid';
+  Download,
+  Clipboard,
+  Trash,
+  Info,
+} from 'lucide-vue-next';
 
 import { useSerialMonitorStore } from '../stores/serialMonitorStore';
 
