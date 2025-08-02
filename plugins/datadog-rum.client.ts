@@ -3,7 +3,7 @@ import { datadogRum } from '@datadog/browser-rum';
 
 export default defineNuxtPlugin(() => {
   // Only initialize in browser environment
-  if (import.meta.client) {
+  if (false && import.meta.client) {
     const config = useRuntimeConfig();
     
     // Initialize Datadog RUM
