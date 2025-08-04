@@ -5,19 +5,6 @@ import nodePolyfills from 'vite-plugin-node-stdlib-browser';
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  app: {
-    head: {
-      script: process.env.COOKIEYES_CLIENT_ID
-        ? [
-            {
-              src: `https://cdn-cookieyes.com/client_data/${process.env.COOKIEYES_CLIENT_ID}/script.js`,
-              async: true,
-            },
-          ]
-        : [],
-    },
-  },
-
   routeRules: {
     // prerender index route by default
     '/': { prerender: true },
@@ -175,6 +162,7 @@ export default defineNuxtConfig({
       datadogApplicationId: process.env.DATADOG_APPLICATION_ID || '',
       datadogClientToken: process.env.DATADOG_CLIENT_TOKEN || '',
       datadogEnv: process.env.NODE_ENV || 'production',
+      cookieyesClientId: process.env.COOKIEYES_CLIENT_ID || '',
     }
   },
 
