@@ -1,7 +1,7 @@
 // Datadog RUM initialization for Nuxt/Vue
 import { datadogRum } from '@datadog/browser-rum';
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
   // Only initialize in browser environment
   if (import.meta.client) {
     const config = useRuntimeConfig();
@@ -22,42 +22,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     
     // Start session replay recording
     datadogRum.startSessionReplayRecording();
-    
-    // Access stores to track firmware and device selections
-    const firmwareStore = useFirmwareStore();
-    const deviceStore = useDeviceStore();
-    
-    // Function to update user context in Datadog RUM
-    const updateRumContext = () => {
-      const contextData: Record<string, any> = {};
-      
-      // Add firmware version if selected
-      if (firmwareStore.selectedFirmware?.id) {
-        contextData.firmwareVersion = firmwareStore.selectedFirmware.id;
-      }
-      
-      // Add hardware model if target is selected
-      if (deviceStore.selectedTarget?.hwModel) {
-        contextData.hwModel = deviceStore.selectedTarget.hwModel;
-      }
-      
-      // Add platformio target if target is selected
-      if (deviceStore.selectedTarget?.platformioTarget) {
-        contextData.platformioTarget = deviceStore.selectedTarget.platformioTarget;
-      }
-      
-      // Set user context in Datadog RUM
-      if (Object.keys(contextData).length > 0) {
-        datadogRum.setUser(contextData);
-      }
-    };
-    
-    // Watch for changes in selected firmware and device
-    watch(() => firmwareStore.selectedFirmware, updateRumContext, { deep: true });
-    watch(() => deviceStore.selectedTarget, updateRumContext, { deep: true });
-    
-    // Initial context update
-    updateRumContext();
     
     console.log('Datadog RUM initialized');
   }
