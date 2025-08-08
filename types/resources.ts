@@ -18,6 +18,7 @@ const markdownContent = `
 * [7353] Add all telemetry fields to json output by @rradillen in https://github.com/meshtastic/firmware/pull/7363
 * Event mode - limit smart position updates to at most every 5m by @powersjcb in https://github.com/meshtastic/firmware/pull/7505
 * Move BLE toggle menu option and add confirmation for canned messages in L1 by @thebentern in https://github.com/meshtastic/firmware/pull/7516
+* Initial support for the ThinkNode M5 by @jp-bennett in https://github.com/meshtastic/firmware/pull/7502
 
 ## 🐛 Bug fixes and maintenace
 * ESP32: Initial sort variants by platform by @vidplace7 in https://github.com/meshtastic/firmware/pull/7340
@@ -64,9 +65,17 @@ const markdownContent = `
 * Update platformio/ststm32 to v19.3.0 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7512
 * Bugfix Syntax error: "(" unexpected in device-update.sh by @mikecarper in https://github.com/meshtastic/firmware/pull/7514
 * Remember destination fix by @HarukiToreda in https://github.com/meshtastic/firmware/pull/7427
-`;
+* 128row display by @caveman99 in https://github.com/meshtastic/firmware/pull/7511
+* Rv3028 rtc fix by @tg-mw in https://github.com/meshtastic/firmware/pull/7524
+* Only toggle screen wake, don't break banners by @Xaositek in https://github.com/meshtastic/firmware/pull/7545
+* Improve words within logging for onscreen message scroll cache by @Xaositek in https://github.com/meshtastic/firmware/pull/7548
+* Fix: ina226 was not calibrated during init by @mrab in https://github.com/meshtastic/firmware/pull/7547
+* Rather than mysteriously rebooting, regenerate the keys and inform the user by @jp-bennett in https://github.com/meshtastic/firmware/pull/7558
+* Avoid acquiring lock twice by @oscgonfer in https://github.com/meshtastic/firmware/pull/7555
+* Chore(deps): update adafruit shtc3 to v1.0.2 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7557
+* Fix a crash on Native reboot by @jp-bennett in https://github.com/meshtastic/firmware/pull/7570`;
 
-const currentPrereleaseId = '2.7.4.3b6eefa';
+const currentPrereleaseId = '2.7.4.8568b56';
 
 export const showPrerelease = true;
 
