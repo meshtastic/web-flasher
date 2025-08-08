@@ -98,7 +98,7 @@ export const useFirmwareStore = defineStore('firmware', {
           this.couldntFetchFirmwareApi = true;
         });
     },
-    setSelectedFirmware(firmware: FirmwareResource) {
+    async setSelectedFirmware(firmware: FirmwareResource) {
       this.selectedFirmware = firmware;
       this.selectedFile = undefined;
       this.hasSeenReleaseNotes = false;
@@ -107,6 +107,16 @@ export const useFirmwareStore = defineStore('firmware', {
       this.clearState();
       // Restore MUI setting if it was enabled (for devices that support it)
       this.shouldInstallMui = currentMuiSetting;
+      
+      // Update Datadog RUM context with firmware version
+      if (import.meta.client) {
+        try {
+          const { datadogRum } = await import('@datadog/browser-rum');
+          datadogRum.setGlobalContextProperty('firmwareVersion', firmware.id);
+        } catch (error) {
+          // Datadog RUM not available, silently continue
+        }
+      }
     },
     getReleaseFileUrl(fileName: string): string {
       if (!this.selectedFirmware?.zip_url) return '';

@@ -124,6 +124,17 @@ export const useDeviceStore = defineStore("device", {
       if (target.hasMui === true) {
         firmwareStore.$state.shouldInstallMui = true;
       }
+      
+      // Update Datadog RUM context with hardware model and platformio target
+      if (import.meta.client) {
+        try {
+          const { datadogRum } = await import('@datadog/browser-rum');
+          datadogRum.setGlobalContextProperty('hwModel', target.hwModel);
+          datadogRum.setGlobalContextProperty('platformioTarget', target.platformioTarget);
+        } catch (error) {
+          // Datadog RUM not available, silently continue
+        }
+      }
     },
     setSelectedTag(tag: string) {
       if (tag === "all") {
