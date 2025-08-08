@@ -208,6 +208,7 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean) { 
       if (selectedTarget.hwModelSlug?.length > 0) {
+        // Vercel Analytics tracking
         track('Download', { 
           hardwareModel: selectedTarget.hwModelSlug, 
           arch: selectedTarget.architecture, 
@@ -215,6 +216,41 @@ export const useFirmwareStore = defineStore('firmware', {
           version: this.selectedFirmware?.id || '',
           count: 1 
         });
+
+        // Datadog tracking - both RUM and Logs for comprehensive coverage
+        if (import.meta.client) {
+          const flashData = {
+            firmware_version: this.selectedFirmware?.id || '',
+            hw_model: selectedTarget.hwModel,
+            hw_model_slug: selectedTarget.hwModelSlug,
+            platformio_target: selectedTarget.platformioTarget,
+            architecture: selectedTarget.architecture,
+            clean_install: isCleanInstall,
+            support_level: selectedTarget.supportLevel || 3,
+            has_mui: selectedTarget.hasMui || false,
+            partition_scheme: this.partitionScheme || 'default',
+            timestamp: new Date().toISOString(),
+            user_agent: navigator.userAgent,
+            url: window.location.href
+          };
+
+          // RUM Action (for user experience correlation, subject to sampling)
+          import('@datadog/browser-rum').then(({ datadogRum }) => {
+            datadogRum.addAction('firmware_flash', flashData);
+          }).catch(error => {
+            console.warn('Datadog RUM not available for flash tracking:', error);
+          });
+
+          // Datadog Logs (for precise counting, no sampling)
+          import('@datadog/browser-logs').then(({ datadogLogs }) => {
+            datadogLogs.logger.info('Firmware flash completed', {
+              event_type: 'firmware_flash',
+              ...flashData
+            });
+          }).catch(error => {
+            console.warn('Datadog Logs not available for flash tracking:', error);
+          });
+        }
       }
     },
     async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {

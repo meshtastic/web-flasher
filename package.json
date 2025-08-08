@@ -9,7 +9,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@datadog/browser-rum": "^6.16.0",
+    "@datadog/browser-logs": "^6.17.0",
+    "@datadog/browser-rum": "^6.17.0",
     "@meshtastic/core": "npm:@jsr/meshtastic__core@^2.6.4",
     "@meshtastic/transport-web-serial": "npm:@jsr/meshtastic__transport-web-serial@^0.2.1",
     "@nuxtjs/i18n": "^9.5.6",

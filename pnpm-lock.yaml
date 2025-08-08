@@ -8,9 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@datadog/browser-logs':
+        specifier: ^6.17.0
+        version: 6.17.0(@datadog/browser-rum@6.17.0)
       '@datadog/browser-rum':
-        specifier: ^6.16.0
-        version: 6.16.0
+        specifier: ^6.17.0
+        version: 6.17.0(@datadog/browser-logs@6.17.0)
       '@meshtastic/core':
         specifier: npm:@jsr/meshtastic__core@^2.6.4
         version: '@jsr/meshtastic__core@2.6.4(buffer@6.0.3)'
@@ -802,16 +805,24 @@ packages:
     peerDependencies:
       postcss-selector-parser: ^7.0.0
 
-  '@datadog/browser-core@6.16.0':
-    resolution: {integrity: sha512-l4GQLbpda9U1Wr/7CbSMEjFLPUofQcLtDRg2lsQ1Ull4tK2FcX7KF0yskCtlsn8QP3UQh8S7E+dh8RCTKdQmjw==}
+  '@datadog/browser-core@6.17.0':
+    resolution: {integrity: sha512-gZJC2WxqrqbwqA84xXXVx+8gQk+XgZHk/ICOJVrZDCQx+7vG2Xv85i8U8/e9nvUOccMafiE/fsztmQZErfg1qQ==}
 
-  '@datadog/browser-rum-core@6.16.0':
-    resolution: {integrity: sha512-AzJ+AqyRetNJgopxn6L0ZPnc+kUVAo2Y67lGHf/xUbJy2lBU22Vd8E8BNRSz8tpFyxhLTEFyPUGDqvhir1OCoQ==}
-
-  '@datadog/browser-rum@6.16.0':
-    resolution: {integrity: sha512-NvHG2Er//mPl7gkbDT1FkOUM5jwwm59oK2uNr6R2u3ZQaAI92rdjt9mwgHQWdctcJAIZF0xzUD7jj4nyvqoiPw==}
+  '@datadog/browser-logs@6.17.0':
+    resolution: {integrity: sha512-neBd5y7t2oP+sMf5B0AM2YqP3+HSjv7frCNXa1tSe/j3O7RDHcTn804iyU9nr6AQK8w+QGeM+gS53lQm9VnZNw==}
     peerDependencies:
-      '@datadog/browser-logs': 6.16.0
+      '@datadog/browser-rum': 6.17.0
+    peerDependenciesMeta:
+      '@datadog/browser-rum':
+        optional: true
+
+  '@datadog/browser-rum-core@6.17.0':
+    resolution: {integrity: sha512-WIB4fAVAPyQYCu/uuSWERoGgqWKnCEOLTA+IJqPONX4FqlS0RjGEE6VvVf419DlVlFNPFxKBzkB+QJIdiwobYw==}
+
+  '@datadog/browser-rum@6.17.0':
+    resolution: {integrity: sha512-io+r2wAoSP1SVAp/u3D9Q8TtrnK4MpyXK29vi4J9owmFVtcqpY7Po9J8OAzAaHldlbLmfuBrAsvsoOYOT8wrgQ==}
+    peerDependencies:
+      '@datadog/browser-logs': 6.17.0
     peerDependenciesMeta:
       '@datadog/browser-logs':
         optional: true
@@ -6969,16 +6980,24 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.0
 
-  '@datadog/browser-core@6.16.0': {}
+  '@datadog/browser-core@6.17.0': {}
 
-  '@datadog/browser-rum-core@6.16.0':
+  '@datadog/browser-logs@6.17.0(@datadog/browser-rum@6.17.0)':
     dependencies:
-      '@datadog/browser-core': 6.16.0
+      '@datadog/browser-core': 6.17.0
+    optionalDependencies:
+      '@datadog/browser-rum': 6.17.0(@datadog/browser-logs@6.17.0)
 
-  '@datadog/browser-rum@6.16.0':
+  '@datadog/browser-rum-core@6.17.0':
     dependencies:
-      '@datadog/browser-core': 6.16.0
-      '@datadog/browser-rum-core': 6.16.0
+      '@datadog/browser-core': 6.17.0
+
+  '@datadog/browser-rum@6.17.0(@datadog/browser-logs@6.17.0)':
+    dependencies:
+      '@datadog/browser-core': 6.17.0
+      '@datadog/browser-rum-core': 6.17.0
+    optionalDependencies:
+      '@datadog/browser-logs': 6.17.0(@datadog/browser-rum@6.17.0)
 
   '@emnapi/core@1.3.1':
     dependencies:
