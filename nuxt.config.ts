@@ -1,6 +1,5 @@
 // nuxt.config.ts
 import { defineNuxtConfig } from 'nuxt/config';
-import nodePolyfills from 'vite-plugin-node-stdlib-browser';
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -146,7 +145,6 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [
-      nodePolyfills(),
     ],
     server: {
       hmr: {
