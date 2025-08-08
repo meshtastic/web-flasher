@@ -112,9 +112,9 @@ export const useFirmwareStore = defineStore('firmware', {
       if (import.meta.client) {
         try {
           const { datadogRum } = await import('@datadog/browser-rum');
-          datadogRum.setGlobalContextProperty('firmwareVersion', firmware.id);
+          datadogRum.setGlobalContextProperty('firmware_version', firmware.id);
         } catch (error) {
-          // Datadog RUM not available, silently continue
+          console.error('Error setting Datadog RUM context:', error);
         }
       }
     },
