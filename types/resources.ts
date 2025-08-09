@@ -75,7 +75,7 @@ const markdownContent = `
 * Chore(deps): update adafruit shtc3 to v1.0.2 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7557
 * Fix a crash on Native reboot by @jp-bennett in https://github.com/meshtastic/firmware/pull/7570`;
 
-const currentPrereleaseId = '2.7.4.8568b56';
+const currentPrereleaseId = '2.7.4.7b874cf';
 
 export const showPrerelease = true;
 
