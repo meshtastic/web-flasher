@@ -1,0 +1,116 @@
+{
+  "title": "Meshtastic veebi kirjutaja",
+  "header": "Flasher",
+  "description": "Veebipõhine vahend ESP32 seadmete püsivara laadimiseks",
+  "browser_warning": "Teie brauser ei toeta WebSerial API-t. Täieliku funktsionaalsuse tagamiseks kasuta ühilduvat brauserit, näiteks Chrome'ile või Edge'ile.",
+  "header_title": "FLASHER",
+  "language": "Keel",
+  "actions": {
+    "connect": "Ühenda",
+    "disconnect": "Katkesta ühendus",
+    "continue": "Jätka",
+    "close_dialog": "Sulge valik"
+  },
+  "state": {
+    "connected": "Ühendatud",
+    "disconnected": "Pole ühendatud",
+    "connecting": "Ühendan",
+    "disconnecting": "Ühenduse katkestamine",
+    "flashing": "Flashib",
+    "flashed": "Paigaldatud",
+    "error": "Tõrge"
+  },
+  "device": {
+    "title": "Seade",
+    "header": "Vali ühendatud seade",
+    "select_device": "Vali siht seade",
+    "all_devices": "Kõik seadmed",
+    "instructions": "Ühenda seade USB kaabliga. Kontrolli, et kaabel ei oleks mõeldud ainult seadme laadimise jaoks.",
+    "subheading": "Kui ühendatavas seadmes on juba Meshtastic paigaldatud, võid selle automaatselt leida:",
+    "auto_detect": "Leia automaatselt",
+    "supported_devices": "Toetatud seadmed",
+    "diy_devices": "DIY seadmed"
+  },
+  "firmware": {
+    "title": "Püsivara",
+    "select_firmware": "Vali püsivara",
+    "instructions": "Vali väljalaske valikute hulgast või lae zip fail Githubist.",
+    "stable": "Stabiilne (või Beta)",
+    "unstable": "Ebastabiilne (või Alfa)",
+    "prerelease": "Väljalaske kanditaat",
+    "error_fetching": "Püsivara versiooni ei õnnestunud API -st laadida.",
+    "refresh_later": "Värskenda lehte või proovi hiljem uuesti.",
+    "upload_alternative": "Alternatiivselt saate ikoonil klõpsates paigaldada ESP32-põhise seadmetele firmware.zip-faili Githubi versiooni või eraldi firmware-update.bin -failist.",
+    "upload_tooltip": "Paigalda enda zip või bin püsivara versioon.",
+    "icon": "ikoon"
+  },
+  "flash": {
+    "title": "Paigalda",
+    "instructions": "Programmeeri oma seade. Vali, kas soovid seadet uuendada või seade tühjendada ning nullist alustada.",
+    "erase_flash": "Kustuta programm",
+    "erase_flash_prefix": "Kustuta programm",
+    "dfu_action_doubleclick": "topeltklõps RST nupuga.",
+    "dfu_action_bootsel": "hoia BOOTSEL nuppu all samal ajal kui ühendad USB kaablit.",
+    "esp32": {
+      "step_1_usb": "Kontrolli, et seade oleks ühendatud USB kaabliga",
+      "step_2_baud_rate": "Vali edastuskiirus",
+      "step_3_flash": "Püsivara paigaldamine",
+      "slow_reliable": "115200 on aeglasem, kuid usaldusväärsem kehva ühenduse korral.",
+      "s3_instructions": "Kui seade põhineb ESP32-S3, peab selle võib-olla välja lülitama, ning seejärel USB kaablit ühendades hoidma all nuppu BOOT / USR.",
+      "reset_alternative": "Alternatiivselt võib seadme õigesse režiimi viimiseks proovida 1200 bps lähtestamise meetodit.",
+      "reset_button": "1200bps nullimine",
+      "full_erase": "Tühjenda ja paigalda",
+      "bundle_webui": "Bundle Web UI",
+      "install_inkhud": "Paigalda InkHUD",
+      "backup_warning": "Varunda selle seadme avalikud ja privaat võtmed enne seadme täielikku kustutamist ning vajadusel taasta need pärast uuesti.",
+      "webui_space_warning": "Lisaks, Web UI kompileerimine pikendab flash kasutamist, vähendades tuuma ruumi ja pikendab installimise aega.",
+      "doc_guide": "Vaata juhendit meie dokumentatsioonist.",
+      "process_warning": "See protsess võib võtta aega.",
+      "reset_after_flash": "Peale flash lõppu võib-olla vajadus vajutada RST-nuppu, kui seade ei taaskäivitu automaatselt või konsoolis kuvatakse teade \"ootab allalaadimist\".",
+      "erase_and_install": "Kustuta mälu ja paigalda",
+      "update": "Värskenda",
+      "start_over": "Alusta uuesti",
+      "flashing_complete": "Flashib",
+      "complete": "valmis",
+      "partition_app": "rakendus",
+      "partition_ota": "ota",
+      "partition_fs": "fs"
+    },
+    "uf2": {
+      "enter_dfu_mode": "Mine (UF2) DFU režiimi",
+      "ensure_drive_mounted": "Veendu, et seadme DFU režiimi ketas on ühendatud",
+      "dfu_firmware_clause": "Püsivara versiooni jaoks",
+      "dfu_firmware_clause_2": "DFU režiimi käsitsi käivitamine",
+      "drive_name_info": "Kettal võib olla erinev nimi, olenevalt teie seadme riistvarast ja bootloaderist.",
+      "dfu_drive": "DFU ketas",
+      "download_copy_uf2": "Lae või kopeeri UF2 fail DFU kettale",
+      "copy_instructions": "Lae UF2 fail alla või kopeeri see DFU kettale. Seade taaskäivitub automaatselt peale kopeerimise lõppu ja käivitub uue püsivaraga.",
+      "auto_reboot_warning": "Automaatne taaskäivitus võib põhjustada teateid failiedastuse tõrgete, kirjutamisvigade või seadme väljutamise kohta",
+      "install_inkhud": "Paigalda InkHUD ekraan",
+      "enter_dfu": "Mine DFU režiimi",
+      "download_uf2": "Lae UF2"
+    },
+    "erase_uf2": {
+      "warning": "Pärast flash kustutamist pole toimingud saadaval enne, kui seadmesse on installitud uus Meshtastic püsivara.",
+      "dfu_warning": "See toiming tühjendab seadme täielikult.",
+      "wait_for_drive": "Oodake, kuni ketas kaob, seejärel avage jadapordi monitor kustutamisprotsessi lõpule viimiseks.",
+      "close_instructions": "Sule see hüpikaken, vali püsivara versioon ja alustada programmeerimist."
+    }
+  },
+  "buttons": {
+    "serial_monitor": "Ava jadapordi monitor",
+    "meshtastic_docs": "Meshtastic dokumendid",
+    "contribute": "Osale GitHubis"
+  },
+  "serial": {
+    "instructions": "Kui lahtiühendamine võtab liiga kaua aega, saad seadme käsitsi lahtiühendada.",
+    "disconnect": "Katkesta ühendus",
+    "log_levels": {
+      "all": "Kõik",
+      "debug": "Silumine",
+      "info": "Teave",
+      "warn": "Hoiatus",
+      "error": "Tõrge"
+    }
+  }
+}
