@@ -32,7 +32,7 @@
                         </div>
                         <button type="button"
                             class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
-                            @click="deviceStore.enterDfuMode()">
+                            @click="() => deviceStore.enterDfuMode($t)">
                             <FolderDown class="h-4 w-4 text-black" />
                             {{ $t('flash.uf2.enter_dfu') }}
                         </button>
@@ -118,11 +118,14 @@
 import {
   FolderDown,
   Info,
-  X,
 } from 'lucide-vue-next';
+import { track } from '@vercel/analytics';
+import { computed } from 'vue';
 
 import { useDeviceStore } from '../../stores/deviceStore';
 import { useFirmwareStore } from '../../stores/firmwareStore';
+import FlashHeader from './FlashHeader.vue';
+import ReleaseNotes from './ReleaseNotes.vue';
 
 const deviceStore = useDeviceStore();
 const firmwareStore = useFirmwareStore();
