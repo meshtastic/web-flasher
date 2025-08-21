@@ -350,6 +350,10 @@ export const useDeviceStore = defineStore("device", {
           await Promise.race([configurePromise, timeoutPromise]);
         } catch (error) {
           if ((error as Error).message === 'timeout') {
+            if (this.selectedTarget) {
+              await this.cleanupDevice(device);
+              return;
+            }
             const errorTitle = tFunc?.('dfu.error_unresponsive_title') || 'Device Unresponsive';
             const errorMessage = tFunc?.('dfu.error_unresponsive') || 'The device is not responding. Please ensure it is properly connected and not in DFU mode.';
             toastStore.error(errorTitle, errorMessage);
