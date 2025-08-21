@@ -120,57 +120,10 @@
     "success_title": "DFU Mode",
     "success_message": "Device successfully entered DFU mode",
     "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again."
-  },
-  "errors": {
-    "device": {
-      "title": "Device Error",
-      "unknown": "Unknown error occurred",
-      "not_found": "No device was selected. Please select a Meshtastic device and try again.",
-      "no_device_selected": "No Device Selected",
-      "permission_denied": "Permission denied. Please grant access to the device.",
-      "permission_denied_title": "Permission Denied",
-      "invalid_state": "Device is already in use or in an invalid state. Try disconnecting and reconnecting.",
-      "unavailable": "Device Unavailable",
-      "connection_lost": "Device connection lost. Please reconnect your device and try again.",
-      "disconnected": "Device Disconnected",
-      "busy": "Device is busy or already connected. Please disconnect and try again.",
-      "busy_title": "Device Busy",
-      "not_supported": "Device access is not supported in this browser. Try using Chrome, Edge, or Opera.",
-      "browser_not_supported": "Browser Not Supported",
-      "try_reconnecting": "Try disconnecting and reconnecting the device.",
-      "port_locked_title": "Port Connection Error",
-      "port_locked_message": "The serial port is locked by another connection. Please close other applications using the device or disconnect and reconnect the device, then try again.",
-      "device_locked_title": "Port Locked",
-      "device_locked_message": "The device port is currently in use. Please disconnect and reconnect the device, then try again.",
-      "dfu_failed_with_error": "Failed to enter DFU mode"
-    },
-    "dfu": {
-      "failed": "DFU Mode Failed",
-      "max_attempts": "Could not enter DFU mode after multiple attempts",
-      "failed_after_attempts": "Failed to enter DFU mode after {attempts} attempts",
-      "success_title": "DFU Mode",
-      "success_message": "Device successfully entered DFU mode",
-      "error_title": "DFU Mode Failed"
-    },
-    "baud": {
-      "failed": "Failed to reset device at 1200 baud"
-    },
-    "auto_select": {
-      "failed": "Failed to auto-select hardware"
-    },
-    "flash": {
-      "title": "Flash Error", 
-      "generic": "An error occurred during flashing",
-      "permission_denied": "Permission denied while flashing device",
-      "permission_denied_title": "Flash Permission Denied",
-      "device_not_found": "Device not found during flashing",
-      "device_not_found_title": "Flash Device Not Found",
-      "timeout": "Flashing operation timed out",
-      "timeout_title": "Flash Timeout",
-      "device_busy": "Device is busy or in use during flashing",
-      "device_busy_title": "Flash Device Busy",
-      "try_reconnecting": "Try disconnecting and reconnecting the device."
-    }
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }

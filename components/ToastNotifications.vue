@@ -15,14 +15,7 @@
               <div class="ml-3 w-0 flex-1 pt-0.5">
                 <p class="text-sm font-medium text-gray-100">{{ toast.title }}</p>
                 <p class="mt-1 text-sm text-gray-300">{{ toast.message }}</p>
-                <div v-if="!toast.persistent" class="mt-3 flex space-x-2">
-                  <button
-                    @click="toastStore.removeToast(toast.id)"
-                    class="text-sm font-medium text-meshtastic hover:text-green-300 transition-colors duration-200"
-                  >
-                    {{ $t('actions.dismiss') }}
-                  </button>
-                </div>
+                
               </div>
               <div class="ml-4 flex-shrink-0 flex">
                 <button
@@ -35,14 +28,20 @@
               </div>
             </div>
           </div>
-          <!-- Error toast with dismiss button -->
-          <div v-if="toast.type === 'error' && toast.persistent" class="bg-zinc-800 px-4 py-3 border-t border-gray-600">
+          <!-- Error toast with dismiss and reload buttons -->
+          <div v-if="toast.type === 'error'" class="bg-zinc-800 px-4 py-3 border-t border-gray-600">
             <div class="flex">
               <button
                 @click="toastStore.removeToast(toast.id)"
                 class="text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors duration-200"
               >
                 {{ $t('actions.dismiss') }}
+              </button>
+              <button
+                @click="reloadPage"
+                class="ml-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors duration-200"
+              >
+                Reload
               </button>
             </div>
           </div>
@@ -85,6 +84,10 @@ const getIconClass = (type: string) => {
       return 'text-blue-400';
   }
 };
+
+function reloadPage() {
+  window.location.reload();
+}
 </script>
 
 <style scoped>
@@ -120,5 +123,97 @@ const getIconClass = (type: string) => {
 /* Meshtastic text color */
 .text-meshtastic {
   color: #67EA94;
+}
+
+/* Toast container positioning */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+}
+
+/* Individual toast styling */
+.toast {
+  min-width: 280px;
+  margin-bottom: 16px;
+  padding: 16px 24px 16px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  background: #fff;
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  animation: toast-in 0.3s;
+}
+
+/* Toast type specific borders */
+.toast.success {
+  border-left: 6px solid #4caf50;
+}
+
+.toast.error {
+  border-left: 6px solid #f44336;
+}
+
+.toast.warning {
+  border-left: 6px solid #ff9800;
+}
+
+.toast.info {
+  border-left: 6px solid #2196f3;
+}
+
+/* Toast header styling */
+.toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Toast title styling */
+.toast-title {
+  font-weight: bold;
+  flex: 1;
+}
+
+/* Dismiss button styling */
+.toast-dismiss {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  margin-left: 8px;
+}
+
+/* Reload button styling for error toasts */
+.toast-reload {
+  background: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+/* Toast message styling */
+.toast-message {
+  margin-top: 8px;
+  word-break: break-word;
+}
+
+/* Toast entry animation */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

@@ -29,7 +29,7 @@ export const useToastStore = defineStore('toast', {
       this.recentToasts.add(toastKey);
       setTimeout(() => {
         this.recentToasts.delete(toastKey);
-      }, 2000);
+      }, 10000);
       
       const id = Date.now().toString() + Math.random().toString(36).substring(2, 11);
       const newToast: Toast = {
@@ -58,10 +58,8 @@ export const useToastStore = defineStore('toast', {
     },
     
     removeToast(id: string) {
-      const index = this.toasts.findIndex(toast => toast.id === id);
-      if (index > -1) {
-        this.toasts.splice(index, 1);
-      }
+      // On dismiss or expire, clear all toasts
+      this.toasts = [];
     },
     
     clearAll() {
@@ -71,19 +69,28 @@ export const useToastStore = defineStore('toast', {
     
     // Convenience methods for different toast types
     success(title: string, message: string, options?: Partial<Toast>) {
-      return this.addToast({ type: 'success', title, message, ...options });
+      if (this.toasts.length > 0) return;
+      const id = Date.now().toString() + Math.random().toString(36).substring(2, 11);
+      this.toasts.push({ type: 'success', title, message, id, ...options });
     },
-    
     error(title: string, message: string, options?: Partial<Toast>) {
-      return this.addToast({ type: 'error', title, message, persistent: true, ...options });
+      if (this.toasts.length > 0) return;
+      const id = Date.now().toString() + Math.random().toString(36).substring(2, 11);
+      this.toasts.push({ type: 'error', title, message, id, ...options });
     },
-    
     warning(title: string, message: string, options?: Partial<Toast>) {
-      return this.addToast({ type: 'warning', title, message, ...options });
+      if (this.toasts.length > 0) return;
+      const id = Date.now().toString() + Math.random().toString(36).substring(2, 11);
+      this.toasts.push({ type: 'warning', title, message, id, ...options });
     },
-    
     info(title: string, message: string, options?: Partial<Toast>) {
-      return this.addToast({ type: 'info', title, message, ...options });
+      if (this.toasts.length > 0) return;
+      const id = Date.now().toString() + Math.random().toString(36).substring(2, 11);
+      this.toasts.push({ type: 'info', title, message, id, ...options });
+    },
+    dismiss(id: string) {
+      // On dismiss, clear all toasts
+      this.toasts = [];
     },
   },
 });
