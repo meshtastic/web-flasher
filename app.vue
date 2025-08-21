@@ -68,6 +68,8 @@
     </section>
 
     <SerialMonitor />
+    
+    <ToastNotifications />
 
     <footer id="footer" class="halloween-theme footer text-white mt-4 py-4">
       <canvas>
@@ -128,8 +130,8 @@ const serialMonitorStore = useSerialMonitorStore();
 const firmwareStore = useFirmwareStore();
 const deviceStore = useDeviceStore();
 
-const monitorSerial = () => {
-  serialMonitorStore.monitorSerial();
+const monitorSerial = async () => {
+  await serialMonitorStore.monitorSerial();
 };
 
 const selectedDeviceImage = computed(() => {

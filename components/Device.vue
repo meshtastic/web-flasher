@@ -5,7 +5,7 @@
         </button>
         <button data-tooltip-target="tooltip-auto" class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
             type="button"
-            @click="store.autoSelectHardware">
+            @click="() => store.autoSelectHardware($t)">
             <Rocket class="h-4 w-4" :class="{'animate-bounce': !store.$state.selectedTarget?.hwModel }" />
         </button>
         <div id="tooltip-auto" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-gray-700">
@@ -30,7 +30,7 @@
                     <div class="p-4 mb-1 m-2 text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
                         <span class="font-medium">
                             <Info class="h-4 w-4 inline" />
-                            {{ $t('device.subheading') }} <button type="button" @click="store.autoSelectHardware" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><Rocket class="h-4 w-4 text-black" /> {{ $t('device.auto_detect') }}</button>
+                            {{ $t('device.subheading') }} <button type="button" @click="() => store.autoSelectHardware($t)" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><Rocket class="h-4 w-4 text-black" /> {{ $t('device.auto_detect') }}</button>
                         </span>
                     </div>
                     <div v-if="vendorCobrandingTag.length === 0" class="p-2 m-2 flex flex-wrap items-center justify-center">

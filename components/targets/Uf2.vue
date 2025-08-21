@@ -20,7 +20,7 @@
                         </div>
                         <button type="button"
                             class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
-                            @click="deviceStore.enterDfuMode()">
+                            @click="() => deviceStore.enterDfuMode($t)">
                             <FolderDown class="h-4 w-4 text-black" />
                             {{ $t('flash.uf2.enter_dfu') }}
                         </button>

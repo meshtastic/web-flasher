@@ -11,17 +11,36 @@ import { TransportWebSerial } from '@meshtastic/transport-web-serial';
 import { type DeviceHardware } from '../types/api';
 import { createUrl } from './store';
 import { useFirmwareStore } from './firmwareStore';
-import { useI18n } from 'vue-i18n';
+import { useToastStore } from './toastStore';
+
+// Ensure Web Serial API types are available
+declare global {
+  interface Navigator {
+    serial: any;
+  }
+  interface SerialPort {
+    readable: ReadableStream;
+    writable: WritableStream;
+    open(options: any): Promise<void>;
+    close(): Promise<void>;
+    forget(): Promise<void>;
+  }
+}
 
 const firmwareApi = mande(createUrl("api/resource/deviceHardware"));
 
 export const useDeviceStore = defineStore("device", {
   state: () => {
     return {
-      targets: new Array<DeviceHardware>(),
-      selectedTarget: <DeviceHardware>{},
-      meshDevice: null as MeshDevice | null,
-      tag: undefined as string | undefined,
+      selectedDevice: <DeviceHardware | undefined>undefined,
+      selectedTarget: <DeviceHardware | undefined>undefined,
+      tag: <string | undefined>undefined,
+      targets: <DeviceHardware[]>[],
+      isConnecting: false,
+      // Store AbortController and promises for proper cleanup
+      abortController: <AbortController | undefined>undefined,
+      readerClosed: <Promise<any> | undefined>undefined,
+      writerClosed: <Promise<any> | undefined>undefined,
     };
   },
   getters: {
@@ -59,7 +78,7 @@ export const useDeviceStore = defineStore("device", {
     },
     isSoftDevice7point3(): boolean {
       const sd73Devices = ["WIO_WM1110", "TRACKER_T1000_E", "XIAO_NRF52_KIT", "SEEED_SOLAR_NODE", "SEEED_WIO_TRACKER_L1"];
-      return sd73Devices.includes(this.selectedTarget?.hwModelSlug);
+      return sd73Devices.includes(this.selectedTarget?.hwModelSlug || '');
     },
     enterDfuVersion(): string {
       if (this.isSelectedNrf) {
@@ -147,7 +166,47 @@ export const useDeviceStore = defineStore("device", {
         this.tag = tag;
       }
     },
-    async openDeviceConnection(shouldConfigure: boolean = true): Promise<MeshDevice> {
+    async cleanupAllPorts() {
+      try {
+        // Get all previously granted serial ports
+        const ports = await navigator.serial.getPorts();
+        
+        for (const port of ports) {
+          try {
+            console.log('Cleaning up port:', port);
+            
+            // Use the proven serial monitor cleanup pattern
+            if (port.readable || port.writable) {
+              // First try to close normally
+              try {
+                await port.close();
+                console.log('Port closed successfully');
+              } catch (error) {
+                console.warn('Port close failed, continuing with forget...', error);
+              }
+            }
+            
+            // Always try port.forget() - this is the magic method!
+            try {
+              await port.forget();
+              console.log('Port forgotten successfully');
+            } catch (error) {
+              console.warn('Port forget failed:', error);
+            }
+            
+          } catch (error) {
+            console.warn('Error cleaning up port:', error);
+          }
+        }
+        
+        // Give ports time to fully close and be forgotten
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        console.log('All ports cleanup completed with forget()');
+      } catch (error) {
+        console.warn('Error during port cleanup:', error);
+      }
+    },
+    async openDeviceConnection(shouldConfigure: boolean = true): Promise<{ device: MeshDevice; port: SerialPort }> {
       // Request serial port from user
       const port: SerialPort = await navigator.serial.requestPort();
 
@@ -160,69 +219,160 @@ export const useDeviceStore = defineStore("device", {
       if (shouldConfigure) {
         await device.configure();
       }
-      // Store the device reference
-      this.meshDevice = device;
 
-      return device;
+      return { device, port };
     },
-    async enterDfuMode() {
-      const device = await this.openDeviceConnection(false);
+    async cleanupDevice(device: MeshDevice, port?: SerialPort) {
+      console.log('Starting device cleanup...');
+      
+        if (port && device?.transport?.fromDevice) {
+          try {
+            await device.transport.fromDevice.cancel(); // Cancel any ongoing reads
+          } catch (error) {
+            console.warn('Error cancelling fromDevice reader:', error);
+          }
+          try {
+            await device.transport.toDevice.close(); // Close the toDevice stream
+          } catch (error) {
+            console.warn('Error closing toDevice writer:', error);
+          }
+          try {
+            const reader = device.transport.fromDevice.getReader();
+            
+            const textEncoder = new TextEncoderStream();
+            const writer = textEncoder.writable.getWriter();
+            const writableStreamClosed = textEncoder.readable.pipeTo(port.writable!);
+            
+            await reader.cancel();
+            
+            await writer.close();
+            await writableStreamClosed;
+            
+            // this is the secret sauce!
+            await port.forget();
+            
+          } catch (error: any) {
+            console.log('Disconnect failed:', error?.message || error);
+            if (port) {
+              await port.forget();
+            }
+          }
+        } 
+        
+      // Clear any store state
+      this.abortController = undefined;
+      this.readerClosed = undefined;
+      this.writerClosed = undefined;
+    },
+    async enterDfuMode(tFunc?: (key: string) => string) {
+      const toastStore = useToastStore();
+      let device: MeshDevice | null = null;
+      let port: SerialPort | null = null;
+      let dfuModeEntered = false;
+      
+      this.isConnecting = true;
+      try {
+        // Configure the device so transport streams are properly set up
+        const connection = await this.openDeviceConnection(false);
+        device = connection.device;
+        port = connection.port;
 
-      device.events.onMyNodeInfo.subscribe(async(packet: any) => {
-        console.log("Received MyNodeInfo packet:", packet);
+
+        const myNodeInfoSub = device.events.onMyNodeInfo.subscribe((info) => {
+          console.log("Received MyNodeInfo event:", info);
+          // Handle the event as needed
+          device?.enterDfuMode();
+        });
+        try {
+          await device.configure();
+        } catch (error) {
+          console.error('Error configuring device:', error);
+          const errorTitle = tFunc?.('dfu.error_title') || 'DFU Mode Failed';
+          const errorMessage = tFunc?.('dfu.error_message') || 'Failed to enter DFU mode. Please disconnect and reconnect the device, then try again.';
+          toastStore.error(errorTitle, errorMessage);
+          throw error;
+        }
         await device.enterDfuMode();
-      });
-      await device.configure();
+        dfuModeEntered = true;
 
-      // Wait for device metadata, then clean up
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      // Try one last time to enter DFU mode
-      await device.enterDfuMode();
+        // Show success message
+        const successTitle = tFunc?.('dfu.success_title') || 'DFU Mode';
+        const successMessage = tFunc?.('dfu.success_message') || 'Device successfully entered DFU mode';
+        toastStore.success(successTitle, successMessage);
+
+      } catch (error: any) {
+        console.error('Error entering DFU mode:', error);
+        
+        // Simple, single error message
+        const errorTitle = tFunc?.('dfu.error_title') || 'DFU Mode Failed';
+        const errorMessage = tFunc?.('dfu.error_message') || 'Failed to enter DFU mode. Please disconnect and reconnect the device, then try again.';
+
+        toastStore.error(errorTitle, errorMessage);
+        throw error;
+      } finally {
+        // Always attempt to clean up the device connection
+        if (device) {
+          await this.cleanupDevice(device, port || undefined);
+        }
+        this.isConnecting = false;
+      }
     },
     async baud1200() {
       const port: SerialPort = await navigator.serial.requestPort();
       await port.open({ baudRate: 1200 });
+      // Give the device a moment to recognize the 1200 baud connection
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await port.close();
     },
-    async autoSelectHardware() {
-      const device = await this.openDeviceConnection(false);
+    async autoSelectHardware(tFunc?: (key: string) => string) {
+      this.isConnecting = true;
+      try {
+        const connection = await this.openDeviceConnection(false);
+        const device = connection.device;
+        const port = connection.port;
 
-      // Subscribe to device metadata packets
-      const subscription = device.events.onDeviceMetadataPacket.subscribe(async (packet: any) => {
-        console.log("Received device metadata packet:", packet);
-        // Try to find the device by pio env name first, then hw model if that fails
-        let targetDevice: DeviceHardware | undefined = undefined;
-        if (packet?.data?.platformioTarget?.length > 0) {
-          targetDevice = this.targets.find(
-            (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
-          );
-        }
-        if (!targetDevice) {
-          targetDevice = this.targets.find(
-            (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
-          );
-        }
-        if (targetDevice) {
-          console.log("Found device onDeviceMetadataPacket", targetDevice);
-          this.setSelectedTarget(targetDevice);
-          await device.transport.fromDevice.cancel();
-          await device.transport.toDevice.close();
-        }
-      });
-      await device.configure();
+        const metadataSub = device.events.onDeviceMetadataPacket.subscribe(async (packet: any) => {
+          console.log("Received device metadata packet:", packet);
+          // Try to find the device by pio env name first, then hw model if that fails
+          let targetDevice: DeviceHardware | undefined = undefined;
+          if (packet?.data?.platformioTarget?.length > 0) {
+            targetDevice = this.targets.find(
+              (target: DeviceHardware) => target.platformioTarget === packet?.data?.platformioTarget,
+            );
+          }
+          if (!targetDevice) {
+            targetDevice = this.targets.find(
+              (target: DeviceHardware) => target.hwModel === packet?.data?.hwModel,
+            );
+          }
+          if (targetDevice) {
+            console.log("Found device onDeviceMetadataPacket", targetDevice);
+            this.setSelectedTarget(targetDevice);
+            if (targetDevice.architecture.startsWith('nrf')) {
+              await device?.enterDfuMode();
+              const toastStore = useToastStore();
+              toastStore.success(
+                tFunc?.('dfu.success_title') || 'DFU Mode',
+                tFunc?.('dfu.success_message') || 'Device successfully entered DFU mode'
+              );  
+            }
+            await this.cleanupDevice(device, port);
+          }
+        });
+        await device.configure();
 
-      // Wait for device metadata, then clean up
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+        // Wait for device metadata, then clean up
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      // Clean up subscription
-      if (subscription) {
-        device.events.onDeviceMetadataPacket.unsub(subscription);
+        await this.cleanupDevice(device, port);
+
+        return -1;
+      } catch (error) {
+        console.error('Error in autoSelectHardware:', error);
+        throw error;
+      } finally {
+        this.isConnecting = false;
       }
-      await device.transport.fromDevice.cancel();
-      await device.transport.toDevice.close();
-      // Clean up device connection
-      this.meshDevice = null;
-
-      return -1;
     },
   },
 });

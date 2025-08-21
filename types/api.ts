@@ -25,6 +25,7 @@ export interface DeviceHardware {
 	tags?: string[];
 	images?: string[];
 	partitionScheme?: string;
+	requiresDfu?: boolean;
 	hasMui?: boolean;
 	hasInkHud?: boolean;
 	url?: string;
