@@ -14,7 +14,7 @@
   "state": {
     "connected": "Connecté",
     "disconnected": "Non connecté",
-    "connecting": "Connexion en cours…",
+    "connecting": "Connexion en cours",
     "disconnecting": "Déconnexion en cours",
     "flashing": "Flashage",
     "flashed": "Flashé",
@@ -34,7 +34,7 @@
   "firmware": {
     "title": "Micrologiciel",
     "select_firmware": "Sélectionnez le micrologiciel",
-    "instructions": "Choisissez une version ou importez un ZIP depuis GitHub.",
+    "instructions": "Choisissez une version ou importez un zip depuis GitHub.",
     "stable": "Stable (ou Bêta)",
     "unstable": "Instable (Alpha)",
     "prerelease": "Pré-version",
