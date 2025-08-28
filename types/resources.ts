@@ -37,7 +37,7 @@ t to 9573abb by @renovate[bot] in https://github.com/meshtastic/firmware/pull/76
 
 const currentPrereleaseId = '2.7.6.3d825c5';
 
-export const showPrerelease = true;
+export const showPrerelease = false;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
