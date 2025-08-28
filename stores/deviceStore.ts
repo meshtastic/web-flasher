@@ -77,7 +77,7 @@ export const useDeviceStore = defineStore("device", {
       return this.selectedArchitecture.startsWith("nrf52");
     },
     isSoftDevice7point3(): boolean {
-      const sd73Devices = ["WIO_WM1110", "TRACKER_T1000_E", "XIAO_NRF52_KIT", "SEEED_SOLAR_NODE", "SEEED_WIO_TRACKER_L1"];
+      const sd73Devices = ["WIO_WM1110", "TRACKER_T1000_E", "XIAO_NRF52_KIT", "SEEED_SOLAR_NODE", "SEEED_WIO_TRACKER_L1" , "SEEED_WIO_TRACKER_L1_EINK"];
       return sd73Devices.includes(this.selectedTarget?.hwModelSlug || '');
     },
     enterDfuVersion(): string {

@@ -41,11 +41,6 @@ const firmwareStore = useFirmwareStore();
 import {
   BadgeCheck,
   ShieldAlert,
-  ShoppingCart,
-  ShoppingBasketIcon,
-  ShoppingBasket,
-  ShoppingBagIcon,
-  LinkIcon,
   Link2Icon
 } from 'lucide-vue-next';
 
