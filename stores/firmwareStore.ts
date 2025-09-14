@@ -8,6 +8,7 @@ import { saveAs } from 'file-saver';
 import { mande } from 'mande';
 import { defineStore } from 'pinia';
 import type { Terminal } from 'xterm';
+import { supportsNew8MBPartitionTable } from '~/utils/versionUtils';
 import {
   currentPrerelease,
   showPrerelease,
@@ -229,6 +230,7 @@ export const useFirmwareStore = defineStore('firmware', {
             support_level: selectedTarget.supportLevel || 3,
             has_mui: selectedTarget.hasMui || false,
             partition_scheme: this.partitionScheme || 'default',
+            partition_table_version: this.partitionScheme === '8MB' && selectedTarget.hasMui && supportsNew8MBPartitionTable(this.firmwareVersion) ? 'new-8mb' : 'legacy',
             timestamp: new Date().toISOString(),
             user_agent: navigator.userAgent,
             url: window.location.href
@@ -270,10 +272,27 @@ export const useFirmwareStore = defineStore('firmware', {
 
         let otaOffset = 0x260000;
         let spiffsOffset = 0x300000;
+        
         if (this.partitionScheme == "8MB") {
-          // 8mb
-          otaOffset = 0x340000;
-          spiffsOffset = 0x670000;
+          // Check if this is a TFT (MUI) device with firmware 2.7.9+ that should use the new partition table
+          const isTftDevice = selectedTarget.hasMui === true;
+          const useNewPartitionTable = isTftDevice && supportsNew8MBPartitionTable(this.firmwareVersion);
+          
+          console.log(`8MB partition selection: TFT device: ${isTftDevice}, Firmware: ${this.firmwareVersion}, Use new table: ${useNewPartitionTable}`);
+          
+          if (useNewPartitionTable) {
+            // New 8MB partition table for TFT devices (firmware 2.7.9+)
+            // Based on: https://github.com/meshtastic/firmware/blob/d43bd7f45b1c19d95288b5589adda2c0ef117bc4/partition-table-8MB.csv
+            // flashApp (ota_1): 0x5D0000, spiffs: 0x670000
+            otaOffset = 0x5D0000;
+            spiffsOffset = 0x670000;
+            console.log(`Using new 8MB partition table: OTA at 0x${otaOffset.toString(16)}, SPIFFS at 0x${spiffsOffset.toString(16)}`);
+          } else {
+            // Legacy 8MB partition table
+            otaOffset = 0x340000;
+            spiffsOffset = 0x670000;
+            console.log(`Using legacy 8MB partition table: OTA at 0x${otaOffset.toString(16)}, SPIFFS at 0x${spiffsOffset.toString(16)}`);
+          }
         }
         else if (this.partitionScheme == "16MB") {
           // 16mb
