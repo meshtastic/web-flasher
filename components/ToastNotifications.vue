@@ -41,7 +41,7 @@
                 @click="reloadPage"
                 class="ml-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors duration-200"
               >
-                Reload
+                {{ $t('actions.reload') }}
               </button>
             </div>
           </div>
