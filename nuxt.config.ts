@@ -122,6 +122,7 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: 'locales/',
     strategy: 'no_prefix',
+    vueI18n: './i18n.config.ts',
     bundle: {
       optimizeTranslationDirective: false,
     },

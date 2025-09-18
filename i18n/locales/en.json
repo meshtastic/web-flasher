@@ -11,7 +11,8 @@
     "continue": "Continue",
     "close_dialog": "Close dialog",
     "dismiss": "Dismiss",
-    "close": "Close"
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Connected",
