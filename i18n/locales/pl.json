@@ -9,9 +9,7 @@
     "connect": "Połącz",
     "disconnect": "Rozłącz",
     "continue": "Kontynuuj",
-    "close_dialog": "Zamknij okno",
-    "dismiss": "Odrzuć",
-    "close": "Zamknij"
+    "close_dialog": "Zamknij okno"
   },
   "state": {
     "connected": "Połączony",
@@ -31,7 +29,7 @@
     "subheading": "Jeśli na podłączonym urządzeniu jest już zainstalowany Meshtastic, możesz go automatycznie wykryć:",
     "auto_detect": "Automatyczne wykrywanie",
     "supported_devices": "Obsługiwane urządzenia",
-    "diy_devices": "Urządzenia wspierane przez społeczność"
+    "diy_devices": "Urządzenia DIY"
   },
   "firmware": {
     "title": "Firmware",
@@ -107,7 +105,6 @@
   "serial": {
     "instructions": "Jeśli proces rozłączania trwa zbyt długo, możesz ręcznie odłączyć urządzenie.",
     "disconnect": "Rozłącz",
-    "reconnect": "Spróbuj ponownie połączyć",
     "log_levels": {
       "all": "Wszystkie",
       "debug": "Debug",
@@ -115,15 +112,5 @@
       "warn": "Ostrzeżenie",
       "error": "Błąd"
     }
-  },
-  "dfu": {
-    "success_title": "Tryb DFU",
-    "success_message": "Urządzenie pomyślnie weszło w tryb DFU",
-    "error_title": "Tryb DFU nieudany",
-    "error_message": "Nie udało się wejść w tryb DFU. Odłącz i podłącz ponownie urządzenie, a następnie spróbuj ponownie. Jeśli problem się powtarza, odśwież stronę.",
-    "error_connection_title": "Połączenie z urządzeniem nieudane",
-    "error_connection": "Nie udało się połączyć z urządzeniem lub urządzenie może już być w trybie DFU. Odłącz i podłącz ponownie urządzenie, a następnie spróbuj ponownie. Jeśli problem się powtarza, odśwież stronę.",
-    "error_unresponsive_title": "Urządzenie nie odpowiada",
-    "error_unresponsive": "Urządzenie nie odpowiada. Upewnij się, że jest prawidłowo podłączone i nie znajduje się w trybie DFU. Jeśli problem się powtarza, odśwież stronę."
   }
 }
