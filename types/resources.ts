@@ -3,32 +3,71 @@ import type { FirmwareResource } from './api';
 // Remove the OfflineHardwareList since it's now in /public/data/hardware-list.json
 
 const markdownContent = `
-## 🚀  What's Changed
-* Add support for new ESP32 DIY variant 9m2ibr_aprs_lora_tracker by @ndoo in https://github.com/meshtastic/firmware/pull/7828
-* T-Lora Pager: Fix keyboard and improve rotary wheel haptic by @mverch67 in https://github.com/meshtastic/firmware/pull/7869
-* Fix esptool detection and baud rate issues in Windows batch scripts by @jeremiah-k in https://github.com/meshtastic/firmware/pull/7856
-* Upon receiving ACK/reply directly, only update next-hop if we’re the *sole* relayer by @GUVWAF in https://github.com/meshtastic/firmware/pull/7859
-* Fix merge conflict with test changes by @fifieldt in https://github.com/meshtastic/firmware/pull/7902
-* Fix: RotaryEncoder uninitialized kbchar by @mverch67 in https://github.com/meshtastic/firmware/pull/7889
-* Chore(deps): update meshtastic/device-ui digest to 233d18e by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7890
-* Reorganize 8MB partition for MUI devices by @mverch67 in https://github.com/meshtastic/firmware/pull/7860
-* Chore(deps): update meshtastic/device-ui digest to 3677476 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7925
-* Disable ATAK Plugin module for non-TAK roles by @thebentern in https://github.com/meshtastic/firmware/pull/7928
-* Use char buffer for probeResponse by @thebentern in https://github.com/meshtastic/firmware/pull/7870
-* Make phone queues use a static pointer queue by @thebentern in https://github.com/meshtastic/firmware/pull/7919
-* Add LOG_HEAP log type, and more heap debug messages by @jp-bennett in https://github.com/meshtastic/firmware/pull/7937
-* Unify build epoch to add flag in platformio-custom.py by @thebentern in https://github.com/meshtastic/firmware/pull/7917
-* Put guards in place around debug heap operations by @thebentern in https://github.com/meshtastic/firmware/pull/7955
-* Static memory pool allocation by @thebentern in https://github.com/meshtastic/firmware/pull/7966
-* Update meshtastic-esp8266-oled-ssd1306 digest to 0cbc26b by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7977
-* Fix json report crashes on esp32 by @thebentern in https://github.com/meshtastic/firmware/pull/7978
-* Scale probe buffer size based on current baud rate by @thebentern in https://github.com/meshtastic/firmware/pull/7975
-* Fix overflow of time value by @thebentern in https://github.com/meshtastic/firmware/pull/7984
-`;
+## What's Changed
+- BaseUI Show/Hide Frame Functionality by @Xaositek in https://github.com/meshtastic/firmware/pull/7382
+- Feature: Seamless Cross-Preset Communication via UDP Multicast Bridging by @ViezeVingertjes in https://github.com/meshtastic/firmware/pull/7753
+- Add CLIENT_BASE role: ROUTER for favorites, CLIENT otherwise (for attic/roof nodes!) by @compumike in https://github.com/meshtastic/firmware/pull/7873
+- Added Last Coordinate counter to Position screen by @HarukiToreda in https://github.com/meshtastic/firmware/pull/7865
+- Phone GPS display on Position Screen for BaseUI by @HarukiToreda in https://github.com/meshtastic/firmware/pull/7875
+- Add formatting and menu picking for other GPS format options by @Xaositek in https://github.com/meshtastic/firmware/pull/7974
+- Add RAK WisMesh Tap V2 (ESP32S3) Hardware Variant by @DanielCao0 in https://github.com/meshtastic/firmware/pull/7741
+- Add support for the Challenger rp2040 lora by @samuel-duffield1 in https://github.com/meshtastic/firmware/pull/7826
+- Add support for the RV-3028 on native Linux by @jp-bennett in https://github.com/meshtastic/firmware/pull/7802
+- T-Lora Pager: Support LR1121 and SX1280 models by @WillyJL in https://github.com/meshtastic/firmware/pull/7956
+- Add another seeed_xiao_nrf52840_kit build environment for I2C pinout by @NomDeTom in https://github.com/meshtastic/firmware/pull/8036
+- Add heltec_v4 board. by @Quency-D in https://github.com/meshtastic/firmware/pull/7845
+- C6l fixes by @jp-bennett in https://github.com/meshtastic/firmware/pull/8047
+- Add TSL2561 sensor by @davide125 in https://github.com/meshtastic/firmware/pull/7675
+- Add a new GPS model CM121. by @Quency-D in https://github.com/meshtastic/firmware/pull/7852
+- Make ExternalNotification show up in excluded_modules, more STM32 modules by @Stary2001 in https://github.com/meshtastic/firmware/pull/7797
+- Enable bmx160 on native by @jp-bennett in https://github.com/meshtastic/firmware/pull/7844
+- Fix memory leak in NRF52Bluetooth: allocate BluetoothStatus on stack, not heap by @compumike in https://github.com/meshtastic/firmware/pull/7965
+- Fix memory leak in NimbleBluetooth: allocate BluetoothStatus on stack, not heap by @compumike in https://github.com/meshtastic/firmware/pull/7964
+- Fix GPS gm_mktime memory leak by @compumike in https://github.com/meshtastic/firmware/pull/7981
+- Fix INA3221 higher current wrong readings by @macvenez in https://github.com/meshtastic/firmware/pull/7607
+- Fix InputEvent variable usage with out initialization (random key events while using rotery encoder) by @Links2004 in https://github.com/meshtastic/firmware/pull/8015
+- Fix Rotary Encoder Button by @Links2004 in https://github.com/meshtastic/firmware/pull/8001
+- Fix date display to be upper right bound by @Xaositek in https://github.com/meshtastic/firmware/pull/7876
+- Fix excluded modules configuration handling by @capricornusx in https://github.com/meshtastic/firmware/pull/7838
+- Fix build error in rak_wismesh_tap_v2 by @fifieldt in https://github.com/meshtastic/firmware/pull/7905
+- Fix build fail on develop branch by @WillyJL in https://github.com/meshtastic/firmware/pull/8043
+- Fix more build failures by @WillyJL in https://github.com/meshtastic/firmware/pull/8044
+- Fix last build issues on develop by @WillyJL in https://github.com/meshtastic/firmware/pull/8046
+- Fix build errors by @Xaositek in https://github.com/meshtastic/firmware/pull/8067
+- fix build with HAS_TELEMETRY 0 by @Links2004 in https://github.com/meshtastic/firmware/pull/8051
+- Fix device-install.bat baud rate by @fifieldt in https://github.com/meshtastic/firmware/pull/7816
+- Fix: use lora.use_preset config to get name by @GUVWAF in https://github.com/meshtastic/firmware/pull/8057
+- Show GPS Date properly in drawCommonHeader by @Xaositek in https://github.com/meshtastic/firmware/pull/7887
+- Make sure to ACK ACKs/replies if next-hop routing is used by @GUVWAF in https://github.com/meshtastic/firmware/pull/8052
+- Only stop retransmissions when receiving implicit ACK over LoRa by @GUVWAF in https://github.com/meshtastic/firmware/pull/7872
+- Allow Left / Right Events for selection and improve encoder responsives by @Links2004 in https://github.com/meshtastic/firmware/pull/8016
+- If usePreset is False, show value as Custom. by @Xaositek in https://github.com/meshtastic/firmware/pull/7812
+- (resubmission) Manual GitHub actions to allow building one target or arch by @NomDeTom in https://github.com/meshtastic/firmware/pull/7997
+- When DEBUG_HEAP is defined, add free heap bytes to every log line in RedirectablePrint::log_to_serial by @compumike in https://github.com/meshtastic/firmware/pull/8004
+- Setup ESP32 PM-specific capability flags by @m1nl in https://github.com/meshtastic/firmware/pull/7747
+- move HTTP contentTypes to Flash - saves 768 Bytes of RAM by @Links2004 in https://github.com/meshtastic/firmware/pull/8055
+- Portduino config refactor by @jp-bennett in https://github.com/meshtastic/firmware/pull/7796
+- Add BUILD_EPOCH to latest setup step. by @fifieldt in https://github.com/meshtastic/firmware/pull/7894
+- updated shebang to use a more standard path for bash in flashing scripts. by @vtrenton in https://github.com/meshtastic/firmware/pull/7922
+- Update RadioLib to v7.3.0 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8065
+- Update Protobuf usage, add MLS, fix clock by @Xaositek in https://github.com/meshtastic/firmware/pull/8041
 
-const currentPrereleaseId = '2.7.9.70724be';
+## New Contributors
+* @TN666 made their first contribution in https://github.com/meshtastic/firmware/pull/7709
+* @notmasteryet made their first contribution in https://github.com/meshtastic/firmware/pull/7718
+* @m1nl made their first contribution in https://github.com/meshtastic/firmware/pull/7747
+* @davide125 made their first contribution in https://github.com/meshtastic/firmware/pull/7675
+* @samuel-duffield1 made their first contribution in https://github.com/meshtastic/firmware/pull/7826
+* @capricornusx made their first contribution in https://github.com/meshtastic/firmware/pull/7838
+* @compumike made their first contribution in https://github.com/meshtastic/firmware/pull/7873
+* @WillyJL made their first contribution in https://github.com/meshtastic/firmware/pull/7956
+* @vtrenton made their first contribution in https://github.com/meshtastic/firmware/pull/7922
+* @ViezeVingertjes made their first contribution in https://github.com/meshtastic/firmware/pull/7753
+* @Links2004 made their first contribution in https://github.com/meshtastic/firmware/pull/8015`;
 
-export const showPrerelease = false;
+const currentPrereleaseId = '2.7.10.cea9e12';
+
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
