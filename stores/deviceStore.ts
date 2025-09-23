@@ -125,7 +125,7 @@ export const useDeviceStore = defineStore("device", {
       }
       else {
         this.targets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported
+          (t: DeviceHardware) => true // t.activelySupported
         );
       }
     },
