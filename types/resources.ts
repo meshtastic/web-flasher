@@ -56,6 +56,7 @@ const markdownContent = `
 - tlora-pager wake on button, and kb backlight toggling by @jp-bennett in https://github.com/meshtastic/firmware/pull/8090
 - Try-fix: Unstick that PhoneAPI state by @thebentern in https://github.com/meshtastic/firmware/pull/8091
 - Also pull a deviceID from esp32c6 devices by @jp-bennett in https://github.com/meshtastic/firmware/pull/8092
+- Clear last toradio on BLE disconnect by @thebentern in https://github.com/meshtastic/firmware/pull/8095
 
 ## New Contributors
 * @TN666 made their first contribution in https://github.com/meshtastic/firmware/pull/7709
@@ -70,7 +71,7 @@ const markdownContent = `
 * @ViezeVingertjes made their first contribution in https://github.com/meshtastic/firmware/pull/7753
 * @Links2004 made their first contribution in https://github.com/meshtastic/firmware/pull/8015`;
 
-const currentPrereleaseId = '2.7.10.91efaba';
+const currentPrereleaseId = '2.7.10.94d4bdf';
 
 export const showPrerelease = true;
 
