@@ -51,6 +51,11 @@ const markdownContent = `
 - updated shebang to use a more standard path for bash in flashing scripts. by @vtrenton in https://github.com/meshtastic/firmware/pull/7922
 - Update RadioLib to v7.3.0 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8065
 - Update Protobuf usage, add MLS, fix clock by @Xaositek in https://github.com/meshtastic/firmware/pull/8041
+- Portduino bump to fix gpiod bug by @jp-bennett in https://github.com/meshtastic/firmware/pull/8083
+- Ext notification fix (handle ringtone operations even when module is not enabled) by @thebentern in https://github.com/meshtastic/firmware/pull/8089
+- tlora-pager wake on button, and kb backlight toggling by @jp-bennett in https://github.com/meshtastic/firmware/pull/8090
+- Try-fix: Unstick that PhoneAPI state by @thebentern in https://github.com/meshtastic/firmware/pull/8091
+- Also pull a deviceID from esp32c6 devices by @jp-bennett in https://github.com/meshtastic/firmware/pull/8092
 
 ## New Contributors
 * @TN666 made their first contribution in https://github.com/meshtastic/firmware/pull/7709
@@ -65,7 +70,7 @@ const markdownContent = `
 * @ViezeVingertjes made their first contribution in https://github.com/meshtastic/firmware/pull/7753
 * @Links2004 made their first contribution in https://github.com/meshtastic/firmware/pull/8015`;
 
-const currentPrereleaseId = '2.7.10.cea9e12';
+const currentPrereleaseId = '2.7.10.91efaba';
 
 export const showPrerelease = true;
 
