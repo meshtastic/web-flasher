@@ -83,4 +83,4 @@ export const currentPrerelease = <FirmwareResource>{
 };
 
 export const vendorCobrandingTag = "";
-export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow"];
+export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow", "M5Stack"];
