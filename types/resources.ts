@@ -54,13 +54,15 @@ const markdownContent = `
 * Correct altitudeLine getting clobbered in the great merge by @Xaositek in https://github.com/meshtastic/firmware/pull/8138
 * Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8142
 * Bug / Send upgraded (duplicate) packets to phone if the queue removal failed. by @h3lix1 in https://github.com/meshtastic/firmware/pull/8148
+* Finish deprecating the Repeater role behavior by @thebentern in https://github.com/meshtastic/firmware/pull/8144
+* Fix Heltec V3 missed button presses by @thebentern in https://github.com/meshtastic/firmware/pull/8167
 
 ## New Contributors
 * @h3lix1 made their first contribution in https://github.com/meshtastic/firmware/pull/7992
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.10.94d4bdf...v2.7.11.a1c658a`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.10.94d4bdf...v2.7.11.ee68575`;
 
-const currentPrereleaseId = '2.7.11.a1c658a';
+const currentPrereleaseId = '2.7.11.ee68575';
 
 export const showPrerelease = true;
 
