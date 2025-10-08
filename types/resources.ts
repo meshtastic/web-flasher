@@ -4,67 +4,58 @@ import type { FirmwareResource } from './api';
 
 const markdownContent = `
 
-## 🚀  What's Changed
-* On screen keyboard by @thebentern in https://github.com/meshtastic/firmware/pull/7705
-* Update meshtastic/device-ui digest to 0f32b64 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7723
-* Update caveman99-stm32-Crypto digest to 1aa30eb by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7725
-* Add more text message test cases for meshpacket serializer by @TN666 in https://github.com/meshtastic/firmware/pull/7709
-* Reduce power of EU433 to 10dBm by @fifieldt in https://github.com/meshtastic/firmware/pull/7733
-* Backmerge to develop by @thebentern in https://github.com/meshtastic/firmware/pull/7744
-* Log more information about ignored packet by @notmasteryet in https://github.com/meshtastic/firmware/pull/7718
-* Setup ESP32 PM-specific capability flags by @m1nl in https://github.com/meshtastic/firmware/pull/7747
-* Add more test case for encrypted packet test by @TN666 in https://github.com/meshtastic/firmware/pull/7745
-* Backmerge by @thebentern in https://github.com/meshtastic/firmware/pull/7773
-* Bump release version by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/7777
-* BaseUI Show/Hide Frame Functionality by @Xaositek in https://github.com/meshtastic/firmware/pull/7382
-* We don't gotTime if time is 2019. by @fifieldt in https://github.com/meshtastic/firmware/pull/7772
-* Add On-Screen Keyboard for UpDown Encoder and Rotary Encoder. by @whywilson in https://github.com/meshtastic/firmware/pull/7762
-* Fix InputEvent variable usage with out initialization (random key events while using rotery encoder) by @Links2004 in https://github.com/meshtastic/firmware/pull/8015
-* Allow Left / Right Events for selection and improve encoder responsives by @Links2004 in https://github.com/meshtastic/firmware/pull/8016
-* Fix build fail on develop branch by @WillyJL in https://github.com/meshtastic/firmware/pull/8043
-* Fix more build failures by @WillyJL in https://github.com/meshtastic/firmware/pull/8044
-* Fix build with HAS_TELEMETRY 0 by @Links2004 in https://github.com/meshtastic/firmware/pull/8051
-* Move HTTP contentTypes to Flash - saves 768 Bytes of RAM by @Links2004 in https://github.com/meshtastic/firmware/pull/8055
-* Fix: use lora.use_preset config to get name by @GUVWAF in https://github.com/meshtastic/firmware/pull/8057
-* Resolve many warnings for BaseUI during builds by @Xaositek in https://github.com/meshtastic/firmware/pull/8063
-* Fix Rotary Encoder Button by @Links2004 in https://github.com/meshtastic/firmware/pull/8001
-* Add another seeed_xiao_nrf52840_kit build environment for I2C pinout by @NomDeTom in https://github.com/meshtastic/firmware/pull/8036
-* Add heltec_v4 board. by @Quency-D in https://github.com/meshtastic/firmware/pull/7845
-* Fix build errors by @Xaositek in https://github.com/meshtastic/firmware/pull/8067
-* Introduce Radio Preset elections through BaseUI by @Xaositek in https://github.com/meshtastic/firmware/pull/8071
-* Allow label enforcement job to run on self-hosted runners by @fifieldt in https://github.com/meshtastic/firmware/pull/7909
-* Bump release version by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8100
-* Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8094
-* Add three expansion screens for heltec mesh solar. by @Quency-D in https://github.com/meshtastic/firmware/pull/7995
-* Update Adafruit BusIO to v1.17.4 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8098
-* Fix 2.4GHz reconfiguration on LR11xx by @Stary2001 in https://github.com/meshtastic/firmware/pull/8102
-* Feat/0-cost hops for favorite routers by @h3lix1 in https://github.com/meshtastic/firmware/pull/7992
-* If a packet is heard multiple times, rebroadcast using the highest hop limit by @erayd in https://github.com/meshtastic/firmware/pull/5534
-* Make sure next-hop is only set when they received us directly by @GUVWAF in https://github.com/meshtastic/firmware/pull/8053
-* Reduce cpu load by optimizing OSThread runOnce calls by @Links2004 in https://github.com/meshtastic/firmware/pull/8101
-* Correct inverted mute icon by @Xaositek in https://github.com/meshtastic/firmware/pull/8111
-* BaseUI - Saving GPS Format changes are required by @Xaositek in https://github.com/meshtastic/firmware/pull/8122
-* Properly output the TCXO Voltage in yaml by @jp-bennett in https://github.com/meshtastic/firmware/pull/8128
-* I2S: Fix silent RTTTL regression by @WillyJL in https://github.com/meshtastic/firmware/pull/8129
-* Revert cross-preset default-key bridging with UDP and disable UDP by default by @thebentern in https://github.com/meshtastic/firmware/pull/8130
-* Develop --> Master by @fifieldt in https://github.com/meshtastic/firmware/pull/8110
-* Range-test: Clean on reboot by @ford-jones in https://github.com/meshtastic/firmware/pull/7703
-* UIRenderer: display "No GPS present" only on the first line to avoid duplication  by @plashchynski in https://github.com/meshtastic/firmware/pull/8136
-* Remove memcpy by @dfsx1 in https://github.com/meshtastic/firmware/pull/8079
-* Correct altitudeLine getting clobbered in the great merge by @Xaositek in https://github.com/meshtastic/firmware/pull/8138
-* Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8142
+## 🚀 What's Changed
 * Bug / Send upgraded (duplicate) packets to phone if the queue removal failed. by @h3lix1 in https://github.com/meshtastic/firmware/pull/8148
-* Finish deprecating the Repeater role behavior by @thebentern in https://github.com/meshtastic/firmware/pull/8144
-* Fix Heltec V3 missed button presses by @thebentern in https://github.com/meshtastic/firmware/pull/8167
+* Introduce non-linear TX_GAIN_LORA by @fifieldt in https://github.com/meshtastic/firmware/pull/8107
+* Reliable ACKs for DMs by @compumike in https://github.com/meshtastic/firmware/pull/8165
+* Add DIRECT_MSG_ONLY buzzer mode by @nexpspace in https://github.com/meshtastic/firmware/pull/8158
+* Add support for the manually_verified bool in SharedContact by @jp-bennett in https://github.com/meshtastic/firmware/pull/8180
+* Mute: channels by @ford-jones in https://github.com/meshtastic/firmware/pull/7957
+* T-Lora Pager: Fully fix rotary encoder and speaker fuzzing/popping by @WillyJL in https://github.com/meshtastic/firmware/pull/7986
+* Add FACTORY_INSTALL option to do a filesystem reset on first boot by @jp-bennett in https://github.com/meshtastic/firmware/pull/8185
+* Master backmerge by @thebentern in https://github.com/meshtastic/firmware/pull/8192
+* Update MQTT root on lora region change by @ford-jones in https://github.com/meshtastic/firmware/pull/8166
+* add heltec tracker v2 board. by @Quency-D in https://github.com/meshtastic/firmware/pull/8160
+* Don't use IS_ONE_OF when loading Modules by @vidplace7 in https://github.com/meshtastic/firmware/pull/8197
+* Update meshtastic/device-ui digest to 505ffad by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8195
+* GAT562: Use PRIVATE_HW (fix build) by @vidplace7 in https://github.com/meshtastic/firmware/pull/8198
+* Fix: ESP32s2 doesn't implement HWCDC by @vidplace7 in https://github.com/meshtastic/firmware/pull/8199
+* Fix build script failure under certain conditions for devices that use UF2 binaries  by @Kealper in https://github.com/meshtastic/firmware/pull/8150
+* Calculate airtime of transmitted and received packets separately by @GUVWAF in https://github.com/meshtastic/firmware/pull/8205
+* Correcting T-Echo Lite GPS PINs by @Szetya in https://github.com/meshtastic/firmware/pull/8087
+* Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8206
+* Clear out user.id except for sending to phone by @thebentern in https://github.com/meshtastic/firmware/pull/8202
+* Add dropped packet count to LocalStats by @GUVWAF in https://github.com/meshtastic/firmware/pull/8207
+* Sdl work by @jp-bennett in https://github.com/meshtastic/firmware/pull/7930
+* Reprocess repeated packets and deduplicate logic by @GUVWAF in https://github.com/meshtastic/firmware/pull/8216
+* Update next-hops based on traceroute result by @GUVWAF in https://github.com/meshtastic/firmware/pull/8219
+* Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8229
+* Add Adaptive Polling Intervals to WebServer by @capricornusx in https://github.com/meshtastic/firmware/pull/7864
+* Centralize getNodeId and fix references to owner.id by @thebentern in https://github.com/meshtastic/firmware/pull/8230
+* Update meshtastic-ArduinoThread digest to b841b04 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8233
+* Update meshtastic/device-ui digest to f920b12 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8234
+* Run Integration test in simulator mode by @jp-bennett in https://github.com/meshtastic/firmware/pull/8232
+* Actions: Simplify matrices, cleanup build_one_* by @vidplace7 in https://github.com/meshtastic/firmware/pull/8218
+* Actions: Simplify matrices, cleanup build_one_* (#8218) by @fifieldt in https://github.com/meshtastic/firmware/pull/8239
+* Cherry Pick: Run Integration test in simulator mode by @fifieldt in https://github.com/meshtastic/firmware/pull/8242
+* Update meshtastic/web to v2.6.6 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/7583
+* Log antispam by @jp-bennett in https://github.com/meshtastic/firmware/pull/8241
+* Update meshtastic/device-ui digest to e564d78 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8235
+* Do slightly better at threading the search for GPS hardware by @jp-bennett in https://github.com/meshtastic/firmware/pull/8240
+* Fix serial pins for Ebyte E77 MBL board by @Stary2001 in https://github.com/meshtastic/firmware/pull/8246
+* Wait until after GPS lock hold before updating position, if we can. by @fifieldt in https://github.com/meshtastic/firmware/pull/8064
+* Add SHT4x serial number for detection by @szlifier in https://github.com/meshtastic/firmware/pull/8222
+* Force coverage tests to run in simulation mode by @vidplace7 in https://github.com/meshtastic/firmware/pull/8251
 
 ## New Contributors
-* @h3lix1 made their first contribution in https://github.com/meshtastic/firmware/pull/7992
+* @nexpspace made their first contribution in https://github.com/meshtastic/firmware/pull/8158
+* @szlifier made their first contribution in https://github.com/meshtastic/firmware/pull/8222
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.10.94d4bdf...v2.7.11.ee68575`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.11.ee68575...v2.7.12.fcb1d64`;
 
-const currentPrereleaseId = '2.7.11.ee68575';
+const currentPrereleaseId = '2.7.12.fcb1d64';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
