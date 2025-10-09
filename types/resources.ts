@@ -57,7 +57,7 @@ const markdownContent = `
 
 **Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.11.ee68575...v2.7.12.05edcc5`;
 
-const currentPrereleaseId = '2.7.12.05edcc5';
+const currentPrereleaseId = '2.7.12.45f15b8';
 
 export const showPrerelease = true;
 
