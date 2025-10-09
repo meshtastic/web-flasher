@@ -3,6 +3,8 @@ import type { FirmwareResource } from './api';
 // Remove the OfflineHardwareList since it's now in /public/data/hardware-list.json
 
 const markdownContent = `
+> [!IMPORTANT]
+> This release disables device telemetry broadcasts over the mesh by default. If you want to opt back in, you will need to re-enable this in the apps.
 
 ## 🚀 What's Changed
 * Bug / Send upgraded (duplicate) packets to phone if the queue removal failed. by @h3lix1 in https://github.com/meshtastic/firmware/pull/8148
@@ -46,14 +48,16 @@ const markdownContent = `
 * Wait until after GPS lock hold before updating position, if we can. by @fifieldt in https://github.com/meshtastic/firmware/pull/8064
 * Add SHT4x serial number for detection by @szlifier in https://github.com/meshtastic/firmware/pull/8222
 * Force coverage tests to run in simulation mode by @vidplace7 in https://github.com/meshtastic/firmware/pull/8251
+* NimBLE speedup by @thebentern in https://github.com/meshtastic/firmware/pull/8281
+* Fix Station G2 Lora Power Settings by @fifieldt in https://github.com/meshtastic/firmware/pull/8273
 
 ## New Contributors
 * @nexpspace made their first contribution in https://github.com/meshtastic/firmware/pull/8158
 * @szlifier made their first contribution in https://github.com/meshtastic/firmware/pull/8222
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.11.ee68575...v2.7.12.fcb1d64`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.11.ee68575...v2.7.12.05edcc5`;
 
-const currentPrereleaseId = '2.7.12.fcb1d64';
+const currentPrereleaseId = '2.7.12.05edcc5';
 
 export const showPrerelease = true;
 
