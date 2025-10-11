@@ -55,11 +55,11 @@ const markdownContent = `
 * @nexpspace made their first contribution in https://github.com/meshtastic/firmware/pull/8158
 * @szlifier made their first contribution in https://github.com/meshtastic/firmware/pull/8222
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.11.ee68575...v2.7.12.05edcc5`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.11.ee68575...v2.7.12.45f15b8`;
 
 const currentPrereleaseId = '2.7.12.45f15b8';
 
-export const showPrerelease = true;
+export const showPrerelease = false;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
