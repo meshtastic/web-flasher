@@ -8,11 +8,11 @@ export default defineNuxtConfig({
     head: {
       script: process.env.COOKIEYES_CLIENT_ID
         ? [
-            {
-              src: `https://cdn-cookieyes.com/client_data/${process.env.COOKIEYES_CLIENT_ID}/script.js`,
-              async: true,
-            },
-          ]
+          {
+            src: `https://cdn-cookieyes.com/client_data/${process.env.COOKIEYES_CLIENT_ID}/script.js`,
+            async: true,
+          },
+        ]
         : [],
     },
   },
@@ -122,7 +122,7 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: 'locales/',
     strategy: 'no_prefix',
-    vueI18n: './i18n.config.ts',
+    vueI18n: '../i18n.config.ts',
     bundle: {
       optimizeTranslationDirective: false,
     },
