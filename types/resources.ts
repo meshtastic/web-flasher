@@ -58,7 +58,11 @@ const markdownContent = `
 * Gating off BaseUI code for Screenless nodes and InkHUD by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8384
 * Added support for SugarCube device by @igorka48 in https://github.com/meshtastic/firmware/pull/8187
 * Fix NimbleBluetooth reliability and performance by @compumike in https://github.com/meshtastic/firmware/pull/8385
-* Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8398
+* Add a banner on startup when DEBUG_MUTE is enabled by @Stary2001 in https://github.com/meshtastic/firmware/pull/8402
+* Remove "Phone GPS" in order to correct GPS reporting by @Xaositek in https://github.com/meshtastic/firmware/pull/8407
+* Fix NimbleBluetooth: process fromPhoneQueue (phone->radio) before toPhoneQueue (radio->phone) by @compumike in https://github.com/meshtastic/firmware/pull/8404
+* Make packet pool dynamic again on STM32 as a workaround by @Stary2001 in https://github.com/meshtastic/firmware/pull/8400
+* InkHUD Map improvements by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8397
 
 ## New Contributors
 * @l0g-lab made their first contribution in https://github.com/meshtastic/firmware/pull/7926
@@ -70,7 +74,7 @@ const markdownContent = `
 
 **Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.ffb168b`;
 
-const currentPrereleaseId = '2.7.13.ffb168b';
+const currentPrereleaseId = '2.7.13.f4ff210';
 
 export const showPrerelease = true;
 
