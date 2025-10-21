@@ -1,25 +1,25 @@
 <template>
-    <div class="relative w-full max-w-4xl max-h-full">
+    <div class="relative w-full max-w-full sm:max-w-4xl max-h-full px-2 sm:px-0">
         <div class="relative rounded-lg shadow bg-zinc-700">
             <FlashHeader />
-            <div class="p-4 md:p-5">
+            <div class="p-3 sm:p-4 md:p-5">
                 <ReleaseNotes />
-                <ol v-if="firmwareStore.canShowFlash" class="relative border-s border-gray-200 border-gray-600 ms-3.5 mb-4 md:mb-5">
-                    <li class="mb-10 ms-8">
+                <ol v-if="firmwareStore.canShowFlash" class="relative border-s border-gray-200 border-gray-600 ms-2 sm:ms-3.5 mb-4 md:mb-5">
+                    <li class="mb-10 ms-6 sm:ms-8">
                         <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             1
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
+                        <h3 class="flex items-start mb-1 text-base sm:text-lg font-semibold text-white">
                             {{ $t('flash.esp32.step_1_usb') }}
                         </h3>
-                        <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
+                        <div class="p-3 sm:p-4 mb-4 my-2 text-xs sm:text-sm rounded-lg bg-gray-800 text-blue-200" role="alert">
                             <span class="font-medium">
                                 <Info class="h-4 w-4 inline" />
                                 {{ $t('flash.esp32.s3_instructions') }}
                                 <br />
                                 {{ $t('flash.esp32.reset_alternative') }}
                                 <button type="button"
-                                    class="inline-flex items-center mt-1 mx-1 py-1 px-2 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+                                    class="inline-flex items-center mt-1 mx-1 py-1 px-2 text-xs sm:text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
                                     @click="deviceStore.baud1200()">
                                     <Cpu class="h-4 w-4 text-black" />
                                     {{ $t('flash.esp32.reset_button') }}
@@ -27,11 +27,11 @@
                             </span>
                         </div>
                     </li>
-                    <li class="mb-10 ms-8">
+                    <li class="mb-10 ms-6 sm:ms-8">
                         <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             2
                         </span>
-                        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
+                        <h3 class="flex items-start mb-1 text-base sm:text-lg font-semibold text-white">
                             {{ $t('flash.esp32.step_2_baud_rate') }}
                         </h3>
                         <div>
@@ -42,37 +42,37 @@
                                 <option value="921600">921600</option>
                                 <!-- TODO styling and wire this up -->
                             </select>
-                            <span class="text-sm mt-1">{{ $t('flash.esp32.slow_reliable') }}</span>
+                            <span class="text-xs sm:text-sm mt-1">{{ $t('flash.esp32.slow_reliable') }}</span>
                         </div>
                     </li>
-                    <li class="ms-8">
+                    <li class="ms-6 sm:ms-8">
                         <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
                             3
                         </span>
-                        <h3 class="mb-1 text-lg font-semibold text-white">
+                        <h3 class="mb-1 text-base sm:text-lg font-semibold text-white">
                             {{ $t('flash.esp32.step_3_flash') }}
                         </h3>
-                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canFullInstall()">
+                        <label class="relative inline-flex items-center me-2 sm:me-5 mb-2 cursor-pointer" v-if="canFullInstall()">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldCleanInstall">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.full_erase') }}</span>
+                            <span class="ms-2 sm:ms-3 text-xs sm:text-sm font-medium text-gray-100">{{ $t('flash.esp32.full_erase') }}</span>
                         </label>
                         <!-- <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="firmwareStore.$state.shouldCleanInstall && canBundleWebUI">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldBundleWebUI">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
                             <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.bundle_webui') }}</span>
                         </label> -->
-                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallMui">
+                        <label class="relative inline-flex items-center me-2 sm:me-5 mb-2 cursor-pointer" v-if="canInstallMui">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallMui">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
                             <img src="/img/Meshtastic-UI-Long.svg" class="h-6 mx-1" alt="Meshtastic UI" />
                         </label>
-                        <label class="relative inline-flex items-center me-5 cursor-pointer" v-if="canInstallInkHud">
+                        <label class="relative inline-flex items-center me-2 sm:me-5 mb-2 cursor-pointer" v-if="canInstallInkHud">
                             <input type="checkbox" value="" class="sr-only peer" v-model="firmwareStore.$state.shouldInstallInkHud">
                             <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.esp32.install_inkhud') }}</span>
+                            <span class="ms-2 sm:ms-3 text-xs sm:text-sm font-medium text-gray-100">{{ $t('flash.esp32.install_inkhud') }}</span>
                         </label>
-                        <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-4 mb-4 mt-2 text-sm text-red-800 rounded-lg bg-red-50 bg-gray-800 text-red-400">
+                        <div v-if="firmwareStore.$state.shouldCleanInstall" role="alert" class="flex flex-col p-3 sm:p-4 mb-4 mt-2 text-xs sm:text-sm text-red-800 rounded-lg bg-red-50 bg-gray-800 text-red-400">
                             <div class="flex items-center">
                                 <Info class="flex-shrink-0 inline w-4 h-4 mr-1" />
                                 <span>
@@ -90,7 +90,7 @@
                             {{ $t('flash.esp32.process_warning') }}
                         </p>
                         <div>
-                            <div class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
+                            <div class="p-3 sm:p-4 mb-4 my-2 text-xs sm:text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200" role="alert">
                                 <span class="font-medium">
                                     <Info class="h-4 w-4 inline" />
                                     {{ $t('flash.esp32.reset_after_flash') }}

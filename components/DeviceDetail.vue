@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-col items-center p-2 w-56">
-        <h5 class="mb-1 text-[0.75rem] text-white" :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }">
+    <div class="flex flex-col items-center p-2 w-full sm:w-56">
+        <h5 class="mb-1 text-xs sm:text-[0.75rem] text-white" :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }">
             {{ props.device.displayName }}
             <div class="float-right items-center mx-1">
               <BadgeCheck v-if="isSupporterDevice(props.device)" class="w-6 h-6 text-green-400 opacity-75" />
@@ -16,10 +16,10 @@
           </span>
           <img v-if="props.device.hasMui" src="/img/Meshtastic-UI-Short.svg" class="h-6 m-1 pb-1" alt="Meshtastic UI" />
         </div>
-        <div v-if="props.device.images && isSupporterDevice(props.device)" class="relative w-32 h-32 m-2">
-            <img v-for="(image, index) in props.device.images" :key="image" class="absolute inset-0 w-32 h-32" :style="{ left: `${index * 20}px` }" :src="`/img/devices/${image}`" :alt="props.device.displayName"/>
+        <div v-if="props.device.images && isSupporterDevice(props.device)" class="relative w-24 h-24 sm:w-32 sm:h-32 m-2">
+            <img v-for="(image, index) in props.device.images" :key="image" class="absolute inset-0 w-24 h-24 sm:w-32 sm:h-32" :style="{ left: `${index * 15}px` }" :src="`/img/devices/${image}`" :alt="props.device.displayName"/>
         </div>
-        <img v-else class="w-32 h-32 m-2" :src="`/img/devices/unknown.svg`" :alt="props.device.displayName"/>
+        <img v-else class="w-24 h-24 sm:w-32 sm:h-32 m-2" :src="`/img/devices/unknown.svg`" :alt="props.device.displayName"/>
         <div class="flex justify-start w-full">
           <div v-if="props.device.supportLevel! < 3" class="product-link">
             <a :href="deviceUrl" target="_blank" rel="noopener" title="Manufacturer page (external link)" class="text-gray-100 hover:text-white">

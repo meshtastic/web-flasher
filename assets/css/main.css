@@ -1,3 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Mobile-specific improvements */
+@layer utilities {
+  /* Improve touch targets on mobile */
+  @media (max-width: 640px) {
+    button, a {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  /* Smooth scrolling for mobile */
+  @media (max-width: 768px) {
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  
+  /* Safe area insets for notched devices (iPhone X+, etc.) */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+  
+  /* Improve modal backdrop on mobile */
+  @media (max-width: 640px) {
+    .dark {
+      background-color: rgba(0, 0, 0, 0.75);
+    }
+  }
+}

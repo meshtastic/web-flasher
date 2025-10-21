@@ -1,13 +1,13 @@
 <template>
     <div>
         <button id="dropdownFirmwareButton" data-dropdown-toggle="dropdownFirmware"
-            class="content-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800 disabled:bg-gray-500"
+            class="content-center text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center disabled:bg-gray-500"
             :class="{ 'animate-bounce': store.prereleaseUnlocked && !store.$state.selectedFirmware?.id }" type="button"
             :disabled="!canSelectFirmware">
             {{ selectedVersion.replace('Meshtastic Firmware ', '').replace('Technical ', '') }}
             <ChevronDown class="w-2.5 h-2.5 ms-3" />
         </button>
-        <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44">
+        <div id="dropdownFirmware" class="z-10 hidden bg-gray-200 divide-y divide-gray-600 rounded-lg shadow w-44 sm:w-56 max-w-xs">
             <div v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
                 class="px-4 py-2 text-sm text-gray-900">
                 <strong>{{ $t('firmware.prerelease') }}</strong>
@@ -45,7 +45,7 @@
                     </span>
                 </li>
             </ul>
-            <div class="px-4 py-2 w-96 rounded-lg text-sm text-gray-900 bg-yellow-100"
+            <div class="px-3 sm:px-4 py-2 w-full sm:w-96 max-w-sm rounded-lg text-xs sm:text-sm text-gray-900 bg-yellow-100"
                 v-if="store.couldntFetchFirmwareApi">
                 <strong>{{ $t('firmware.error_fetching') }}</strong>
                 <br />
