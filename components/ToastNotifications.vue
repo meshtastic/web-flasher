@@ -1,7 +1,10 @@
 <template>
   <Teleport to="body">
     <div class="fixed top-6 right-6 z-50 space-y-3">
-      <TransitionGroup name="toast" tag="div">
+      <TransitionGroup
+        name="toast"
+        tag="div"
+      >
         <div
           v-for="toast in toastStore.toasts"
           :key="toast.id"
@@ -10,17 +13,24 @@
           <div class="p-4">
             <div class="flex items-start">
               <div class="flex-shrink-0">
-                <component :is="getIcon(toast.type)" :class="getIconClass(toast.type)" class="h-6 w-6" />
+                <component
+                  :is="getIcon(toast.type)"
+                  :class="getIconClass(toast.type)"
+                  class="h-6 w-6"
+                />
               </div>
               <div class="ml-3 w-0 flex-1 pt-0.5">
-                <p class="text-sm font-medium text-gray-100">{{ toast.title }}</p>
-                <p class="mt-1 text-sm text-gray-300">{{ toast.message }}</p>
-                
+                <p class="text-sm font-medium text-gray-100">
+                  {{ toast.title }}
+                </p>
+                <p class="mt-1 text-sm text-gray-300">
+                  {{ toast.message }}
+                </p>
               </div>
               <div class="ml-4 flex-shrink-0 flex">
                 <button
-                  @click="toastStore.removeToast(toast.id)"
                   class="bg-transparent rounded-md inline-flex text-gray-400 hover:text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-meshtastic focus:ring-offset-zinc-700 transition-colors duration-200"
+                  @click="toastStore.removeToast(toast.id)"
                 >
                   <span class="sr-only">{{ $t('actions.close') }}</span>
                   <X class="h-5 w-5" />
@@ -29,17 +39,20 @@
             </div>
           </div>
           <!-- Error toast with dismiss and reload buttons -->
-          <div v-if="toast.type === 'error'" class="bg-zinc-800 px-4 py-3 border-t border-gray-600">
+          <div
+            v-if="toast.type === 'error'"
+            class="bg-zinc-800 px-4 py-3 border-t border-gray-600"
+          >
             <div class="flex">
               <button
-                @click="toastStore.removeToast(toast.id)"
                 class="text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors duration-200"
+                @click="toastStore.removeToast(toast.id)"
               >
                 {{ $t('actions.dismiss') }}
               </button>
               <button
-                @click="reloadPage"
                 class="ml-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors duration-200"
+                @click="reloadPage"
               >
                 {{ $t('actions.reload') }}
               </button>
@@ -52,41 +65,41 @@
 </template>
 
 <script setup lang="ts">
-import { useToastStore } from '~/stores/toastStore';
-import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-vue-next';
+import { useToastStore } from '~/stores/toastStore'
+import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-vue-next'
 
-const toastStore = useToastStore();
+const toastStore = useToastStore()
 
 const getIcon = (type: string) => {
   switch (type) {
     case 'success':
-      return CheckCircle;
+      return CheckCircle
     case 'error':
-      return XCircle;
+      return XCircle
     case 'warning':
-      return AlertTriangle;
+      return AlertTriangle
     case 'info':
     default:
-      return Info;
+      return Info
   }
-};
+}
 
 const getIconClass = (type: string) => {
   switch (type) {
     case 'success':
-      return 'text-green-400';
+      return 'text-green-400'
     case 'error':
-      return 'text-red-400';
+      return 'text-red-400'
     case 'warning':
-      return 'text-yellow-400';
+      return 'text-yellow-400'
     case 'info':
     default:
-      return 'text-blue-400';
+      return 'text-blue-400'
   }
-};
+}
 
 function reloadPage() {
-  window.location.reload();
+  window.location.reload()
 }
 </script>
 

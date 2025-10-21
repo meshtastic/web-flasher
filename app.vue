@@ -1,40 +1,66 @@
 <template>
   <div>
     <!-- Warning for browsers that do not support WebSerial API -->
-    <div v-if="!isWebSerialSupported" class="unsupported-browser-warning">
+    <div
+      v-if="!isWebSerialSupported"
+      class="unsupported-browser-warning"
+    >
       <p>{{ $t('browser_warning') }}</p>
     </div>
     <Head>
       <Title>{{ $t('title') }}</Title>
-      <Meta name="description" :content="$t('description')" />
+      <Meta
+        name="description"
+        :content="$t('description')"
+      />
     </Head>
 
-    <section id="main" class="text-gray-400 body-font px-3 sm:px-5">
-      <transition name="flash" mode="out-in">
-        <div class="container py-1 mx-auto transition duration-900 ease-in-out max-w-7xl" v-show="!serialMonitorStore.isConnected">
+    <section
+      id="main"
+      class="text-gray-400 body-font px-3 sm:px-5"
+    >
+      <transition
+        name="flash"
+        mode="out-in"
+      >
+        <div
+          v-show="!serialMonitorStore.isConnected"
+          class="container py-1 mx-auto transition duration-900 ease-in-out max-w-7xl"
+        >
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
               <LogoHeader />
             </div>
-            <hr class="w-full mx-auto mb-4 border-gray-600" />
+            <hr class="w-full mx-auto mb-4 border-gray-600">
           </div>
           <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
             <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center display-inline">
-                <img :src="selectedDeviceImage" class="h-64 w-64 mb-6 mx-auto" :alt="$t('device.title')" />
+                <img
+                  :src="selectedDeviceImage"
+                  class="h-64 w-64 mb-6 mx-auto"
+                  :alt="$t('device.title')"
+                >
                 <Device />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">{{ $t('device.title') }}</h2>
+              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+                {{ $t('device.title') }}
+              </h2>
               <p class="text-sm sm:text-base leading-relaxed mt-2">
                 {{ $t('device.instructions') }}
               </p>
             </div>
             <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-80 flex flex-col items-center">
-                <FolderDown class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" :alt="$t('firmware.title')" />
+                <FolderDown
+                  class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white"
+                  :alt="$t('firmware.title')"
+                />
                 <Firmware />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">{{ $t('firmware.title') }}</h2>
+              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+                {{ $t('firmware.title') }}
+              </h2>
               <p class="text-sm sm:text-base leading-relaxed mt-2">
                 {{ $t('firmware.instructions') }}
               </p>
@@ -44,7 +70,9 @@
                 <Zap class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" />
                 <Flash />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">Flash</h2>
+              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+                Flash
+              </h2>
               <p class="text-sm sm:text-base leading-relaxed mt-2">
                 {{ $t('flash.instructions') }}
               </p>
@@ -53,13 +81,26 @@
         </div>
       </transition>
       <div class="flex flex-wrap justify-center gap-1 mt-4">
-        <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="bottom-button border-meshtastic text-meshtastic">
+        <button
+          v-if="!serialMonitorStore.isConnected"
+          type="button"
+          class="bottom-button border-meshtastic text-meshtastic"
+          @click="monitorSerial"
+        >
           {{ $t('buttons.serial_monitor') }} <Terminal class="h-4 w-4 shrink-0" />
         </button>
-        <a href="https://meshtastic.org/docs" v-if="!serialMonitorStore.isConnected" class="bottom-button border-meshtastic text-meshtastic">
+        <a
+          v-if="!serialMonitorStore.isConnected"
+          href="https://meshtastic.org/docs"
+          class="bottom-button border-meshtastic text-meshtastic"
+        >
           {{ $t('buttons.meshtastic_docs') }} <BookOpen class="h-4 w-4 shrink-0" />
         </a>
-        <a href="https://github.com/meshtastic/web-flasher" v-if="!serialMonitorStore.isConnected" class="bottom-button border-meshtastic text-meshtastic">
+        <a
+          v-if="!serialMonitorStore.isConnected"
+          href="https://github.com/meshtastic/web-flasher"
+          class="bottom-button border-meshtastic text-meshtastic"
+        >
           {{ $t('buttons.contribute') }}
           <Github class="w-4 h-4 shrink-0" />
         </a>
@@ -68,53 +109,64 @@
     </section>
 
     <SerialMonitor />
-    
+
     <ToastNotifications />
 
-    <footer id="footer" class="halloween-theme footer text-white mt-4 py-4">
+    <footer
+      id="footer"
+      class="halloween-theme footer text-white mt-4 py-4"
+    >
       <canvas>
         <div class="container mx-auto px-3 sm:px-5 py-2 sm:py-4 text-center">
           <p class="text-xs sm:text-sm">
             Powered by
             <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
-            <span class="hidden sm:inline">|</span><br class="sm:hidden" />
+            <span class="hidden sm:inline">|</span><br class="sm:hidden">
             Meshtastic® is a registered trademark of Meshtastic LLC.
-            <span class="hidden sm:inline">|</span><br class="sm:hidden" />
+            <span class="hidden sm:inline">|</span><br class="sm:hidden">
             <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
           </p>
         </div>
       </canvas>
     </footer>
     <div class="fixed right-2 sm:-end-4 bottom-4 sm:bottom-6 group z-50">
-      <button type="button" :disabled="true" 
-        :class="{ 
+      <button
+        type="button"
+        :disabled="true"
+        :class="{
           'text-purple-400 border-purple-400 animate-pulse': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
           'border-meshtastic text-meshtastic animate-pulse': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
-          'border-gray-700 text-gray-300': !isConnected
-        }" 
-        class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-2 sm:px-4 py-1 text-center backdrop-blur-sm hover:shadow transition duration-300 ease-in-out">
+          'border-gray-700 text-gray-300': !isConnected,
+        }"
+        class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-2 sm:px-4 py-1 text-center backdrop-blur-sm hover:shadow transition duration-300 ease-in-out"
+      >
         {{ connectionButtonLabel }}
-        <span v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked" class="inline-flex w-2 h-2 me-2 bg-purple-400 rounded-full"></span>
-        <span v-else-if="isConnected" class="inline-flex w-2 h-2 me-2 bg-green-500 rounded-full"></span>
-        <span v-else class="inline-flex w-2 h-2 me-2 bg-gray-300 rounded-full"></span>
+        <span
+          v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked"
+          class="inline-flex w-2 h-2 me-2 bg-purple-400 rounded-full"
+        />
+        <span
+          v-else-if="isConnected"
+          class="inline-flex w-2 h-2 me-2 bg-green-500 rounded-full"
+        />
+        <span
+          v-else
+          class="inline-flex w-2 h-2 me-2 bg-gray-300 rounded-full"
+        />
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import 'flowbite';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
-import { onMounted } from 'vue';
-
 import {
   initAccordions,
   initDrawers,
   initDropdowns,
   initModals,
-  initTooltips,
-} from 'flowbite';
+  initTooltips } from 'flowbite'
+import { useI18n } from 'vue-i18n'
+import { onMounted } from 'vue'
 
 import {
   Zap,
@@ -122,71 +174,74 @@ import {
   Terminal,
   FolderDown,
   Github,
-} from 'lucide-vue-next';
+} from 'lucide-vue-next'
 
-import { useDeviceStore } from './stores/deviceStore';
-import { useFirmwareStore } from './stores/firmwareStore';
-import { useSerialMonitorStore } from './stores/serialMonitorStore';
+import { useDeviceStore } from './stores/deviceStore'
+import { useFirmwareStore } from './stores/firmwareStore'
+import { useSerialMonitorStore } from './stores/serialMonitorStore'
 
-const serialMonitorStore = useSerialMonitorStore();
-const firmwareStore = useFirmwareStore();
-const deviceStore = useDeviceStore();
+const { t } = useI18n()
+
+const serialMonitorStore = useSerialMonitorStore()
+const firmwareStore = useFirmwareStore()
+const deviceStore = useDeviceStore()
 
 const monitorSerial = async () => {
-  await serialMonitorStore.monitorSerial();
-};
+  await serialMonitorStore.monitorSerial()
+}
 
 const selectedDeviceImage = computed(() => {
   if (deviceStore.selectedTarget?.images?.length) {
-    return `/img/devices/${deviceStore.selectedTarget.images[0]}`;
+    return `/img/devices/${deviceStore.selectedTarget.images[0]}`
   }
-  return '/img/devices/unknown.svg';
-});
+  return '/img/devices/unknown.svg'
+})
 
 const connectionButtonLabel = computed(() => {
   if (firmwareStore.isFlashing) {
-    return t('state.flashing');
+    return t('state.flashing')
   }
   if ((serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked) || (firmwareStore.isConnected && !firmwareStore.isReaderLocked)) {
-    return t('state.disconnecting');
+    return t('state.disconnecting')
   }
-  return isConnected.value ? t('state.connected') : t('state.disconnected');
-});
+  return isConnected.value ? t('state.connected') : t('state.disconnected')
+})
 
 const isConnected = computed(() => {
-  return serialMonitorStore.isConnected || firmwareStore.isConnected;
-});
+  return serialMonitorStore.isConnected || firmwareStore.isConnected
+})
 
 // WebSerial API support check
 const isWebSerialSupported = computed(() => {
-  return 'serial' in navigator;
-});
-const konamiKeys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-const konamiCodeIndex = ref(0);
+  return 'serial' in navigator
+})
+const konamiKeys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
+const konamiCodeIndex = ref(0)
 window.addEventListener('keydown', (event) => {
   if (event.key === konamiKeys[konamiCodeIndex.value]) {
-    console.log('konami code key match', konamiCodeIndex.value);
-    konamiCodeIndex.value++;
+    console.log('konami code key match', konamiCodeIndex.value)
+    konamiCodeIndex.value++
     if (konamiCodeIndex.value === konamiKeys.length) {
       console.log('Unlocking pre-release section')
-      document.body.classList.add('konami-code');
-      document.getElementById('main').classList.add('konami-code');
-      document.getElementById('footer').classList.add('konami-code');
-      firmwareStore.$state.prereleaseUnlocked = true;
-      konamiCodeIndex.value = 0;
+      document.body.classList.add('konami-code')
+      document.getElementById('main').classList.add('konami-code')
+      document.getElementById('footer').classList.add('konami-code')
+      firmwareStore.$state.prereleaseUnlocked = true
+      konamiCodeIndex.value = 0
     }
-  } else {
-    konamiCodeIndex.value = 0;
   }
-});
+  else {
+    konamiCodeIndex.value = 0
+  }
+})
 
 onMounted(() => {
-  initDropdowns();
-  initModals();
-  initTooltips();
-  initDrawers();
-  initAccordions();
-});
+  initDropdowns()
+  initModals()
+  initTooltips()
+  initDrawers()
+  initAccordions()
+})
 </script>
 
 <style>
@@ -229,7 +284,7 @@ onMounted(() => {
     /* Standard */
     transition: all 1s ease-in;
   }
-  .invert { 
+  .invert {
     -webkit-filter: invert(1);
     filter: invert(1);
   }
