@@ -9,50 +9,50 @@
       <Meta name="description" :content="$t('description')" />
     </Head>
 
-    <section id="main" class="text-gray-400 body-font px-5">
+    <section id="main" class="text-gray-400 body-font px-3 sm:px-5">
       <transition name="flash" mode="out-in">
-        <div class="container py-1 mx-auto transition duration-900 ease-in-out" v-show="!serialMonitorStore.isConnected">
+        <div class="container py-1 mx-auto transition duration-900 ease-in-out max-w-7xl" v-show="!serialMonitorStore.isConnected">
           <div class="flex flex-col content-center justify-center">
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
               <LogoHeader />
             </div>
             <hr class="w-full mx-auto mb-4 border-gray-600" />
           </div>
-          <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
-            <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
+          <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
+            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center display-inline">
                 <img :src="selectedDeviceImage" class="h-64 w-64 mb-6 mx-auto" :alt="$t('device.title')" />
                 <Device />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">{{ $t('device.title') }}</h2>
-              <p class="text-base leading-relaxed mt-2">
+              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">{{ $t('device.title') }}</h2>
+              <p class="text-sm sm:text-base leading-relaxed mt-2">
                 {{ $t('device.instructions') }}
               </p>
             </div>
-            <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
+            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-80 flex flex-col items-center">
                 <FolderDown class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" :alt="$t('firmware.title')" />
                 <Firmware />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">{{ $t('firmware.title') }}</h2>
-              <p class="text-base leading-relaxed mt-2">
+              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">{{ $t('firmware.title') }}</h2>
+              <p class="text-sm sm:text-base leading-relaxed mt-2">
                 {{ $t('firmware.instructions') }}
               </p>
             </div>
-            <div class="p-4 md:w-1/3 sm:mb-0 mb-6">
+            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
               <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center">
                 <Zap class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" />
                 <Flash />
               </div>
-              <h2 class="text-xl font-medium title-font text-white mt-5">Flash</h2>
-              <p class="text-base leading-relaxed mt-2">
+              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">Flash</h2>
+              <p class="text-sm sm:text-base leading-relaxed mt-2">
                 {{ $t('flash.instructions') }}
               </p>
             </div>
           </div>
         </div>
       </transition>
-      <div class="flex max-sm:flex-col justify-center gap-1 mt-4">
+      <div class="flex flex-wrap justify-center gap-1 mt-4">
         <button type="button" v-if="!serialMonitorStore.isConnected" @click="monitorSerial" class="bottom-button border-meshtastic text-meshtastic">
           {{ $t('buttons.serial_monitor') }} <Terminal class="h-4 w-4 shrink-0" />
         </button>
@@ -73,24 +73,26 @@
 
     <footer id="footer" class="halloween-theme footer text-white mt-4 py-4">
       <canvas>
-        <div class="container mx-auto px-5 py-4 text-center">
-          <p>
+        <div class="container mx-auto px-3 sm:px-5 py-2 sm:py-4 text-center">
+          <p class="text-xs sm:text-sm">
             Powered by
             <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
-            | Meshtastic® is a registered trademark of Meshtastic LLC. |
+            <span class="hidden sm:inline">|</span><br class="sm:hidden" />
+            Meshtastic® is a registered trademark of Meshtastic LLC.
+            <span class="hidden sm:inline">|</span><br class="sm:hidden" />
             <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
           </p>
         </div>
       </canvas>
     </footer>
-    <div class="fixed -end-4 bottom-6 group">
+    <div class="fixed right-2 sm:-end-4 bottom-4 sm:bottom-6 group z-50">
       <button type="button" :disabled="true" 
         :class="{ 
           'text-purple-400 border-purple-400 animate-pulse': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
           'border-meshtastic text-meshtastic animate-pulse': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
           'border-gray-700 text-gray-300': !isConnected
         }" 
-        class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-4 py-1 text-center me-2 mb-2 backdrop-blur-sm hover:shadow transition duration-300 ease-in-out">
+        class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-2 sm:px-4 py-1 text-center backdrop-blur-sm hover:shadow transition duration-300 ease-in-out">
         {{ connectionButtonLabel }}
         <span v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked" class="inline-flex w-2 h-2 me-2 bg-purple-400 rounded-full"></span>
         <span v-else-if="isConnected" class="inline-flex w-2 h-2 me-2 bg-green-500 rounded-full"></span>

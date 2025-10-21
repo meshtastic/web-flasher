@@ -13,46 +13,46 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
         <div id="device-modal" tabindex="-1" aria-hidden="true" class="dark hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-h-full" :class="{ 'max-w-4xl': vendorCobrandingTag.length > 0, 'max-w-8xl': vendorCobrandingTag.length == 0 }">
+            <div class="relative p-2 sm:p-4 w-full max-h-full" :class="{ 'max-w-4xl': vendorCobrandingTag.length > 0, 'max-w-7xl': vendorCobrandingTag.length == 0 }">
                 <div class="relative rounded-lg shadow bg-zinc-700">
                     <DeviceHeader />
-                    <div class="flex items-center justify-center py-2 flex-wrap">
-                        <button @click="store.setSelectedTag('all')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-green-800 hover:bg-green-700 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">{{ $t('device.all_devices') }}</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('RAK')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">RAK</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('B&Q')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">B&Q</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('LilyGo')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">LilyGo</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('Seeed')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">Seeed</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('Heltec')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">Heltec</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('Elecrow')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">Elecrow</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('M5Stack')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">M5Stack</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('NomadStar')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">NomadStar</button>
-                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('muzi')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-2 text-center me-1">muzi ᴡᴏʀᴋꜱ</button>
+                    <div class="flex items-center justify-center py-2 px-2 overflow-x-auto">
+                        <button @click="store.setSelectedTag('all')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-green-800 hover:bg-green-700 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">{{ $t('device.all_devices') }}</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('RAK')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">RAK</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('B&Q')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">B&Q</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('LilyGo')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">LilyGo</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('Seeed')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">Seeed</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('Heltec')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">Heltec</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('Elecrow')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">Elecrow</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('M5Stack')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">M5Stack</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('NomadStar')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">NomadStar</button>
+                        <button v-if="vendorCobrandingTag.length === 0" @click="store.setSelectedTag('muzi')" type="button" class="text-gray-100 border-gray-900 hover:border-gray-400 bg-gray-900 hover:bg-gray-800 focus:ring focus:ring-gray-200 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">muzi ᴡᴏʀᴋꜱ</button>
                         <br />
-                        <button @click="store.setSelectedTag(arch)" v-for="arch in store.allArchs" type="button" class=" border-gray-900 focus:ring focus:ring-gray-200 hover:border-gray-700 bg-indigo-500 hover:bg-indigo-400 text-gray-100 rounded-md text-xs px-2 py-2 text-center me-1">{{ arch }}</button>
+                        <button @click="store.setSelectedTag(arch)" v-for="arch in store.allArchs" type="button" class="border-gray-900 focus:ring focus:ring-gray-200 hover:border-gray-700 bg-indigo-500 hover:bg-indigo-400 text-gray-100 rounded-md text-xs px-2 py-1.5 text-center me-1 whitespace-nowrap flex-shrink-0">{{ arch }}</button>
                     </div>
-                    <div class="p-4 mb-1 m-2 text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
+                    <div class="p-3 sm:p-4 mb-1 mx-2 my-2 text-xs sm:text-sm rounded-lg bg-gray-800 text-gray-100" role="alert">
                         <span class="font-medium">
                             <Info class="h-4 w-4 inline" />
-                            {{ $t('device.subheading') }} <button type="button" @click="() => store.autoSelectHardware($t)" class="bg-meshtastic inline-flex py-2 mx-2 px-3 text-sm font-medium rounded-md hover:bg-white text-black"><Rocket class="h-4 w-4 text-black" /> {{ $t('device.auto_detect') }}</button>
+                            {{ $t('device.subheading') }} <button type="button" @click="() => store.autoSelectHardware($t)" class="bg-meshtastic inline-flex py-1.5 sm:py-2 mx-1 sm:mx-2 px-2 sm:px-3 text-xs sm:text-sm font-medium rounded-md hover:bg-white text-black"><Rocket class="h-3 w-3 sm:h-4 sm:w-4 text-black" /> {{ $t('device.auto_detect') }}</button>
                         </span>
                     </div>
-                    <div v-if="vendorCobrandingTag.length === 0" class="p-2 m-2 flex flex-wrap items-center justify-center">
+                    <div v-if="vendorCobrandingTag.length === 0" class="p-1 sm:p-2 m-1 sm:m-2 flex flex-wrap items-center justify-center">
                         <div class="w-full text-center">
-                            <h2>{{ $t('device.supported_devices') }}</h2>
+                            <h2 class="text-lg sm:text-xl">{{ $t('device.supported_devices') }}</h2>
                         </div>
-                        <div v-for="device in store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-[0_35px_60px_-15px_rgba(200,200,200,.3)]" @click="setSelectedTarget(device)">
+                        <div v-for="device in store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)" class="w-full sm:w-auto sm:max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-1 sm:m-2 cursor-pointer hover:scale-105 shadow hover:shadow-[0_35px_60px_-15px_rgba(200,200,200,.3)]" @click="setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
                         </div>
                         <hr class="w-full border-gray-400 my-4" />
-                        <div v-if="store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"class="w-full text-center">
-                            <h2 class="text-yellow-400">{{ $t('device.diy_devices') }}</h2>
+                        <div v-if="store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0" class="w-full text-center">
+                            <h2 class="text-lg sm:text-xl text-yellow-400">{{ $t('device.diy_devices') }}</h2>
                         </div>
-                        <div v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 shadow hover:shadow-2xl" @click="setSelectedTarget(device)">
+                        <div v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)" class="w-full sm:w-auto sm:max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-1 sm:m-2 cursor-pointer hover:scale-105 shadow hover:shadow-2xl" @click="setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
                         </div>
                     </div>
-                    <div v-else class="p-2 m-2 flex flex-wrap items-center justify-center">
-                        <div v-for="device in store.sortedDevices" class="max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-2 cursor-pointer hover:scale-105 hover:shadow-2xl" @click="store.setSelectedTarget(device)">
+                    <div v-else class="p-1 sm:p-2 m-1 sm:m-2 flex flex-wrap items-center justify-center">
+                        <div v-for="device in store.sortedDevices" class="w-full sm:w-auto sm:max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-1 sm:m-2 cursor-pointer hover:scale-105 hover:shadow-2xl" @click="store.setSelectedTarget(device)">
                             <DeviceDetail :device="device" />
                         </div>
                     </div>
