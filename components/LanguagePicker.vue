@@ -1,18 +1,33 @@
 <template>
   <div class="relative inline-block text-left">
-    <button id="languageDropdownButton" data-dropdown-toggle="languageDropdown" type="button" 
-            class="bottom-button border-meshtastic text-meshtastic">
+    <button
+      id="languageDropdownButton"
+      data-dropdown-toggle="languageDropdown"
+      type="button"
+      class="bottom-button border-meshtastic text-meshtastic"
+    >
       {{ currentLanguageFlag }} {{ $t('language') }}
       <ChevronDown class="w-2.5 h-2.5 ml-2 shrink-0" />
     </button>
 
     <!-- Dropdown menu -->
-    <div id="languageDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-48 dark:bg-zinc-700 dark:divide-gray-600">
-      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="languageDropdownButton">
-        <li v-for="locale in availableLocales" :key="locale.code">
-          <button @click="switchLanguage(locale.code)" 
-                  class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  :class="{ 'bg-gray-100 dark:bg-gray-600': $i18n.locale === locale.code }">
+    <div
+      id="languageDropdown"
+      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-48 dark:bg-zinc-700 dark:divide-gray-600"
+    >
+      <ul
+        class="py-2 text-sm text-gray-700 dark:text-gray-200"
+        aria-labelledby="languageDropdownButton"
+      >
+        <li
+          v-for="locale in availableLocales"
+          :key="locale.code"
+        >
+          <button
+            class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+            :class="{ 'bg-gray-100 dark:bg-gray-600': $i18n.locale === locale.code }"
+            @click="switchLanguage(locale.code)"
+          >
             {{ locale.flag }} {{ locale.name }}
           </button>
         </li>
@@ -54,7 +69,7 @@ const availableLocales = computed(() => {
   return locales.value.map(locale => ({
     code: locale.code,
     name: locale.name,
-    flag: flagMap[locale.code] || '🌐'
+    flag: flagMap[locale.code] || '🌐',
   }))
 })
 

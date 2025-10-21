@@ -6,5 +6,5 @@ export default defineI18nConfig(() => ({
   silentFallbackWarn: false,
   // Enable fallback for missing keys
   fallbackWarn: false,
-  missingWarn: false
+  missingWarn: false,
 }))
