@@ -63,6 +63,8 @@ const markdownContent = `
 * Fix NimbleBluetooth: process fromPhoneQueue (phone->radio) before toPhoneQueue (radio->phone) by @compumike in https://github.com/meshtastic/firmware/pull/8404
 * Make packet pool dynamic again on STM32 as a workaround by @Stary2001 in https://github.com/meshtastic/firmware/pull/8400
 * InkHUD Map improvements by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8397
+* Include RSSI in rangetest csv by @ford-jones in https://github.com/meshtastic/firmware/pull/8395
+* Move airtime calculation to when Tx is complete by @GUVWAF in https://github.com/meshtastic/firmware/pull/8427
 
 ## New Contributors
 * @l0g-lab made their first contribution in https://github.com/meshtastic/firmware/pull/7926
@@ -74,7 +76,7 @@ const markdownContent = `
 
 **Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.ffb168b`;
 
-const currentPrereleaseId = '2.7.13.f4ff210';
+const currentPrereleaseId = '2.7.13.35fa418';
 
 export const showPrerelease = true;
 
