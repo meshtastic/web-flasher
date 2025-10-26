@@ -1,5 +1,5 @@
 {
-  "title": "Carregador WEB MESTASTIC",
+  "title": "Meshtastic Web Flasher",
   "header": "Flasher",
   "description": "A web-based tool for ESP32 firmware flashing",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
@@ -34,13 +34,13 @@
   "firmware": {
     "title": "Firmware",
     "select_firmware": "Select Firmware",
-    "instructions": "Trieu una de les opcions de llançament o pengeu un ZIP de llançament descarregat de Github.",
+    "instructions": "Choose from the release options or upload a release zip downloaded from Github.",
     "stable": "Stable (or Beta)",
     "unstable": "Unstable (Alpha)",
     "prerelease": "Pre-release",
     "error_fetching": "Could not fetch firmware versions from API.",
     "refresh_later": "Refresh the page later to try again.",
-    "upload_alternative": "Alternativament, podeu penjar un fitxer firmware.zip des de les versions de GitHub o un fitxer firmware-update.bin individual per a un dispositiu basat en ESP32 fent clic a la icona.",
+    "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
     "upload_tooltip": "Upload your own firmware release zip or bin.",
     "icon": "icon"
   },
