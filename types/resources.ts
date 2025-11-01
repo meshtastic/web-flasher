@@ -6,16 +6,20 @@ const markdownContent = `
 > [!IMPORTANT]
 > This release disables device telemetry broadcasts over the mesh by default. If you want to opt back in, you will need to re-enable this in the apps.
 
+> [!WARNING]
+> If you experience immediate bluetooth pairing failures or failure to boot after updating, this likely indicates that you need to do a full erase and flash. Consider backing up your settings before updating.
+
 ##  🚀 What's Changed
 * Update python Docker tag to v3.14 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8255
-* Fix: Move #include "variant.h" to top of file (fixes #8276) by @ndoo in https://github.com/meshtastic/firmware/pull/8278
+* fix: Move #include "variant.h" to top of file (fixes #8276) by @ndoo in https://github.com/meshtastic/firmware/pull/8278
 * Update meshtastic/device-ui digest to 6d8cc22 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8275
 * NimBLE speedup by @thebentern in https://github.com/meshtastic/firmware/pull/8281
 * Fix Station G2 Lora Power Settings by @fifieldt in https://github.com/meshtastic/firmware/pull/8273
-* Chore(deps): update github/codeql-action action to v4 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8250
+* chore(deps): update github/codeql-action action to v4 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8250
 * Fix BLE stateful issues by @thebentern in https://github.com/meshtastic/firmware/pull/8287
 * Attach an interrupt to EXT_PWR_DETECT if present, and force a screen … by @jp-bennett in https://github.com/meshtastic/firmware/pull/8284
 * Update XPowersLib to v0.3.1 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8303
+* Bump release version by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8304
 * Double the number of bluetooth bonds NimBLE will store (from 3 to 6) by @thebentern in https://github.com/meshtastic/firmware/pull/8296
 * mDNS: Advertise pio_env (for OTA scripts) by @vidplace7 in https://github.com/meshtastic/firmware/pull/8298
 * Master to develop by @jp-bennett in https://github.com/meshtastic/firmware/pull/8306
@@ -65,6 +69,16 @@ const markdownContent = `
 * InkHUD Map improvements by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8397
 * Include RSSI in rangetest csv by @ford-jones in https://github.com/meshtastic/firmware/pull/8395
 * Move airtime calculation to when Tx is complete by @GUVWAF in https://github.com/meshtastic/firmware/pull/8427
+* Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8369
+* Allow vibra or buzzer only notifications to obey cutoff by @Xaositek in https://github.com/meshtastic/firmware/pull/8342
+* Don't use unsigned integer type for negative SNR value by @korbinianbauer in https://github.com/meshtastic/firmware/pull/8432
+* InkHUD crash fix when nodes get deleted from NodeDB by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8428
+* Address longName wrapping by @Xaositek in https://github.com/meshtastic/firmware/pull/8441
+* Update node to v24 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8476
+* Turn the e-ink backlight on for any brightness value over 0 by @jp-bennett in https://github.com/meshtastic/firmware/pull/8481
+* Add missed debug log line in RF95 Interface by @jp-bennett in https://github.com/meshtastic/firmware/pull/8490
+* Thinknode M5 ADC_MULTIPLIER to actually hit 100% charge by @jp-bennett in https://github.com/meshtastic/firmware/pull/8489
+* Better implementation of ExternalNotificationModule::stopNow by @Xaositek in https://github.com/meshtastic/firmware/pull/8492
 
 ## New Contributors
 * @l0g-lab made their first contribution in https://github.com/meshtastic/firmware/pull/7926
@@ -74,9 +88,9 @@ const markdownContent = `
 * @Paplewski made their first contribution in https://github.com/meshtastic/firmware/pull/8362
 * @igorka48 made their first contribution in https://github.com/meshtastic/firmware/pull/8187
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.580fa29`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.16b1280`;
 
-const currentPrereleaseId = '2.7.13.580fa29';
+const currentPrereleaseId = '2.7.13.16b1280';
 
 export const showPrerelease = true;
 
