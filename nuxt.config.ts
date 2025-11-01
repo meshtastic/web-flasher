@@ -103,6 +103,11 @@ export default defineNuxtConfig({
         file: 'sv.json',
       },
       {
+        code: 'uk',
+        name: 'Українська',
+        file: 'uk.json',
+      },
+      {
         code: 'tr',
         name: 'Türkçe',
         file: 'tr.json',
