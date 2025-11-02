@@ -47,7 +47,7 @@
   "flash": {
     "title": "Flash",
     "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
-    "erase_flash": "Erase Flash",
+    "erase_flash": "Изтриване на флаш паметта",
     "erase_flash_prefix": "Erase Flash of",
     "dfu_action_doubleclick": "двукратно щракване върху бутона RST.",
     "dfu_action_bootsel": "натискане и задържане на бутона BOOTSEL при включване на USB кабела.",
@@ -67,8 +67,8 @@
       "doc_guide": "Разгледайте това ръководство в нашата документация.",
       "process_warning": "Този процес може да отнеме известно време.",
       "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
-      "erase_and_install": "Erase Flash and Install",
-      "update": "Update",
+      "erase_and_install": "Изтриване на флаш паметта и инсталиране",
+      "update": "Актуализация",
       "start_over": "Start Over",
       "flashing_complete": "Flashing",
       "complete": "завършени",
@@ -78,7 +78,7 @@
     },
     "uf2": {
       "enter_dfu_mode": "Влизане в (UF2) DFU режим",
-      "ensure_drive_mounted": "Ensure device DFU mode drive is mounted",
+      "ensure_drive_mounted": "Уверете се, че устройството е монтирано в режим DFU",
       "dfu_firmware_clause": "За версии на фърмуера",
       "dfu_firmware_clause_2": "ръчно задействане на DFU режим чрез",
       "drive_name_info": "Устройството може да има различно име в зависимост от хардуера на вашето устройство и неговия буутлоудър.",
