@@ -79,6 +79,9 @@ const markdownContent = `
 * Add missed debug log line in RF95 Interface by @jp-bennett in https://github.com/meshtastic/firmware/pull/8490
 * Thinknode M5 ADC_MULTIPLIER to actually hit 100% charge by @jp-bennett in https://github.com/meshtastic/firmware/pull/8489
 * Better implementation of ExternalNotificationModule::stopNow by @Xaositek in https://github.com/meshtastic/firmware/pull/8492
+* Skip setting up Lora GPIO lines when using a ch341 radio on native by @jp-bennett in https://github.com/meshtastic/firmware/pull/8506
+* Fix boot on RP2040 by excluding new FreeRTOS task by @GUVWAF in https://github.com/meshtastic/firmware/pull/8508
+* Fix dismiss of ext. notification by @thebentern in https://github.com/meshtastic/firmware/pull/8512
 
 ## New Contributors
 * @l0g-lab made their first contribution in https://github.com/meshtastic/firmware/pull/7926
@@ -88,9 +91,9 @@ const markdownContent = `
 * @Paplewski made their first contribution in https://github.com/meshtastic/firmware/pull/8362
 * @igorka48 made their first contribution in https://github.com/meshtastic/firmware/pull/8187
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.16b1280`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.a7796fc`;
 
-const currentPrereleaseId = '2.7.13.16b1280';
+const currentPrereleaseId = '2.7.13.a7796fc';
 
 export const showPrerelease = true;
 
