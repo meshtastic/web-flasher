@@ -3,99 +3,33 @@ import type { FirmwareResource } from './api';
 // Remove the OfflineHardwareList since it's now in /public/data/hardware-list.json
 
 const markdownContent = `
-> [!IMPORTANT]
-> This release disables device telemetry broadcasts over the mesh by default. If you want to opt back in, you will need to re-enable this in the apps.
 
-> [!WARNING]
-> If you experience immediate bluetooth pairing failures or failure to boot after updating, this likely indicates that you need to do a full erase and flash. Consider backing up your settings before updating.
+## 🚀 What's Changed
+* Add the identification code for the DA217 triaxial accelerometer. by @Quency-D in https://github.com/meshtastic/firmware/pull/8526
+* fix strlcpy compile error in Ubuntu 22.04 by @mverch67 in https://github.com/meshtastic/firmware/pull/8520
+* Packaging: Add libbsd where needed by @vidplace7 in https://github.com/meshtastic/firmware/pull/8533
+* Add support for RAK_WISMESH_TAP_V2 and RAK3401 hardware models by @DanielCao0 in https://github.com/meshtastic/firmware/pull/8537
+* Fix: missing T-Deck Pro key '0' by @mverch67 in https://github.com/meshtastic/firmware/pull/8564
+* Store hop/mqtt/transport mechanism info in S&F by @weebl2000 in https://github.com/meshtastic/firmware/pull/8560
+* Reject legacy text message DMs by @jp-bennett in https://github.com/meshtastic/firmware/pull/8562
+* AddFromContact: Don't auto-favorite when CLIENT_BASE; don't update last_heard unless CLIENT_BASE by @compumike in https://github.com/meshtastic/firmware/pull/8495
+* Persist favourites on NodeDB reset by @ford-jones in https://github.com/meshtastic/firmware/pull/8292
+* Don't ack messages when mqtt client proxy is on but only uplink by @RCGV1 in https://github.com/meshtastic/firmware/pull/8578
+* Add API types, state, and log message in Debug screen. Added persistent "Connected" icon by @jp-bennett in https://github.com/meshtastic/firmware/pull/8576
+* Drop PKI acks if there is no downlink on MQTTClientProxy by @RCGV1 in https://github.com/meshtastic/firmware/pull/8580
+* Add the Heltec v4 expansion box. by @Quency-D in https://github.com/meshtastic/firmware/pull/8539
+* Update platform-native for WIFi lib fix by @jp-bennett in https://github.com/meshtastic/firmware/pull/8544
+* Reject legacy text message DMs by @jp-bennett in https://github.com/meshtastic/firmware/pull/8562
+* Bugfix: Don't toggle BLE when choosing active state by @jp-bennett in https://github.com/meshtastic/firmware/pull/8579
+* Try-fix traceroute panic by @thebentern in https://github.com/meshtastic/firmware/pull/8568
+* chore(deps): update meshtastic/device-ui digest to 28167c6 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8583
 
-##  🚀 What's Changed
-* Update python Docker tag to v3.14 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8255
-* fix: Move #include "variant.h" to top of file (fixes #8276) by @ndoo in https://github.com/meshtastic/firmware/pull/8278
-* Update meshtastic/device-ui digest to 6d8cc22 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8275
-* NimBLE speedup by @thebentern in https://github.com/meshtastic/firmware/pull/8281
-* Fix Station G2 Lora Power Settings by @fifieldt in https://github.com/meshtastic/firmware/pull/8273
-* chore(deps): update github/codeql-action action to v4 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8250
-* Fix BLE stateful issues by @thebentern in https://github.com/meshtastic/firmware/pull/8287
-* Attach an interrupt to EXT_PWR_DETECT if present, and force a screen … by @jp-bennett in https://github.com/meshtastic/firmware/pull/8284
-* Update XPowersLib to v0.3.1 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8303
-* Bump release version by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8304
-* Double the number of bluetooth bonds NimBLE will store (from 3 to 6) by @thebentern in https://github.com/meshtastic/firmware/pull/8296
-* mDNS: Advertise pio_env (for OTA scripts) by @vidplace7 in https://github.com/meshtastic/firmware/pull/8298
-* Master to develop by @jp-bennett in https://github.com/meshtastic/firmware/pull/8306
-* Actions: CI docker with a fancy matrix by @vidplace7 in https://github.com/meshtastic/firmware/pull/8253
-* GPS_POWER_TOGGLE no longer has a function, so purge by @jp-bennett in https://github.com/meshtastic/firmware/pull/8312
-* Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8305
-* Remove T1000E GPS startup delay sequence by @fifieldt in https://github.com/meshtastic/firmware/pull/8236
-* Increase bluetooth 5.0 PHY speed and MTU on esp32_s3 by @h3lix1 in https://github.com/meshtastic/firmware/pull/8261
-* More BaseUI Frame Visibility Toggles by @Xaositek in https://github.com/meshtastic/firmware/pull/8252
-* Device Telemetry opt in by @thebentern in https://github.com/meshtastic/firmware/pull/8059
-* Fix muted protobuf compile errors by @thebentern in https://github.com/meshtastic/firmware/pull/8316
-* Master backmerge by @thebentern in https://github.com/meshtastic/firmware/pull/8317
-* chore(deps): update meshtastic/device-ui digest to 3fb7c0e by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8291
-* Nodelist: choice of long or short name by @l0g-lab in https://github.com/meshtastic/firmware/pull/7926
-* Ble reconnect prefetch bug fix, plus some speed enhancements by @h3lix1 in https://github.com/meshtastic/firmware/pull/8324
-* Avoid exceeding allocated buffers when doing MQTT proxying by @dirkmueller in https://github.com/meshtastic/firmware/pull/8320
-* Fix erroneous limiting of power in Ham Mode by @fifieldt in https://github.com/meshtastic/firmware/pull/8322
-* Fix bug: can not detect battery status while using INA226 by @steven52880 in https://github.com/meshtastic/firmware/pull/8330
-* rework sensor instantiation to saves memory by removing the static allocation by @Links2004 in https://github.com/meshtastic/firmware/pull/8054
-* Fix multitude of warnings during builds on MeshTiny by @Xaositek in https://github.com/meshtastic/firmware/pull/8331
-* Fix multitude of warnings during builds on MeshTiny by @Xaositek in https://github.com/meshtastic/firmware/pull/8331
-* Revert "Fix Station G2 Lora Power Settings" by @thebentern in https://github.com/meshtastic/firmware/pull/8332
-* Develop to master merge by @thebentern in https://github.com/meshtastic/firmware/pull/8337
-* Update stale_bot.yml by @NomDeTom in https://github.com/meshtastic/firmware/pull/8333
-* Update meshtastic/device-ui digest to 19b7855 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8346
-* Add a general-purpose packet cache by @erayd in https://github.com/meshtastic/firmware/pull/8341
-* Guarding PhoneAPI node-info staging with mutex to prevent BLE future foot-gun by @h3lix1 in https://github.com/meshtastic/firmware/pull/8354
-* Fix portduino native builds by @miketweaver in https://github.com/meshtastic/firmware/pull/8355
-* Log the lora frequency error when receiving a packet. by @jp-bennett in https://github.com/meshtastic/firmware/pull/8343
-* Bind python version to 3.13 by @Paplewski in https://github.com/meshtastic/firmware/pull/8362
-* Update actions/setup-node action to v6 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8339
-* Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8340
-* Ignore MQTT Client Proxy messages while not in sendpackets state by @thebentern in https://github.com/meshtastic/firmware/pull/8358
-* Force CannedMessages to another node to be a PKI DM by @jp-bennett in https://github.com/meshtastic/firmware/pull/8373
-* Update meshtastic/web to v2.6.7 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8381
-* Update DFRobot_RTU to v1.0.6 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8387
-* Update mcr.microsoft.com/devcontainers/cpp Docker tag to v2 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8375
-* Board support:  RAK3401+RAK13302 1-watt  by @DanielCao0 in https://github.com/meshtastic/firmware/pull/8140
-* Fixed battery voltage to show missing decimals by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8386
-* Gating off BaseUI code for Screenless nodes and InkHUD by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8384
-* Added support for SugarCube device by @igorka48 in https://github.com/meshtastic/firmware/pull/8187
-* Fix NimbleBluetooth reliability and performance by @compumike in https://github.com/meshtastic/firmware/pull/8385
-* Add a banner on startup when DEBUG_MUTE is enabled by @Stary2001 in https://github.com/meshtastic/firmware/pull/8402
-* Remove "Phone GPS" in order to correct GPS reporting by @Xaositek in https://github.com/meshtastic/firmware/pull/8407
-* Fix NimbleBluetooth: process fromPhoneQueue (phone->radio) before toPhoneQueue (radio->phone) by @compumike in https://github.com/meshtastic/firmware/pull/8404
-* Make packet pool dynamic again on STM32 as a workaround by @Stary2001 in https://github.com/meshtastic/firmware/pull/8400
-* InkHUD Map improvements by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8397
-* Include RSSI in rangetest csv by @ford-jones in https://github.com/meshtastic/firmware/pull/8395
-* Move airtime calculation to when Tx is complete by @GUVWAF in https://github.com/meshtastic/firmware/pull/8427
-* Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8369
-* Allow vibra or buzzer only notifications to obey cutoff by @Xaositek in https://github.com/meshtastic/firmware/pull/8342
-* Don't use unsigned integer type for negative SNR value by @korbinianbauer in https://github.com/meshtastic/firmware/pull/8432
-* InkHUD crash fix when nodes get deleted from NodeDB by @HarukiToreda in https://github.com/meshtastic/firmware/pull/8428
-* Address longName wrapping by @Xaositek in https://github.com/meshtastic/firmware/pull/8441
-* Update node to v24 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8476
-* Turn the e-ink backlight on for any brightness value over 0 by @jp-bennett in https://github.com/meshtastic/firmware/pull/8481
-* Add missed debug log line in RF95 Interface by @jp-bennett in https://github.com/meshtastic/firmware/pull/8490
-* Thinknode M5 ADC_MULTIPLIER to actually hit 100% charge by @jp-bennett in https://github.com/meshtastic/firmware/pull/8489
-* Better implementation of ExternalNotificationModule::stopNow by @Xaositek in https://github.com/meshtastic/firmware/pull/8492
-* Skip setting up Lora GPIO lines when using a ch341 radio on native by @jp-bennett in https://github.com/meshtastic/firmware/pull/8506
-* Fix boot on RP2040 by excluding new FreeRTOS task by @GUVWAF in https://github.com/meshtastic/firmware/pull/8508
-* Fix dismiss of ext. notification by @thebentern in https://github.com/meshtastic/firmware/pull/8512
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.14.1c0c6b2
+`;
 
-## New Contributors
-* @l0g-lab made their first contribution in https://github.com/meshtastic/firmware/pull/7926
-* @dirkmueller made their first contribution in https://github.com/meshtastic/firmware/pull/8320
-* @steven52880 made their first contribution in https://github.com/meshtastic/firmware/pull/8330
-* @miketweaver made their first contribution in https://github.com/meshtastic/firmware/pull/8355
-* @Paplewski made their first contribution in https://github.com/meshtastic/firmware/pull/8362
-* @igorka48 made their first contribution in https://github.com/meshtastic/firmware/pull/8187
+const currentPrereleaseId = '2.7.14.1c0c6b2';
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.12.45f15b8...v2.7.13.597fa0b`;
-
-const currentPrereleaseId = '2.7.13.597fa0b';
-
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
