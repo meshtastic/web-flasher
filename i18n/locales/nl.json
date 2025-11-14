@@ -9,7 +9,10 @@
     "connect": "Verbinding maken",
     "disconnect": "Verbinding verbreken",
     "continue": "Verder gaan",
-    "close_dialog": "Dialoogvenster sluiten"
+    "close_dialog": "Dialoogvenster sluiten",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Verbonden",
@@ -29,7 +32,7 @@
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
     "auto_detect": "Automatisch detecteren",
     "supported_devices": "Ondersteunde apparaten",
-    "diy_devices": "DIY apparaten"
+    "diy_devices": "Community Supported Devices"
   },
   "firmware": {
     "title": "Firmware",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
     "disconnect": "Disconnect",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "Alles",
       "debug": "Debug",
@@ -112,5 +116,15 @@
       "warn": "Warn",
       "error": "Foutmelding"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
