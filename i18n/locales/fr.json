@@ -9,7 +9,10 @@
     "connect": "Connecter",
     "disconnect": "Déconnecter",
     "continue": "Continuer",
-    "close_dialog": "Fermer la boîte de dialogue"
+    "close_dialog": "Fermer la boîte de dialogue",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Connecté",
@@ -29,7 +32,7 @@
     "subheading": "Si Meshtastic est déjà installé sur votre appareil connecté, vous pouvez le détecter automatiquement :",
     "auto_detect": "Détection automatique",
     "supported_devices": "Périphériques supportés",
-    "diy_devices": "Dispositifs DIY"
+    "diy_devices": "Community Supported Devices"
   },
   "firmware": {
     "title": "Micrologiciel",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": ".......",
     "disconnect": "Déconnecter",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "",
       "debug": "Debug",
@@ -112,5 +116,15 @@
       "warn": "Avertissement",
       "error": "Erreur"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
