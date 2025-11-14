@@ -9,7 +9,10 @@
     "connect": "Připojit",
     "disconnect": "Odpojit",
     "continue": "Pokračovat",
-    "close_dialog": "Zavřít dialogové okno"
+    "close_dialog": "Zavřít dialogové okno",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Připojeno",
@@ -29,7 +32,7 @@
     "subheading": "Pokud je již připojené zařízení Meshtastic nainstalováno, můžete ho automaticky detekovat:",
     "auto_detect": "Automaticky detekovat",
     "supported_devices": "Podporované zařízení",
-    "diy_devices": "DIY zařízení"
+    "diy_devices": "Community Supported Devices"
   },
   "firmware": {
     "title": "Firmware",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "Pokud proces odpojení trvá příliš dlouho, můžete zařízení odpojit ručně.",
     "disconnect": "Odpojit",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "Vše",
       "debug": "Debug",
@@ -112,5 +116,15 @@
       "warn": "Varování",
       "error": "Chyba"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
