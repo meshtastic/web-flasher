@@ -9,7 +9,10 @@
     "connect": "연결",
     "disconnect": "연결 끊기",
     "continue": "계속",
-    "close_dialog": "창 닫기"
+    "close_dialog": "창 닫기",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "연결됨",
@@ -29,7 +32,7 @@
     "subheading": "연결된 장치에 이미 Meshtastic이 설치되어 있다면, 이를 자동으로 감지할 수 있습니다:",
     "auto_detect": "자동 감지",
     "supported_devices": "지원되는 장치",
-    "diy_devices": "DIY 장치"
+    "diy_devices": "Community Supported Devices"
   },
   "firmware": {
     "title": "펌웨어",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "연결 끊기 과정이 너무 오래 걸린다면, 장치를 수동으로 분리할 수 있습니다.",
     "disconnect": "연결 끊기",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "All",
       "debug": "Debug",
@@ -112,5 +116,15 @@
       "warn": "Warn",
       "error": "Error"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
