@@ -9,7 +9,10 @@
     "connect": "Bağlan",
     "disconnect": "Bağlantıyı Kes",
     "continue": "Devam Et",
-    "close_dialog": "Pencereyi Kapat"
+    "close_dialog": "Pencereyi Kapat",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Bağlandı",
@@ -29,7 +32,7 @@
     "subheading": "Bağlı cihazınızda hali hazırda Meshtastic yüklüyse, otomatik olarak tespit edebilirsiniz:",
     "auto_detect": "Otomatik Tespit",
     "supported_devices": "Desteklenen Cihazlar",
-    "diy_devices": "Kendi Yapımınız Cihazlar"
+    "diy_devices": "Community Supported Devices"
   },
   "firmware": {
     "title": "Yazılım",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "Bağlantı kesme işlemi çok uzun sürüyorsa, cihazın bağlantısını manuel olarak kesebilirsiniz.",
     "disconnect": "Bağlantıyı Kes",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "Hepsi",
       "debug": "Hata Ayıklama",
@@ -112,5 +116,15 @@
       "warn": "Uyarı",
       "error": "Hata"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
