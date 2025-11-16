@@ -9,7 +9,10 @@
     "connect": "連線",
     "disconnect": "中斷連線",
     "continue": "繼續",
-    "close_dialog": "關閉對話方塊"
+    "close_dialog": "關閉對話方塊",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "已連線",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "如果断开连接过程耗时太长，您可以手动断开设备。",
     "disconnect": "断开",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "全部",
       "debug": "调试",
@@ -112,5 +116,15 @@
       "warn": "警告",
       "error": "错误"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
