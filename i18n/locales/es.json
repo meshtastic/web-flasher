@@ -9,7 +9,10 @@
     "connect": "Conectar",
     "disconnect": "Desconectar",
     "continue": "Continuar",
-    "close_dialog": "Cerrar diálogo"
+    "close_dialog": "Cerrar diálogo",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Conectado",
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "Si el proceso de desconexión tarda demasiado, puedes desenchufar el dispositivo manualmente.",
     "disconnect": "Desconectar",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "Todos",
       "debug": "Depuración",
@@ -112,5 +116,15 @@
       "warn": "Advertencia",
       "error": "Error"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }

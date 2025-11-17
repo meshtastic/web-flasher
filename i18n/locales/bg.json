@@ -9,15 +9,18 @@
     "connect": "Свързване",
     "disconnect": "Прекъсване",
     "continue": "Продължете",
-    "close_dialog": "Затваряне на диалоговия прозорец"
+    "close_dialog": "Затваряне на диалоговия прозорец",
+    "dismiss": "Dismiss",
+    "close": "Close",
+    "reload": "Reload"
   },
   "state": {
     "connected": "Свързано",
     "disconnected": "Няма връзка",
     "connecting": "Свързване",
     "disconnecting": "Прекъсване на връзката",
-    "flashing": "Flashing",
-    "flashed": "Flashed",
+    "flashing": "Програмиране",
+    "flashed": "Програмиран",
     "error": "Грешка"
   },
   "device": {
@@ -46,7 +49,7 @@
   },
   "flash": {
     "title": "Flash",
-    "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
+    "instructions": "Програмирайте устройството си. Изберете дали искате да актуализирате устройството си или да изтриете флаш паметта и да инсталирате от нулата.",
     "erase_flash": "Изтриване на флаш паметта",
     "erase_flash_prefix": "Erase Flash of",
     "dfu_action_doubleclick": "двукратно щракване върху бутона RST.",
@@ -54,7 +57,7 @@
     "esp32": {
       "step_1_usb": "Уверете се, че устройството е свързано чрез USB",
       "step_2_baud_rate": "Изберете скорост на предаване",
-      "step_3_flash": "Flash firmware",
+      "step_3_flash": "Записване на фърмуера",
       "slow_reliable": "115200 е по-бавна, но може да бъде по-надеждна за връзки с ниско качество.",
       "s3_instructions": "Ако устройството ви е базирано на ESP32-S3, може да се наложи да го изключите, след което да натиснете и задържите бутона BOOT / USR, докато включвате USB кабела.",
       "reset_alternative": "Като алтернатива, можете да опитате метода за нулиране на 1200bps, за да поставите устройството в правилния режим.",
@@ -62,15 +65,15 @@
       "full_erase": "Пълно изтриване и инсталиране",
       "bundle_webui": "Bundle Web UI",
       "install_inkhud": "Инсталиране на InkHUD",
-      "backup_warning": "Back up the device's public and private keys before a full erase and install to restore them after re-flashing if needed.",
+      "backup_warning": "Направете резервно копие на публичните и частните ключове на устройството преди пълното изтриване и инсталиране, за да ги възстановите след пре-програмирането, ако е необходимо.",
       "webui_space_warning": "Additionally, bundling the Web UI will increase the flash utilization, taking away space from core usage and will take longer to install.",
       "doc_guide": "Разгледайте това ръководство в нашата документация.",
       "process_warning": "Този процес може да отнеме известно време.",
-      "reset_after_flash": "After the flashing process is complete, you may need to press the RST button if the device does not reboot automatically or says \"waiting to download\" in the console.",
+      "reset_after_flash": "След като процесът на програмиране приключи, може да се наложи да натиснете бутона RST, ако устройството не се рестартира автоматично или в конзолата се появи съобщение \"чака се изтегляне\".",
       "erase_and_install": "Изтриване на флаш паметта и инсталиране",
       "update": "Актуализация",
       "start_over": "Start Over",
-      "flashing_complete": "Flashing",
+      "flashing_complete": "Програмиране",
       "complete": "завършени",
       "partition_app": "app",
       "partition_ota": "ota",
@@ -91,10 +94,10 @@
       "download_uf2": "Изтегляне на UF2"
     },
     "erase_uf2": {
-      "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
+      "warning": "След изтриване на флаш паметта, тази операция няма да е достъпна отново, докато на устройството не се инсталира нов фърмуер на Meshtastic.",
       "dfu_warning": "Тази операция ще изтрие напълно вашето устройство.",
       "wait_for_drive": "Wait for the drive to disappear, then open a serial monitor to complete the erase process.",
-      "close_instructions": "Close this popup to select a firmware version and begin flashing."
+      "close_instructions": "Затворете този изскачащ прозорец, за да изберете версия на фърмуера и да започнете програмирането."
     }
   },
   "buttons": {
@@ -105,6 +108,7 @@
   "serial": {
     "instructions": "Ако процесът на прекъсване на връзката отнема твърде много време, можете ръчно да изключите устройството.",
     "disconnect": "Прекъсване",
+    "reconnect": "Try Reconnecting",
     "log_levels": {
       "all": "Всички",
       "debug": "Отстраняване на грешки",
@@ -112,5 +116,15 @@
       "warn": "Предупреждения",
       "error": "Грешка"
     }
+  },
+  "dfu": {
+    "success_title": "DFU Mode",
+    "success_message": "Device successfully entered DFU mode",
+    "error_title": "DFU Mode Failed",
+    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_connection_title": "Device Connection Failed",
+    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
+    "error_unresponsive_title": "Device Unresponsive",
+    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
   }
 }
