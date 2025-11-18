@@ -5,18 +5,17 @@
   >
     <div class="max-w-7xl mx-auto flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
       <p class="text-sm">
-        <i18n-t keypath="analytics.footer.message">
-          <template #link>
-            <a
-              href="https://meshtastic.org/docs/legal/privacy/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="underline text-blue-400 hover:text-blue-300"
-            >
-              {{ $t('analytics.footer.privacyLink') }}
-            </a>
-          </template>
-        </i18n-t>
+        {{ $t('analytics.footer.message') }}
+        {{ $t('analytics.footer.detailsPrefix') }}
+        <a
+          href="https://meshtastic.org/docs/legal/privacy/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline text-blue-400 hover:text-blue-300"
+        >
+          {{ $t('analytics.footer.privacyLink') }}
+        </a>
+        {{ $t('analytics.footer.detailsSuffix') }}
       </p>
       <button
         type="button"
