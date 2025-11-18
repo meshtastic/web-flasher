@@ -126,5 +126,12 @@
     "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
     "error_unresponsive_title": "Device Unresponsive",
     "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+  },
+  "analytics": {
+    "footer": {
+      "message": "We collect anonymous crash and usage data across this app. This helps us improve Meshtastic. No personally identifiable data is collected. See our <link>Privacy Policy</link> for more details.",
+      "privacyLink": "Privacy Policy",
+      "button": "OK"
+    }
   }
 }
