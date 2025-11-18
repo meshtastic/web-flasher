@@ -112,6 +112,8 @@
 
     <ToastNotifications />
 
+    <AnalyticsFooter />
+
     <footer
       id="footer"
       class="halloween-theme footer text-white mt-4 py-4"
