@@ -10,9 +10,9 @@
     "disconnect": "Katkaise",
     "continue": "Jatka",
     "close_dialog": "Sulje valintaikkuna",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Hylkää",
+    "close": "Sulje",
+    "reload": "Lataa uudelleen"
   },
   "state": {
     "connected": "Yhdistetty",
@@ -108,7 +108,7 @@
   "serial": {
     "instructions": "Jos yhteyden katkaiseminen kestää liian kauan, voit poistaa laitteen manuaalisesti.",
     "disconnect": "Katkaise",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Yritä muodostaa yhteys uudelleen",
     "log_levels": {
       "all": "Kaikki",
       "debug": "Vianetsintä",
@@ -118,13 +118,13 @@
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
-    "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
-    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_unresponsive_title": "Device Unresponsive",
-    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+    "success_title": "DFU-tila",
+    "success_message": "Laite siirtyi onnistuneesti DFU-tilaan",
+    "error_title": "DFU-tilaan siirtyminen epäonnistui",
+    "error_message": "DFU-tilaan siirtyminen epäonnistui. Irrota ja liitä laite uudelleen ja yritä sitten uudelleen. Jos ongelma jatkuu, lataa sivu uudelleen.",
+    "error_connection_title": "Laitteeseen yhdistäminen epäonnistui",
+    "error_connection": "Laitteeseen yhdistäminen epäonnistui tai laite saattaa jo olla DFU-tilassa. Irrota ja liitä laite uudelleen ja yritä sitten uudelleen. Jos ongelma jatkuu, lataa sivu uudelleen.",
+    "error_unresponsive_title": "Laite ei vastaa",
+    "error_unresponsive": "Laite ei vastaa. Varmista, että se on kunnolla kytketty, eikä DFU-tilassa. Jos ongelma jatkuu, lataa sivu uudelleen."
   }
 }

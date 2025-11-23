@@ -10,9 +10,9 @@
     "disconnect": "Прекъсване",
     "continue": "Продължете",
     "close_dialog": "Затваряне на диалоговия прозорец",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Отхвърляне",
+    "close": "Затваряне",
+    "reload": "Презареждане"
   },
   "state": {
     "connected": "Свързано",
@@ -48,7 +48,7 @@
     "icon": "икона"
   },
   "flash": {
-    "title": "Flash",
+    "title": "Програмиране",
     "instructions": "Програмирайте устройството си. Изберете дали искате да актуализирате устройството си или да изтриете флаш паметта и да инсталирате от нулата.",
     "erase_flash": "Изтриване на флаш паметта",
     "erase_flash_prefix": "Erase Flash of",
@@ -89,7 +89,7 @@
       "download_copy_uf2": "Изтеглете или копирайте UF2 файла на DFU устройството",
       "copy_instructions": "Изтеглете или копирайте UF2 файла на DFU устройството. Устройството ще се рестартира автоматично, когато прехвърлянето приключи, и ще стартира с новия фърмуер.",
       "auto_reboot_warning": "Автоматичното рестартиране може да доведе до съобщения за грешки при прехвърляне на файлове, грешки при запис или изваждане на устройството",
-      "install_inkhud": "Install InkHUD display",
+      "install_inkhud": "Инсталиране на InkHUD дисплей",
       "enter_dfu": "Влизане в DFU режим",
       "download_uf2": "Изтегляне на UF2"
     },
@@ -118,8 +118,8 @@
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
+    "success_title": "DFU режим",
+    "success_message": "Устройството успешно влезе в DFU режим",
     "error_title": "DFU Mode Failed",
     "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
     "error_connection_title": "Device Connection Failed",
