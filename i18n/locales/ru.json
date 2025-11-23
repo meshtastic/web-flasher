@@ -1,22 +1,22 @@
 {
   "title": "Веб прошиватель",
-  "header": "Прошиватель",
+  "header": "Программатор",
   "description": "Веб программный инструмент для прошивки ESP32",
   "browser_warning": "Ваш браузер не поддерживает WebSerial API. Переключитесь на совместимый браузер, такой как Chrome или Edge, для полной функциональности.",
-  "header_title": "Флашер",
+  "header_title": "ПРОГРАММАТОР",
   "language": "Язык",
   "actions": {
-    "connect": "Подключиться",
-    "disconnect": "Отключиться",
-    "continue": "Далее",
+    "connect": "Подключить",
+    "disconnect": "Отключить",
+    "continue": "Продолжить",
     "close_dialog": "Закрыть диалог",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Отменить",
+    "close": "Закрыть",
+    "reload": "Обновить"
   },
   "state": {
     "connected": "Подключен",
-    "disconnected": "Не подключено",
+    "disconnected": "Связь не установлена",
     "connecting": "Подключение",
     "disconnecting": "Отключение",
     "flashing": "Прошивается",
@@ -26,20 +26,20 @@
   "device": {
     "title": "Устройство",
     "header": "Выберите ваше подключенное устройство",
-    "select_device": "Выберите нужное устройство",
+    "select_device": "Выбор целевого устройства",
     "all_devices": "Все устройства",
     "instructions": "Подключите ваше устройство через USB. Пожалуйста, убедитесь, что кабель не является категории только для зарядки.",
     "subheading": "Если на вашем подключенном устройстве уже установлен Meshtastic, его можно определить автоматически:",
     "auto_detect": "Автоопределение",
     "supported_devices": "Поддерживаемые устройства",
-    "diy_devices": "Самодельные устройства"
+    "diy_devices": "Устройства, поддерживаемые сообществом"
   },
   "firmware": {
     "title": "Прошивка",
     "select_firmware": "Выберите прошивку",
-    "instructions": "Выберите опции релиза или загрузите релиз zip, загруженный из Github.",
+    "instructions": "Выберите из вариантов релиза или загрузите его zip, полученный из Github.",
     "stable": "Стабильный (или бета-версия)",
-    "unstable": "Нестабильная (Альфа)",
+    "unstable": "Нестабильный (Альфа)",
     "prerelease": "Предварительная версия",
     "error_fetching": "Не удалось получить версии прошивки из API.",
     "refresh_later": "Обновите страницу позже, чтобы попробовать снова.",
@@ -61,12 +61,12 @@
       "slow_reliable": "115200 медленнее, но может быть более надежным для низкокачественных соединений.",
       "s3_instructions": "Если ваше устройство основано на ESP32-S3, может потребоваться выключить, затем нажмите и удерживайте кнопку BOOT / USR при подключении USB-кабеля.",
       "reset_alternative": "Также вы можете попробовать Сброс 1200bps для установки устройства в правильном режиме.",
-      "reset_button": "Сброс через 1200bps",
-      "full_erase": "Полное удаление и установка",
-      "bundle_webui": "Веб-интерфейс пакет",
+      "reset_button": "Сброс 1200bps",
+      "full_erase": "Полная очистка и установка",
+      "bundle_webui": "Пакет Web UI",
       "install_inkhud": "Установить InkHUD",
       "backup_warning": "Сделайте резервную копию публичных и приватных ключей устройства перед полной очисткой и установите их для восстановления после повторной прошивки.",
-      "webui_space_warning": "Кроме того, объединение Web UI увеличит использование флэш памяти, уберет место с ядра и займет больше времени для установки.",
+      "webui_space_warning": "Кроме того, добавление веб-интерфейса Web UI увеличит использование флэш памяти, уберет место с ядра и займет больше времени для установки.",
       "doc_guide": "Ознакомьтесь с этим руководством в нашей документации.",
       "process_warning": "Этот процесс может занять некоторое время.",
       "reset_after_flash": "После завершения прошивки, вам может потребоваться нажать кнопку RST, если устройство не перезагрузится автоматически или если в консоли попросит \"ожидать загрузку\".",
@@ -80,8 +80,8 @@
       "partition_fs": "fs"
     },
     "uf2": {
-      "enter_dfu_mode": "Введите (UF2) DFU режим",
-      "ensure_drive_mounted": "Убедитесь, что привод DFU установлен",
+      "enter_dfu_mode": "Войдите (UF2) DFU режим",
+      "ensure_drive_mounted": "Убедитесь, что диск DFU установлен",
       "dfu_firmware_clause": "Для версий прошивки",
       "dfu_firmware_clause_2": "включить DFU режим вручную",
       "drive_name_info": "Диск может иметь другое имя в зависимости от оборудования вашего устройства и его загрузчика.",
@@ -108,7 +108,7 @@
   "serial": {
     "instructions": "Если процесс отключения занимает слишком много времени, вы можете вручную отключить устройство.",
     "disconnect": "Отключиться",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Попробуйте переподключиться",
     "log_levels": {
       "all": "Всё",
       "debug": "Debug",
@@ -118,13 +118,13 @@
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
-    "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
-    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_unresponsive_title": "Device Unresponsive",
-    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+    "success_title": "Режим DFU",
+    "success_message": "Устройство успешно вошло в режим DFU",
+    "error_title": "Сбой DFU режима",
+    "error_message": "Не удалось подключиться к устройству или устройство уже находится в режиме DFU. Пожалуйста, отключите и подключите устройство, затем повторите попытку. Если проблема не устранена, перезагрузите страницу.",
+    "error_connection_title": "Ошибка подключения устройства",
+    "error_connection": "Не удалось подключиться к устройству или устройство уже находится в режиме DFU. Пожалуйста, отключите и подключите устройство, затем повторите попытку. Если проблема не устранена, перезагрузите страницу.",
+    "error_unresponsive_title": "Устройство не отвечает",
+    "error_unresponsive": "Устройство не отвечает. Пожалуйста, убедитесь, что оно правильно подключено и не находится в режиме DFU. Если проблема повторится, перезагрузите страницу."
   }
 }
