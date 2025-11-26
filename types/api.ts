@@ -28,7 +28,9 @@ export interface DeviceHardware {
   requiresDfu?: boolean
   hasMui?: boolean
   hasInkHud?: boolean
-  url?: string
+  url?: string,
+  key?: string; // Optional key to differentiate multiple entries for the same hwModel
+  variant?: string; // Optional variant to differentiate multiple entries for the same hwModel
 }
 
 export function getCorsFriendyReleaseUrl(url: string) {

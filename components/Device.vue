@@ -156,7 +156,7 @@
               </h2>
             </div>
             <div
-              v-for="device in store.sortedDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)"
+              v-for="device in uniqueDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)"
               class="w-full sm:w-auto sm:max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-1 sm:m-2 cursor-pointer hover:scale-105 shadow hover:shadow-[0_35px_60px_-15px_rgba(200,200,200,.3)]"
               @click="setSelectedTarget(device)"
             >
@@ -164,7 +164,7 @@
             </div>
             <hr class="w-full border-gray-400 my-4">
             <div
-              v-if="store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"
+              v-if="uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"
               class="w-full text-center"
             >
               <h2 class="text-lg sm:text-xl text-yellow-400">
@@ -172,7 +172,7 @@
               </h2>
             </div>
             <div
-              v-for="device in store.sortedDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)"
+              v-for="device in uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)"
               class="w-full sm:w-auto sm:max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-1 sm:m-2 cursor-pointer hover:scale-105 shadow hover:shadow-2xl"
               @click="setSelectedTarget(device)"
             >
@@ -184,7 +184,7 @@
             class="p-1 sm:p-2 m-1 sm:m-2 flex flex-wrap items-center justify-center"
           >
             <div
-              v-for="device in store.sortedDevices"
+              v-for="device in uniqueDevices"
               class="w-full sm:w-auto sm:max-w-sm border hover:border-gray-300 border-gray-600 rounded-lg m-1 sm:m-2 cursor-pointer hover:scale-105 hover:shadow-2xl"
               @click="store.setSelectedTarget(device)"
             >
@@ -213,12 +213,25 @@ import { useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import DeviceDetail from './DeviceDetail.vue'
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 
 const { t } = useI18n()
 
 const store = useDeviceStore()
 const firmwareStore = useFirmwareStore()
 store.fetchList()
+
+const uniqueDevices = computed(() => {
+  const seen = new Set<string>()
+  return store.sortedDevices.filter((device) => {
+    const groupKey = device.key || `${device.hwModel}-${device.displayName}`
+    if (seen.has(groupKey)) {
+      return false
+    }
+    seen.add(groupKey)
+    return true
+  })
+})
 
 const isSupporterDevice = (device: DeviceHardware) => {
   return device.tags?.some((tag: string) => supportedVendorDeviceTags.includes(tag))

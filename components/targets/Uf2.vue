@@ -94,20 +94,43 @@
         </ol>
 
         <div v-if="firmwareStore.canShowFlash">
-          <a
-            v-if="firmwareStore.selectedFirmware?.id"
-            :href="downloadUf2FileUrl"
-            class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >
-            {{ $t('flash.uf2.download_uf2') }}
-          </a>
-          <button
-            v-else
-            class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-            @click="downloadUf2FileFs"
-          >
-            {{ $t('flash.uf2.download_uf2') }}
-          </button>
+          <template v-if="hasVariantChoices">
+            <div class="grid gap-2">
+              <template v-for="variant in variantTargets" :key="variant.platformioTarget">
+                <a
+                  v-if="firmwareStore.selectedFirmware?.id"
+                  :href="getDownloadUf2Url(variant)"
+                  class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                  {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
+                </a>
+                <button
+                  v-else
+                  type="button"
+                  class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  @click="downloadUf2FileFsForTarget(variant)"
+                >
+                  {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
+                </button>
+              </template>
+            </div>
+          </template>
+          <template v-else>
+            <a
+              v-if="firmwareStore.selectedFirmware?.id"
+              :href="getDownloadUf2Url(deviceStore.$state.selectedTarget)"
+              class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >
+              {{ $t('flash.uf2.download_uf2') }}
+            </a>
+            <button
+              v-else
+              class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              @click="downloadUf2FileFsForTarget(deviceStore.$state.selectedTarget)"
+            >
+              {{ $t('flash.uf2.download_uf2') }}
+            </button>
+          </template>
         </div>
       </div>
     </div>
@@ -119,24 +142,63 @@ import {
   FolderDown,
   Info,
 } from 'lucide-vue-next'
-import { track } from '@vercel/analytics'
 import { computed } from 'vue'
 
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
+import type { DeviceHardware } from '~/types/api'
 import FlashHeader from './FlashHeader.vue'
 import ReleaseNotes from './ReleaseNotes.vue'
 
 const deviceStore = useDeviceStore()
 const firmwareStore = useFirmwareStore()
 
-const downloadUf2FileFs = () => {
+const variantTargets = computed<DeviceHardware[]>(() => {
+  const selected = deviceStore.$state.selectedTarget
+  if (!selected) return []
+  const targets = deviceStore.targets || []
+  let candidates = targets.filter(target => target.hwModel === selected.hwModel)
+  if (selected.key) {
+    const keyMatches = targets.filter(target => target.key === selected.key)
+    if (keyMatches.length > 0) {
+      candidates = keyMatches
+    }
+  }
+
+  const uniqueByEnv = new Map<string, DeviceHardware>()
+  candidates.forEach((candidate) => {
+    uniqueByEnv.set(candidate.platformioTarget, candidate)
+  })
+
+  const result = Array.from(uniqueByEnv.values())
+  if (!result.find(candidate => candidate.platformioTarget === selected.platformioTarget)) {
+    result.push(selected)
+  }
+
+  return result.sort((a, b) => {
+    if (a.displayName === b.displayName) {
+      return (a.variant || '').localeCompare(b.variant || '')
+    }
+    return a.displayName.localeCompare(b.displayName)
+  })
+})
+
+const hasVariantChoices = computed(() => variantTargets.value.length > 1)
+
+const formatVariantLabel = (target?: DeviceHardware) => {
+  if (!target) return ''
+  return target.variant ? `${target.displayName} ${target.variant}` : target.displayName
+}
+
+const downloadUf2FileFsForTarget = (target?: DeviceHardware) => {
+  if (!target) return
   let suffix = ''
   if (firmwareStore.shouldInstallInkHud) {
     suffix = '-inkhud'
   }
-  const searchRegex = new RegExp(`firmware-${deviceStore.$state.selectedTarget.platformioTarget}${suffix}-.+.uf2`)
+  const searchRegex = new RegExp(`firmware-${target.platformioTarget}${suffix}-.+.uf2`)
   console.log(searchRegex)
+  firmwareStore.trackDownload(target, false)
   firmwareStore.downloadUf2FileSystem(searchRegex)
 }
 
@@ -148,19 +210,19 @@ const isNewFirmware = computed(() => {
 const canInstallInkHud = computed(() => {
   if (!isNewFirmware.value)
     return false
-  return deviceStore.$state.selectedTarget.hasInkHud === true
+  return deviceStore.$state.selectedTarget?.hasInkHud === true
 })
 
-const downloadUf2FileUrl = computed(() => {
-  if (!firmwareStore.selectedFirmware?.id) return ''
+const getDownloadUf2Url = (target?: DeviceHardware) => {
+  if (!target || !firmwareStore.selectedFirmware?.id) return ''
   const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
   let suffix = ''
   if (firmwareStore.shouldInstallInkHud) {
     suffix = '-inkhud'
   }
-  const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}${suffix}-${firmwareVersion}.uf2`
-  firmwareStore.trackDownload(deviceStore.$state.selectedTarget, false)
+  const firmwareFile = `firmware-${target.platformioTarget}${suffix}-${firmwareVersion}.uf2`
+  firmwareStore.trackDownload(target, false)
   console.log(firmwareFile)
   return firmwareStore.getReleaseFileUrl(firmwareFile)
-})
+}
 </script>
