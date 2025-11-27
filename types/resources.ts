@@ -5,38 +5,51 @@ import type { FirmwareResource } from './api';
 const markdownContent = `
 
 ## 🚀  What's Changed
-* Clean up GPS toggle logging by @jp-bennett in https://github.com/meshtastic/firmware/pull/8629
-* Reset the calibration data back to 0 when doing a compass calibration by @jp-bennett in https://github.com/meshtastic/firmware/pull/8648
-* Chore(deps): update dorny/test-reporter action to v2.2.0 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8637
-* Fix RPM builds by @vidplace7 in https://github.com/meshtastic/firmware/pull/8659
-* Linux: Fix silly EPEL9 mistake by @vidplace7 in https://github.com/meshtastic/firmware/pull/8660
-* Fix ble rssi crash by @thebentern in https://github.com/meshtastic/firmware/pull/8661
-* Mqtt: do not try to send packets when it disconnected by @omgbebebe in https://github.com/meshtastic/firmware/pull/8658
-* Persist favourites on NodeDB reset by @ford-jones in https://github.com/meshtastic/firmware/pull/8292
-* Don't ack messages when mqtt client proxy is on but only uplink by @RCGV1 in https://github.com/meshtastic/firmware/pull/8578
-* Add API types, state, and log message in Debug screen. Added persistent "Connected" icon by @jp-bennett in https://github.com/meshtastic/firmware/pull/8576
-* Drop PKI acks if there is no downlink on MQTTClientProxy by @RCGV1 in https://github.com/meshtastic/firmware/pull/8580
-* Add the Heltec v4 expansion box. by @Quency-D in https://github.com/meshtastic/firmware/pull/8539
-* Update to Pro-micro variants by @NomDeTom in https://github.com/meshtastic/firmware/pull/8600
-* Cleanup unnecessary global dereferencing in CryptoEngine by @jasonbcox in https://github.com/meshtastic/firmware/pull/8611
-* Fix null pointer dereference in radio chip region check by @Andrik45719 in https://github.com/meshtastic/firmware/pull/8613
-* Feat/6704 neighbor info on demand by @DaneEvans in https://github.com/meshtastic/firmware/pull/8523
-* Remove fixed scaling in Digital Clock by @Xaositek in https://github.com/meshtastic/firmware/pull/8620
-* Allow Preserving Favorites in BaseUI menus by @Xaositek in https://github.com/meshtastic/firmware/pull/8647
-* native: Try to look for a config file based on Raspberry Pi HAT vendor by @Stary2001 in https://github.com/meshtastic/firmware/pull/8608
-* Remove gating for Display Options by @Xaositek in https://github.com/meshtastic/firmware/pull/8651
-* mqtt: do not try to send packets when it disconnected by @omgbebebe in https://github.com/meshtastic/firmware/pull/8658
+
+- Unify uptime formatting by @jasonbcox in https://github.com/meshtastic/firmware/pull/8677
+- chore(deps): update meshtastic-esp8266-oled-ssd1306 digest to 2887bf4 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8688
+- Actually respect wake_on_motion setting by @jp-bennett in https://github.com/meshtastic/firmware/pull/8690
+- Add a reset pulse signal to the OLED. by @Quency-D in https://github.com/meshtastic/firmware/pull/8691
+- nrf52 watchdog (attempt #2) by @SebKuzminsky in https://github.com/meshtastic/firmware/pull/8670
+- Fix build when MESHTASTIC_EXCLUDE_PKI is defined by @jasonbcox in https://github.com/meshtastic/firmware/pull/8698
+- Fix MenuHandler when MESHTASTIC_EXCLUDE_PKI is defined by @jasonbcox in https://github.com/meshtastic/firmware/pull/8701
+- Update protobufs and classes by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8707
+- Add Thinknode M6 by @caveman99 in https://github.com/meshtastic/firmware/pull/8705
+- Update Kongduino-Adafruit_nRFCrypto digest to 8cde718 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8708
+- Add WisMesh Tag OCV array by @Avi0n in https://github.com/meshtastic/firmware/pull/8646
+- R1 Neo - Added OCV_ARRAY from measured discharge curve testing + update ADC multiplier by @simon-muzi in https://github.com/meshtastic/firmware/pull/8716
+- Log error if startReceive fails in LR11x0Interface by @jp-bennett in https://github.com/meshtastic/firmware/pull/8718
+- Tweak OCV_ARRAY 100% voltage to take into account charger hysteresis and voltage sag after charge by @simon-muzi in https://github.com/meshtastic/firmware/pull/8720
+- Thinknode M3 support against master by @jp-bennett in https://github.com/meshtastic/firmware/pull/8630
+- M6 leds by @jp-bennett in https://github.com/meshtastic/firmware/pull/8742
+- Further fix compass calibration by @jp-bennett in https://github.com/meshtastic/firmware/pull/8740
+- More quickly hide "Shutting Down" to prevent it showing on Eink sleep screen by @Xaositek in https://github.com/meshtastic/firmware/pull/8749
+- Prevent double-registering of Rotary Encoder on TLora Pager by @thebentern in https://github.com/meshtastic/firmware/pull/8746
+- 3401 fix by @caveman99 in https://github.com/meshtastic/firmware/pull/8755
+- Add support for muzi-base by @jp-bennett in https://github.com/meshtastic/firmware/pull/8753
+- Bugfix: Don't toggle BLE when choosing active state by @jp-bennett in https://github.com/meshtastic/firmware/pull/8579
+- Try-fix traceroute panic by @thebentern in https://github.com/meshtastic/firmware/pull/8568
+- chore(deps): update meshtastic/device-ui digest to 28167c6 by @renovate[bot] in https://github.com/meshtastic/firmware/pull/8583
+- Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8552
+- Only call stopNow if we're nagging by @thebentern in https://github.com/meshtastic/firmware/pull/8601
+- Upgrade trunk by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8606
+- Clean up GPS toggle logging by @jp-bennett in https://github.com/meshtastic/firmware/pull/8629
+- Reset the calibration data back to 0 when doing a compass calibration by @jp-bennett in https://github.com/meshtastic/firmware/pull/8648
+- Fix RPM builds by @vidplace7 in https://github.com/meshtastic/firmware/pull/8659
+- Linux: Fix silly EPEL9 mistake by @vidplace7 in https://github.com/meshtastic/firmware/pull/8660
+- Fix ble rssi crash by @thebentern in https://github.com/meshtastic/firmware/pull/8661
+- Bump release version by @github-actions[bot] in https://github.com/meshtastic/firmware/pull/8684
+- CI: Submit Bump Version PR against master by @vidplace7 in https://github.com/meshtastic/firmware/pull/8668
 
 ## New Contributors
-* @weebl2000 made their first contribution in https://github.com/meshtastic/firmware/pull/8560
-* @omgbebebe made their first contribution in https://github.com/meshtastic/firmware/pull/8658
-* @viric made their first contribution in https://github.com/meshtastic/firmware/pull/7882
+* @Avi0n made their first contribution in https://github.com/meshtastic/firmware/pull/8646
+* @simon-muzi made their first contribution in https://github.com/meshtastic/firmware/pull/8716
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.13.597fa0b...v2.7.15.567b8ea`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.15.567b8ea...v2.7.16.f10aa3d`;
 
-const currentPrereleaseId = '2.7.15.567b8ea';
+const currentPrereleaseId = '2.7.16.f10aa3d';
 
-export const showPrerelease = false;
+export const showPrerelease = true;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
