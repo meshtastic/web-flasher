@@ -10,9 +10,9 @@
     "disconnect": "Verbindung trennen",
     "continue": "Weiter",
     "close_dialog": "Dialog schließen",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Verwerfen",
+    "close": "Schließen",
+    "reload": "Neu laden"
   },
   "state": {
     "connected": "Verbunden",
@@ -32,7 +32,7 @@
     "subheading": "Wenn Ihr angeschlossenes Gerät bereits Meshtastic installiert hat, können Sie die Version automatisch erkennen lassen:",
     "auto_detect": "Automatisch erkennen",
     "supported_devices": "Unterstützte Geräte",
-    "diy_devices": "Selbstbau-Geräte"
+    "diy_devices": "Eigenbaugeräte"
   },
   "firmware": {
     "title": "Firmware",
@@ -108,7 +108,7 @@
   "serial": {
     "instructions": "Wenn der Vorgang zu lange dauert, können Sie das Gerät manuell entfernen.",
     "disconnect": "Verbindung trennen",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Erneut verbinden",
     "log_levels": {
       "all": "Alle",
       "debug": "Debug",
@@ -118,13 +118,13 @@
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
-    "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
-    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_unresponsive_title": "Device Unresponsive",
-    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+    "success_title": "DFU Modus",
+    "success_message": "Gerät wurde erfolgreich DFU Modus gestartet",
+    "error_title": "DFU Modus fehlgeschlagen",
+    "error_message": "Der DFU Modus konnte nicht aktiviert werden. Bitte trennen Sie das Gerät vom Stromnetz und schließen Sie es wieder an. Versuchen Sie es anschließend erneut. Sollte das Problem weiterhin bestehen, laden Sie die Seite neu.",
+    "error_connection_title": "Geräteverbindung fehlgeschlagen",
+    "error_connection": "Die Verbindung zum Gerät konnte nicht hergestellt werden oder das Gerät befindet sich möglicherweise bereits im DFU Modus. Bitte trennen Sie das Gerät und verbinden Sie es erneut, und versuchen Sie es dann noch einmal. Sollte das Problem weiterhin bestehen, laden Sie die Seite neu.",
+    "error_unresponsive_title": "Gerät reagiert nicht",
+    "error_unresponsive": "Das Gerät reagiert nicht. Bitte stellen Sie sicher, dass es ordnungsgemäß angeschlossen ist und sich nicht im DFU Modus befindet. Sollte das Problem weiterhin bestehen, laden Sie die Seite neu."
   }
 }
