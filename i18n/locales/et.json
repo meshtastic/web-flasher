@@ -2,7 +2,7 @@
   "title": "Meshtastic veebi kirjutaja",
   "header": "Flasher",
   "description": "Veebipõhine vahend ESP32 seadmete püsivara laadimiseks",
-  "browser_warning": "Teie brauser ei toeta WebSerial API-t. Täieliku funktsionaalsuse tagamiseks kasuta ühilduvat brauserit, näiteks Chrome'ile või Edge'ile.",
+  "browser_warning": "Teie brauser ei toeta WebSerial API-t. Täieliku funktsionaalsuse tagamiseks kasuta ühilduvat brauserit, näiteks Chrome või Edge.",
   "header_title": "FLASHER",
   "language": "Keel",
   "actions": {
@@ -10,9 +10,9 @@
     "disconnect": "Katkesta ühendus",
     "continue": "Jätka",
     "close_dialog": "Sulge valik",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Loobu",
+    "close": "Sulge",
+    "reload": "Lae uuesti"
   },
   "state": {
     "connected": "Ühendatud",
@@ -108,7 +108,7 @@
   "serial": {
     "instructions": "Kui lahtiühendamine võtab liiga kaua aega, saad seadme käsitsi lahtiühendada.",
     "disconnect": "Katkesta ühendus",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Proovige uuesti ühenduda",
     "log_levels": {
       "all": "Kõik",
       "debug": "Silumine",
@@ -118,13 +118,13 @@
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
-    "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
-    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_unresponsive_title": "Device Unresponsive",
-    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+    "success_title": "DFU režiim",
+    "success_message": "Seade sisenes edukalt DFU režiimi",
+    "error_title": "DFU režiim ebaõnnestus",
+    "error_message": "DFU režiimi sisenemine ebaõnnestus. Palun ühendage seade lahti, ühendage uuesti ning proovige uuesti. Kui probleem püsib, laadige leht uuesti.",
+    "error_connection_title": "Seadme ühendus ebaõnnestus",
+    "error_connection": "Seadmega ühenduse loomine ebaõnnestus või on seade juba DFU režiimis. Palun ühendage seade lahti, ühendage uuesti ning proovige uuesti. Kui probleem püsib, laadige leht uuesti.",
+    "error_unresponsive_title": "Seade ei reageeri",
+    "error_unresponsive": "Seade ei reageeri. Veendu, et see on korralikult ühendatud ja pole DFU režiimis. Kui probleem püsib, lae leht uuesti."
   }
 }
