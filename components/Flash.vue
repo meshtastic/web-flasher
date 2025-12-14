@@ -77,7 +77,14 @@ watch(() => deviceStore.$state.selectedTarget, async () => {
 })
 
 const preflightCheck = async () => {
+  firmwareStore.$state.hasManifest = false
+
   if (!firmwareStore.hasOnlineFirmware) {
+    fileExistsOnServer.value = false
+    return
+  }
+
+  if (!deviceStore.$state.selectedTarget) {
     fileExistsOnServer.value = false
     return
   }
@@ -88,8 +95,39 @@ const preflightCheck = async () => {
     fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile))
   }
   else if (deviceStore.selectedArchitecture.startsWith('esp32')) {
-    const firmwareFile = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`
-    fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile))
+    const basePrefix = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}`
+    let manifestExists = false
+    const manifestCandidates = [
+      `${basePrefix}.mt.json`,
+      'mt.json',
+    ]
+
+    for (const manifestName of manifestCandidates) {
+      const url = firmwareStore.getReleaseFileUrl(manifestName)
+      if (!url) {
+        continue
+      }
+      // Stop at the first manifest that exists for faster checks.
+      if (await checkIfRemoteFileExists(url)) {
+        manifestExists = true
+        break
+      }
+    }
+    firmwareStore.$state.hasManifest = manifestExists
+
+    if (manifestExists) {
+      const binUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}.bin`)
+      const factoryUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}.factory.bin`)
+      const [binExists, factoryExists] = await Promise.all([
+        binUrl ? checkIfRemoteFileExists(binUrl) : Promise.resolve(false),
+        factoryUrl ? checkIfRemoteFileExists(factoryUrl) : Promise.resolve(false),
+      ])
+      fileExistsOnServer.value = binExists && factoryExists
+    }
+    else {
+      const updateFileUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}-update.bin`)
+      fileExistsOnServer.value = updateFileUrl ? await checkIfRemoteFileExists(updateFileUrl) : false
+    }
   }
   else {
     fileExistsOnServer.value = false

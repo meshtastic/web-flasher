@@ -309,7 +309,9 @@ const targetPrefix = computed(() => {
 })
 
 const cleanInstallEsp32 = () => {
-  const firmwareFile = `firmware-${targetPrefix.value}.bin`
+  const firmwareFile = firmwareStore.$state.hasManifest
+    ? `firmware-${targetPrefix.value}.factory.bin`
+    : `firmware-${targetPrefix.value}.bin`
   const otaFile = deviceStore.$state.selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin'
   // Coerce the partition scheme to be the same as the selected target for all 2.6.2+ firmwares
   if (deviceStore.$state.selectedTarget.partitionScheme && twoPointSixPointTwoOrGreater.value) {
@@ -338,7 +340,9 @@ const littleFsFileName = computed(() => {
 
 const updateEsp32 = () => {
   // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
-  const firmwareFile = `firmware-${targetPrefix.value}-update.bin`
+  const firmwareFile = firmwareStore.$state.hasManifest
+    ? `firmware-${targetPrefix.value}.bin`
+    : `firmware-${targetPrefix.value}-update.bin`
   console.log(firmwareFile)
   firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget)
 }

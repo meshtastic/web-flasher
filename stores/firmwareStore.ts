@@ -9,6 +9,8 @@ import { mande } from 'mande'
 import { defineStore } from 'pinia'
 import type { Terminal } from 'xterm'
 import { supportsNew8MBPartitionTable } from '~/utils/versionUtils'
+import { convertToBinaryString } from '~/utils/fileUtils'
+import { openTerminal } from '~/utils/terminal'
 import {
   currentPrerelease,
   showPrerelease,
@@ -58,6 +60,7 @@ export const useFirmwareStore = defineStore('firmware', {
       port: <SerialPort | undefined>{},
       couldntFetchFirmwareApi: false,
       prereleaseUnlocked: useSessionStorage('prereleaseUnlocked', false),
+      hasManifest: false,
     }
   },
   getters: {
@@ -76,6 +79,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.shouldInstallMui = false
       this.shouldInstallInkHud = false
       this.partitionScheme = undefined
+      this.hasManifest = false
     },
     continueToFlash() {
       this.hasSeenReleaseNotes = true
@@ -108,6 +112,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.clearState()
       // Restore MUI setting if it was enabled (for devices that support it)
       this.shouldInstallMui = currentMuiSetting
+      this.hasManifest = false
 
       // Update Datadog RUM context with firmware version
       if (import.meta.client) {
@@ -154,6 +159,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.clearState()
       // Restore MUI setting if it was enabled (for devices that support it)
       this.shouldInstallMui = currentMuiSetting
+      this.hasManifest = false
     },
     async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal()
