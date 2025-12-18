@@ -76,6 +76,8 @@ const markdownContent = `
 * Fix GPS Buffer full issue on NRF52480 (Seeed T1000E) by @fifieldt in https://github.com/meshtastic/firmware/pull/8956
 * Actions: Compact manifest job output summary by @vidplace7 in https://github.com/meshtastic/firmware/pull/8957
 * Add JSON packet recording option to native by @jp-bennett in https://github.com/meshtastic/firmware/pull/8930
+* Implement Long Turbo preset by @thebentern in https://github.com/meshtastic/firmware/pull/8985
+* Upgrade all esp32 targets to NimBLE 2.X by @thebentern in https://github.com/meshtastic/firmware/pull/9003
 
 ## New Contributors
 * @RikerZhu made their first contribution in https://github.com/meshtastic/firmware/pull/8679
@@ -85,9 +87,9 @@ const markdownContent = `
 * @phaseloop made their first contribution in https://github.com/meshtastic/firmware/pull/8858
 * @samm-git made their first contribution in https://github.com/meshtastic/firmware/pull/8891
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.16.a597230...v2.7.17.b742381`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.16.a597230...v2.7.17.40f1f91`;
 
-const currentPrereleaseId = '2.7.17.b742381';
+const currentPrereleaseId = '2.7.17.40f1f91';
 
 export const showPrerelease = true;
 
