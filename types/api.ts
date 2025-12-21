@@ -35,7 +35,13 @@ export interface DeviceHardware {
 
 export function getCorsFriendyReleaseUrl(url: string) {
   const zipName = url.split('/').slice(-1)[0]
-  const firmwareName = zipName.replace('.zip', '')
+  let firmwareName = zipName.replace('.zip', '')
+
+  if (firmwareName.endsWith('.json')) {
+    firmwareName = firmwareName.slice(0, -5)
+  }
+
+  firmwareName = firmwareName
     .replace('-esp32-', '-')
     .replace('-esp32c3-', '-')
     .replace('-esp32c6-', '-')
@@ -43,5 +49,6 @@ export function getCorsFriendyReleaseUrl(url: string) {
     .replace('-nrf52840-', '-')
     .replace('-stm32-', '-')
     .replace('-rp2040-', '-')
+
   return `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/${firmwareName}`
 }
