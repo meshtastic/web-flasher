@@ -97,22 +97,9 @@ const preflightCheck = async () => {
   else if (deviceStore.selectedArchitecture.startsWith('esp32')) {
     const basePrefix = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}`
     let manifestExists = false
-    const manifestCandidates = [
-      `${basePrefix}.mt.json`,
-      'mt.json',
-    ]
-
-    for (const manifestName of manifestCandidates) {
-      const url = firmwareStore.getReleaseFileUrl(manifestName)
-      if (!url) {
-        continue
-      }
-      // Stop at the first manifest that exists for faster checks.
-      if (await checkIfRemoteFileExists(url)) {
-        manifestExists = true
-        break
-      }
-    }
+    const manifestName = `${basePrefix}.mt.json`
+    const manifestUrl = firmwareStore.getReleaseFileUrl(manifestName)
+    manifestExists = manifestUrl ? await checkIfRemoteFileExists(manifestUrl) : false
     firmwareStore.$state.hasManifest = manifestExists
 
     if (manifestExists) {
@@ -122,7 +109,7 @@ const preflightCheck = async () => {
         binUrl ? checkIfRemoteFileExists(binUrl) : Promise.resolve(false),
         factoryUrl ? checkIfRemoteFileExists(factoryUrl) : Promise.resolve(false),
       ])
-      fileExistsOnServer.value = binExists && factoryExists
+      fileExistsOnServer.value = binExists || factoryExists
     }
     else {
       const updateFileUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}-update.bin`)
