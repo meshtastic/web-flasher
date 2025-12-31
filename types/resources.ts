@@ -3,6 +3,8 @@ import type { FirmwareResource } from './api';
 // Remove the OfflineHardwareList since it's now in /public/data/hardware-list.json
 
 const markdownContent = `
+> [!WARNING]
+> If you experience immediate a boot-loop or bluetooth pairing failures after updating, this likely indicates that you need to forget the bluetooth pairing and/or perform a full erase and flash.
 
 ## 🚀 What's Changed
 * Support overriding GPS serial pins on all architectures by @Stary2001 in https://github.com/meshtastic/firmware/pull/8486
@@ -78,6 +80,10 @@ const markdownContent = `
 * Add JSON packet recording option to native by @jp-bennett in https://github.com/meshtastic/firmware/pull/8930
 * Implement Long Turbo preset by @thebentern in https://github.com/meshtastic/firmware/pull/8985
 * Upgrade all esp32 targets to NimBLE 2.X by @thebentern in https://github.com/meshtastic/firmware/pull/9003
+* Be more judicious about responding to want_response in existing meshes by @thebentern in https://github.com/meshtastic/firmware/pull/9014
+* First position send validation by @thebentern in https://github.com/meshtastic/firmware/pull/9023
+* Calculate hops correctly even when hop_start==0 by @esev in https://github.com/meshtastic/firmware/pull/9120
+* Revert NimBLE 2.X upgrade by @thebentern in https://github.com/meshtastic/firmware/pull/9125
 
 ## New Contributors
 * @RikerZhu made their first contribution in https://github.com/meshtastic/firmware/pull/8679
@@ -87,9 +93,9 @@ const markdownContent = `
 * @phaseloop made their first contribution in https://github.com/meshtastic/firmware/pull/8858
 * @samm-git made their first contribution in https://github.com/meshtastic/firmware/pull/8891
 
-**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.16.a597230...v2.7.17.40f1f91`;
+**Full Changelog**: https://github.com/meshtastic/firmware/compare/v2.7.16.a597230...v2.7.17.9058cce`;
 
-const currentPrereleaseId = '2.7.17.40f1f91';
+const currentPrereleaseId = '2.7.17.9058cce';
 
 export const showPrerelease = false;
 
