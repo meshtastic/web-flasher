@@ -7,7 +7,7 @@ import {
 import { saveAs } from 'file-saver'
 import { mande } from 'mande'
 import { defineStore } from 'pinia'
-import type { Terminal } from 'xterm'
+import type { Terminal } from '@xterm/xterm'
 import { supportsNew8MBPartitionTable } from '~/utils/versionUtils'
 import { convertToBinaryString } from '~/utils/fileUtils'
 import { openTerminal } from '~/utils/terminal'
@@ -212,6 +212,7 @@ export const useFirmwareStore = defineStore('firmware', {
       }
     },
     async resetEsp32(transport: Transport) {
+      await transport.setDTR(false)
       await transport.setRTS(true)
       await new Promise(resolve => setTimeout(resolve, 100))
       await transport.setRTS(false)

@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="relative inline-flex items-center gap-2">
     <button
       data-modal-target="flash-modal"
       data-modal-toggle="flash-modal"
-      class="inline text-black bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 disabled:bg-gray-500 text-center"
+      class="btn-primary disabled:bg-zinc-600"
       type="button"
       :disabled="!canFlash"
     >
@@ -12,14 +12,14 @@
     <button
       v-show="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)"
       data-tooltip-target="tooltip-erase"
-      class="mx-2 display-inline content-center px-3 py-2 text-xs font-medium text-center  hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg inline-flex items-center text-white hover:text-black"
+      class="btn-icon mx-2"
       type="button"
       data-modal-target="erase-modal"
       data-modal-toggle="erase-modal"
     >
       <Trash
         class="h-4 w-4"
-        :class="{ 'animate-pulse': deviceStore.$state.selectedTarget?.hwModel }"
+        :class="{ 'animate-pulse text-red-400': deviceStore.$state.selectedTarget?.hwModel }"
       />
     </button>
     <div
@@ -33,23 +33,48 @@
         data-popper-arrow
       />
     </div>
-    <div
-      id="flash-modal"
-      tabindex="-1"
-      aria-hidden="true"
-      class="dark hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
-    >
-      <TargetsUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
-      <TargetsEsp32 v-if="deviceStore.selectedArchitecture.startsWith('esp32')" />
-    </div>
-    <div
-      id="erase-modal"
-      tabindex="-1"
-      aria-hidden="true"
-      class="dark hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
-    >
-      <TargetsEraseUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
-    </div>
+    <Teleport to="body">
+      <div
+        id="flash-modal"
+        tabindex="-1"
+        aria-hidden="true"
+        class="hidden fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm px-4 sm:px-6 md:px-8 py-8 md:py-12"
+      >
+        <div class="flex h-full w-full items-start justify-center">
+          <div class="relative w-full max-w-5xl">
+            <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+              <FlashHeader />
+              <div class="flex-1 overflow-y-auto p-3 sm:p-4">
+                <TargetsUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
+                <TargetsEsp32 v-if="deviceStore.selectedArchitecture.startsWith('esp32')" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+    <Teleport to="body">
+      <div
+        id="erase-modal"
+        tabindex="-1"
+        aria-hidden="true"
+        class="hidden fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm px-4 sm:px-6 md:px-8 py-8 md:py-12"
+      >
+        <div class="flex h-full w-full items-start justify-center">
+          <div class="relative w-full max-w-3xl">
+            <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+              <FlashHeader
+                modal-id="erase-modal"
+                :title-override="`${$t('flash.erase_flash')} ${deviceStore.$state.selectedTarget?.displayName || ''}`"
+              />
+              <div class="flex-1 overflow-y-auto p-3 sm:p-4">
+                <TargetsEraseUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -61,6 +86,7 @@ import { Trash } from 'lucide-vue-next'
 import { useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import { useSerialMonitorStore } from '../stores/serialMonitorStore'
+import FlashHeader from './targets/FlashHeader.vue'
 
 const firmwareStore = useFirmwareStore()
 const deviceStore = useDeviceStore()

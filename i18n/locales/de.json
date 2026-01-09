@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "Ein webbasiertes Tool um Meshtastic-Firmware zu flashen",
   "browser_warning": "Ihr Browser unterstützt die WebSerial API nicht. Bitte wechseln Sie zu einem kompatiblen Browser wie Chrome oder Edge, um die volle Funktionalität zu erhalten.",
-  "header_title": "FLASHER",
+  "header_title": "Meshtastic Web Flasher",
   "language": "Sprache",
   "actions": {
     "connect": "Verbindung herstellen",
@@ -109,6 +109,7 @@
     "instructions": "Wenn der Vorgang zu lange dauert, können Sie das Gerät manuell entfernen.",
     "disconnect": "Verbindung trennen",
     "reconnect": "Erneut verbinden",
+    "waiting_for_data": "Warte auf Daten...",
     "log_levels": {
       "all": "Alle",
       "debug": "Debug",

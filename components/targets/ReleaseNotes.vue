@@ -8,6 +8,7 @@
     </h1>
     <div
       v-if="releaseNotes"
+      class="release-notes-box"
       v-html="releaseNotes"
     />
     <button
@@ -48,3 +49,23 @@ watch(() => firmwareStore.selectedFirmware, async () => {
   }
 })
 </script>
+
+<style scoped>
+.release-notes-box {
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+}
+
+.release-notes-box::-webkit-scrollbar {
+  width: 10px;
+}
+
+.release-notes-box::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+.release-notes-box::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+</style>

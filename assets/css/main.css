@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-deep: #05060b;
+  --bg-velvet: #0b0f1a;
+  --bg-ink: #0f1726;
+  --bg-grid: rgba(255, 255, 255, 0.03);
+  --bg-glow-green: rgba(103, 234, 148, 0.08);
+  --bg-glow-blue: rgba(59, 130, 246, 0.08);
+  --text-default: #e5e7eb;
+}
+
 /* Mobile-specific improvements */
 @layer utilities {
   /* Improve touch targets on mobile */
@@ -16,6 +26,11 @@
   html, body {
     overflow-x: hidden;
     max-width: 100vw;
+    color: var(--text-default);
+    background:
+      radial-gradient(1200px at 15% 10%, var(--bg-glow-green), transparent 45%),
+      radial-gradient(900px at 85% -5%, var(--bg-glow-blue), transparent 40%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-velvet) 40%, var(--bg-ink) 100%);
   }
   
   /* Smooth scrolling for mobile */
@@ -37,5 +52,243 @@
     .dark {
       background-color: rgba(0, 0, 0, 0.75);
     }
+  }
+}
+
+/* Modern UI Components */
+@layer components {
+  /* Gradient primary button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply font-normal text-sm text-black;
+    @apply px-5 py-2.5 rounded-xl;
+    @apply transition-all duration-300 ease-out;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none;
+    background: linear-gradient(135deg, #67EA94 0%, #3DE07A 50%, #22C55E 100%);
+    box-shadow: 0 4px 15px rgba(103, 234, 148, 0.3);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(103, 234, 148, 0.45);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  /* Secondary/outline button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply font-normal text-sm;
+    @apply px-5 py-2.5 rounded-xl;
+    @apply border-2 border-meshtastic/50 text-meshtastic;
+    @apply bg-transparent backdrop-blur-sm;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:bg-meshtastic/10 hover:border-meshtastic hover:shadow-glow;
+  }
+
+  /* Icon button (small circular) */
+  .btn-icon {
+    @apply inline-flex items-center justify-center;
+    @apply w-10 h-10 rounded-xl;
+    @apply text-white/70 hover:text-white;
+    @apply bg-white/5 hover:bg-white/10;
+    @apply border border-white/10 hover:border-white/20;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-lg hover:scale-105;
+  }
+
+  /* Modern card with glass effect */
+  .card-modern {
+    @apply relative rounded-2xl;
+    overflow: visible;
+    @apply border border-white/10;
+    @apply transition-all duration-500 ease-out;
+    background: linear-gradient(145deg, rgba(39, 39, 42, 0.6), rgba(24, 24, 27, 0.8));
+    backdrop-filter: blur(10px);
+  }
+
+  .card-modern:hover {
+    @apply border-meshtastic/30;
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(103, 234, 148, 0.1);
+  }
+
+  /* Step indicator badge */
+  .step-badge {
+    @apply inline-flex items-center justify-center;
+    @apply w-8 h-8 rounded-full;
+    @apply text-sm font-bold text-black;
+    @apply mb-4;
+    background: linear-gradient(135deg, #67EA94 0%, #22C55E 100%);
+    box-shadow: 0 0 20px rgba(103, 234, 148, 0.4);
+  }
+
+  /* Modal with backdrop blur */
+  .modal-backdrop {
+    @apply fixed inset-0 z-40;
+    @apply bg-black/30 backdrop-blur-sm;
+  }
+
+  .modal-content {
+    @apply relative rounded-2xl;
+    @apply border border-white/10;
+    background: linear-gradient(145deg, rgba(39, 39, 42, 0.95), rgba(24, 24, 27, 0.98));
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Glowing divider */
+  .divider-glow {
+    @apply w-full h-px;
+    background: linear-gradient(90deg, transparent, rgba(103, 234, 148, 0.5), transparent);
+  }
+
+  /* Vendor tag pills */
+  .tag-pill {
+    @apply inline-flex items-center;
+    @apply px-3 py-1.5 rounded-full;
+    @apply text-xs font-medium;
+    @apply border transition-all duration-300;
+  }
+
+  .tag-pill-active {
+    @apply bg-meshtastic/20 border-meshtastic text-meshtastic;
+    box-shadow: 0 0 15px rgba(103, 234, 148, 0.2);
+  }
+
+  .tag-pill-inactive {
+    @apply bg-zinc-800/50 border-zinc-700 text-zinc-400;
+    @apply hover:border-zinc-500 hover:text-zinc-300 hover:bg-zinc-800;
+  }
+
+  /* Device card enhanced */
+  .device-card {
+    @apply relative rounded-xl overflow-hidden;
+    @apply border border-zinc-700/50 hover:border-meshtastic/40;
+    @apply bg-zinc-800/40 backdrop-blur-sm;
+    @apply transition-all duration-300 ease-out;
+    @apply cursor-pointer;
+  }
+
+  .device-card:hover {
+    @apply bg-zinc-800/60;
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(103, 234, 148, 0.1);
+  }
+
+  /* Connection status indicator */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+    @apply animate-pulse;
+  }
+
+  .status-dot-connected {
+    @apply bg-meshtastic;
+    box-shadow: 0 0 10px rgba(103, 234, 148, 0.6);
+  }
+
+  .status-dot-disconnected {
+    @apply bg-zinc-500;
+  }
+
+  /* Footer modern */
+  .footer-modern {
+    @apply relative;
+    @apply border-t border-white/5;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.3));
+  }
+
+  /* Flash header with glass-morphism and accent */
+  .flash-header {
+    @apply relative;
+    background: linear-gradient(145deg, rgba(39, 39, 42, 0.85), rgba(24, 24, 27, 0.95));
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(103, 234, 148, 0.15);
+    animation: flash-header-enter 0.3s ease-out;
+  }
+
+  @keyframes flash-header-enter {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .flash-header-icon {
+    @apply flex items-center justify-center;
+    @apply w-9 h-9 rounded-lg;
+    background: rgba(103, 234, 148, 0.1);
+    border: 1px solid rgba(103, 234, 148, 0.25);
+  }
+
+  .flash-header-close {
+    @apply inline-flex items-center justify-center;
+    @apply w-9 h-9 rounded-lg;
+    @apply text-zinc-400 bg-zinc-800/60;
+    @apply border border-zinc-700;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .flash-header-close:hover {
+    @apply text-meshtastic border-meshtastic/50;
+    background: rgba(103, 234, 148, 0.1);
+    box-shadow: 0 0 12px rgba(103, 234, 148, 0.25);
+  }
+
+  .flash-header-accent {
+    @apply absolute bottom-0 left-0 right-0 h-px;
+    background: linear-gradient(90deg, transparent, rgba(103, 234, 148, 0.5), transparent);
+  }
+
+  /* Device header with glass-morphism and accent */
+  .device-header {
+    @apply relative;
+    background: linear-gradient(145deg, rgba(39, 39, 42, 0.85), rgba(24, 24, 27, 0.95));
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(103, 234, 148, 0.15);
+    animation: flash-header-enter 0.3s ease-out;
+  }
+
+  .device-header-close {
+    @apply inline-flex items-center justify-center;
+    @apply w-9 h-9 rounded-lg;
+    @apply text-zinc-400 bg-zinc-800/60;
+    @apply border border-zinc-700;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .device-header-close:hover {
+    @apply text-meshtastic border-meshtastic/50;
+    background: rgba(103, 234, 148, 0.1);
+    box-shadow: 0 0 12px rgba(103, 234, 148, 0.25);
+  }
+
+  .device-header-accent {
+    @apply absolute bottom-0 left-0 right-0 h-px;
+    background: linear-gradient(90deg, transparent, rgba(103, 234, 148, 0.5), transparent);
+  }
+
+  /* Header accent line for app header */
+  .header-accent-container {
+    @apply w-full flex justify-center;
+    @apply mt-4 mb-6;
+  }
+
+  .header-accent-line {
+    @apply w-full max-w-2xl h-px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(103, 234, 148, 0.15) 15%,
+      rgba(103, 234, 148, 0.6) 50%, 
+      rgba(103, 234, 148, 0.15) 85%,
+      transparent 100%
+    );
+    box-shadow: 0 0 15px rgba(103, 234, 148, 0.3);
   }
 }

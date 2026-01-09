@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "Narzędzie internetowe do flashowania firmware ESP32",
   "browser_warning": "Twoja przeglądarka nie obsługuje WebSerial API. Przełącz się na zgodną przeglądarkę, taką jak Chrome lub Edge, aby uzyskać pełną funkcjonalność.",
-  "header_title": "FLASHER",
+  "header_title": "Meshtastic Web Flasher",
   "language": "Język",
   "actions": {
     "connect": "Połącz",
@@ -109,6 +109,7 @@
     "instructions": "Jeśli proces rozłączania trwa zbyt długo, możesz ręcznie odłączyć urządzenie.",
     "disconnect": "Rozłącz",
     "reconnect": "Try Reconnecting",
+    "waiting_for_data": "Oczekiwanie na dane...",
     "log_levels": {
       "all": "Wszystkie",
       "debug": "Debug",

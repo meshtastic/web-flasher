@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col min-h-screen">
     <!-- Warning for browsers that do not support WebSerial API -->
     <div
       v-if="!isWebSerialSupported"
@@ -17,7 +17,7 @@
 
     <section
       id="main"
-      class="text-gray-400 body-font px-3 sm:px-5"
+      class="flex-1 text-gray-400 body-font px-3 sm:px-5"
     >
       <transition
         name="flash"
@@ -31,60 +31,83 @@
             <div class="flex flex-wrap sm:flex-row flex-col py-1">
               <LogoHeader />
             </div>
-            <hr class="w-full mx-auto mb-4 border-gray-600">
+            <div class="header-accent-container">
+              <div class="header-accent-line"></div>
+            </div>
           </div>
           <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
-            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center display-inline">
+            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up">
+              <div class="card-modern p-6 h-80 flex flex-col items-center relative">
+                <div class="absolute top-3 left-3 w-8 h-8 rounded-full bg-meshtastic/20 border border-meshtastic/50 flex items-center justify-center">
+                  <span class="text-meshtastic font-bold text-sm">1</span>
+                </div>
                 <img
                   :src="selectedDeviceImage"
-                  class="h-64 w-64 mb-6 mx-auto"
+                  class="h-40 w-40 mb-4 mx-auto object-contain drop-shadow-lg"
                   :alt="$t('device.title')"
                 >
                 <Device />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+              <h2 class="text-xl sm:text-xl font-semibold title-doto text-white mt-5 tracking-wide">
                 {{ $t('device.title') }}
               </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2">
+              <p class="text-sm sm:text-base leading-relaxed mt-2 text-gray-400">
                 {{ $t('device.instructions') }}
               </p>
             </div>
-            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-80 flex flex-col items-center">
+            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up-delayed">
+              <div class="card-modern p-6 h-80 flex flex-col items-center z-20 relative">
+                <div
+                  class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
+                  :class="isStep2Enabled ? 'bg-meshtastic/20 border border-meshtastic/50' : 'bg-zinc-700/50 border border-zinc-600/50'"
+                >
+                  <span
+                    class="font-bold text-sm transition-colors duration-300"
+                    :class="isStep2Enabled ? 'text-meshtastic' : 'text-zinc-500'"
+                  >2</span>
+                </div>
                 <FolderDown
-                  class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white"
+                  class="h-40 w-40 p-4 mb-4 mx-auto text-meshtastic opacity-80"
                   :alt="$t('firmware.title')"
                 />
                 <Firmware />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+              <h2 class="text-xl sm:text-xl font-semibold title-doto text-white mt-5 tracking-wide">
                 {{ $t('firmware.title') }}
               </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2">
+              <p class="text-sm sm:text-base leading-relaxed mt-2 text-gray-400">
                 {{ $t('firmware.instructions') }}
               </p>
             </div>
-            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6">
-              <div class="rounded-lg h-80 overflow-hidden flex flex-col items-center">
-                <Zap class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" />
+            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up-delayed-2">
+              <div class="card-modern p-6 h-80 flex flex-col items-center relative">
+                <div
+                  class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
+                  :class="isStep3Enabled ? 'bg-meshtastic/20 border border-meshtastic/50' : 'bg-zinc-700/50 border border-zinc-600/50'"
+                >
+                  <span
+                    class="font-bold text-sm transition-colors duration-300"
+                    :class="isStep3Enabled ? 'text-meshtastic' : 'text-zinc-500'"
+                  >3</span>
+                </div>
+                <Zap class="h-40 w-40 p-4 mb-4 mx-auto text-meshtastic opacity-80" />
                 <Flash />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+              <h2 class="text-xl sm:text-xl font-semibold title-doto text-white mt-5 tracking-wide">
                 Flash
               </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2">
+              <p class="text-sm sm:text-base leading-relaxed mt-2 text-gray-400">
                 {{ $t('flash.instructions') }}
               </p>
             </div>
           </div>
         </div>
       </transition>
-      <div class="flex flex-wrap justify-center gap-1 mt-4">
+      <div class="flex flex-wrap justify-center gap-2 mt-8">
         <button
           v-if="!serialMonitorStore.isConnected"
           type="button"
-          class="bottom-button border-meshtastic text-meshtastic"
+          class="btn-secondary"
           @click="monitorSerial"
         >
           {{ $t('buttons.serial_monitor') }} <Terminal class="h-4 w-4 shrink-0" />
@@ -92,14 +115,14 @@
         <a
           v-if="!serialMonitorStore.isConnected"
           href="https://meshtastic.org/docs"
-          class="bottom-button border-meshtastic text-meshtastic"
+          class="btn-secondary"
         >
           {{ $t('buttons.meshtastic_docs') }} <BookOpen class="h-4 w-4 shrink-0" />
         </a>
         <a
           v-if="!serialMonitorStore.isConnected"
           href="https://github.com/meshtastic/web-flasher"
-          class="bottom-button border-meshtastic text-meshtastic"
+          class="btn-secondary"
         >
           {{ $t('buttons.contribute') }}
           <Github class="w-4 h-4 shrink-0" />
@@ -114,44 +137,51 @@
 
     <footer
       id="footer"
-      class="halloween-theme footer text-white mt-4 py-4"
+      class="footer-modern text-white mt-8 py-6"
     >
-      <canvas>
-        <div class="container mx-auto px-3 sm:px-5 py-2 sm:py-4 text-center">
-          <p class="text-xs sm:text-sm">
-            Powered by
-            <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss">▲ Vercel</a>
-            <span class="hidden sm:inline">|</span><br class="sm:hidden">
-            Meshtastic® is a registered trademark of Meshtastic LLC.
-            <span class="hidden sm:inline">|</span><br class="sm:hidden">
-            <a href="https://meshtastic.org/docs/legal">Legal Information</a>.
-          </p>
-        </div>
-      </canvas>
+      <div class="container mx-auto px-3 sm:px-5 py-2 sm:py-4 text-center">
+        <p class="text-xs sm:text-sm text-gray-400">
+          Powered by
+          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="text-white hover:text-meshtastic transition-colors">▲ Vercel</a>
+          <span class="mx-2 text-gray-600">•</span>
+          Meshtastic® is a registered trademark of Meshtastic LLC.
+          <span class="mx-2 text-gray-600">•</span>
+          <a href="https://meshtastic.org/docs/legal" class="text-white hover:text-meshtastic transition-colors">Legal Information</a>
+        </p>
+      </div>
     </footer>
-    <div class="fixed right-2 sm:-end-4 bottom-4 sm:bottom-6 group z-50">
+    <div class="fixed right-2 sm:right-4 bottom-4 sm:bottom-6 group z-50">
       <button
         type="button"
         :disabled="true"
         :class="{
-          'text-purple-400 border-purple-400 animate-pulse': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
-          'border-meshtastic text-meshtastic animate-pulse': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
-          'border-gray-700 text-gray-300': !isConnected,
+          'border-purple-400/50 bg-purple-500/10': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
+          'border-meshtastic/50 bg-meshtastic/10': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
+          'border-zinc-700 bg-zinc-800/50': !isConnected,
         }"
-        class="inline border focus:ring-4 focus:outline-none font-medium rounded-lg text-xs px-2 sm:px-4 py-1 text-center backdrop-blur-sm hover:shadow transition duration-300 ease-in-out"
+        class="inline-flex items-center gap-2 border backdrop-blur-md font-medium rounded-xl text-xs px-3 sm:px-4 py-2 text-center shadow-lg transition-all duration-300"
       >
-        {{ connectionButtonLabel }}
+        <span
+          :class="{
+            'text-purple-400': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
+            'text-meshtastic': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
+            'text-gray-400': !isConnected,
+          }"
+        >
+          {{ connectionButtonLabel }}
+        </span>
         <span
           v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked"
-          class="inline-flex w-2 h-2 me-2 bg-purple-400 rounded-full"
+          class="status-dot bg-purple-400"
+          style="box-shadow: 0 0 10px rgba(192, 132, 252, 0.6);"
         />
         <span
           v-else-if="isConnected"
-          class="inline-flex w-2 h-2 me-2 bg-green-500 rounded-full"
+          class="status-dot status-dot-connected"
         />
         <span
           v-else
-          class="inline-flex w-2 h-2 me-2 bg-gray-300 rounded-full"
+          class="status-dot status-dot-disconnected"
         />
       </button>
     </div>
@@ -194,7 +224,7 @@ const selectedDeviceImage = computed(() => {
   if (deviceStore.selectedTarget?.images?.length) {
     return `/img/devices/${deviceStore.selectedTarget.images[0]}`
   }
-  return '/img/devices/unknown.svg'
+  return '/img/devices/unknown-new.svg'
 })
 
 const connectionButtonLabel = computed(() => {
@@ -209,6 +239,17 @@ const connectionButtonLabel = computed(() => {
 
 const isConnected = computed(() => {
   return serialMonitorStore.isConnected || firmwareStore.isConnected
+})
+
+// Step enabled states for visual feedback
+const isStep2Enabled = computed(() => {
+  return (deviceStore.selectedTarget?.hwModel ?? 0) > 0
+})
+
+const isStep3Enabled = computed(() => {
+  const hasDevice = (deviceStore.selectedTarget?.hwModel ?? 0) > 0
+  const hasFirmware = firmwareStore.hasFirmwareFile || firmwareStore.hasOnlineFirmware
+  return hasDevice && hasFirmware
 })
 
 // WebSerial API support check
@@ -245,8 +286,8 @@ onMounted(() => {
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Doto:wght@600;700&display=swap');
   /* Additional Atkinson Hyperlegible fallback */
   @font-face {
     font-family: 'Atkinson Hyperlegible';
@@ -269,7 +310,7 @@ onMounted(() => {
     --secondary-color: #67EA94;
   }
   body {
-    font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
+    font-family: 'Atkinson Hyperlegible', 'Lato', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
   }
@@ -297,11 +338,14 @@ onMounted(() => {
   .border-meshtastic {
     border-color: var(--primary-color);
   }
+  .title-doto {
+    font-family: 'Doto', sans-serif;
+  }
   .bottom-button {
-    @apply flex items-center justify-center gap-1;
-    @apply font-medium text-xs text-center rounded-lg px-4 py-2 me-2 mb-2 border;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5;
+    @apply text-sm font-semibold text-center rounded-lg border border-meshtastic text-meshtastic;
     @apply hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out;
-    @apply focus:ring-4 focus:outline-none;
+    @apply focus:ring-4 focus:outline-none focus:ring-gray-300;
   }
   .footer {
     background-color: var(--bg-color);

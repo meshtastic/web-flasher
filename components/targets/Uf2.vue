@@ -1,138 +1,133 @@
 <template>
-  <div class="relative p-4 w-full max-w-4xl max-h-full">
-    <div class="relative rounded-lg shadow bg-zinc-700">
-      <FlashHeader />
-      <div class="p-4 md:p-5">
-        <ReleaseNotes />
-        <ol
-          v-if="firmwareStore.canShowFlash"
-          class="relative border-s border-gray-200 border-gray-600 ms-3.5 mb-4 md:mb-5"
-        >
-          <li class="mb-10 ms-8">
-            <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
-              1
-            </span>
-            <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-              {{ $t('flash.uf2.enter_dfu_mode') }}
-            </h3>
-            <div
-              class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200"
-              role="alert"
-            >
-              <span class="font-medium">
-                <Info class="h-4 w-4 inline" />
-                {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2') }} {{ deviceStore.dfuStepAction }}
-              </span>
-            </div>
-            <button
-              type="button"
-              class="inline-flex items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
-              @click="() => deviceStore.enterDfuMode($t)"
-            >
-              <FolderDown class="h-4 w-4 text-black" />
-              {{ $t('flash.uf2.enter_dfu') }}
-            </button>
-          </li>
-          <li class="mb-10 ms-8">
-            <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
-              2
-            </span>
-            <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
-              {{ $t('flash.uf2.ensure_drive_mounted') }}
-            </h3>
+  <div class="space-y-6">
+    <ReleaseNotes />
+    <ol
+      v-if="firmwareStore.canShowFlash"
+      class="relative border-s border-gray-700 ms-3.5 mb-6"
+    >
+      <!-- Step 1: Enter DFU Mode -->
+      <li class="mb-10 ms-8">
+        <span class="absolute -start-4 step-badge">
+          1
+        </span>
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+            {{ $t('flash.uf2.enter_dfu_mode') }}
+          </h3>
+          <div class="flex p-4 mb-4 text-sm text-blue-400 rounded-lg bg-gray-700/50" role="alert">
+            <Info class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
             <span>
-              {{ $t('flash.uf2.drive_name_info') }}
+              {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2') }} {{ deviceStore.dfuStepAction }}
             </span>
-            <div>
-              <img
-                v-if="deviceStore.isSelectedNrf"
-                src="@/assets/img/dfu.png"
-                :alt="$t('flash.uf2.dfu_drive')"
-              >
-              <img
-                v-else
-                src="@/assets/img/uf2_rp2040.png"
-                :alt="$t('flash.uf2.dfu_drive')"
-              >
-            </div>
-          </li>
-          <li class="ms-8">
-            <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
-              3
-            </span>
-            <h3 class="mb-1 text-lg font-semibold text-white">
-              {{ $t('flash.uf2.download_copy_uf2') }}
-            </h3>
-            <span>
-              {{ $t('flash.uf2.copy_instructions') }}
-            </span>
-            <div
-              class="p-4 mb-4 my-2 text-sm rounded-lg bg-blue-50 bg-gray-800 text-blue-200"
-              role="alert"
+          </div>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-900 bg-meshtastic rounded-lg hover:bg-green-300 focus:ring-4 focus:ring-green-800 transition-colors"
+            @click="() => deviceStore.enterDfuMode($t)"
+          >
+            <FolderDown class="w-4 h-4" />
+            {{ $t('flash.uf2.enter_dfu') }}
+          </button>
+        </div>
+      </li>
+      <!-- Step 2: Ensure Drive Mounted -->
+      <li class="mb-10 ms-8">
+        <span class="absolute -start-4 step-badge">
+          2
+        </span>
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+            {{ $t('flash.uf2.ensure_drive_mounted') }}
+          </h3>
+          <p class="text-sm text-gray-400 mb-3">{{ $t('flash.uf2.drive_name_info') }}</p>
+          <div class="rounded-lg overflow-hidden bg-gray-900/50 border border-gray-700">
+            <img
+              v-if="deviceStore.isSelectedNrf"
+              src="@/assets/img/dfu.png"
+              :alt="$t('flash.uf2.dfu_drive')"
+              class="max-w-full h-auto"
             >
-              <span class="font-medium">
-                <Info class="h-4 w-4 inline" />
-                {{ $t('flash.uf2.auto_reboot_warning') }}
-              </span>
-            </div>
-          </li>
-          <li>
-            <label
-              v-if="canInstallInkHud"
-              class="relative inline-flex items-center me-5 ml-8 my-2 cursor-pointer"
+            <img
+              v-else
+              src="@/assets/img/uf2_rp2040.png"
+              :alt="$t('flash.uf2.dfu_drive')"
+              class="max-w-full h-auto"
             >
-              <input
-                v-model="firmwareStore.shouldInstallInkHud"
-                type="checkbox"
-                value=""
-                class="sr-only peer"
-              >
-              <div class="w-11 h-6 rounded-full peer peer-focus:ring-4 bg-gray-400 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-red-600" />
-              <span class="ms-3 text-sm font-medium text-gray-100">{{ $t('flash.uf2.install_inkhud') }}</span>
-            </label>
-          </li>
-        </ol>
+          </div>
+        </div>
+      </li>
+      <!-- Step 3: Download & Copy -->
+      <li class="ms-8">
+        <span class="absolute -start-4 step-badge">
+          3
+        </span>
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+            {{ $t('flash.uf2.download_copy_uf2') }}
+          </h3>
+          <p class="text-sm text-gray-400 mb-3">{{ $t('flash.uf2.copy_instructions') }}</p>
+          <div class="flex p-4 text-sm text-blue-400 rounded-lg bg-gray-700/50" role="alert">
+            <Info class="flex-shrink-0 inline w-5 h-5 me-3" />
+            <span>{{ $t('flash.uf2.auto_reboot_warning') }}</span>
+          </div>
+          
+          <!-- InkHud Toggle -->
+          <label
+            v-if="canInstallInkHud"
+            class="relative inline-flex items-center mt-4 cursor-pointer"
+          >
+            <input
+              v-model="firmwareStore.shouldInstallInkHud"
+              type="checkbox"
+              class="sr-only peer"
+            >
+            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
+            <span class="ms-3 text-sm font-medium text-gray-300">{{ $t('flash.uf2.install_inkhud') }}</span>
+          </label>
+        </div>
+      </li>
+    </ol>
 
-        <div v-if="firmwareStore.canShowFlash">
-          <template v-if="hasVariantChoices">
-            <div class="grid gap-2">
-              <template v-for="variant in variantTargets" :key="variant.platformioTarget">
-                <a
-                  v-if="firmwareStore.selectedFirmware?.id"
-                  :href="getDownloadUf2Url(variant)"
-                  class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                >
-                  {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
-                </a>
-                <button
-                  v-else
-                  type="button"
-                  class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                  @click="downloadUf2FileFsForTarget(variant)"
-                >
-                  {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
-                </button>
-              </template>
-            </div>
-          </template>
-          <template v-else>
+    <!-- Download Actions -->
+    <div v-if="firmwareStore.canShowFlash" class="space-y-3">
+      <template v-if="hasVariantChoices">
+        <div class="grid gap-3">
+          <template v-for="variant in variantTargets" :key="variant.platformioTarget">
             <a
               v-if="firmwareStore.selectedFirmware?.id"
-              :href="getDownloadUf2Url(deviceStore.$state.selectedTarget)"
-              class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              :href="getDownloadUf2Url(variant)"
+              class="w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
             >
-              {{ $t('flash.uf2.download_uf2') }}
+              {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
             </a>
             <button
               v-else
-              class="text-black inline-flex w-full justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              @click="downloadUf2FileFsForTarget(deviceStore.$state.selectedTarget)"
+              type="button"
+              class="w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
+              @click="downloadUf2FileFsForTarget(variant)"
             >
-              {{ $t('flash.uf2.download_uf2') }}
+              {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
             </button>
           </template>
         </div>
-      </div>
+      </template>
+      <template v-else>
+        <a
+          v-if="firmwareStore.selectedFirmware?.id"
+          :href="getDownloadUf2Url(deviceStore.$state.selectedTarget)"
+          class="block w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
+        >
+          {{ $t('flash.uf2.download_uf2') }}
+        </a>
+        <button
+          v-else
+          type="button"
+          class="w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
+          @click="downloadUf2FileFsForTarget(deviceStore.$state.selectedTarget)"
+        >
+          {{ $t('flash.uf2.download_uf2') }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -147,7 +142,6 @@ import { computed } from 'vue'
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
 import type { DeviceHardware } from '~/types/api'
-import FlashHeader from './FlashHeader.vue'
 import ReleaseNotes from './ReleaseNotes.vue'
 
 const deviceStore = useDeviceStore()

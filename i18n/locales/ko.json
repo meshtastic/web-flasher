@@ -3,7 +3,7 @@
   "header": "플래셔",
   "description": "ESP32 펌웨어 플래싱을 위한 웹 기반 도구",
   "browser_warning": "귀하의 브라우저는 WebSerial API를 지원하지 않습니다. 완전한 기능을 사용하려면 Chrome 또는 Edge와 같은 호환되는 브라우저로 전환해 주시기 바랍니다.",
-  "header_title": "FLASHER",
+  "header_title": "Meshtastic Web Flasher",
   "language": "언어",
   "actions": {
     "connect": "연결",
@@ -109,6 +109,7 @@
     "instructions": "연결 끊기 과정이 너무 오래 걸린다면, 장치를 수동으로 분리할 수 있습니다.",
     "disconnect": "연결 끊기",
     "reconnect": "Try Reconnecting",
+    "waiting_for_data": "데이터 대기 중...",
     "log_levels": {
       "all": "All",
       "debug": "Debug",

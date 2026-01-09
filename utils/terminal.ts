@@ -1,4 +1,4 @@
-import { Terminal } from 'xterm'
+import { Terminal } from '@xterm/xterm'
 
 export async function openTerminal(): Promise<Terminal> {
   // Remove any previous terminal elements from the DOM
