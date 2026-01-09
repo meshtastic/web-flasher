@@ -43,8 +43,19 @@
         <div class="flex h-full w-full items-start justify-center">
           <div class="relative w-full max-w-5xl">
             <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+              <!-- Chirpy Bouncing Background -->
+              <video
+                v-if="firmwareStore.isFlashing && firmwareStore.$state.prereleaseUnlocked"
+                autoplay
+                loop
+                muted
+                playsinline
+                class="modal-background-video"
+              >
+                <source src="@/assets/img/chirpy_bounce.webm" type="video/webm">
+              </video>
               <FlashHeader />
-              <div class="flex-1 overflow-y-auto p-3 sm:p-4">
+              <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative z-10">
                 <TargetsUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
                 <TargetsEsp32 v-if="deviceStore.selectedArchitecture.startsWith('esp32')" />
               </div>
@@ -63,11 +74,22 @@
         <div class="flex h-full w-full items-start justify-center">
           <div class="relative w-full max-w-3xl">
             <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+              <!-- Chirpy Bouncing Background -->
+              <video
+                v-if="firmwareStore.isFlashing && firmwareStore.$state.prereleaseUnlocked"
+                autoplay
+                loop
+                muted
+                playsinline
+                class="modal-background-video"
+              >
+                <source src="@/assets/img/chirpy_bounce.webm" type="video/webm">
+              </video>
               <FlashHeader
                 modal-id="erase-modal"
                 :title-override="`${$t('flash.erase_flash')} ${deviceStore.$state.selectedTarget?.displayName || ''}`"
               />
-              <div class="flex-1 overflow-y-auto p-3 sm:p-4">
+              <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative z-10">
                 <TargetsEraseUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
               </div>
             </div>
@@ -155,3 +177,18 @@ const canFlash = computed(() => {
     && (fileExistsOnServer.value || firmwareStore.hasFirmwareFile)
 })
 </script>
+
+<style scoped>
+.modal-background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.25;
+  z-index: 0;
+  /* transform: scale(0.8); */
+}
+</style>

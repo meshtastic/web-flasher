@@ -150,6 +150,28 @@
         </p>
       </div>
     </footer>
+    <!-- Konami Code Visual Feedback -->
+    <div class="fixed inset-x-0 bottom-0 h-32 pointer-events-none z-40">
+      <transition-group
+        name="key-fly"
+        tag="div"
+        class="relative w-full h-full"
+      >
+        <div
+          v-for="keyEntry in activeKonamiKeys"
+          :key="keyEntry.id"
+          class="key-animation"
+        >
+          <div
+            class="key-display"
+            :class="{ 'key-failed': keyEntry.failed }"
+          >
+            {{ getKeyDisplay(keyEntry.key) }}
+          </div>
+        </div>
+      </transition-group>
+    </div>
+
     <div class="fixed right-2 sm:right-4 bottom-4 sm:bottom-6 group z-50">
       <button
         type="button"
@@ -256,11 +278,37 @@ const isStep3Enabled = computed(() => {
 const isWebSerialSupported = computed(() => {
   return 'serial' in navigator
 })
+
 const konamiKeys = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
 const konamiCodeIndex = ref(0)
+const activeKonamiKeys = ref([])
+let konamiKeyId = 0
+
+const getKeyDisplay = (key) => {
+  const keyMap = {
+    'ArrowUp': '↑',
+    'ArrowDown': '↓',
+    'ArrowLeft': '←',
+    'ArrowRight': '→',
+    'b': 'B',
+    'a': 'A',
+  }
+  return keyMap[key] || key
+}
+
 window.addEventListener('keydown', (event) => {
   if (event.key === konamiKeys[konamiCodeIndex.value]) {
     console.log('konami code key match', konamiCodeIndex.value)
+    
+    // Add key to animation queue with unique ID
+    const keyToDisplay = konamiKeys[konamiCodeIndex.value]
+    const keyEntry = { key: keyToDisplay, id: konamiKeyId++ }
+    activeKonamiKeys.value.push(keyEntry)
+    setTimeout(() => {
+      const idx = activeKonamiKeys.value.findIndex(k => k.id === keyEntry.id)
+      if (idx > -1) activeKonamiKeys.value.splice(idx, 1)
+    }, 1000)
+    
     konamiCodeIndex.value++
     if (konamiCodeIndex.value === konamiKeys.length) {
       console.log('Unlocking pre-release section')
@@ -272,6 +320,15 @@ window.addEventListener('keydown', (event) => {
     }
   }
   else {
+    // Only show failed key if we were already in the sequence
+    if (konamiCodeIndex.value > 0) {
+      const keyEntry = { key: event.key, id: konamiKeyId++, failed: true }
+      activeKonamiKeys.value.push(keyEntry)
+      setTimeout(() => {
+        const idx = activeKonamiKeys.value.findIndex(k => k.id === keyEntry.id)
+        if (idx > -1) activeKonamiKeys.value.splice(idx, 1)
+      }, 1000)
+    }
     konamiCodeIndex.value = 0
   }
 })
@@ -315,7 +372,17 @@ onMounted(() => {
     color: var(--text-color);
   }
   .konami-code {
-    background-color: #000000 !important;
+    background: linear-gradient(
+      -45deg,
+      #000a00,
+      #0a2a0a,
+      #001a00,
+      #0a1a0a,
+      #000a0a,
+      #000a00
+    ) !important;
+    background-size: 400% 400% !important;
+    animation: konamiGradient 8s ease infinite !important;
     /* Firefox */
     -moz-transition: all 1s ease-in;
     /* WebKit */
@@ -325,6 +392,99 @@ onMounted(() => {
     /* Standard */
     transition: all 1s ease-in;
   }
+
+  @keyframes konamiGradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Scanlines overlay for CRT effect - subtle */
+  .konami-code::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03),
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  }
+
+  /* CRT vignette effect */
+  .konami-code::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+  }
+
+  /* Neon glow effect on cards in konami mode */
+  .konami-code .card-modern {
+    border: 1px solid rgba(103, 234, 148, 0.5) !important;
+    box-shadow: 
+      0 0 10px rgba(103, 234, 148, 0.3),
+      0 0 20px rgba(103, 234, 148, 0.1),
+      inset 0 0 20px rgba(103, 234, 148, 0.05) !important;
+    animation: neonPulse 2s ease-in-out infinite !important;
+  }
+
+  @keyframes neonPulse {
+    0%, 100% {
+      box-shadow: 
+        0 0 10px rgba(103, 234, 148, 0.3),
+        0 0 20px rgba(103, 234, 148, 0.1),
+        inset 0 0 20px rgba(103, 234, 148, 0.05);
+    }
+    50% {
+      box-shadow: 
+        0 0 15px rgba(103, 234, 148, 0.5),
+        0 0 30px rgba(103, 234, 148, 0.2),
+        inset 0 0 25px rgba(103, 234, 148, 0.1);
+    }
+  }
+
+  /* Retro pixel-style text shadow on headings */
+  .konami-code h2 {
+    text-shadow: 
+      2px 2px 0 rgba(103, 234, 148, 0.3),
+      -1px -1px 0 rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Glowing buttons in konami mode */
+  .konami-code .btn-primary,
+  .konami-code .btn-secondary {
+    box-shadow: 0 0 10px rgba(103, 234, 148, 0.4) !important;
+  }
+
+  .konami-code .btn-primary:hover,
+  .konami-code .btn-secondary:hover {
+    box-shadow: 0 0 20px rgba(103, 234, 148, 0.6) !important;
+  }
+
   .invert {
     -webkit-filter: invert(1);
     filter: invert(1);
@@ -377,6 +537,63 @@ onMounted(() => {
   .flash-enter-from,
   .flash-leave-to {
     transition: all 1s ease-out;
+    opacity: 0;
+  }
+
+  /* Konami Code Key Animation */
+  .key-animation {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: keyFly 1s ease-out forwards;
+  }
+
+  @keyframes keyFly {
+    0% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-120px) scale(0.8);
+    }
+  }
+
+  .key-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, rgba(103, 234, 148, 0.3), rgba(103, 234, 148, 0.1));
+    border: 2px solid rgba(103, 234, 148, 0.6);
+    border-radius: 8px;
+    color: rgb(103, 234, 148);
+    font-weight: bold;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(103, 234, 148, 0.4), inset 0 0 10px rgba(103, 234, 148, 0.1);
+    text-shadow: 0 0 10px rgba(103, 234, 148, 0.6);
+  }
+
+  .key-display.key-failed {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
+    border: 2px solid rgba(239, 68, 68, 0.6);
+    color: rgb(239, 68, 68);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), inset 0 0 10px rgba(239, 68, 68, 0.1);
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  }
+
+  .key-fly-enter-active,
+  .key-fly-leave-active {
+    transition: none;
+  }
+
+  .key-fly-enter-from,
+  .key-fly-leave-to {
     opacity: 0;
   }
 </style>

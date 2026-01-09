@@ -10,7 +10,7 @@
         <span class="absolute -start-4 step-badge">
           1
         </span>
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+        <div class="p-4 bg-gray-800/80 border border-gray-700 rounded-lg shadow-sm">
           <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
             {{ $t('flash.esp32.step_1_usb') }}
           </h3>
@@ -36,7 +36,7 @@
         <span class="absolute -start-4 step-badge">
           2
         </span>
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+        <div class="p-4 bg-gray-800/80 border border-gray-700 rounded-lg shadow-sm">
           <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
             {{ $t('flash.esp32.step_2_baud_rate') }}
           </h3>
@@ -57,7 +57,7 @@
         <span class="absolute -start-4 step-badge">
           3
         </span>
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
+        <div class="p-4 bg-gray-800/80 border border-gray-700 rounded-lg shadow-sm">
           <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
             {{ $t('flash.esp32.step_3_flash') }}
           </h3>
@@ -174,7 +174,8 @@
         </div>
       </div>
     </div>
-    <div id="terminal" class="rounded-lg overflow-hidden" />
+    <!-- Terminal -->
+    <div id="terminal" class="rounded-lg overflow-hidden relative z-10 bg-black/40" />
   </div>
 </template>
 
@@ -200,6 +201,22 @@ const { t } = useI18n()
 
 const deviceStore = useDeviceStore()
 const firmwareStore = useFirmwareStore()
+
+// Track success state for Chirpy celebration
+const showSuccessAnimation = ref(false)
+
+// Watch for flash completion
+watch(() => firmwareStore.$state.flashPercentDone, (newVal) => {
+  if (newVal >= 100 && !firmwareStore.$state.isFlashing) {
+    showSuccessAnimation.value = true
+  }
+})
+
+watch(() => firmwareStore.$state.isFlashing, (isFlashing) => {
+  if (isFlashing) {
+    showSuccessAnimation.value = false
+  }
+})
 
 const partition = computed(() => {
   if (firmwareStore.$state.flashingIndex === 0) {
@@ -330,3 +347,54 @@ const updateEsp32 = () => {
   firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget)
 }
 </script>
+
+<style scoped>
+.chirpy-flash-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(103, 234, 148, 0.08), rgba(103, 234, 148, 0.02));
+  border: 1px solid rgba(103, 234, 148, 0.2);
+  animation: container-glow 2s ease-in-out infinite;
+}
+
+@keyframes container-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(103, 234, 148, 0.15);
+  }
+  50% { 
+    box-shadow: 0 0 35px rgba(103, 234, 148, 0.25);
+  }
+}
+
+.chirpy-dancing {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 1rem;
+  border: 1px solid rgba(103, 234, 148, 0.3);
+  padding: 0.5rem;
+  background: rgba(103, 234, 148, 0.05);
+}
+
+.chirpy-success {
+  filter: drop-shadow(0 0 15px rgba(103, 234, 148, 0.6));
+}
+
+.chirpy-status-text {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #67EA94;
+  text-align: center;
+  animation: text-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes text-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+</style>
