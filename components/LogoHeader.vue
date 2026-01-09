@@ -79,11 +79,13 @@ import { vendorCobrandingTag } from '~/types/resources'
   background: radial-gradient(circle, rgba(103, 234, 148, 0.3), transparent 70%);
   border-radius: 50%;
   animation: logo-pulse 3s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 @keyframes logo-pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.05); }
+  0%, 100% { opacity: 0.5; transform: scale(1) translateZ(0); }
+  50% { opacity: 0.8; transform: scale(1.05) translateZ(0); }
 }
 
 .logo-icon {
