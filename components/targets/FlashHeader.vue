@@ -1,32 +1,69 @@
 <template>
   <div
     v-if="firmwareStore.canShowFlash"
-    class="flex items-center justify-between p-3 sm:p-4 md:p-5 border-b rounded-t border-gray-600"
+    class="flash-header sticky top-0 z-10 flex items-center justify-between p-3 sm:p-4 md:p-5 rounded-t"
   >
-    <h3 class="text-base sm:text-lg font-semibold text-white">
-      {{ $t('flash.title') }} {{ deviceStore.$state.selectedTarget?.displayName }}
-    </h3>
+    <!-- Device type icon + title -->
+    <div class="flex items-center gap-3">
+      <div class="flash-header-icon">
+        <component :is="deviceIcon" class="w-5 h-5 text-meshtastic" />
+      </div>
+      <h3 class="text-base sm:text-lg font-semibold text-white">
+        {{ headerTitle }}
+      </h3>
+    </div>
+
+    <!-- Close button with glow -->
     <button
       type="button"
-      class="text-gray-400 bg-transparent hover:bg-gray-600 hover:text-white rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center"
-      data-modal-toggle="flash-modal"
+      class="flash-header-close"
+      :data-modal-toggle="modalId"
       @click="closeFlashModal"
     >
-      <X class="w-3 h-3" />
+      <X class="w-4 h-4" />
       <span class="sr-only">{{ $t('actions.close_dialog') }}</span>
     </button>
+    
+    <!-- Gradient accent line -->
+    <div class="flash-header-accent"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
-import { X } from 'lucide-vue-next'
+import { X, Cpu, Radio, Microchip } from 'lucide-vue-next'
 
+const props = defineProps<{
+  modalId?: string
+  titleOverride?: string
+}>()
+
+const { t } = useI18n()
 const deviceStore = useDeviceStore()
 const firmwareStore = useFirmwareStore()
 
+const modalId = computed(() => props.modalId ?? 'flash-modal')
+const headerTitle = computed(() => {
+  if (props.titleOverride) {
+    return props.titleOverride
+  }
+  const name = deviceStore.$state.selectedTarget?.displayName
+  return name ? `${t('flash.title')} ${name}` : t('flash.title')
+})
+
+// Pick icon based on device architecture
+const deviceIcon = computed(() => {
+  const arch = deviceStore.$state.selectedTarget?.architecture?.toLowerCase() ?? ''
+  if (arch.includes('nrf')) return Radio
+  if (arch.includes('rp2')) return Microchip
+  return Cpu // ESP32 and default
+})
+
 const closeFlashModal = () => {
-  document.getElementById('flash-modal')?.click() // Flowbite bug
+  document.getElementById(modalId.value)?.click() // Flowbite bug
 }
 </script>

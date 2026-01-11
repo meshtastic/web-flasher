@@ -109,6 +109,7 @@
     "instructions": "Bağlantı kesme işlemi çok uzun sürüyorsa, cihazın bağlantısını manuel olarak kesebilirsiniz.",
     "disconnect": "Bağlantıyı Kes",
     "reconnect": "Try Reconnecting",
+    "waiting_for_data": "Veriler bekleniyor...",
     "log_levels": {
       "all": "Hepsi",
       "debug": "Hata Ayıklama",

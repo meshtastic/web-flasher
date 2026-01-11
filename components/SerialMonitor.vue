@@ -1,175 +1,179 @@
 <template>
   <div
     v-if="serialMonitorStore.isConnected || serialMonitorStore.terminalBuffer.length > 0"
-    class="w-full mt-2"
+    class="w-full mt-2 px-0 sm:px-0 h-[calc(100vh-140px)] flex flex-col gap-3"
   >
-    <div class="flex items-center justify-center">
-      <div
-        v-if="serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked"
-        class="flex items-center p-4 mb-4 text-sm rounded-lg bg-gray-800 text-blue-400"
-        role="alert"
-      >
-        <Info class="flex-shrink-0 inline w-4 h-4 me-3" />
-        <span class="sr-only">Info</span>
-        <div>
-          {{ $t('serial.instructions') }}
+    <!-- Top toolbar -->
+    <div class="relative overflow-hidden rounded-xl border border-white/10">
+      <div class="absolute inset-0 bg-gradient-to-r from-gray-800/50 via-gray-800/30 to-gray-800/50 backdrop-blur-md" />
+      <div class="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_20%_50%,rgba(103,234,148,0.1),transparent_50%)]" />
+      <div class="relative flex items-center justify-between gap-6 px-4 py-3">
+        <!-- Connection Status -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="relative flex-shrink-0">
+            <div class="w-3 h-3 rounded-full" :class="serialMonitorStore.isConnected ? 'bg-green-500' : 'bg-gray-500'" />
+            <div v-if="serialMonitorStore.isConnected" class="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+          </div>
+          <div class="flex flex-col gap-0.5 min-w-0">
+            <span class="text-xs font-semibold uppercase tracking-wide leading-none" :class="serialMonitorStore.isConnected ? 'text-green-400' : 'text-gray-400'">
+              {{ serialMonitorStore.isConnected ? 'Connected' : 'Disconnected' }}
+            </span>
+            <span class="text-xs text-gray-500 font-medium leading-none">Serial Monitor</span>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-      <div class="col">
-        <div class="flex items-center justify-start px-2 overflow-x-auto pb-2">
-          <button
-            type="button"
-            class="relative border focus:ring-4 focus:outline-none rounded-full text-xs font-medium px-3 sm:px-4 py-1.5 text-center me-2 sm:me-3 mb-2 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 bg-gray-900 focus:ring-blue-800 whitespace-nowrap flex-shrink-0"
-            @click="logLevel = 'all'"
-          >
-            {{ $t('serial.log_levels.all') }}
-            <div
-              v-if="logCounts.all > 0"
-              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-blue-500 rounded-full -top-3 -end-3"
+        
+        <!-- Center Spacer -->
+        <div class="flex-1" />
+        
+        <!-- Action buttons and Disconnect -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <div class="flex items-center gap-1 bg-gray-900/80 backdrop-blur-sm rounded-lg p-1.5 border border-white/10 hover:border-white/20 transition-colors">
+            <button
+              type="button"
+              title="Clear logs"
+              class="group relative p-2 text-gray-400 hover:text-white rounded-md transition-all duration-200 hover:bg-white/10"
+              @click="clearTerminal"
             >
-              {{ logCounts.all }}
-            </div>
-          </button>
-          <button
-            type="button"
-            class="relative border :outline-none rounded-full text-xs font-medium px-3 sm:px-4 py-1.5 text-center me-2 sm:me-3 mb-2 focus:ring-gray-800 text-white hover:bg-blue-500 whitespace-nowrap flex-shrink-0"
-            @click="logLevel = 'INFO  |'"
-          >
-            {{ $t('serial.log_levels.info') }}
-            <div
-              v-if="logCounts.info > 0"
-              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-gray-200 rounded-full -top-3 -end-3"
+              <Trash class="h-4 w-4 transition-transform group-hover:scale-110" />
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Clear</div>
+            </button>
+            <button
+              type="button"
+              title="Copy logs to clipboard"
+              class="group relative p-2 text-gray-400 hover:text-white rounded-md transition-all duration-200 hover:bg-white/10"
+              @click="copyToClipboard"
             >
-              {{ logCounts.info }}
-            </div>
-          </button>
-          <button
-            type="button"
-            class="relative border :outline-none rounded-full text-xs font-medium px-3 sm:px-4 py-1.5 text-center me-2 sm:me-3 mb-2 focus:ring-gray-800 border-blue-300 text-blue-300 hover:bg-blue-500 hover:text-white whitespace-nowrap flex-shrink-0"
-            @click="logLevel = 'DEBUG |'"
-          >
-            {{ $t('serial.log_levels.debug') }}
-            <div
-              v-if="logCounts.debug > 0"
-              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-blue-300 rounded-full -top-3 -end-3"
+              <Clipboard class="h-4 w-4 transition-transform group-hover:scale-110" />
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Copy</div>
+            </button>
+            <button
+              type="button"
+              title="Save logs to file"
+              class="group relative p-2 text-gray-400 hover:text-white rounded-md transition-all duration-200 hover:bg-white/10"
+              @click="saveToFile"
             >
-              {{ logCounts.debug }}
-            </div>
-          </button>
-          <button
-            type="button"
-            class="relative border :outline-none rounded-full text-xs font-medium px-3 sm:px-4 py-1.5 text-center me-2 sm:me-3 mb-2 focus:ring-gray-800 border-orange-300 text-orange-300 hover:bg-orange-300 hover:text-white whitespace-nowrap flex-shrink-0"
-            @click="logLevel = 'WARN  |'"
-          >
-            {{ $t('serial.log_levels.warn') }}
-            <div
-              v-if="logCounts.warn > 0"
-              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-orange-300 rounded-full -top-3 -end-3"
-            >
-              {{ logCounts.warn }}
-            </div>
-          </button>
-          <button
-            type="button"
-            class="relative border :outline-none rounded-full text-xs font-medium px-3 sm:px-4 py-1.5 text-center me-2 sm:me-3 mb-2 focus:ring-gray-800 border-red-500 text-red-500 hover:bg-red-500 hover:text-white whitespace-nowrap flex-shrink-0"
-            @click="logLevel = 'ERROR |'"
-          >
-            {{ $t('serial.log_levels.error') }}
-            <div
-              v-if="logCounts.error > 0"
-              class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-black bg-red-500 rounded-full -top-3 -end-3"
-            >
-              {{ logCounts.error }}
-            </div>
-          </button>
-        </div>
-      </div>
-      <div class="col">
-        <div class="flex items-center justify-center md:justify-center">
+              <Download class="h-4 w-4 transition-transform group-hover:scale-110" />
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Save</div>
+            </button>
+          </div>
+          
+          <!-- Disconnect button -->
           <button
             v-if="serialMonitorStore.isConnected"
-            class="border focus:ring-4 focus:outline-none font-medium text-purple-400 border-purple-400 hover:text-black hover:border-transparent hover:bg-white rounded-lg text-sm px-4 py-1 text-center me-2 mb-2  hover:shadow transition duration-300 ease-in-out"
+            class="group relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-red-400 bg-gray-900/80 hover:bg-gray-900/60 border border-white/10 hover:border-red-500/40 rounded-lg transition-all duration-200 overflow-hidden"
             @click="disconnect()"
           >
-            {{ $t('serial.disconnect') }}
-          </button>
-        </div>
-        <!-- Auto scroll -->
-      </div>
-      <div class="col">
-        <div
-          class="rounded-md shadow-sm flex justify-center md:justify-end px-2"
-          role="group"
-        >
-          <button
-            type="button"
-            title="Clear logs"
-            class="px-4 py-1.5 text-sm font-medium text-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700"
-            @click="clearTerminal"
-          >
-            <Trash class="h-4 w-4 inline" />
-          </button>
-          <button
-            type="button"
-            title="Copy logs to clipboard"
-            class="px-4 py-1.5 text-sm font-medium text-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700"
-            @click="copyToClipboard"
-          >
-            <Clipboard class="h-4 w-4 inline" />
-          </button>
-          <button
-            type="button"
-            title="Save logs to file"
-            class="px-4 py-1.5 text-sm font-medium text-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-black focus:z-10 focus:ring-2 focus:ring-blue-700"
-            @click="saveToFile"
-          >
-            <Download class="h-4 w-4 inline" />
+            <X class="h-4 w-4 relative transition-transform group-hover:rotate-90 duration-200" />
+            <span class="relative">{{ $t('serial.disconnect') }}</span>
           </button>
         </div>
       </div>
     </div>
-    <div class="inverse-toggle px-3 sm:px-5 shadow-lg text-gray-100 text-xs sm:text-sm font-mono subpixel-antialiased bg-gray-900 pb-6 pt-4 rounded-lg leading-normal overflow-hidden">
-      <div class="top mb-2 flex">
-        <div class="h-3 w-3 bg-red-500 rounded-full" />
-        <div class="ml-2 h-3 w-3 bg-orange-300 rounded-full" />
-        <div class="ml-2 h-3 w-3 bg-green-500 rounded-full" />
-      </div>
-      <div class="mt-4 overflow-x-auto">
-        <p
-          v-for="line in filteredTerminalBuffer"
-          :class="logLevelClass(line)"
-        >
-          {{ line.replaceAll(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "") }}<br>
-        </p>
+
+    <div class="flex-1 min-h-0 shadow-lg rounded-xl border border-white/10 overflow-hidden flex items-center justify-center relative">
+      <div ref="terminalContainer" class="h-full w-full" />
+      <div v-if="serialMonitorStore.isConnected && serialMonitorStore.rawBuffer.length === 0" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/80 backdrop-blur-sm pointer-events-none">
+        <div class="loader mb-4" />
+        <p class="text-gray-400 text-sm">{{ $t('serial.waiting_for_data') }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { Terminal } from '@xterm/xterm'
+import { FitAddon } from '@xterm/addon-fit'
+import '@xterm/xterm/css/xterm.css'
 
 import {
   Download,
   Clipboard,
   Trash,
-  Info,
+  X,
 } from 'lucide-vue-next'
 
 import { useSerialMonitorStore } from '../stores/serialMonitorStore'
 
 const serialMonitorStore = useSerialMonitorStore()
+const terminalContainer = ref(null)
+const terminal = ref(null)
+const fitAddon = ref(null)
+const lastRawLength = ref(0)
 
-const logLevel = ref('all')
-
-const filteredTerminalBuffer = computed(() => {
-  if (logLevel.value === 'all') {
-    return serialMonitorStore.terminalBuffer
+const initTerminal = () => {
+  if (terminalContainer.value && !terminal.value) {
+    terminal.value = new Terminal({
+      theme: {
+        background: '#111827',
+        foreground: '#f3f4f6',
+      },
+      fontFamily: 'monospace',
+      fontSize: 14,
+    })
+    fitAddon.value = new FitAddon()
+    terminal.value.loadAddon(fitAddon.value)
+    terminal.value.open(terminalContainer.value)
+    
+    nextTick(() => {
+      fitAddon.value?.fit()
+    })
+    
+    // Write existing raw buffer content
+    lastRawLength.value = 0
+    if (serialMonitorStore.rawBuffer) {
+      terminal.value.write(serialMonitorStore.rawBuffer)
+      lastRawLength.value = serialMonitorStore.rawBuffer.length
+    }
   }
-  return serialMonitorStore.terminalBuffer.filter(line => line.includes(logLevel.value.toUpperCase()))
+}
+
+const handleResize = () => {
+  fitAddon.value?.fit()
+}
+
+onMounted(() => {
+  initTerminal()
+  window.addEventListener('resize', handleResize)
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  terminal.value?.dispose()
+  terminal.value = null
+  fitAddon.value = null
+})
+
+// Watch raw buffer for new data and write directly to xterm
+watch(
+  () => serialMonitorStore.rawBuffer,
+  (newRawBuffer) => {
+    if (!terminal.value) {
+      initTerminal()
+      return
+    }
+    
+    const newLength = newRawBuffer.length
+    
+    // If buffer was reset, clear terminal and re-render
+    if (newLength < lastRawLength.value) {
+      terminal.value.clear()
+      lastRawLength.value = 0
+      if (newRawBuffer) {
+        terminal.value.write(newRawBuffer)
+        lastRawLength.value = newLength
+      }
+      return
+    }
+    
+    // Write only new data
+    if (newLength > lastRawLength.value) {
+      const newData = newRawBuffer.slice(lastRawLength.value)
+      terminal.value.write(newData)
+      lastRawLength.value = newLength
+    }
+  }
+)
 
 const disconnect = () => {
   if (serialMonitorStore.isConnected) {
@@ -177,18 +181,13 @@ const disconnect = () => {
   }
 }
 
-const logCounts = computed(() => {
-  return {
-    all: serialMonitorStore.terminalBuffer.length,
-    info: serialMonitorStore.terminalBuffer.filter(line => line.includes('INFO')).length,
-    debug: serialMonitorStore.terminalBuffer.filter(line => line.includes('DEBUG')).length,
-    warn: serialMonitorStore.terminalBuffer.filter(line => line.includes('WARN')).length,
-    error: serialMonitorStore.terminalBuffer.filter(line => line.includes('ERROR')).length,
-  }
-})
-
 const clearTerminal = () => {
   serialMonitorStore.terminalBuffer = []
+  serialMonitorStore.rawBuffer = ''
+  lastRawLength.value = 0
+  if (terminal.value) {
+    terminal.value.clear()
+  }
 }
 
 const copyToClipboard = () => {
@@ -204,17 +203,21 @@ const saveToFile = () => {
   a.click()
   URL.revokeObjectURL(url)
 }
-
-const logLevelClass = (line) => {
-  if (line.includes('ERROR')) {
-    return 'text-red-500'
-  }
-  else if (line.includes('WARN')) {
-    return 'text-orange-300'
-  }
-  else if (line.includes('DEBUG')) {
-    return 'text-blue-300'
-  }
-  return ''
-}
 </script>
+
+<style scoped>
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(103, 234, 148, 0.2);
+  border-top-color: #67EA94;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

@@ -105,6 +105,8 @@
   "serial": {
     "instructions": "如果断开连接过程耗时太长，您可以手动断开设备。",
     "disconnect": "断开",
+    "reconnect": "尝试重新连接",
+    "waiting_for_data": "等待数据...",
     "log_levels": {
       "all": "全部",
       "debug": "调试",

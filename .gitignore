@@ -93,3 +93,5 @@ sw.*
 
 # Vercel
 .vercel
+
+.playwright-mcp

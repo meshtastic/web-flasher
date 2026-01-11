@@ -6,6 +6,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
       baudRate: 115200,
       isOpen: false,
       terminalBuffer: new Array<string>(),
+      rawBuffer: '', // Raw data for xterm
       isConnected: false,
       isReaderLocked: false,
       port: <SerialPort | undefined>{},
@@ -33,6 +34,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
     },
     async readSerialMonitor(port: SerialPort): Promise<void> {
       this.terminalBuffer = []
+      this.rawBuffer = ''
       const decoderStream = new TextDecoderStream()
       port.readable!.pipeTo(decoderStream.writable)
       const inputStream = decoderStream.readable
@@ -46,6 +48,10 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
         }
         let { value } = await reader.read()
         if (value) {
+          // Append raw data for xterm
+          this.rawBuffer += value
+          
+          // Also process into lines for save/copy
           value = value?.replace(/\r/g, '')
           if (value.includes('\n')) {
             value.split('\n').forEach((line, index) => {
