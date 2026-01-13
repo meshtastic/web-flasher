@@ -30,11 +30,85 @@ import {
   type FirmwareResource,
   getCorsFriendyReleaseUrl,
 } from '../types/api'
+
+import {
+  type FirmwareManifest,
+  type FirmwareManifestFile,
+  PARTITION_NAMES,
+  type ReleaseManifest,
+} from '../types/manifest'
+
 import { createUrl } from './store'
 
 const previews = showPrerelease ? [currentPrerelease] : []
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
+
+/**
+ * Fetch release notes from meshtastic.github.io
+ */
+async function fetchReleaseNotes(version: string): Promise<string> {
+  try {
+    // Remove 'v' prefix if present
+    const cleanVersion = version.replace(/^v/, '')
+    const url = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-${cleanVersion}/release_notes.md`
+    const response = await fetch(url)
+    if (!response.ok) {
+      console.warn(`Could not fetch release notes from ${url}`)
+      return ''
+    }
+    return await response.text()
+  }
+  catch (error) {
+    console.warn(`Error fetching release notes for version ${version}:`, error)
+    return ''
+  }
+}
+
+/**
+ * Fetch the release manifest that lists all available targets for a firmware version
+ * @param version - The firmware version (with or without 'v' prefix)
+ * @returns The ReleaseManifest or undefined if not found
+ */
+async function fetchReleaseManifest(version: string): Promise<ReleaseManifest | undefined> {
+  try {
+    const cleanVersion = version.replace(/^v/, '')
+    const url = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-${cleanVersion}/firmware-${cleanVersion}.json`
+    const response = await fetch(url)
+    if (!response.ok) {
+      console.warn(`Could not fetch release manifest from ${url}`)
+      return undefined
+    }
+    return await response.json() as ReleaseManifest
+  }
+  catch (error) {
+    console.warn(`Error fetching release manifest for version ${version}:`, error)
+    return undefined
+  }
+}
+
+/**
+ * Fetch the target-specific manifest (mt.json) for a given target
+ * @param version - The firmware version (with or without 'v' prefix)
+ * @param targetBoard - The target board name (e.g., 'heltec-v4', 'heltec-v4-tft')
+ * @returns The FirmwareManifest or undefined if not found
+ */
+async function fetchTargetManifest(version: string, targetBoard: string): Promise<FirmwareManifest | undefined> {
+  try {
+    const cleanVersion = version.replace(/^v/, '')
+    const url = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-${cleanVersion}/firmware-${targetBoard}-${cleanVersion}.mt.json`
+    const response = await fetch(url)
+    if (!response.ok) {
+      console.warn(`Could not fetch target manifest from ${url}`)
+      return undefined
+    }
+    return await response.json() as FirmwareManifest
+  }
+  catch (error) {
+    console.warn(`Error fetching target manifest for ${targetBoard}:`, error)
+    return undefined
+  }
+}
 
 export const useFirmwareStore = defineStore('firmware', {
   state: () => {
@@ -61,6 +135,8 @@ export const useFirmwareStore = defineStore('firmware', {
       couldntFetchFirmwareApi: false,
       prereleaseUnlocked: useSessionStorage('prereleaseUnlocked', false),
       hasManifest: false,
+      manifest: <FirmwareManifest | undefined>undefined,
+      releaseManifest: <ReleaseManifest | undefined>undefined,
     }
   },
   getters: {
@@ -86,7 +162,14 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async fetchList() {
       firmwareApi.get<FirmwareReleases>()
-        .then((response: FirmwareReleases) => {
+        .then(async (response: FirmwareReleases) => {
+          // Fetch release notes for each firmware version from meshtastic.github.io
+          const fetchReleaseNotesForList = async (releases: FirmwareResource[]) => {
+            for (const release of releases) {
+              release.release_notes = await fetchReleaseNotes(release.id)
+            }
+          }
+
           // Only grab the latest 4 releases
           this.stable = response.releases.stable.slice(0, 4)
           this.alpha = response.releases.alpha.filter(f => !f.title.includes('Preview')).slice(0, 4)
@@ -97,6 +180,14 @@ export const useFirmwareStore = defineStore('firmware', {
             ...previews,
           ]
           this.pullRequests = response.pullRequests.slice(0, 4)
+
+          // Fetch release notes for all versions in parallel
+          await Promise.all([
+            fetchReleaseNotesForList(this.stable),
+            fetchReleaseNotesForList(this.alpha),
+            fetchReleaseNotesForList(this.previews),
+            fetchReleaseNotesForList(this.pullRequests),
+          ])
         })
         .catch((error) => {
           console.error('Error fetching firmware list:', error)
@@ -113,6 +204,17 @@ export const useFirmwareStore = defineStore('firmware', {
       // Restore MUI setting if it was enabled (for devices that support it)
       this.shouldInstallMui = currentMuiSetting
       this.hasManifest = false
+      this.manifest = undefined
+      this.releaseManifest = undefined
+
+      // Fetch the release manifest that lists all available targets
+      if (firmware.id) {
+        const releaseManifest = await fetchReleaseManifest(firmware.id)
+        if (releaseManifest) {
+          this.releaseManifest = releaseManifest
+          console.log(`Loaded release manifest for ${firmware.id} with ${releaseManifest.targets.length} targets`)
+        }
+      }
 
       // Update Datadog RUM context with firmware version
       if (import.meta.client) {
@@ -161,10 +263,11 @@ export const useFirmwareStore = defineStore('firmware', {
       this.shouldInstallMui = currentMuiSetting
       this.hasManifest = false
     },
-    async updateEspFlash(fileName: string, selectedTarget: DeviceHardware) {
+    async updateEspFlashLegacy(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal()
 
       try {
+        console.log(`Legacy update flash: ${fileName} at offset 0x10000`)
         this.port = await navigator.serial.requestPort({})
         this.isConnected = true
         this.port.ondisconnect = () => {
@@ -200,6 +303,278 @@ export const useFirmwareStore = defineStore('firmware', {
       console.error('Error flashing:', error)
       terminal.writeln('')
       terminal.writeln(`\x1b[38;5;9m${error}\x1b[0m`)
+    },
+    /**
+     * Get the partition offset from the manifest for a given partition name
+     * @param partName - The partition name (e.g., 'app0', 'app1', 'spiffs')
+     * @returns The offset as a number, or undefined if not found
+     */
+    getPartitionOffset(partName: string): number | undefined {
+      if (!this.manifest?.part) return undefined
+      const partition = this.manifest.part.find(p => p.name === partName)
+      if (!partition) return undefined
+      // Parse hex string offset (e.g., "0x10000") to number
+      return parseInt(partition.offset, 16)
+    },
+    /**
+     * Find a file in the manifest by its partition name
+     * @param partName - The partition name to search for (e.g., 'app0', 'app1', 'spiffs')
+     * @returns The FirmwareManifestFile or undefined if not found
+     */
+    findFileByPartName(partName: string): FirmwareManifestFile | undefined {
+      if (!this.manifest?.files) return undefined
+      return this.manifest.files.find(f => f.part_name === partName)
+    },
+    /**
+     * Find the factory binary file in the manifest (convention: ends with .factory.bin)
+     * @returns The FirmwareManifestFile or undefined if not found
+     */
+    findFactoryFile(): FirmwareManifestFile | undefined {
+      if (!this.manifest?.files) return undefined
+      return this.manifest.files.find(f => f.name.endsWith('.factory.bin'))
+    },
+    /**
+     * Find app0 (firmware) file by convention name pattern
+     * @returns The FirmwareManifestFile or undefined if not found
+     */
+    findAppFileByConvention(): FirmwareManifestFile | undefined {
+      if (!this.manifest?.files) return undefined
+      // Look for firmware-*.bin pattern
+      return this.manifest.files.find(f => f.name.match(/^firmware-.*\.bin$/) && !f.name.endsWith('.factory.bin'))
+    },
+    /**
+     * Find OTA (app1) file by convention name pattern
+     * @returns The FirmwareManifestFile or undefined if not found
+     */
+    findOtaFileByConvention(): FirmwareManifestFile | undefined {
+      if (!this.manifest?.files) return undefined
+      // Look for bleota*.bin pattern (bleota.bin or bleota-s3.bin)
+      return this.manifest.files.find(f => f.name.match(/^bleota(-s3)?\.bin$/))
+    },
+    /**
+     * Find SPIFFS/littlefs file by convention name pattern
+     * @returns The FirmwareManifestFile or undefined if not found
+     */
+    findSpiffsFileByConvention(): FirmwareManifestFile | undefined {
+      if (!this.manifest?.files) return undefined
+      // Look for littlefs*.bin pattern (littlefs-*.bin or littlefswebui-*.bin)
+      return this.manifest.files.find(f => f.name.match(/^littlefswebui?-.*\.bin$/))
+    },
+    /**
+     * Check if a target board exists in the release manifest
+     * @param targetBoard - The target board name (e.g., 'heltec-v4', 'heltec-v4-tft')
+     * @returns True if the target exists in the release manifest
+     */
+    isTargetAvailable(targetBoard: string): boolean {
+      if (!this.releaseManifest?.targets) return false
+      return this.releaseManifest.targets.some(t => t.board === targetBoard)
+    },
+    /**
+     * Load the target-specific manifest for a given target board
+     * This should be called before flashing when variant options (MUI/InkHUD) are selected
+     * @param targetBoard - The target board name (e.g., 'heltec-v4', 'heltec-v4-tft')
+     * @returns True if the manifest was loaded successfully
+     */
+    async loadTargetManifest(targetBoard: string): Promise<boolean> {
+      if (!this.selectedFirmware?.id) {
+        console.error('No firmware selected')
+        return false
+      }
+
+      // Check if the target exists in the release manifest
+      if (this.releaseManifest && !this.isTargetAvailable(targetBoard)) {
+        console.warn(`Target ${targetBoard} is not available in release manifest, falling back to legacy flashing`)
+        this.manifest = undefined
+        this.hasManifest = false
+        return false
+      }
+
+      // Fetch the target-specific manifest
+      const manifest = await fetchTargetManifest(this.selectedFirmware.id, targetBoard)
+      if (manifest) {
+        this.manifest = manifest
+        this.hasManifest = true
+        console.log(`Loaded target manifest for ${targetBoard}`)
+        return true
+      }
+      else {
+        console.warn(`Could not load target manifest for ${targetBoard}, falling back to legacy flashing`)
+        this.manifest = undefined
+        this.hasManifest = false
+        return false
+      }
+    },
+    /**
+     * Manifest-driven update flash for ESP32
+     * Uses the manifest's files[] array with part_name to determine file names
+     * Uses the manifest's part[] array to determine partition offsets
+     */
+    async updateEspFlash(selectedTarget: DeviceHardware) {
+      if (!this.manifest) {
+        throw new Error('Cannot use manifest-driven flash without a loaded manifest')
+      }
+
+      const terminal = await openTerminal()
+
+      try {
+        const filesToFlash: Array<{ data: string, address: number }> = []
+
+        // Find the app0 file (main firmware binary)
+        let appFile = this.findFileByPartName(PARTITION_NAMES.APP0)
+        if (!appFile) {
+          appFile = this.findAppFileByConvention()
+        }
+        const appOffset = this.getPartitionOffset(PARTITION_NAMES.APP0)
+        if (appFile && appOffset !== undefined) {
+          const appContent = await this.fetchBinaryContent(appFile.name)
+          filesToFlash.push({ data: appContent, address: appOffset })
+          console.log(`App0: ${appFile.name} at offset 0x${appOffset.toString(16)}`)
+        }
+        else {
+          console.error(`Could not find app0 file or partition offset in manifest`)
+        }
+
+        // Find the OTA file (app1 partition)
+        let otaFile = this.findFileByPartName(PARTITION_NAMES.APP1)
+        if (!otaFile) {
+          otaFile = this.findOtaFileByConvention()
+        }
+        const otaOffset = this.getPartitionOffset(PARTITION_NAMES.APP1)
+        if (otaFile && otaOffset !== undefined) {
+          const otaContent = await this.fetchBinaryContent(otaFile.name)
+          filesToFlash.push({ data: otaContent, address: otaOffset })
+          console.log(`App1 (OTA): ${otaFile.name} at offset 0x${otaOffset.toString(16)}`)
+        }
+        else {
+          console.error(`Could not find app1 (OTA) file or partition offset in manifest`)
+        }
+
+        if (filesToFlash.length === 0) {
+          throw new Error('No files found to flash')
+        }
+
+        this.port = await navigator.serial.requestPort({})
+        this.isConnected = true
+        this.port.ondisconnect = () => {
+          this.isConnected = false
+        }
+        const transport = new Transport(this.port, true)
+        const espLoader = await this.connectEsp32(transport, terminal)
+        this.isFlashing = true
+        const flashOptions: FlashOptions = {
+          fileArray: filesToFlash,
+          flashSize: 'keep',
+          eraseAll: false,
+          compress: true,
+          flashMode: 'keep',
+          flashFreq: 'keep',
+          reportProgress: (fileIndex, written, total) => {
+            this.flashPercentDone = Math.round((written / total) * 100)
+            if (written === total) {
+              this.isFlashing = false
+              console.log('Done flashing!')
+              this.trackDownload(selectedTarget, false)
+            }
+          },
+        }
+        await this.startWrite(terminal, espLoader, transport, flashOptions)
+      }
+      catch (error: any) {
+        this.handleError(error, terminal)
+      }
+    },
+    /**
+     * Manifest-driven clean install flash for ESP32
+     * Uses the manifest's files[] array with part_name to determine file names
+     * Uses the manifest's part[] array to determine partition offsets
+     * Preserves .factory.bin convention for the combined binary
+     */
+    async cleanInstallEspFlash(selectedTarget: DeviceHardware) {
+      if (!this.manifest) {
+        throw new Error('Cannot use manifest-driven flash without a loaded manifest')
+      }
+
+      const terminal = await openTerminal()
+
+      try {
+        const filesToFlash: Array<{ data: string, address: number }> = []
+
+        // Find the factory binary (combined binary for clean install)
+        const factoryFile = this.findFactoryFile()
+        if (factoryFile) {
+          const appContent = await this.fetchBinaryContent(factoryFile.name)
+          filesToFlash.push({ data: appContent, address: 0x00 })
+          console.log(`Factory: ${factoryFile.name} at offset 0x00`)
+        }
+        else {
+          console.error('Could not find factory binary (.factory.bin) in manifest')
+        }
+
+        // Find the OTA binary (app1 partition)
+        let otaFile = this.findFileByPartName(PARTITION_NAMES.APP1)
+        if (!otaFile) {
+          otaFile = this.findOtaFileByConvention()
+        }
+        const otaOffset = this.getPartitionOffset(PARTITION_NAMES.APP1)
+        if (otaFile && otaOffset !== undefined) {
+          const otaContent = await this.fetchBinaryContent(otaFile.name)
+          filesToFlash.push({ data: otaContent, address: otaOffset })
+          console.log(`OTA: ${otaFile.name} at offset 0x${otaOffset.toString(16)}`)
+        }
+        else {
+          console.error(`Could not find OTA file or partition offset for '${PARTITION_NAMES.APP1}' in manifest`)
+        }
+
+        // Find the LittleFS/SPIFFS binary
+        let spiffsFile = this.findFileByPartName(PARTITION_NAMES.SPIFFS)
+        if (!spiffsFile) {
+          spiffsFile = this.findSpiffsFileByConvention()
+        }
+        const spiffsOffset = this.getPartitionOffset(PARTITION_NAMES.SPIFFS)
+        if (spiffsFile && spiffsOffset !== undefined) {
+          const spiffsContent = await this.fetchBinaryContent(spiffsFile.name)
+          filesToFlash.push({ data: spiffsContent, address: spiffsOffset })
+          console.log(`SPIFFS: ${spiffsFile.name} at offset 0x${spiffsOffset.toString(16)}`)
+        }
+        else {
+          console.error(`Could not find SPIFFS file or partition offset for '${PARTITION_NAMES.SPIFFS}' in manifest`)
+        }
+
+        if (filesToFlash.length === 0) {
+          throw new Error('No files found to flash')
+        }
+
+        this.port = await navigator.serial.requestPort({})
+        this.isConnected = true
+        this.port.ondisconnect = () => {
+          this.isConnected = false
+        }
+        const transport = new Transport(this.port, true)
+        const espLoader = await this.connectEsp32(transport, terminal)
+
+        this.isFlashing = true
+        const flashOptions: FlashOptions = {
+          fileArray: filesToFlash,
+          flashSize: 'keep',
+          eraseAll: true,
+          compress: true,
+          flashMode: 'keep',
+          flashFreq: 'keep',
+          reportProgress: (fileIndex, written, total) => {
+            this.flashingIndex = fileIndex
+            this.flashPercentDone = Math.round((written / total) * 100)
+            if (written === total && fileIndex > 1) {
+              this.isFlashing = false
+              console.log('Done flashing!')
+              this.trackDownload(selectedTarget, true)
+            }
+          },
+        }
+        await this.startWrite(terminal, espLoader, transport, flashOptions)
+      }
+      catch (error: any) {
+        this.handleError(error, terminal)
+      }
     },
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions)
@@ -265,7 +640,7 @@ export const useFirmwareStore = defineStore('firmware', {
         }
       }
     },
-    async cleanInstallEspFlash(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
+    async cleanInstallEspFlashLegacy(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal()
 
       try {
@@ -279,6 +654,11 @@ export const useFirmwareStore = defineStore('firmware', {
         const appContent = await this.fetchBinaryContent(fileName)
         const otaContent = await this.fetchBinaryContent(otaFileName)
         const littleFsContent = await this.fetchBinaryContent(littleFsFileName)
+
+        // Log the files being flashed
+        console.log(`Legacy clean install: ${fileName} at offset 0x00`)
+        console.log(`Legacy clean install: ${otaFileName} (offset will be determined by partition scheme)`)
+        console.log(`Legacy clean install: ${littleFsFileName} (offset will be determined by partition scheme)`)
 
         let otaOffset = 0x260000
         let spiffsOffset = 0x300000
@@ -309,7 +689,12 @@ export const useFirmwareStore = defineStore('firmware', {
           // 16mb
           otaOffset = 0x650000
           spiffsOffset = 0xc90000
+          console.log(`Using 16MB partition table: OTA at 0x${otaOffset.toString(16)}, SPIFFS at 0x${spiffsOffset.toString(16)}`)
         }
+
+        // Log the final flash offsets
+        console.log(`Flashing ${otaFileName} at offset 0x${otaOffset.toString(16)}`)
+        console.log(`Flashing ${littleFsFileName} at offset 0x${spiffsOffset.toString(16)}`)
 
         this.isFlashing = true
         const flashOptions: FlashOptions = {
