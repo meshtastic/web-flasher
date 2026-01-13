@@ -308,17 +308,55 @@ const targetPrefix = computed(() => {
   return `${deviceStore.$state.selectedTarget.platformioTarget}${pioSuffix}-${firmwareStore.firmwareVersion}`
 })
 
-const cleanInstallEsp32 = () => {
-  const firmwareFile = firmwareStore.$state.hasManifest
-    ? `firmware-${targetPrefix.value}.factory.bin`
-    : `firmware-${targetPrefix.value}.bin`
-  const otaFile = deviceStore.$state.selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin'
-  // Coerce the partition scheme to be the same as the selected target for all 2.6.2+ firmwares
-  if (deviceStore.$state.selectedTarget.partitionScheme && twoPointSixPointTwoOrGreater.value) {
-    firmwareStore.$state.partitionScheme = deviceStore.$state.selectedTarget.partitionScheme
+/**
+ * Get the target board name with variant suffix (without version)
+ * Used for looking up the target in the release manifest and loading the mt.json
+ */
+const targetBoard = computed(() => {
+  const selectedTarget = deviceStore.$state.selectedTarget
+  if (!selectedTarget) return ''
+  let pioSuffix = ''
+  // Crowpanel ends with -tft, so don't add -tft suffix
+  if (firmwareStore.$state.shouldInstallMui && !selectedTarget.platformioTarget.endsWith('-tft')) {
+    pioSuffix = '-tft'
   }
-  console.log(firmwareFile, otaFile, littleFsFileName.value)
-  firmwareStore.cleanInstallEspFlash(firmwareFile, otaFile, littleFsFileName.value, deviceStore.$state.selectedTarget)
+  else if (firmwareStore.$state.shouldInstallInkHud) {
+    pioSuffix = '-inkhud'
+  }
+  return `${selectedTarget.platformioTarget}${pioSuffix}`
+})
+
+const cleanInstallEsp32 = async () => {
+  const selectedTarget = deviceStore.$state.selectedTarget
+  if (!selectedTarget) {
+    console.error('No target selected')
+    return
+  }
+
+  // Coerce the partition scheme to be the same as the selected target for all 2.6.2+ firmwares
+  if (selectedTarget.partitionScheme && twoPointSixPointTwoOrGreater.value) {
+    firmwareStore.$state.partitionScheme = selectedTarget.partitionScheme
+  }
+
+  // Try to load the target-specific manifest for the selected variant
+  if (firmwareStore.$state.releaseManifest && targetBoard.value) {
+    await firmwareStore.loadTargetManifest(targetBoard.value)
+  }
+
+  // Use manifest-driven flashing if manifest is available
+  if (firmwareStore.$state.manifest) {
+    console.log('Using manifest-driven clean install')
+    firmwareStore.cleanInstallEspFlash(selectedTarget)
+  }
+  else {
+    // Legacy: use convention-based file naming
+    const firmwareFile = firmwareStore.$state.hasManifest
+      ? `firmware-${targetPrefix.value}.factory.bin`
+      : `firmware-${targetPrefix.value}.bin`
+    const otaFile = selectedTarget.architecture === 'esp32-s3' ? 'bleota-s3.bin' : 'bleota.bin'
+    console.log('Using legacy clean install:', firmwareFile, otaFile, littleFsFileName.value)
+    firmwareStore.cleanInstallEspFlashLegacy(firmwareFile, otaFile, littleFsFileName.value, selectedTarget)
+  }
 }
 
 const twoPointSixPointTwoOrGreater = computed(() => {
@@ -338,13 +376,31 @@ const littleFsFileName = computed(() => {
   return `${prefix}-${littleFsInfix}.bin`
 })
 
-const updateEsp32 = () => {
-  // Get firmware version from selectedFirmware or use regex wildcard to match otherwise
-  const firmwareFile = firmwareStore.$state.hasManifest
-    ? `firmware-${targetPrefix.value}.bin`
-    : `firmware-${targetPrefix.value}-update.bin`
-  console.log(firmwareFile)
-  firmwareStore.updateEspFlash(firmwareFile, deviceStore.$state.selectedTarget)
+const updateEsp32 = async () => {
+  const selectedTarget = deviceStore.$state.selectedTarget
+  if (!selectedTarget) {
+    console.error('No target selected')
+    return
+  }
+
+  // Try to load the target-specific manifest for the selected variant
+  if (firmwareStore.$state.releaseManifest && targetBoard.value) {
+    await firmwareStore.loadTargetManifest(targetBoard.value)
+  }
+
+  // Use manifest-driven flashing if manifest is available
+  if (firmwareStore.$state.manifest) {
+    console.log('Using manifest-driven update flash')
+    firmwareStore.updateEspFlash(selectedTarget)
+  }
+  else {
+    // Legacy: use convention-based file naming
+    const firmwareFile = firmwareStore.$state.hasManifest
+      ? `firmware-${targetPrefix.value}.bin`
+      : `firmware-${targetPrefix.value}-update.bin`
+    console.log('Using legacy update flash:', firmwareFile)
+    firmwareStore.updateEspFlashLegacy(firmwareFile, selectedTarget)
+  }
 }
 </script>
 
