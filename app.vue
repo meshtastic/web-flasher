@@ -383,14 +383,9 @@ onMounted(() => {
     ) !important;
     background-size: 400% 400% !important;
     animation: konamiGradient 8s ease infinite !important;
-    /* Firefox */
-    -moz-transition: all 1s ease-in;
-    /* WebKit */
-    -webkit-transition: all 1s ease-in;
-    /* Opera */
-    -o-transition: all 1s ease-in;
-    /* Standard */
-    transition: all 1s ease-in;
+    /* Smooth transition for background change */
+    transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 1.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 
   @keyframes konamiGradient {
@@ -422,6 +417,8 @@ onMounted(() => {
       transparent 1px,
       transparent 2px
     );
+    opacity: 0;
+    animation: fadeInScanlines 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   /* CRT vignette effect */
@@ -440,6 +437,20 @@ onMounted(() => {
       transparent 60%,
       rgba(0, 0, 0, 0.4) 100%
     );
+    opacity: 0;
+    animation: fadeInVignette 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes fadeInScanlines {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInVignette {
+    to {
+      opacity: 1;
+    }
   }
 
   /* Neon glow effect on cards in konami mode */
