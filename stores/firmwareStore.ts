@@ -166,7 +166,10 @@ export const useFirmwareStore = defineStore('firmware', {
           // Fetch release notes for each firmware version from meshtastic.github.io
           const fetchReleaseNotesForList = async (releases: FirmwareResource[]) => {
             for (const release of releases) {
-              release.release_notes = await fetchReleaseNotes(release.id)
+              // Only fetch if we don't already have release notes from the API
+              if (!release.release_notes || release.release_notes.trim().length === 0) {
+                release.release_notes = await fetchReleaseNotes(release.id)
+              }
             }
           }
 
