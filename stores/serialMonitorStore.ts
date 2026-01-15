@@ -16,7 +16,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
     disconnect() {
       this.isReaderLocked = false
     },
-    async unlockPort(port: SerialPort, reader: ReadableStreamDefaultReader<string>) {
+    async unlockPort(port: SerialPort, reader: ReadableStreamDefaultReader<Uint8Array>) {
       try {
         const textEncoder = new TextEncoderStream()
         const writer = textEncoder.writable.getWriter()
@@ -35,10 +35,8 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
     async readSerialMonitor(port: SerialPort): Promise<void> {
       this.terminalBuffer = []
       this.rawBuffer = ''
-      const decoderStream = new TextDecoderStream()
-      port.readable!.pipeTo(decoderStream.writable)
-      const inputStream = decoderStream.readable
-      const reader = inputStream.getReader()
+      const reader = port.readable!.getReader()
+      const decoder = new TextDecoder()
       this.isReaderLocked = true
 
       while (true) {
@@ -46,15 +44,17 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
           await this.unlockPort(port, reader)
           return
         }
-        let { value } = await reader.read()
+        const { value, done } = await reader.read()
+        if (done) break
         if (value) {
+          const decoded = decoder.decode(value, { stream: true })
           // Append raw data for xterm
-          this.rawBuffer += value
+          this.rawBuffer += decoded
           
           // Also process into lines for save/copy
-          value = value?.replace(/\r/g, '')
-          if (value.includes('\n')) {
-            value.split('\n').forEach((line, index) => {
+          const normalized = decoded.replace(/\r/g, '')
+          if (normalized.includes('\n')) {
+            normalized.split('\n').forEach((line, index) => {
               if (index === 0) {
                 const lastLine
                   = this.terminalBuffer[this.terminalBuffer.length - 1] || ''
@@ -69,7 +69,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
           else {
             const lastLine
               = this.terminalBuffer[this.terminalBuffer.length - 1] || ''
-            const newLine = lastLine + value
+            const newLine = lastLine + normalized
             this.terminalBuffer[this.terminalBuffer.length - 1] = newLine
           }
         }

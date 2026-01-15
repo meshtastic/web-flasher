@@ -44,6 +44,12 @@ const previews = showPrerelease ? [currentPrerelease] : []
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
+type ZipEntryWithData = { filename: string; getData: (writer: BlobWriter) => Promise<Blob> }
+
+function hasGetData(entry: unknown): entry is ZipEntryWithData {
+  return !!entry && typeof (entry as any).getData === 'function'
+}
+
 /**
  * Fetch release notes from meshtastic.github.io
  */
@@ -239,11 +245,11 @@ export const useFirmwareStore = defineStore('firmware', {
       if (!this.selectedFile) return
       const reader = new BlobReader(this.selectedFile)
       const zipReader = new ZipReader(reader)
-      const entries = await zipReader.getEntries()
+      const entries = await zipReader.getEntries() as unknown as ZipEntryWithData[]
       console.log('Zip entries:', entries)
       const file = entries.find(entry => searchRegex.test(entry.filename))
       if (file) {
-        if (file?.getData) {
+        if (hasGetData(file)) {
           const data = await file.getData(new BlobWriter())
           saveAs(data, file.filename)
         }
@@ -738,7 +744,7 @@ export const useFirmwareStore = defineStore('firmware', {
       if (this.selectedFile && this.isZipFile) {
         const reader = new BlobReader(this.selectedFile)
         const zipReader = new ZipReader(reader)
-        const entries = await zipReader.getEntries()
+        const entries = await zipReader.getEntries() as unknown as ZipEntryWithData[]
         console.log('Zip entries:', entries)
         console.log('Looking for file matching pattern:', fileName)
         const file = entries.find((entry) => {
@@ -748,7 +754,7 @@ export const useFirmwareStore = defineStore('firmware', {
         })
         if (file) {
           console.log('Found file:', file.filename)
-          if (file?.getData) {
+          if (hasGetData(file)) {
             const blob = await file.getData(new BlobWriter())
             const arrayBuffer = await blob.arrayBuffer()
             return convertToBinaryString(new Uint8Array(arrayBuffer))
@@ -785,22 +791,24 @@ export const useFirmwareStore = defineStore('firmware', {
       return espLoader
     },
     async readSerial(port: SerialPort, terminal: Terminal): Promise<void> {
-      const decoder = new TextDecoderStream()
-      if (port.readable) {
-        port.readable.pipeTo(decoder.writable)
-      }
-      else {
+      if (!port.readable) {
         throw new Error('Serial port is not readable')
       }
-      const inputStream = decoder.readable
-      const reader = inputStream.getReader()
+      const reader = port.readable.getReader()
+      const decoder = new TextDecoder()
 
-      while (true) {
-        const { value } = await reader.read()
-        if (value) {
-          terminal.write(value)
+      try {
+        while (true) {
+          const { value, done } = await reader.read()
+          if (done) break
+          if (value) {
+            terminal.write(decoder.decode(value, { stream: true }))
+          }
+          await new Promise(resolve => setTimeout(resolve, 5))
         }
-        await new Promise(resolve => setTimeout(resolve, 5))
+      }
+      finally {
+        reader.releaseLock()
       }
     },
   },
