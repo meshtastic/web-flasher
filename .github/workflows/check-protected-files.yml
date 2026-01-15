@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   check-protected-files:
+    if: ${{ !contains(fromJson('["MEMBER","OWNER","COLLABORATOR"]'), github.event.pull_request.author_association) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

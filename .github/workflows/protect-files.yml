@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   block-changes:
+    if: ${{ !contains(fromJson('["MEMBER","OWNER","COLLABORATOR"]'), github.event.pull_request.author_association) }}
     runs-on: ubuntu-latest
     steps:
       - name: Block changes to protected files
