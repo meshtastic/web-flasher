@@ -2,7 +2,7 @@ import type { FirmwareResource } from './api';
 
 // Remove the OfflineHardwareList since it's now in /public/data/hardware-list.json
 
-const currentPrereleaseId = '2.7.18.dae4061';
+const currentPrereleaseId = '2.7.18.3911d5f';
 
 export const showPrerelease = true;
 
