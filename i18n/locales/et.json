@@ -110,6 +110,8 @@
     "disconnect": "Katkesta ühendus",
     "reconnect": "Proovige uuesti ühenduda",
     "waiting_for_data": "Ootamine andmete ootusele...",
+    "busy_title": "Serial Port Busy",
+    "busy_message": "A serial connection is already open. Please close it before continuing.",
     "log_levels": {
       "all": "Kõik",
       "debug": "Silumine",

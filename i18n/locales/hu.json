@@ -109,7 +109,9 @@
     "instructions": "Ha a leválasztás túl sokáig tart, manuálisan is lehúzhatod az eszközt.",
     "disconnect": "Leválasztás",
     "reconnect": "Try Reconnecting",
-    "waiting_for_data": "Adatok várakozása...",
+      "waiting_for_data": "Adatok várása...",
+      "busy_title": "Soros port foglalt",
+      "busy_message": "A soros kapcsolat már nyitva van. Kérlek, zárd be, mielőtt folytatnád.",
     "log_levels": {
       "all": "Összes",
       "debug": "Debug",

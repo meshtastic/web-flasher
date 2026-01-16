@@ -11,18 +11,16 @@ import { TransportWebSerial } from '@meshtastic/transport-web-serial'
 import type { DeviceHardware } from '../types/api'
 import { createUrl } from './store'
 import { useFirmwareStore } from './firmwareStore'
+import { useSerialMonitorStore } from './serialMonitorStore'
 import { useToastStore } from './toastStore'
 
-// Ensure Web Serial API types are available
+// Ensure Web Serial API types are available and extend them safely
 declare global {
   interface Navigator {
-    serial: any
+    readonly serial: Serial
   }
+
   interface SerialPort {
-    readable: ReadableStream
-    writable: WritableStream
-    open(options: any): Promise<void>
-    close(): Promise<void>
     forget(): Promise<void>
   }
 }
@@ -233,6 +231,16 @@ export const useDeviceStore = defineStore('device', {
     },
     async enterDfuMode(tFunc?: (key: string) => string) {
       const toastStore = useToastStore()
+      const firmwareStore = useFirmwareStore()
+      const serialMonitorStore = useSerialMonitorStore()
+
+      const isPortBusy = firmwareStore.isConnected || firmwareStore.isReaderLocked || serialMonitorStore.isConnected || serialMonitorStore.isReaderLocked
+      if (isPortBusy) {
+        const errorTitle = tFunc?.('serial.busy_title') || 'Serial Port Busy'
+        const errorMessage = tFunc?.('serial.busy_message') || 'A serial connection is already open. Please close it before starting DFU mode.'
+        toastStore.error(errorTitle, errorMessage)
+        return
+      }
       const device: MeshDevice | null = null
 
       this.isConnecting = true
@@ -306,6 +314,16 @@ export const useDeviceStore = defineStore('device', {
     },
     async autoSelectHardware(tFunc?: (key: string) => string) {
       const toastStore = useToastStore()
+      const firmwareStore = useFirmwareStore()
+      const serialMonitorStore = useSerialMonitorStore()
+
+      const isPortBusy = firmwareStore.isConnected || firmwareStore.isReaderLocked || serialMonitorStore.isConnected || serialMonitorStore.isReaderLocked
+      if (isPortBusy) {
+        const errorTitle = tFunc?.('serial.busy_title') || 'Serial Port Busy'
+        const errorMessage = tFunc?.('serial.busy_message') || 'A serial connection is already open. Please close it before auto-detecting hardware.'
+        toastStore.error(errorTitle, errorMessage)
+        return
+      }
       this.isConnecting = true
       try {
         // Promise.race for connection timeout

@@ -110,6 +110,8 @@
     "disconnect": "Disconnetti",
     "reconnect": "Try Reconnecting",
     "waiting_for_data": "In attesa di dati...",
+    "busy_title": "Serial Port Busy",
+    "busy_message": "A serial connection is already open. Please close it before continuing.",
     "log_levels": {
       "all": "Tutti",
       "debug": "Debug",

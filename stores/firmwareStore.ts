@@ -135,6 +135,7 @@ export const useFirmwareStore = defineStore('firmware', {
       flashPercentDone: 0,
       isFlashing: false,
       flashingIndex: 0,
+      flashingFileDescriptions: new Array<string>(),
       isReaderLocked: false,
       isConnected: false,
       port: <SerialPort | undefined>{},
@@ -427,6 +428,7 @@ export const useFirmwareStore = defineStore('firmware', {
 
       try {
         const filesToFlash: Array<{ data: string, address: number }> = []
+        const fileDescriptions: string[] = []
 
         // Find the app0 file (main firmware binary)
         let appFile = this.findFileByPartName(PARTITION_NAMES.APP0)
@@ -437,6 +439,7 @@ export const useFirmwareStore = defineStore('firmware', {
         if (appFile && appOffset !== undefined) {
           const appContent = await this.fetchBinaryContent(appFile.name)
           filesToFlash.push({ data: appContent, address: appOffset })
+          fileDescriptions.push('Flashing app')
           console.log(`App0: ${appFile.name} at offset 0x${appOffset.toString(16)}`)
         }
         else {
@@ -452,11 +455,14 @@ export const useFirmwareStore = defineStore('firmware', {
         if (otaFile && otaOffset !== undefined) {
           const otaContent = await this.fetchBinaryContent(otaFile.name)
           filesToFlash.push({ data: otaContent, address: otaOffset })
+          fileDescriptions.push('Flashing OTA')
           console.log(`App1 (OTA): ${otaFile.name} at offset 0x${otaOffset.toString(16)}`)
         }
         else {
           console.error(`Could not find app1 (OTA) file or partition offset in manifest`)
         }
+        
+        this.flashingFileDescriptions = fileDescriptions
 
         if (filesToFlash.length === 0) {
           throw new Error('No files found to flash')
@@ -470,6 +476,7 @@ export const useFirmwareStore = defineStore('firmware', {
         const transport = new Transport(this.port, true)
         const espLoader = await this.connectEsp32(transport, terminal)
         this.isFlashing = true
+        let lastFileIndex = -1
         const flashOptions: FlashOptions = {
           fileArray: filesToFlash,
           flashSize: 'keep',
@@ -478,6 +485,11 @@ export const useFirmwareStore = defineStore('firmware', {
           flashMode: 'keep',
           flashFreq: 'keep',
           reportProgress: (fileIndex, written, total) => {
+            this.flashingIndex = fileIndex
+            if (fileIndex !== lastFileIndex && fileIndex < this.flashingFileDescriptions.length) {
+              terminal.writeln(`\x1b[33m${this.flashingFileDescriptions[fileIndex]}...\x1b[0m`)
+              lastFileIndex = fileIndex
+            }
             this.flashPercentDone = Math.round((written / total) * 100)
             if (written === total) {
               this.isFlashing = false
@@ -507,12 +519,14 @@ export const useFirmwareStore = defineStore('firmware', {
 
       try {
         const filesToFlash: Array<{ data: string, address: number }> = []
+        const fileDescriptions: string[] = []
 
         // Find the factory binary (combined binary for clean install)
         const factoryFile = this.findFactoryFile()
         if (factoryFile) {
           const appContent = await this.fetchBinaryContent(factoryFile.name)
           filesToFlash.push({ data: appContent, address: 0x00 })
+          fileDescriptions.push('Flashing factory app')
           console.log(`Factory: ${factoryFile.name} at offset 0x00`)
         }
         else {
@@ -528,6 +542,7 @@ export const useFirmwareStore = defineStore('firmware', {
         if (otaFile && otaOffset !== undefined) {
           const otaContent = await this.fetchBinaryContent(otaFile.name)
           filesToFlash.push({ data: otaContent, address: otaOffset })
+          fileDescriptions.push('Flashing OTA app')
           console.log(`OTA: ${otaFile.name} at offset 0x${otaOffset.toString(16)}`)
         }
         else {
@@ -543,11 +558,14 @@ export const useFirmwareStore = defineStore('firmware', {
         if (spiffsFile && spiffsOffset !== undefined) {
           const spiffsContent = await this.fetchBinaryContent(spiffsFile.name)
           filesToFlash.push({ data: spiffsContent, address: spiffsOffset })
+          fileDescriptions.push('Flashing filesystem')
           console.log(`SPIFFS: ${spiffsFile.name} at offset 0x${spiffsOffset.toString(16)}`)
         }
         else {
           console.error(`Could not find SPIFFS file or partition offset for '${PARTITION_NAMES.SPIFFS}' in manifest`)
         }
+        
+        this.flashingFileDescriptions = fileDescriptions
 
         if (filesToFlash.length === 0) {
           throw new Error('No files found to flash')
@@ -562,6 +580,7 @@ export const useFirmwareStore = defineStore('firmware', {
         const espLoader = await this.connectEsp32(transport, terminal)
 
         this.isFlashing = true
+        let lastFileIndex = -1
         const flashOptions: FlashOptions = {
           fileArray: filesToFlash,
           flashSize: 'keep',
@@ -571,6 +590,10 @@ export const useFirmwareStore = defineStore('firmware', {
           flashFreq: 'keep',
           reportProgress: (fileIndex, written, total) => {
             this.flashingIndex = fileIndex
+            if (fileIndex !== lastFileIndex && fileIndex < this.flashingFileDescriptions.length) {
+              terminal.writeln(`\x1b[33m${this.flashingFileDescriptions[fileIndex]}...\x1b[0m`)
+              lastFileIndex = fileIndex
+            }
             this.flashPercentDone = Math.round((written / total) * 100)
             if (written === total && fileIndex > 1) {
               this.isFlashing = false
@@ -587,19 +610,46 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions)
-      await this.resetEsp32(transport)
+      
+      // Perform hard reset to boot the chip (esptool-js method)
+      await espLoader.after('hard_reset')
+      
+      // Disconnect the esptool transport to release the reader lock
+      try {
+        await transport.disconnect()
+        await transport.waitForUnlock(1500)
+      }
+      catch (e) {
+        console.warn('Error disconnecting transport:', e)
+      }
+      
+      // Small delay to let the chip boot
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      // Reopen the port at application baud rate (115200) and read serial output
       if (this.port) {
-        await this.readSerial(this.port, terminal)
+        try {
+          await this.port.open({ baudRate: 115200 })
+          await this.readSerial(this.port, terminal)
+        }
+        catch (e) {
+          console.warn('Error reopening port for serial monitor:', e)
+        }
       }
       else {
         throw new Error('Serial port is not defined')
       }
     },
     async resetEsp32(transport: Transport) {
-      await transport.setDTR(false)
-      await transport.setRTS(true)
+      // Classic reset sequence to boot the chip after flashing
+      // Based on esptool-js ClassicReset strategy
+      await transport.setDTR(false)  // IO0=HIGH
+      await transport.setRTS(true)   // EN=LOW (chip in reset)
       await new Promise(resolve => setTimeout(resolve, 100))
-      await transport.setRTS(false)
+      await transport.setDTR(true)   // IO0=LOW (not needed for normal boot, but part of sequence)
+      await transport.setRTS(false)  // EN=HIGH (chip out of reset - starts booting)
+      await new Promise(resolve => setTimeout(resolve, 50))
+      await transport.setDTR(false)  // IO0=HIGH (ensure normal boot mode, not download mode)
     },
     trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean) {
       if (selectedTarget.hwModelSlug?.length > 0) {
@@ -794,6 +844,12 @@ export const useFirmwareStore = defineStore('firmware', {
       if (!port.readable) {
         throw new Error('Serial port is not readable')
       }
+      if (this.isReaderLocked || port.readable.locked) {
+        console.warn('Serial reader already locked; skipping duplicate read request')
+        return
+      }
+
+      this.isReaderLocked = true
       const reader = port.readable.getReader()
       const decoder = new TextDecoder()
 
@@ -809,6 +865,7 @@ export const useFirmwareStore = defineStore('firmware', {
       }
       finally {
         reader.releaseLock()
+        this.isReaderLocked = false
       }
     },
   },
