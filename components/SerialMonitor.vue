@@ -95,8 +95,18 @@
           >
             {{ $t('serial.disconnect') }}
           </button>
+          <button
+            class="border focus:ring-4 focus:outline-none font-medium text-sm px-4 py-1 text-center me-2 mb-2 hover:shadow transition duration-300 ease-in-out rounded-lg"
+            :class="autoScroll ? 'text-green-500 border-green-500 hover:text-black hover:bg-white' : 'text-gray-400 border-gray-400 hover:text-white hover:bg-gray-600'"
+            @click="autoScroll = !autoScroll"
+          >
+            {{ $t('serial.auto_scroll') }}
+            <ArrowDown
+              class="inline w-4 h-4 ms-1"
+              :class="{ 'animate-bounce': autoScroll }"
+            />
+          </button>
         </div>
-        <!-- Auto scroll -->
       </div>
       <div class="col">
         <div
@@ -156,6 +166,7 @@ import {
   Clipboard,
   Trash,
   Info,
+  ArrowDown,
 } from 'lucide-vue-next'
 
 import { useSerialMonitorStore } from '../stores/serialMonitorStore'
@@ -163,12 +174,21 @@ import { useSerialMonitorStore } from '../stores/serialMonitorStore'
 const serialMonitorStore = useSerialMonitorStore()
 
 const logLevel = ref('all')
+const autoScroll = ref(true)
 
 const filteredTerminalBuffer = computed(() => {
   if (logLevel.value === 'all') {
     return serialMonitorStore.terminalBuffer
   }
   return serialMonitorStore.terminalBuffer.filter(line => line.includes(logLevel.value.toUpperCase()))
+})
+
+watch(filteredTerminalBuffer, () => {
+  if (autoScroll.value) {
+    nextTick(() => {
+      window.scrollTo(0, document.body.scrollHeight)
+    })
+  }
 })
 
 const disconnect = () => {

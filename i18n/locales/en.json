@@ -109,6 +109,7 @@
     "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
     "disconnect": "Disconnect",
     "reconnect": "Try Reconnecting",
+    "auto_scroll": "Auto Scroll",
     "log_levels": {
       "all": "All",
       "debug": "Debug",
