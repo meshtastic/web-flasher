@@ -179,7 +179,7 @@ export const useFirmwareStore = defineStore('firmware', {
           flashSize: 'keep',
           eraseAll: false,
           compress: true,
-          flashMode: 'keep',
+          flashMode: selectedTarget.platformioTarget.startsWith('tlora-t3s3') ? 'dio' : 'keep',
           flashFreq: 'keep',
           reportProgress: (fileIndex, written, total) => {
             this.flashPercentDone = Math.round((written / total) * 100)
@@ -320,7 +320,7 @@ export const useFirmwareStore = defineStore('firmware', {
           flashSize: 'keep',
           eraseAll: true,
           compress: true,
-          flashMode: 'keep',
+          flashMode: selectedTarget.platformioTarget.startsWith('tlora-t3s3') ? 'dio' : 'keep',
           flashFreq: 'keep',
           reportProgress: (fileIndex, written, total) => {
             this.flashingIndex = fileIndex
