@@ -17,7 +17,7 @@
 
     <section
       id="main"
-      class="text-gray-400 body-font px-3 sm:px-5"
+      class="text-gray-400 font-body px-3 sm:px-5"
     >
       <transition
         name="flash"
@@ -43,7 +43,7 @@
                 >
                 <Device />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+              <h2 class="text-lg sm:text-xl font-medium font-title text-white mt-5">
                 {{ $t('device.title') }}
               </h2>
               <p class="text-sm sm:text-base leading-relaxed mt-2">
@@ -58,7 +58,7 @@
                 />
                 <Firmware />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+              <h2 class="text-lg sm:text-xl font-medium font-title text-white mt-5">
                 {{ $t('firmware.title') }}
               </h2>
               <p class="text-sm sm:text-base leading-relaxed mt-2">
@@ -70,7 +70,7 @@
                 <Zap class="h-60 w-60 p-5 mt-10 mb-10 mx-auto text-white" />
                 <Flash />
               </div>
-              <h2 class="text-lg sm:text-xl font-medium title-font text-white mt-5">
+              <h2 class="text-lg sm:text-xl font-medium font-title text-white mt-5">
                 Flash
               </h2>
               <p class="text-sm sm:text-base leading-relaxed mt-2">
@@ -245,23 +245,6 @@ onMounted(() => {
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-  /* Additional Atkinson Hyperlegible fallback */
-  @font-face {
-    font-family: 'Atkinson Hyperlegible';
-    src: url('https://fonts.gstatic.com/s/atkinsonhyperlegible/v11/9Bt23C1KxNDXMspQ1lPyU89-1h6ONRlW45GE.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'Atkinson Hyperlegible';
-    src: url('https://fonts.gstatic.com/s/atkinsonhyperlegible/v11/9Bt43C1KxNDXMspQ1lPyU89-1h6ONRlW45G055LkgA.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-  }
   :root {
     --bg-color: #1e1f2a;
     --text-color: #FFFFFF;
@@ -269,7 +252,7 @@ onMounted(() => {
     --secondary-color: #67EA94;
   }
   body {
-    font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
+    @apply font-body;
     background-color: var(--bg-color);
     color: var(--text-color);
   }

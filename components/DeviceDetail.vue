@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center p-2 w-full sm:w-56">
     <h5
-      class="mb-1 text-xs sm:text-[0.75rem] text-white"
+      class="mb-1 text-md sm:text-[0.75rem] text-white"
       :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }"
     >
       {{ props.device.displayName }}
