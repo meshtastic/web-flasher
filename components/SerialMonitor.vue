@@ -140,7 +140,7 @@
         </div>
       </div>
     </div>
-    <div class="inverse-toggle px-3 sm:px-5 shadow-lg text-gray-100 text-xs sm:text-sm font-mono subpixel-antialiased bg-gray-900 pb-6 pt-4 rounded-lg leading-normal overflow-hidden">
+    <div class="inverse-toggle min-h-screen px-3 sm:px-5 shadow-lg text-gray-100 text-xs sm:text-sm font-mono subpixel-antialiased bg-gray-900 pb-6 pt-4 rounded-lg leading-normal overflow-hidden">
       <div class="top mb-2 flex">
         <div class="h-3 w-3 bg-red-500 rounded-full" />
         <div class="ml-2 h-3 w-3 bg-orange-300 rounded-full" />
