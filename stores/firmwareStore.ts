@@ -35,6 +35,7 @@ import {
   type FirmwareManifest,
   type FirmwareManifestFile,
   PARTITION_NAMES,
+  PARTITION_SUBTYPES,
   type ReleaseManifest,
 } from '../types/manifest'
 
@@ -321,7 +322,17 @@ export const useFirmwareStore = defineStore('firmware', {
      */
     getPartitionOffset(partName: string): number | undefined {
       if (!this.manifest?.part) return undefined
-      const partition = this.manifest.part.find(p => p.name === partName)
+      let partition = this.manifest.part.find(p => p.name === partName)
+
+      // Some manifests use different partition names (e.g., 'app' instead of 'app0',
+      // 'flashApp' instead of 'app1'). Fall back to searching by OTA subtype.
+      if (!partition && partName === PARTITION_NAMES.APP0) {
+        partition = this.manifest.part.find(p => p.subtype === PARTITION_SUBTYPES.OTA_0)
+      }
+      if (!partition && partName === PARTITION_NAMES.APP1) {
+        partition = this.manifest.part.find(p => p.subtype === PARTITION_SUBTYPES.OTA_1)
+      }
+
       if (!partition) return undefined
       // Parse hex string offset (e.g., "0x10000") to number
       return parseInt(partition.offset, 16)
