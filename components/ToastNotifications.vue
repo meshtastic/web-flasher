@@ -123,10 +123,7 @@ function reloadPage() {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Ensure proper font family */
-.max-w-sm {
-  font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
-}
+
 
 /* Custom focus ring for meshtastic theme */
 .focus\:ring-meshtastic:focus {
