@@ -358,8 +358,10 @@ export const useFirmwareStore = defineStore('firmware', {
      */
     findOtaFileByConvention(): FirmwareManifestFile | undefined {
       if (!this.manifest?.files) return undefined
-      // Look for bleota*.bin pattern (bleota.bin or bleota-s3.bin)
-      return this.manifest.files.find(f => f.name.match(/^bleota(-s3)?\.bin$/))
+      // Look for known OTA payload names:
+      // - legacy: bleota.bin / bleota-s3.bin
+      // - manifest-driven: mt-esp32*-ota.bin
+      return this.manifest.files.find(f => /^bleota(-s3)?\.bin$/.test(f.name) || /^mt-.*-ota\.bin$/.test(f.name))
     },
     /**
      * Find SPIFFS/littlefs file by convention name pattern
