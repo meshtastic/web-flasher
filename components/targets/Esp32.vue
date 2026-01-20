@@ -346,7 +346,7 @@ const cleanInstallEsp32 = async () => {
   // Use manifest-driven flashing if manifest is available
   if (firmwareStore.$state.manifest) {
     console.log('Using manifest-driven clean install')
-    firmwareStore.cleanInstallEspFlash(selectedTarget)
+    await firmwareStore.cleanInstallEspFlash(selectedTarget)
   }
   else {
     // Legacy: use convention-based file naming
@@ -391,7 +391,7 @@ const updateEsp32 = async () => {
   // Use manifest-driven flashing if manifest is available
   if (firmwareStore.$state.manifest) {
     console.log('Using manifest-driven update flash')
-    firmwareStore.updateEspFlash(selectedTarget)
+    await firmwareStore.updateEspFlash(selectedTarget)
   }
   else {
     // Legacy: use convention-based file naming
