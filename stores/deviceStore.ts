@@ -241,7 +241,7 @@ export const useDeviceStore = defineStore('device', {
         toastStore.error(errorTitle, errorMessage)
         return
       }
-      const device: MeshDevice | null = null
+      let device: MeshDevice | null = null
 
       this.isConnecting = true
       try {
@@ -251,7 +251,6 @@ export const useDeviceStore = defineStore('device', {
         const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('timeout')), 5000),
         )
-        let device: MeshDevice
         try {
           device = await Promise.race([connectionPromise, timeoutPromise])
         }
@@ -266,11 +265,15 @@ export const useDeviceStore = defineStore('device', {
             throw error
           }
         }
-        device.events.onMyNodeInfo.subscribe((info) => {
-          console.log('Received MyNodeInfo event:', info)
-          // Handle the event as needed
-          device?.enterDfuMode()
+
+        // Create a promise that resolves when we receive MyNodeInfo (device is ready)
+        const deviceReadyPromise = new Promise<void>((resolve) => {
+          device!.events.onMyNodeInfo.subscribe((info) => {
+            console.log('Received MyNodeInfo event:', info)
+            resolve()
+          })
         })
+
         try {
           await device.configure()
         }
@@ -281,6 +284,15 @@ export const useDeviceStore = defineStore('device', {
           toastStore.error(errorTitle, errorMessage)
           throw error
         }
+
+        // Wait for device to be ready (MyNodeInfo received) or timeout
+        const readyTimeout = new Promise<void>((resolve) => setTimeout(resolve, 3000))
+        await Promise.race([deviceReadyPromise, readyTimeout])
+
+        // Small delay to ensure device is fully ready
+        await new Promise(resolve => setTimeout(resolve, 500))
+
+        // Now enter DFU mode
         await device.enterDfuMode()
 
         // Show success message
