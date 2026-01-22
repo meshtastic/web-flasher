@@ -108,7 +108,7 @@
   "serial": {
     "instructions": "Ако процесът на прекъсване на връзката отнема твърде много време, можете ръчно да изключите устройството.",
     "disconnect": "Прекъсване",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Опитайте да се свържете отново",
     "waiting_for_data": "Чака се за данни...",
     "busy_title": "Serial Port Busy",
     "busy_message": "A serial connection is already open. Please close it before continuing.",
@@ -125,7 +125,7 @@
     "success_message": "Устройството успешно влезе в DFU режим",
     "error_title": "DFU Mode Failed",
     "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
+    "error_connection_title": "Свързването на устройството не е успешно",
     "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
     "error_unresponsive_title": "Устройството не реагира",
     "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
