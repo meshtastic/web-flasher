@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "Webalapú eszköz ESP32 firmware írásához (flasheléséhez)",
   "browser_warning": "A böngésződ nem támogatja a WebSerial API-t. A teljes funkcionalitás érdekében válts kompatibilis böngészőre, például Chrome-ra vagy Edge-re.",
-  "header_title": "FLASHER",
+  "header_title": "Meshtastic Web Flasher",
   "language": "Nyelv",
   "actions": {
     "connect": "Csatlakozás",
@@ -109,6 +109,9 @@
     "instructions": "Ha a leválasztás túl sokáig tart, manuálisan is lehúzhatod az eszközt.",
     "disconnect": "Leválasztás",
     "reconnect": "Try Reconnecting",
+      "waiting_for_data": "Adatok várása...",
+      "busy_title": "Soros port foglalt",
+      "busy_message": "A soros kapcsolat már nyitva van. Kérlek, zárd be, mielőtt folytatnád.",
     "log_levels": {
       "all": "Összes",
       "debug": "Debug",

@@ -109,6 +109,7 @@
     "instructions": "Om frånkopplingsprocessen tar för lång tid, kan du koppla ur enheten manuellt.",
     "disconnect": "Koppla från",
     "reconnect": "Try Reconnecting",
+    "waiting_for_data": "Väntar på data...",
     "log_levels": {
       "all": "Alla",
       "debug": "Felsökning",

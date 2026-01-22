@@ -2,6 +2,154 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================
+   Dark Theme (Default)
+   ======================================== */
+:root,
+:root[data-theme="dark"] {
+  --bg-deep: #05060b;
+  --bg-velvet: #0b0f1a;
+  --bg-ink: #0f1726;
+  --bg-grid: rgba(255, 255, 255, 0.03);
+  --bg-glow-green: rgba(103, 234, 148, 0.08);
+  --bg-glow-blue: rgba(59, 130, 246, 0.08);
+  --text-default: #e5e7eb;
+  --text-muted: #9ca3af;
+  --text-inverse: #1f2937;
+  
+  /* Surface colors */
+  --surface-primary: rgba(39, 39, 42, 0.6);
+  --surface-secondary: rgba(24, 24, 27, 0.8);
+  --surface-card: rgba(39, 39, 42, 0.6);
+  --surface-modal: rgba(39, 39, 42, 0.95);
+  
+  /* Border colors */
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(103, 234, 148, 0.3);
+  --border-accent: rgba(103, 234, 148, 0.15);
+  
+  /* Accent/brand colors */
+  --accent: #67ea94;
+  --accent-dark: #22C55E;
+  --accent-glow: rgba(103, 234, 148, 0.3);
+  --accent-subtle: rgba(103, 234, 148, 0.5);
+  
+  /* Button colors */
+  --btn-icon-bg: rgba(255, 255, 255, 0.05);
+  --btn-icon-bg-hover: rgba(255, 255, 255, 0.1);
+  --btn-icon-text: rgba(255, 255, 255, 0.7);
+  --btn-icon-text-hover: #ffffff;
+  --btn-icon-border: rgba(255, 255, 255, 0.1);
+  --btn-icon-border-hover: rgba(255, 255, 255, 0.2);
+  
+  /* Tag colors */
+  --tag-active-bg: rgba(103, 234, 148, 0.2);
+  --tag-active-border: #67ea94;
+  --tag-inactive-bg: rgba(39, 39, 42, 0.5);
+  --tag-inactive-border: rgb(63, 63, 70);
+  --tag-inactive-text: rgb(161, 161, 170);
+  --tag-inactive-border-hover: rgb(113, 113, 122);
+  --tag-inactive-text-hover: rgb(212, 212, 216);
+  --tag-inactive-bg-hover: rgba(39, 39, 42, 0.8);
+  
+  /* Device card colors */
+  --device-card-bg: rgba(39, 39, 42, 0.4);
+  --device-card-bg-hover: rgba(39, 39, 42, 0.6);
+  --device-card-border: rgba(63, 63, 70, 0.5);
+  --device-card-border-hover: rgba(103, 234, 148, 0.4);
+  --device-card-shadow-hover: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(103, 234, 148, 0.1);
+  
+  /* Modal colors */
+  --modal-backdrop: rgba(0, 0, 0, 0.3);
+  --modal-bg-start: rgba(39, 39, 42, 0.95);
+  --modal-bg-end: rgba(24, 24, 27, 0.98);
+  --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  
+  /* Flash header colors */
+  --flash-header-bg-start: rgba(39, 39, 42, 0.85);
+  --flash-header-bg-end: rgba(24, 24, 27, 0.95);
+  --flash-header-close-text: rgb(161, 161, 170);
+  --flash-header-close-bg: rgba(39, 39, 42, 0.6);
+  --flash-header-close-border: rgb(63, 63, 70);
+  
+  /* Footer colors */
+  --footer-bg: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.3));
+}
+
+/* ========================================
+   Light Theme
+   ======================================== */
+:root[data-theme="light"] {
+  /* Background - warm beige/cream tones matching main site */
+  --bg-deep: #edece8;
+  --bg-velvet: #e8e7e3;
+  --bg-ink: #e3e2de;
+  --bg-grid: rgba(0, 0, 0, 0.02);
+  --bg-glow-green: rgba(103, 234, 148, 0.12);
+  --bg-glow-blue: rgba(59, 130, 246, 0.02);
+  --text-default: #1a1a1a;
+  --text-muted: #4a4a4a;
+  --text-inverse: #ffffff;
+  
+  /* Surface colors - warm cream whites */
+  --surface-primary: rgba(252, 250, 247, 1);
+  --surface-secondary: rgba(245, 243, 239, 1);
+  --surface-card: rgba(255, 253, 250, 1);
+  --surface-modal: rgba(252, 250, 247, 1);
+  
+  /* Border colors - warm gray tones */
+  --border-default: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(103, 234, 148, 0.5);
+  --border-accent: rgba(103, 234, 148, 0.3);
+  
+  /* Accent/brand colors - darker green for better contrast on light bg */
+  --accent: #1A9B4A;
+  --accent-dark: #158040;
+  --accent-glow: rgba(26, 155, 74, 0.2);
+  --accent-subtle: rgba(26, 155, 74, 0.35);
+  
+  /* Button colors - warmer grays */
+  --btn-icon-bg: rgba(0, 0, 0, 0.03);
+  --btn-icon-bg-hover: rgba(0, 0, 0, 0.06);
+  --btn-icon-text: rgba(0, 0, 0, 0.55);
+  --btn-icon-text-hover: #1a1a1a;
+  --btn-icon-border: rgba(0, 0, 0, 0.08);
+  --btn-icon-border-hover: rgba(0, 0, 0, 0.15);
+  
+  /* Tag colors */
+  --tag-active-bg: rgba(103, 234, 148, 0.18);
+  --tag-active-border: #22c55e;
+  --tag-inactive-bg: rgba(255, 253, 250, 0.9);
+  --tag-inactive-border: rgba(0, 0, 0, 0.1);
+  --tag-inactive-text: #4a4a4a;
+  --tag-inactive-border-hover: rgba(0, 0, 0, 0.18);
+  --tag-inactive-text-hover: #1a1a1a;
+  --tag-inactive-bg-hover: rgba(255, 255, 255, 1);
+  
+  /* Device card colors - warm with soft shadows */
+  --device-card-bg: rgba(255, 253, 250, 1);
+  --device-card-bg-hover: rgba(255, 255, 255, 1);
+  --device-card-border: rgba(0, 0, 0, 0.06);
+  --device-card-border-hover: rgba(103, 234, 148, 0.5);
+  --device-card-shadow-hover: 0 10px 40px rgba(0, 0, 0, 0.08), 0 0 20px rgba(103, 234, 148, 0.12);
+  
+  /* Modal colors - warm cream */
+  --modal-backdrop: rgba(0, 0, 0, 0.25);
+  --modal-bg-start: rgba(252, 250, 247, 1);
+  --modal-bg-end: rgba(245, 243, 239, 1);
+  --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+  
+  /* Flash header colors */
+  --flash-header-bg-start: rgba(252, 250, 247, 0.95);
+  --flash-header-bg-end: rgba(245, 243, 239, 0.98);
+  --flash-header-close-text: #4a4a4a;
+  --flash-header-close-bg: rgba(0, 0, 0, 0.03);
+  --flash-header-close-border: rgba(0, 0, 0, 0.08);
+  
+  /* Footer colors */
+  --footer-bg: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.02));
+}
+
 /* Mobile-specific improvements */
 @layer utilities {
   /* Improve touch targets on mobile */
@@ -16,6 +164,12 @@
   html, body {
     overflow-x: hidden;
     max-width: 100vw;
+    color: var(--text-default);
+    background:
+      radial-gradient(1200px at 15% 10%, var(--bg-glow-green), transparent 45%),
+      radial-gradient(900px at 85% -5%, var(--bg-glow-blue), transparent 40%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-velvet) 40%, var(--bg-ink) 100%);
+    transition: background 0.3s ease, color 0.3s ease;
   }
   
   /* Smooth scrolling for mobile */
@@ -37,5 +191,583 @@
     .dark {
       background-color: rgba(0, 0, 0, 0.75);
     }
+  }
+
+  /* Theme-aware text colors */
+  .text-theme {
+    color: var(--text-default);
+  }
+  .text-theme-muted {
+    color: var(--text-muted);
+  }
+  .text-theme-accent {
+    color: var(--accent);
+  }
+  
+  /* Theme-aware link styles */
+  .link-theme {
+    color: var(--text-default);
+    transition: color 0.2s ease;
+  }
+  .link-theme:hover {
+    color: var(--accent);
+  }
+  
+  /* Card icon - darker green in light mode for visibility */
+  .card-icon {
+    color: #67EA94; /* meshtastic default */
+  }
+  :root[data-theme="light"] .card-icon {
+    color: #1A9B4A; /* meshtastic-600 for better contrast */
+  }
+  
+  /* Step badge text - darker in light mode */
+  .step-number {
+    color: #67EA94; /* meshtastic default */
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+  :root[data-theme="light"] .step-number {
+    color: #1A9B4A; /* meshtastic-600 */
+  }
+  
+  /* Step badge circle - darker border in light mode */
+  .step-badge-circle {
+    background: rgba(103, 234, 148, 0.2);
+    border: 1px solid rgba(103, 234, 148, 0.5);
+  }
+  :root[data-theme="light"] .step-badge-circle {
+    background: rgba(26, 155, 74, 0.15);
+    border: 1px solid rgba(26, 155, 74, 0.4);
+  }
+  
+  /* Theme-aware utility classes to replace inline styles */
+  .bg-surface-modal {
+    background: var(--surface-modal);
+  }
+  
+  .bg-surface-primary {
+    background: var(--surface-primary);
+  }
+  
+  .bg-surface-secondary {
+    background: var(--surface-secondary);
+  }
+  
+  .border-theme {
+    border: 1px solid var(--border-default);
+  }
+  
+  .border-theme-left {
+    border-left: 1px solid var(--border-default);
+  }
+  
+  .border-theme-top {
+    border-top: 1px solid var(--border-default);
+  }
+  
+  .border-theme-bottom {
+    border-bottom: 1px solid var(--border-default);
+  }
+  
+  .text-accent {
+    color: var(--accent);
+  }
+  
+  /* Dropdown container */
+  .dropdown-menu {
+    background: var(--surface-modal);
+    border: 1px solid var(--border-default);
+  }
+  
+  /* Step card for flash instructions */
+  .step-card {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  /* Alert/info box */
+  .alert-box {
+    background: var(--surface-primary);
+    color: var(--accent);
+  }
+  
+  /* Disabled step state */
+  .step-disabled {
+    background: var(--surface-secondary);
+    border-color: var(--border-default);
+  }
+  
+  /* Hover utilities */
+  .hover\:bg-surface-secondary:hover {
+    background: var(--surface-secondary);
+  }
+  
+  /* Progress bar track */
+  .progress-track {
+    background: var(--surface-secondary);
+  }
+  
+  /* Release notes blockquote */
+  .release-notes-quote {
+    background: var(--surface-secondary);
+  }
+  
+  /* Error fetch box - better contrast in both themes */
+  .error-fetch-box {
+    background: #fef3c7;
+    border-color: #fbbf24;
+    color: #78350f;
+  }
+  
+  :root[data-theme="dark"] .error-fetch-box {
+    background: rgba(217, 119, 6, 0.2);
+    border-color: rgba(217, 119, 6, 0.5);
+    color: #fcd34d;
+  }
+}
+
+/* Modern UI Components */
+@layer components {
+  /* Gradient primary button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply font-normal text-sm text-black;
+    @apply px-5 py-2.5 rounded-xl;
+    @apply transition-all duration-300 ease-out;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    box-shadow: 0 4px 15px var(--accent-glow);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--accent-glow);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  /* Secondary/outline button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply font-normal text-sm;
+    @apply px-5 py-2.5 rounded-xl;
+    @apply bg-transparent backdrop-blur-sm;
+    @apply transition-all duration-300 ease-out;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent-glow);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  /* Icon button (small circular) */
+  .btn-icon {
+    @apply inline-flex items-center justify-center;
+    @apply w-10 h-10 rounded-xl;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-lg hover:scale-105;
+    color: var(--btn-icon-text);
+    background: var(--btn-icon-bg);
+    border: 1px solid var(--btn-icon-border);
+  }
+
+  .btn-icon:hover {
+    color: var(--btn-icon-text-hover);
+    background: var(--btn-icon-bg-hover);
+    border-color: var(--btn-icon-border-hover);
+  }
+
+  /* Modern card with glass effect */
+  .card-modern {
+    @apply relative rounded-2xl;
+    overflow: visible;
+    @apply transition-all duration-500 ease-out;
+    background: linear-gradient(145deg, var(--surface-primary), var(--surface-secondary));
+    border: 1px solid var(--border-default);
+    backdrop-filter: blur(10px);
+  }
+  
+  /* Light mode cards get subtle shadows like main site */
+  :root[data-theme="light"] .card-modern {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .card-modern:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 30px var(--accent-glow);
+  }
+
+  /* Step indicator badge */
+  .step-badge {
+    @apply inline-flex items-center justify-center;
+    @apply w-8 h-8 rounded-full;
+    @apply text-sm font-bold text-black;
+    @apply mb-4;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  /* Modal with backdrop blur */
+  .modal-backdrop {
+    @apply fixed inset-0 z-40;
+    background: var(--modal-backdrop);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    @apply relative rounded-2xl;
+    background: linear-gradient(145deg, var(--modal-bg-start), var(--modal-bg-end));
+    border: 1px solid var(--border-default);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--modal-shadow);
+  }
+  
+  /* Light mode modals get cleaner shadows */
+  :root[data-theme="light"] .modal-content {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Glowing divider */
+  .divider-glow {
+    @apply w-full h-px;
+    background: linear-gradient(90deg, transparent, var(--accent-subtle), transparent);
+  }
+
+  /* Vendor tag pills */
+  .tag-pill {
+    @apply inline-flex items-center;
+    @apply px-3 py-1.5 rounded-full;
+    @apply text-xs font-medium;
+    @apply border transition-all duration-300;
+  }
+
+  .tag-pill-active {
+    background: var(--tag-active-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+  }
+
+  .tag-pill-inactive {
+    background: var(--tag-inactive-bg);
+    border-color: var(--tag-inactive-border);
+    color: var(--tag-inactive-text);
+    @apply transition-all duration-300;
+  }
+
+  .tag-pill-inactive:hover {
+    border-color: var(--tag-inactive-border-hover);
+    color: var(--tag-inactive-text-hover);
+    background: var(--tag-inactive-bg-hover);
+  }
+
+  /* Architecture filter tag pills */
+  .tag-pill-arch {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: rgb(165, 180, 252);
+  }
+
+  .tag-pill-arch:hover {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgb(129, 140, 248);
+  }
+
+  /* Light mode architecture tags - darker for readability */
+  :root[data-theme="light"] .tag-pill-arch {
+    background: rgba(79, 70, 229, 0.15);
+    border-color: rgba(79, 70, 229, 0.4);
+    color: rgb(67, 56, 202);
+  }
+
+  :root[data-theme="light"] .tag-pill-arch:hover {
+    background: rgba(79, 70, 229, 0.25);
+    border-color: rgb(79, 70, 229);
+  }
+
+  /* Device card enhanced */
+  .device-card {
+    @apply relative rounded-xl overflow-hidden;
+    @apply transition-all duration-300 ease-out;
+    @apply cursor-pointer;
+    background: var(--device-card-bg);
+    border: 1px solid var(--device-card-border);
+    backdrop-filter: blur(4px);
+  }
+  
+  /* Light mode device cards get subtle shadows */
+  :root[data-theme="light"] .device-card {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .device-card:hover {
+    background: var(--device-card-bg-hover);
+    border-color: var(--device-card-border-hover);
+    transform: scale(1.02);
+    box-shadow: var(--device-card-shadow-hover);
+  }
+
+  /* Connection status indicator */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+    @apply animate-pulse;
+  }
+
+  .status-dot-connected {
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  .status-dot-disconnected {
+    background: var(--text-muted);
+  }
+
+  /* Footer modern */
+  .footer-modern {
+    @apply relative;
+    border-top: 1px solid var(--border-default);
+    background: var(--footer-bg);
+  }
+
+  /* Flash header with glass-morphism and accent */
+  .flash-header {
+    @apply relative;
+    background: linear-gradient(145deg, var(--flash-header-bg-start), var(--flash-header-bg-end));
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--accent-subtle);
+    animation: flash-header-enter 0.3s ease-out;
+  }
+
+  @keyframes flash-header-enter {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .flash-header-icon {
+    @apply flex items-center justify-center;
+    @apply w-9 h-9 rounded-lg;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-subtle);
+  }
+
+  /* Light mode: darker icon background for better visibility */
+  :root[data-theme="light"] .flash-header-icon {
+    background: rgba(26, 155, 74, 0.15);
+    border-color: rgba(26, 155, 74, 0.4);
+  }
+
+  /* Theme-aware warning/yellow text */
+  .text-warning {
+    color: rgb(250, 204, 21); /* yellow-400 */
+  }
+  
+  :root[data-theme="light"] .text-warning {
+    color: rgb(161, 98, 7); /* amber-700 for better contrast on light bg */
+  }
+  
+  /* Theme-aware meshtastic green text - dark in light mode */
+  .text-meshtastic-dark {
+    color: #1A9B4A;
+  }
+  
+  :root[data-theme="dark"] .text-meshtastic-dark {
+    color: #67EA94;
+  }
+  
+  /* Theme-aware hover text for dropdown items */
+  .hover\:text-meshtastic-dark:hover {
+    color: #1A9B4A;
+  }
+  
+  :root[data-theme="dark"] .hover\:text-meshtastic-dark:hover {
+    color: #67EA94;
+  }
+
+  /* Connection status button - disconnected state */
+  .connection-status-disconnected {
+    border-color: var(--border-default);
+    background: var(--surface-secondary);
+  }
+  
+  .connection-status-disconnected-text {
+    color: var(--text-muted);
+  }
+  
+  /* Serial monitor toolbar */
+  .serial-toolbar {
+    background: var(--surface-modal);
+    border: 1px solid var(--border-default);
+  }
+  
+  :root[data-theme="light"] .serial-toolbar {
+    background: #f5f4f0;
+    border: 1px solid #d1d0c9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  
+  .serial-toolbar-inner {
+    background: linear-gradient(to right, var(--surface-secondary), transparent, var(--surface-secondary));
+  }
+  
+  :root[data-theme="light"] .serial-toolbar-inner {
+    background: linear-gradient(to right, rgba(0,0,0,0.02), transparent, rgba(0,0,0,0.02));
+  }
+  
+  .serial-action-buttons {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  :root[data-theme="light"] .serial-action-buttons {
+    background: #e8e7e3;
+    border: 1px solid #c8c7c1;
+  }
+  
+  .serial-action-btn {
+    color: var(--text-muted);
+  }
+  
+  .serial-action-btn:hover {
+    color: var(--primary-color);
+    background: var(--surface-primary);
+  }
+  
+  :root[data-theme="light"] .serial-action-btn {
+    color: #5c5b57;
+  }
+  
+  :root[data-theme="light"] .serial-action-btn:hover {
+    color: #1A9B4A;
+    background: rgba(26, 155, 74, 0.1);
+  }
+  
+  .serial-disconnect-btn {
+    color: var(--text-muted);
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  .serial-disconnect-btn:hover {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.4);
+  }
+  
+  :root[data-theme="light"] .serial-disconnect-btn {
+    color: #5c5b57;
+    background: #e8e7e3;
+    border: 1px solid #c8c7c1;
+  }
+  
+  :root[data-theme="light"] .serial-disconnect-btn:hover {
+    color: #dc2626;
+    border-color: rgba(220, 38, 38, 0.5);
+  }
+  
+  .serial-terminal-container {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  :root[data-theme="light"] .serial-terminal-container {
+    background: #f5f4f0;
+    border: 1px solid #d1d0c9;
+  }
+  
+  .serial-loading-overlay {
+    background: var(--surface-modal);
+  }
+  
+  :root[data-theme="light"] .serial-loading-overlay {
+    background: rgba(245, 244, 240, 0.9);
+  }
+  
+  /* Modal backdrop - theme aware */
+  .modal-backdrop {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  :root[data-theme="light"] .modal-backdrop {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .flash-header-close {
+    @apply inline-flex items-center justify-center;
+    @apply w-9 h-9 rounded-lg;
+    @apply transition-all duration-200 ease-out;
+    color: var(--flash-header-close-text);
+    background: var(--flash-header-close-bg);
+    border: 1px solid var(--flash-header-close-border);
+  }
+
+  .flash-header-close:hover {
+    color: var(--accent);
+    border-color: var(--accent-subtle);
+    background: var(--accent-glow);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .flash-header-accent {
+    @apply absolute bottom-0 left-0 right-0 h-px;
+    background: linear-gradient(90deg, transparent, var(--accent-subtle), transparent);
+  }
+
+  /* Device header with glass-morphism and accent */
+  .device-header {
+    @apply relative;
+    background: linear-gradient(145deg, var(--flash-header-bg-start), var(--flash-header-bg-end));
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--accent-subtle);
+    animation: flash-header-enter 0.3s ease-out;
+  }
+
+  .device-header-close {
+    @apply inline-flex items-center justify-center;
+    @apply w-9 h-9 rounded-lg;
+    @apply transition-all duration-200 ease-out;
+    color: var(--flash-header-close-text);
+    background: var(--flash-header-close-bg);
+    border: 1px solid var(--flash-header-close-border);
+  }
+
+  .device-header-close:hover {
+    color: var(--accent);
+    border-color: var(--accent-subtle);
+    background: var(--accent-glow);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .device-header-accent {
+    @apply absolute bottom-0 left-0 right-0 h-px;
+    background: linear-gradient(90deg, transparent, var(--accent-subtle), transparent);
+  }
+
+  /* Header accent line for app header */
+  .header-accent-container {
+    @apply w-full flex justify-center;
+    @apply mt-4 mb-6;
+  }
+
+  .header-accent-line {
+    @apply w-full max-w-2xl h-px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      var(--accent-subtle) 15%,
+      var(--accent) 50%, 
+      var(--accent-subtle) 85%,
+      transparent 100%
+    );
+    box-shadow: 0 0 15px var(--accent-glow);
   }
 }
