@@ -3,18 +3,18 @@
     <ReleaseNotes />
     <ol
       v-if="firmwareStore.canShowFlash"
-      class="relative border-s border-gray-700 ms-3.5 mb-6"
+      class="relative ms-3.5 mb-6 border-theme-left"
     >
       <!-- Step 1: USB Connection -->
       <li class="mb-10 ms-8">
         <span class="absolute -start-4 step-badge">
           1
         </span>
-        <div class="p-4 bg-gray-800/80 border border-gray-700 rounded-lg shadow-sm">
-          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+        <div class="p-4 rounded-lg shadow-sm step-card">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-theme">
             {{ $t('flash.esp32.step_1_usb') }}
           </h3>
-          <div class="flex p-4 text-sm text-blue-400 rounded-lg bg-gray-700/50" role="alert">
+          <div class="flex p-4 text-sm rounded-lg alert-box" role="alert">
             <Info class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
             <div>
               <p>{{ $t('flash.esp32.s3_instructions') }}</p>
@@ -36,20 +36,20 @@
         <span class="absolute -start-4 step-badge">
           2
         </span>
-        <div class="p-4 bg-gray-800/80 border border-gray-700 rounded-lg shadow-sm">
-          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+        <div class="p-4 rounded-lg shadow-sm step-card">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-theme">
             {{ $t('flash.esp32.step_2_baud_rate') }}
           </h3>
           <select
             v-model="firmwareStore.$state.baudRate"
-            class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
+            class="border text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 text-theme bg-surface-primary border-theme"
           >
             <option value="115200">115200</option>
             <option value="230400">230400</option>
             <option value="460800">460800</option>
             <option value="921600">921600</option>
           </select>
-          <p class="mt-2 text-sm text-gray-400">{{ $t('flash.esp32.slow_reliable') }}</p>
+          <p class="mt-2 text-sm text-theme-muted">{{ $t('flash.esp32.slow_reliable') }}</p>
         </div>
       </li>
       <!-- Step 3: Flash Options -->
@@ -57,8 +57,8 @@
         <span class="absolute -start-4 step-badge">
           3
         </span>
-        <div class="p-4 bg-gray-800/80 border border-gray-700 rounded-lg shadow-sm">
-          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+        <div class="p-4 rounded-lg shadow-sm step-card">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-theme">
             {{ $t('flash.esp32.step_3_flash') }}
           </h3>
           
@@ -73,8 +73,8 @@
                 type="checkbox"
                 class="sr-only peer"
               >
-              <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600" />
-              <span class="ms-3 text-sm font-medium text-gray-300">{{ $t('flash.esp32.full_erase') }}</span>
+              <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600" />
+              <span class="ms-3 text-sm font-medium text-theme-muted">{{ $t('flash.esp32.full_erase') }}</span>
             </label>
             
             <label
@@ -86,7 +86,7 @@
                 type="checkbox"
                 class="sr-only peer"
               >
-              <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
+              <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
               <img
                 src="/img/Meshtastic-UI-Long.svg"
                 class="h-5 ms-3"
@@ -103,15 +103,15 @@
                 type="checkbox"
                 class="sr-only peer"
               >
-              <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
-              <span class="ms-3 text-sm font-medium text-gray-300">{{ $t('flash.esp32.install_inkhud') }}</span>
+              <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
+              <span class="ms-3 text-sm font-medium text-theme-muted">{{ $t('flash.esp32.install_inkhud') }}</span>
             </label>
           </div>
           
           <!-- Warning Alert -->
           <div
             v-if="firmwareStore.$state.shouldCleanInstall"
-            class="flex flex-col p-4 mb-4 text-sm text-red-400 border border-red-800 rounded-lg bg-gray-700/50"
+            class="flex flex-col p-4 mb-4 text-sm text-red-400 border border-red-800 rounded-lg bg-surface-primary"
             role="alert"
           >
             <div class="flex items-center">
@@ -131,10 +131,10 @@
             </a>
           </div>
           
-          <p class="text-sm text-gray-400 mb-3">{{ $t('flash.esp32.process_warning') }}</p>
+          <p class="text-sm text-theme-muted mb-3">{{ $t('flash.esp32.process_warning') }}</p>
           
           <!-- Info Alert -->
-          <div class="flex p-4 text-sm text-blue-400 rounded-lg bg-gray-700/50" role="alert">
+          <div class="flex p-4 text-sm rounded-lg alert-box" role="alert">
             <Info class="flex-shrink-0 inline w-5 h-5 me-3" />
             <span>{{ $t('flash.esp32.reset_after_flash') }}</span>
           </div>
@@ -154,7 +154,7 @@
       <button
         v-if="firmwareStore.$state.flashPercentDone > 0 && !firmwareStore.$state.isFlashing"
         type="button"
-        class="w-full text-white bg-gray-700 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center border border-gray-600 transition-colors"
+        class="w-full text-theme hover:opacity-80 focus:ring-4 focus:outline-none focus:ring-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors step-card"
         @click="startOver"
       >
         {{ $t('flash.esp32.start_over') }}
@@ -163,10 +163,10 @@
       <!-- Progress Bar -->
       <div v-if="firmwareStore.$state.flashPercentDone > 0">
         <div class="flex justify-between mb-1">
-          <span class="text-sm font-medium text-white">{{ $t('flash.esp32.flashing_complete') }} {{ partition }}</span>
-          <span class="text-sm font-medium text-green-400">{{ firmwareStore.percentDone }}</span>
+          <span class="text-sm font-medium text-theme">{{ $t('flash.esp32.flashing_complete') }} {{ partition }}</span>
+          <span class="text-sm font-medium text-accent">{{ firmwareStore.percentDone }}</span>
         </div>
-        <div class="w-full bg-gray-700 rounded-full h-2.5">
+        <div class="w-full rounded-full h-2.5 progress-track">
           <div
             class="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
             :style="{ width: firmwareStore.percentDone }"

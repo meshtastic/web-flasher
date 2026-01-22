@@ -1,18 +1,18 @@
 <template>
   <div class="space-y-4">
-    <h3 class="text-lg font-semibold text-white">
+    <h3 class="text-lg font-semibold text-theme">
       {{ $t('flash.erase_flash') }} {{ deviceStore.$state.selectedTarget?.displayName }}
     </h3>
-    <ol class="relative border-s border-gray-600 ms-3.5 mb-4 md:mb-5">
+    <ol class="relative ms-3.5 mb-4 md:mb-5 border-theme-left">
       <li class="mb-10 ms-8">
-        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
+        <span class="absolute -start-4 step-badge">
           1
         </span>
-        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
+        <h3 class="flex items-start mb-1 text-lg font-semibold text-theme">
           {{ $t('flash.uf2.enter_dfu_mode') }}
         </h3>
         <div
-          class="p-4 mb-4 my-2 text-sm rounded-lg bg-gray-800 text-blue-200"
+          class="p-4 mb-4 my-2 text-sm rounded-lg alert-box"
           role="alert"
         >
           <span class="font-medium">
@@ -32,13 +32,13 @@
         </button>
       </li>
       <li class="mb-10 ms-8">
-        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
+        <span class="absolute -start-4 step-badge">
           2
         </span>
-        <h3 class="flex items-start mb-1 text-lg font-semibold text-white">
+        <h3 class="flex items-start mb-1 text-lg font-semibold text-theme">
           {{ $t('flash.uf2.ensure_drive_mounted') }}
         </h3>
-        <span>
+        <span class="text-theme-muted">
           {{ $t('flash.uf2.drive_name_info') }}
         </span>
         <div>
@@ -55,14 +55,14 @@
         </div>
       </li>
       <li class="ms-8">
-        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
+        <span class="absolute -start-4 step-badge">
           3
         </span>
-        <h3 class="mb-1 text-lg font-semibold text-white">
+        <h3 class="mb-1 text-lg font-semibold text-theme">
           {{ $t('flash.uf2.download_copy_uf2') }}
         </h3>
         <div class="py-2">
-          <span>
+          <span class="text-theme-muted">
             {{ $t('flash.uf2.copy_instructions') }}
             {{ !deviceStore.isSelectedNrf ? $t('flash.erase_uf2.warning') : '' }}
           </span>
@@ -79,13 +79,13 @@
         v-if="deviceStore.isSelectedNrf"
         class="ms-8 mt-4"
       >
-        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
+        <span class="absolute -start-4 step-badge">
           4
         </span>
-        <h3 class="mb-1 text-lg font-semibold text-white">
+        <h3 class="mb-1 text-lg font-semibold text-theme">
           {{ $t('buttons.serial_monitor') }}
         </h3>
-        <div class="py-2">
+        <div class="py-2 text-theme-muted">
           {{ $t('flash.erase_uf2.wait_for_drive') }}
         </div>
         <div>
@@ -102,13 +102,13 @@
         v-if="deviceStore.isSelectedNrf"
         class="ms-8 mt-4"
       >
-        <span class="absolute flex items-center justify-center w-6 h-6 rounded-full -start-3 ring-8 bg-cyan-900 text-gray-100 ring-gray-900">
+        <span class="absolute -start-4 step-badge">
           5
         </span>
-        <h3 class="mb-1 text-lg font-semibold text-white">
+        <h3 class="mb-1 text-lg font-semibold text-theme">
           {{ $t('firmware.title') }}
         </h3>
-        <div class="py-2">
+        <div class="py-2 text-theme-muted">
           {{ $t('flash.erase_uf2.close_instructions') }}
         </div>
         <div>

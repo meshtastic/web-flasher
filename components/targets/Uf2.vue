@@ -3,18 +3,18 @@
     <ReleaseNotes />
     <ol
       v-if="firmwareStore.canShowFlash"
-      class="relative border-s border-gray-700 ms-3.5 mb-6"
+      class="relative ms-3.5 mb-6 border-theme-left"
     >
       <!-- Step 1: Enter DFU Mode -->
       <li class="mb-10 ms-8">
         <span class="absolute -start-4 step-badge">
           1
         </span>
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
-          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+        <div class="p-4 rounded-lg shadow-sm step-card">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-theme">
             {{ $t('flash.uf2.enter_dfu_mode') }}
           </h3>
-          <div class="flex p-4 mb-4 text-sm text-blue-400 rounded-lg bg-gray-700/50" role="alert">
+          <div class="flex p-4 mb-4 text-sm rounded-lg alert-box" role="alert">
             <Info class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
             <span>
               {{ $t('flash.uf2.dfu_firmware_clause') }} &lt; {{ deviceStore.enterDfuVersion }}, {{ $t('flash.uf2.dfu_firmware_clause_2') }} {{ deviceStore.dfuStepAction }}
@@ -35,12 +35,12 @@
         <span class="absolute -start-4 step-badge">
           2
         </span>
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
-          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+        <div class="p-4 rounded-lg shadow-sm step-card">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-theme">
             {{ $t('flash.uf2.ensure_drive_mounted') }}
           </h3>
-          <p class="text-sm text-gray-400 mb-3">{{ $t('flash.uf2.drive_name_info') }}</p>
-          <div class="rounded-lg overflow-hidden bg-gray-900/50 border border-gray-700">
+          <p class="text-sm text-theme-muted mb-3">{{ $t('flash.uf2.drive_name_info') }}</p>
+          <div class="rounded-lg overflow-hidden bg-surface-primary border-theme">
             <img
               v-if="deviceStore.isSelectedNrf"
               src="@/assets/img/dfu.png"
@@ -61,12 +61,12 @@
         <span class="absolute -start-4 step-badge">
           3
         </span>
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-lg shadow-sm">
-          <h3 class="flex items-center mb-3 text-lg font-semibold text-white">
+        <div class="p-4 rounded-lg shadow-sm step-card">
+          <h3 class="flex items-center mb-3 text-lg font-semibold text-theme">
             {{ $t('flash.uf2.download_copy_uf2') }}
           </h3>
-          <p class="text-sm text-gray-400 mb-3">{{ $t('flash.uf2.copy_instructions') }}</p>
-          <div class="flex p-4 text-sm text-blue-400 rounded-lg bg-gray-700/50" role="alert">
+          <p class="text-sm text-theme-muted mb-3">{{ $t('flash.uf2.copy_instructions') }}</p>
+          <div class="flex p-4 text-sm rounded-lg alert-box" role="alert">
             <Info class="flex-shrink-0 inline w-5 h-5 me-3" />
             <span>{{ $t('flash.uf2.auto_reboot_warning') }}</span>
           </div>
@@ -81,8 +81,8 @@
               type="checkbox"
               class="sr-only peer"
             >
-            <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
-            <span class="ms-3 text-sm font-medium text-gray-300">{{ $t('flash.uf2.install_inkhud') }}</span>
+            <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
+            <span class="ms-3 text-sm font-medium text-theme-muted">{{ $t('flash.uf2.install_inkhud') }}</span>
           </label>
         </div>
       </li>

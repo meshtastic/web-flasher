@@ -13,10 +13,10 @@
     <!-- Dropdown menu -->
     <div
       id="languageDropdown"
-      class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-48 dark:bg-zinc-700 dark:divide-gray-600"
+      class="z-10 hidden rounded-lg shadow w-48 dropdown-menu"
     >
       <ul
-        class="py-2 text-sm text-gray-700 dark:text-gray-200"
+        class="py-2 text-sm text-theme-muted"
         aria-labelledby="languageDropdownButton"
       >
         <li
@@ -24,8 +24,7 @@
           :key="locale.code"
         >
           <button
-            class="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-            :class="{ 'bg-gray-100 dark:bg-gray-600': $i18n.locale === locale.code }"
+            class="w-full text-left block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary transition-colors"
             @click="switchLanguage(locale.code)"
           >
             {{ locale.flag }} {{ locale.name }}

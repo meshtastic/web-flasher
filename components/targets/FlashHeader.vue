@@ -8,7 +8,7 @@
       <div class="flash-header-icon">
         <component :is="deviceIcon" class="w-5 h-5 text-meshtastic" />
       </div>
-      <h3 class="text-base sm:text-lg font-semibold text-white">
+      <h3 class="text-base sm:text-lg font-semibold text-theme">
         {{ headerTitle }}
       </h3>
     </div>

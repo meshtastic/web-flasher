@@ -8,7 +8,7 @@
         <div
           v-for="toast in toastStore.toasts"
           :key="toast.id"
-          class="min-w-96 max-w-xl w-auto bg-zinc-700 backdrop-blur-sm shadow-xl rounded-lg pointer-events-auto ring-1 ring-gray-600 overflow-hidden border border-gray-600"
+          class="min-w-96 max-w-xl w-auto backdrop-blur-sm shadow-xl rounded-lg pointer-events-auto overflow-hidden bg-surface-modal border-theme"
         >
           <div class="p-4">
             <div class="flex items-start">
@@ -20,16 +20,16 @@
                 />
               </div>
               <div class="ml-3 w-0 flex-1 pt-0.5">
-                <p class="text-sm font-medium text-gray-100">
+                <p class="text-sm font-medium text-theme">
                   {{ toast.title }}
                 </p>
-                <p class="mt-1 text-sm text-gray-300">
+                <p class="mt-1 text-sm text-theme-muted">
                   {{ toast.message }}
                 </p>
               </div>
               <div class="ml-4 flex-shrink-0 flex">
                 <button
-                  class="bg-transparent rounded-md inline-flex text-gray-400 hover:text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-meshtastic focus:ring-offset-zinc-700 transition-colors duration-200"
+                  class="bg-transparent rounded-md inline-flex text-theme-muted hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-meshtastic transition-colors duration-200"
                   @click="toastStore.removeToast(toast.id)"
                 >
                   <span class="sr-only">{{ $t('actions.close') }}</span>
@@ -41,11 +41,11 @@
           <!-- Error toast with dismiss and reload buttons -->
           <div
             v-if="toast.type === 'error'"
-            class="bg-zinc-800 px-4 py-3 border-t border-gray-600"
+            class="px-4 py-3 bg-surface-secondary border-theme-top"
           >
             <div class="flex">
               <button
-                class="text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors duration-200"
+                class="text-sm font-medium text-theme-muted hover:opacity-80 transition-colors duration-200"
                 @click="toastStore.removeToast(toast.id)"
               >
                 {{ $t('actions.dismiss') }}
