@@ -312,6 +312,19 @@
   .release-notes-quote {
     background: var(--surface-secondary);
   }
+  
+  /* Error fetch box - better contrast in both themes */
+  .error-fetch-box {
+    background: #fef3c7;
+    border-color: #fbbf24;
+    color: #78350f;
+  }
+  
+  :root[data-theme="dark"] .error-fetch-box {
+    background: rgba(217, 119, 6, 0.2);
+    border-color: rgba(217, 119, 6, 0.5);
+    color: #fcd34d;
+  }
 }
 
 /* Modern UI Components */

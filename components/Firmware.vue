@@ -87,7 +87,7 @@
       </ul>
       <div
         v-if="store.couldntFetchFirmwareApi"
-        class="px-3 sm:px-4 py-3 w-full sm:w-96 max-w-sm rounded-xl text-xs sm:text-sm text-yellow-200 bg-yellow-500/20 border border-yellow-500/30 break-words"
+        class="px-3 sm:px-4 py-3 w-full sm:w-96 max-w-sm rounded-xl text-xs sm:text-sm border error-fetch-box break-words"
       >
         <strong>{{ $t('firmware.error_fetching') }}</strong>
         <br>
