@@ -173,14 +173,14 @@
       </transition-group>
     </div>
 
-    <div class="fixed right-2 sm:right-4 bottom-4 sm:bottom-6 group z-50">
+    <div v-show="isConnected" class="fixed right-2 sm:right-4 top-4 sm:top-6 group z-[10000]">
       <button
         type="button"
         :disabled="true"
         :class="{
           'border-purple-400/50 bg-purple-500/10': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
           'border-meshtastic/50 bg-meshtastic/10': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
-          'border-zinc-700 bg-zinc-800/50': !isConnected,
+          'connection-status-disconnected': !isConnected,
         }"
         class="inline-flex items-center gap-2 border backdrop-blur-md font-medium rounded-xl text-xs px-3 sm:px-4 py-2 text-center shadow-lg transition-all duration-300"
       >
@@ -188,7 +188,7 @@
           :class="{
             'text-purple-400': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
             'text-meshtastic': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
-            'text-gray-400': !isConnected,
+            'connection-status-disconnected-text': !isConnected,
           }"
         >
           {{ connectionButtonLabel }}
@@ -394,6 +394,31 @@ onMounted(() => {
     /* Smooth transition for background change */
     transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1), 
                 color 1.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  /* Light mode konami - use light retro background */
+  :root[data-theme="light"] .konami-code {
+    background: linear-gradient(
+      -45deg,
+      #e8f5e9,
+      #f1f8f1,
+      #eff7ef,
+      #e6f4e6,
+      #e8f2e8,
+      #e8f5e9
+    ) !important;
+    color: #1a3a1a !important;
+  }
+  
+  :root[data-theme="light"] .konami-code,
+  :root[data-theme="light"] .konami-code * {
+    color: #1a3a1a !important;
+    text-shadow: none !important;
+  }
+  
+  :root[data-theme="light"] .konami-code h2 {
+    color: #0d5f0d !important;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5) !important;
   }
 
   @keyframes konamiGradient {

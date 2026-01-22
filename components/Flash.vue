@@ -38,7 +38,7 @@
         id="flash-modal"
         tabindex="-1"
         aria-hidden="true"
-        class="hidden fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm px-4 sm:px-6 md:px-8 py-8 md:py-12"
+        class="hidden fixed inset-0 z-[60] modal-backdrop backdrop-blur-sm px-4 sm:px-6 md:px-8 py-8 md:py-12"
       >
         <div class="flex h-full w-full items-start justify-center">
           <div class="relative w-full max-w-5xl">

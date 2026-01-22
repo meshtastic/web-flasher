@@ -36,7 +36,7 @@
         id="device-modal"
         tabindex="-1"
         aria-hidden="true"
-        class="hidden fixed inset-0 z-[60] flex items-start justify-center bg-black/30 backdrop-blur-sm px-4 sm:px-6 md:px-8 py-8 md:py-12"
+        class="hidden fixed inset-0 z-[60] flex items-start justify-center modal-backdrop backdrop-blur-sm px-4 sm:px-6 md:px-8 py-8 md:py-12"
       >
         <div
           class="relative w-full max-w-6xl"

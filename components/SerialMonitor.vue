@@ -4,8 +4,8 @@
     class="w-full mt-2 px-0 sm:px-0 h-[calc(100vh-140px)] flex flex-col gap-3"
   >
     <!-- Top toolbar -->
-    <div class="relative overflow-hidden rounded-xl border border-white/10">
-      <div class="absolute inset-0 bg-gradient-to-r from-gray-800/50 via-gray-800/30 to-gray-800/50 backdrop-blur-md" />
+    <div class="relative overflow-hidden rounded-xl serial-toolbar">
+      <div class="absolute inset-0 serial-toolbar-inner backdrop-blur-md" />
       <div class="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_20%_50%,rgba(103,234,148,0.1),transparent_50%)]" />
       <div class="relative flex items-center justify-between gap-6 px-4 py-3">
         <!-- Connection Status -->
@@ -15,10 +15,10 @@
             <div v-if="serialMonitorStore.isConnected" class="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-pulse" />
           </div>
           <div class="flex flex-col gap-0.5 min-w-0">
-            <span class="text-xs font-semibold uppercase tracking-wide leading-none" :class="serialMonitorStore.isConnected ? 'text-green-400' : 'text-gray-400'">
+            <span class="text-xs font-semibold uppercase tracking-wide leading-none" :class="serialMonitorStore.isConnected ? 'text-meshtastic-dark' : 'text-theme-muted'">
               {{ serialMonitorStore.isConnected ? 'Connected' : 'Disconnected' }}
             </span>
-            <span class="text-xs text-gray-500 font-medium leading-none">Serial Monitor</span>
+            <span class="text-xs text-theme-muted font-medium leading-none">Serial Monitor</span>
           </div>
         </div>
         
@@ -27,40 +27,40 @@
         
         <!-- Action buttons and Disconnect -->
         <div class="flex items-center gap-2 flex-shrink-0">
-          <div class="flex items-center gap-1 bg-gray-900/80 backdrop-blur-sm rounded-lg p-1.5 border border-white/10 hover:border-white/20 transition-colors">
+          <div class="flex items-center gap-1 serial-action-buttons backdrop-blur-sm rounded-lg p-1.5 transition-colors">
             <button
               type="button"
               title="Clear logs"
-              class="group relative p-2 text-gray-400 hover:text-white rounded-md transition-all duration-200 hover:bg-white/10"
+              class="group relative p-2 serial-action-btn rounded-md transition-all duration-200"
               @click="clearTerminal"
             >
               <Trash class="h-4 w-4 transition-transform group-hover:scale-110" />
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Clear</div>
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-surface-modal text-theme text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Clear</div>
             </button>
             <button
               type="button"
               title="Copy logs to clipboard"
-              class="group relative p-2 text-gray-400 hover:text-white rounded-md transition-all duration-200 hover:bg-white/10"
+              class="group relative p-2 serial-action-btn rounded-md transition-all duration-200"
               @click="copyToClipboard"
             >
               <Clipboard class="h-4 w-4 transition-transform group-hover:scale-110" />
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Copy</div>
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-surface-modal text-theme text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Copy</div>
             </button>
             <button
               type="button"
               title="Save logs to file"
-              class="group relative p-2 text-gray-400 hover:text-white rounded-md transition-all duration-200 hover:bg-white/10"
+              class="group relative p-2 serial-action-btn rounded-md transition-all duration-200"
               @click="saveToFile"
             >
               <Download class="h-4 w-4 transition-transform group-hover:scale-110" />
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Save</div>
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-surface-modal text-theme text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Save</div>
             </button>
           </div>
           
           <!-- Disconnect button -->
           <button
             v-if="serialMonitorStore.isConnected"
-            class="group relative flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-300 hover:text-red-400 bg-gray-900/80 hover:bg-gray-900/60 border border-white/10 hover:border-red-500/40 rounded-lg transition-all duration-200 overflow-hidden"
+            class="group relative flex items-center gap-2 px-4 py-2 text-sm font-medium serial-disconnect-btn rounded-lg transition-all duration-200 overflow-hidden"
             @click="disconnect()"
           >
             <X class="h-4 w-4 relative transition-transform group-hover:rotate-90 duration-200" />
@@ -70,11 +70,11 @@
       </div>
     </div>
 
-    <div class="flex-1 min-h-0 shadow-lg rounded-xl border border-white/10 overflow-hidden flex items-center justify-center relative">
+    <div class="flex-1 min-h-0 shadow-lg rounded-xl serial-terminal-container overflow-hidden flex items-center justify-center relative">
       <div ref="terminalContainer" class="h-full w-full" />
-      <div v-if="serialMonitorStore.isConnected && serialMonitorStore.rawBuffer.length === 0" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/80 backdrop-blur-sm pointer-events-none">
+      <div v-if="serialMonitorStore.isConnected && serialMonitorStore.rawBuffer.length === 0" class="absolute inset-0 flex flex-col items-center justify-center serial-loading-overlay backdrop-blur-sm pointer-events-none">
         <div class="loader mb-4" />
-        <p class="text-gray-400 text-sm">{{ $t('serial.waiting_for_data') }}</p>
+        <p class="text-theme-muted text-sm">{{ $t('serial.waiting_for_data') }}</p>
       </div>
     </div>
   </div>

@@ -170,6 +170,16 @@ export const useDeviceStore = defineStore('device', {
       }
     },
     async openDeviceConnection(shouldConfigure: boolean = true): Promise<MeshDevice> {
+      // Close any existing port first
+      if (this.port) {
+        try {
+          await this.port.close()
+        }
+        catch {
+          // Port may not be open, ignore
+        }
+      }
+
       // Request serial port from user
       this.port = await navigator.serial.requestPort()
 

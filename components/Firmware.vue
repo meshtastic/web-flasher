@@ -37,7 +37,7 @@
         <li v-for="release in store.$state.previews">
           <a
             href="#"
-            class="block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary cursor-pointer transition-colors"
+            class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
             @click="setSelectedFirmware(release)"
           >
             {{ release.title.replace('Meshtastic Firmware ', '').replace('Pre-release ', '') }}
@@ -58,7 +58,7 @@
         <li v-for="release in store.$state.alpha">
           <a
             href="#"
-            class="block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary cursor-pointer transition-colors"
+            class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
             @click="setSelectedFirmware(release)"
           >
             {{ release.title.replace('Meshtastic Firmware ', '') }}
@@ -78,7 +78,7 @@
       >
         <li v-for="release in store.$state.stable">
           <span
-            class="block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary cursor-pointer transition-colors"
+            class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
             @click="setSelectedFirmware(release)"
           >
             {{ release.title.replace('Meshtastic Firmware ', '') }}

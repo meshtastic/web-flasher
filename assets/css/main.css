@@ -576,6 +576,131 @@
   :root[data-theme="light"] .text-warning {
     color: rgb(161, 98, 7); /* amber-700 for better contrast on light bg */
   }
+  
+  /* Theme-aware meshtastic green text - dark in light mode */
+  .text-meshtastic-dark {
+    color: #1A9B4A;
+  }
+  
+  :root[data-theme="dark"] .text-meshtastic-dark {
+    color: #67EA94;
+  }
+  
+  /* Theme-aware hover text for dropdown items */
+  .hover\:text-meshtastic-dark:hover {
+    color: #1A9B4A;
+  }
+  
+  :root[data-theme="dark"] .hover\:text-meshtastic-dark:hover {
+    color: #67EA94;
+  }
+
+  /* Connection status button - disconnected state */
+  .connection-status-disconnected {
+    border-color: var(--border-default);
+    background: var(--surface-secondary);
+  }
+  
+  .connection-status-disconnected-text {
+    color: var(--text-muted);
+  }
+  
+  /* Serial monitor toolbar */
+  .serial-toolbar {
+    background: var(--surface-modal);
+    border: 1px solid var(--border-default);
+  }
+  
+  :root[data-theme="light"] .serial-toolbar {
+    background: #f5f4f0;
+    border: 1px solid #d1d0c9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  
+  .serial-toolbar-inner {
+    background: linear-gradient(to right, var(--surface-secondary), transparent, var(--surface-secondary));
+  }
+  
+  :root[data-theme="light"] .serial-toolbar-inner {
+    background: linear-gradient(to right, rgba(0,0,0,0.02), transparent, rgba(0,0,0,0.02));
+  }
+  
+  .serial-action-buttons {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  :root[data-theme="light"] .serial-action-buttons {
+    background: #e8e7e3;
+    border: 1px solid #c8c7c1;
+  }
+  
+  .serial-action-btn {
+    color: var(--text-muted);
+  }
+  
+  .serial-action-btn:hover {
+    color: var(--primary-color);
+    background: var(--surface-primary);
+  }
+  
+  :root[data-theme="light"] .serial-action-btn {
+    color: #5c5b57;
+  }
+  
+  :root[data-theme="light"] .serial-action-btn:hover {
+    color: #1A9B4A;
+    background: rgba(26, 155, 74, 0.1);
+  }
+  
+  .serial-disconnect-btn {
+    color: var(--text-muted);
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  .serial-disconnect-btn:hover {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.4);
+  }
+  
+  :root[data-theme="light"] .serial-disconnect-btn {
+    color: #5c5b57;
+    background: #e8e7e3;
+    border: 1px solid #c8c7c1;
+  }
+  
+  :root[data-theme="light"] .serial-disconnect-btn:hover {
+    color: #dc2626;
+    border-color: rgba(220, 38, 38, 0.5);
+  }
+  
+  .serial-terminal-container {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-default);
+  }
+  
+  :root[data-theme="light"] .serial-terminal-container {
+    background: #f5f4f0;
+    border: 1px solid #d1d0c9;
+  }
+  
+  .serial-loading-overlay {
+    background: var(--surface-modal);
+  }
+  
+  :root[data-theme="light"] .serial-loading-overlay {
+    background: rgba(245, 244, 240, 0.9);
+  }
+  
+  /* Modal backdrop - theme aware */
+  .modal-backdrop {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  :root[data-theme="light"] .modal-backdrop {
+    background: rgba(0, 0, 0, 0.05);
+  }
 
   .flash-header-close {
     @apply inline-flex items-center justify-center;
