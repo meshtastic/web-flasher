@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 233.57587 210"
+   fill="none"
+   version="1.1"
+   id="svg22"
+   width="233.57587"
+   height="210"
+   xmlns="http://www.w3.org/2000/svg">
+  <!-- Radio body - hollow outline for light theme -->
+  <defs id="defs6">
+    <filter
+       id="glow"
+       x="-0.8"
+       y="-0.8"
+       width="2.6"
+       height="2.6">
+      <feGaussianBlur
+         stdDeviation="2"
+         result="coloredBlur"
+         id="feGaussianBlur5" />
+      <feMerge id="feMerge6">
+        <feMergeNode in="coloredBlur" id="feMergeNode5" />
+        <feMergeNode in="SourceGraphic" id="feMergeNode6" />
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Main body - hollow with dark stroke -->
+  <rect
+     x="46.289543"
+     y="5"
+     width="140"
+     height="200"
+     rx="14"
+     fill="none"
+     stroke="#2C2D3C"
+     stroke-width="4"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     id="rect6" />
+  <!-- Inner bezel -->
+  <rect
+     x="54.289543"
+     y="13"
+     width="124"
+     height="184"
+     rx="10"
+     fill="none"
+     stroke="#9CA3AF"
+     stroke-width="1"
+     id="rect7" />
+  <!-- Top speaker grille -->
+  <rect
+     x="71.289543"
+     y="21"
+     width="90"
+     height="20"
+     rx="3"
+     fill="none"
+     stroke="#9CA3AF"
+     stroke-width="1"
+     id="rect8" />
+  <g
+     stroke="#9CA3AF"
+     stroke-width="1"
+     id="g10"
+     transform="translate(16.289544,-41)">
+    <line x1="62" y1="68" x2="138" y2="68" id="line8" />
+    <line x1="62" y1="72" x2="138" y2="72" id="line9" />
+    <line x1="62" y1="76" x2="138" y2="76" id="line10" />
+  </g>
+  <!-- Screen area - hollow -->
+  <rect
+     x="60.289543"
+     y="49"
+     width="112"
+     height="80"
+     rx="6"
+     fill="none"
+     stroke="#1A9B4A"
+     stroke-width="2"
+     id="rect10" />
+  <!-- Meshtastic logo centered in screen -->
+  <g
+     transform="matrix(0.95,0,0,0.95,69.289544,64)"
+     id="g14">
+    <g
+       transform="matrix(0.802386,0,0,0.460028,-421.748,-122.127)"
+       id="g13">
+      <g
+         transform="matrix(0.579082,0,0,1.01004,460.975,-39.6867)"
+         id="g11">
+        <path
+           d="m 250.908,330.267 -57.782,84.738 -12.188,-8.311 63.864,-93.657 c 1.372,-2.013 3.651,-3.218 6.087,-3.221 2.437,-0.002 4.717,1.199 6.093,3.21 l 64.012,93.51 -12.173,8.333 z"
+           fill="#1A9B4A"
+           id="path10" />
+      </g>
+      <g
+         transform="matrix(0.582378,0,0,1.01579,485.019,-211.182)"
+         id="g12">
+        <path
+           d="m 87.642,581.398 67.115,-98.421 -12.119,-8.264 -67.115,98.421 z"
+           fill="#1A9B4A"
+           id="path11" />
+      </g>
+    </g>
+  </g>
+  <!-- Control area - hollow -->
+  <rect
+     x="60.289543"
+     y="137"
+     width="112"
+     height="60"
+     rx="6"
+     fill="none"
+     stroke="#9CA3AF"
+     stroke-width="1"
+     id="rect14" />
+  <!-- D-pad style navigation -->
+  <g transform="translate(88.289544,167)" id="g17">
+    <circle
+       cx="0"
+       cy="0"
+       r="22"
+       fill="none"
+       stroke="#9CA3AF"
+       stroke-width="1"
+       id="circle14" />
+    <path d="M -6,-16 H 6 V -6 H -6 Z" fill="none" stroke="#9CA3AF" stroke-width="1" rx="1" id="path14" />
+    <path d="M -6,6 H 6 V 16 H -6 Z" fill="none" stroke="#9CA3AF" stroke-width="1" rx="1" id="path15" />
+    <path d="M -16,-6 H -6 V 6 h -10 z" fill="none" stroke="#9CA3AF" stroke-width="1" rx="1" id="path16" />
+    <path d="M 6,-6 H 16 V 6 H 6 Z" fill="none" stroke="#9CA3AF" stroke-width="1" rx="1" id="path17" />
+    <circle cx="0" cy="0" r="5" fill="none" stroke="#9CA3AF" stroke-width="1" id="circle17" />
+  </g>
+  <!-- Action button -->
+  <circle
+     cx="144.28955"
+     cy="167"
+     r="14"
+     fill="none"
+     stroke="#1A9B4A"
+     stroke-width="2"
+     id="circle18" />
+  <circle
+     cx="144.28955"
+     cy="167"
+     r="8"
+     fill="#1A9B4A"
+     id="circle19" />
+  <!-- Status LED -->
+  <circle
+     cx="170.26186"
+     cy="25.547974"
+     r="3"
+     fill="#1A9B4A"
+     opacity="0.8"
+     id="circle20" />
+</svg>

@@ -6,6 +6,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
       baudRate: 115200,
       isOpen: false,
       terminalBuffer: new Array<string>(),
+      rawBuffer: '', // Raw data for xterm
       isConnected: false,
       isReaderLocked: false,
       port: <SerialPort | undefined>{},
@@ -15,7 +16,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
     disconnect() {
       this.isReaderLocked = false
     },
-    async unlockPort(port: SerialPort, reader: ReadableStreamDefaultReader<string>) {
+    async unlockPort(port: SerialPort, reader: ReadableStreamDefaultReader<Uint8Array>) {
       try {
         const textEncoder = new TextEncoderStream()
         const writer = textEncoder.writable.getWriter()
@@ -33,10 +34,9 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
     },
     async readSerialMonitor(port: SerialPort): Promise<void> {
       this.terminalBuffer = []
-      const decoderStream = new TextDecoderStream()
-      port.readable!.pipeTo(decoderStream.writable)
-      const inputStream = decoderStream.readable
-      const reader = inputStream.getReader()
+      this.rawBuffer = ''
+      const reader = port.readable!.getReader()
+      const decoder = new TextDecoder()
       this.isReaderLocked = true
 
       while (true) {
@@ -44,11 +44,17 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
           await this.unlockPort(port, reader)
           return
         }
-        let { value } = await reader.read()
+        const { value, done } = await reader.read()
+        if (done) break
         if (value) {
-          value = value?.replace(/\r/g, '')
-          if (value.includes('\n')) {
-            value.split('\n').forEach((line, index) => {
+          const decoded = decoder.decode(value, { stream: true })
+          // Append raw data for xterm
+          this.rawBuffer += decoded
+          
+          // Also process into lines for save/copy
+          const normalized = decoded.replace(/\r/g, '')
+          if (normalized.includes('\n')) {
+            normalized.split('\n').forEach((line, index) => {
               if (index === 0) {
                 const lastLine
                   = this.terminalBuffer[this.terminalBuffer.length - 1] || ''
@@ -63,7 +69,7 @@ export const useSerialMonitorStore = defineStore('serialMonitor', {
           else {
             const lastLine
               = this.terminalBuffer[this.terminalBuffer.length - 1] || ''
-            const newLine = lastLine + value
+            const newLine = lastLine + normalized
             this.terminalBuffer[this.terminalBuffer.length - 1] = newLine
           }
         }

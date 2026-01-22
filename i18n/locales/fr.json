@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "Un outil web pour flasher le micrologiciel des ESP32",
   "browser_warning": "Votre navigateur ne prend pas en charge l'API WebSerial . Veuillez basculer vers un navigateur compatible, tel que Chrome ou Edge, pour une fonctionnalité complète.",
-  "header_title": "FLASHER",
+  "header_title": "Meshtastic Web Flasher",
   "language": "Langue",
   "actions": {
     "connect": "Connecter",
@@ -109,6 +109,9 @@
     "instructions": ".......",
     "disconnect": "Déconnecter",
     "reconnect": "Essayez de vous reconnecter",
+    "waiting_for_data": "En attente de données...",
+    "busy_title": "Serial Port Busy",
+    "busy_message": "A serial connection is already open. Please close it before continuing.",
     "log_levels": {
       "all": "",
       "debug": "Debug",

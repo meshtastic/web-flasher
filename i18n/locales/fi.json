@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "Web-pohjainen työkalu ESP32 laiteohjelmiston ohjelmoimiseen",
   "browser_warning": "Selaimesi ei tue WebSerial (API) käyttöliittymää. Vaihda yhteensopivaan selaimeen, kuten Chromeen tai Edgeen.",
-  "header_title": "FLASHER",
+  "header_title": "Meshtastic Web Flasher",
   "language": "Kieli",
   "actions": {
     "connect": "Yhdistä",
@@ -109,6 +109,9 @@
     "instructions": "Jos yhteyden katkaiseminen kestää liian kauan, voit poistaa laitteen manuaalisesti.",
     "disconnect": "Katkaise",
     "reconnect": "Yritä muodostaa yhteys uudelleen",
+    "waiting_for_data": "Odotetaan tietoja...",
+    "busy_title": "Sarjaportti varattu",
+    "busy_message": "Sarjayhteys on jo avoinna. Sulje se ennen jatkamista.",
     "log_levels": {
       "all": "Kaikki",
       "debug": "Vianetsintä",
