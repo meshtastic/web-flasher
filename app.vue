@@ -38,8 +38,8 @@
           <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
             <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up">
               <div class="card-modern p-6 h-80 flex flex-col items-center relative">
-                <div class="absolute top-3 left-3 w-8 h-8 rounded-full bg-meshtastic/20 border border-meshtastic/50 flex items-center justify-center">
-                  <span class="text-meshtastic font-bold text-sm">1</span>
+                <div class="absolute top-3 left-3 w-8 h-8 rounded-full step-badge-circle flex items-center justify-center">
+                  <span class="step-number">1</span>
                 </div>
                 <img
                   :src="selectedDeviceImage"
@@ -48,10 +48,10 @@
                 >
                 <Device />
               </div>
-              <h2 class="text-xl sm:text-xl font-semibold title-doto text-white mt-5 tracking-wide">
+              <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
                 {{ $t('device.title') }}
               </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2 text-gray-400">
+              <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
                 {{ $t('device.instructions') }}
               </p>
             </div>
@@ -59,23 +59,23 @@
               <div class="card-modern p-6 h-80 flex flex-col items-center z-20 relative">
                 <div
                   class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
-                  :class="isStep2Enabled ? 'bg-meshtastic/20 border border-meshtastic/50' : 'bg-zinc-700/50 border border-zinc-600/50'"
+                  :class="isStep2Enabled ? 'step-badge-circle' : 'border step-disabled'"
                 >
                   <span
                     class="font-bold text-sm transition-colors duration-300"
-                    :class="isStep2Enabled ? 'text-meshtastic' : 'text-zinc-500'"
+                    :class="isStep2Enabled ? 'step-number' : 'text-theme-muted'"
                   >2</span>
                 </div>
                 <FolderDown
-                  class="h-40 w-40 p-4 mb-4 mx-auto text-meshtastic opacity-80"
+                  class="h-40 w-40 p-4 mb-4 mx-auto card-icon opacity-90"
                   :alt="$t('firmware.title')"
                 />
                 <Firmware />
               </div>
-              <h2 class="text-xl sm:text-xl font-semibold title-doto text-white mt-5 tracking-wide">
+              <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
                 {{ $t('firmware.title') }}
               </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2 text-gray-400">
+              <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
                 {{ $t('firmware.instructions') }}
               </p>
             </div>
@@ -83,20 +83,20 @@
               <div class="card-modern p-6 h-80 flex flex-col items-center relative">
                 <div
                   class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
-                  :class="isStep3Enabled ? 'bg-meshtastic/20 border border-meshtastic/50' : 'bg-zinc-700/50 border border-zinc-600/50'"
+                  :class="isStep3Enabled ? 'step-badge-circle' : 'border step-disabled'"
                 >
                   <span
                     class="font-bold text-sm transition-colors duration-300"
-                    :class="isStep3Enabled ? 'text-meshtastic' : 'text-zinc-500'"
+                    :class="isStep3Enabled ? 'step-number' : 'text-theme-muted'"
                   >3</span>
                 </div>
-                <Zap class="h-40 w-40 p-4 mb-4 mx-auto text-meshtastic opacity-80" />
+                <Zap class="h-40 w-40 p-4 mb-4 mx-auto card-icon opacity-90" />
                 <Flash />
               </div>
-              <h2 class="text-xl sm:text-xl font-semibold title-doto text-white mt-5 tracking-wide">
+              <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
                 Flash
               </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2 text-gray-400">
+              <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
                 {{ $t('flash.instructions') }}
               </p>
             </div>
@@ -128,6 +128,7 @@
           <Github class="w-4 h-4 shrink-0" />
         </a>
         <LanguagePicker v-if="!serialMonitorStore.isConnected" />
+        <ThemeSwitcher v-if="!serialMonitorStore.isConnected" />
       </div>
     </section>
 
@@ -137,16 +138,16 @@
 
     <footer
       id="footer"
-      class="footer-modern text-white mt-8 py-6"
+      class="footer-modern text-theme mt-8 py-6"
     >
       <div class="container mx-auto px-3 sm:px-5 py-2 sm:py-4 text-center">
-        <p class="text-xs sm:text-sm text-gray-400">
+        <p class="text-xs sm:text-sm text-theme-muted">
           Powered by
-          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="text-white hover:text-meshtastic transition-colors">▲ Vercel</a>
-          <span class="mx-2 text-gray-600">•</span>
+          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="link-theme">▲ Vercel</a>
+          <span class="mx-2 text-theme-muted/50">•</span>
           Meshtastic® is a registered trademark of Meshtastic LLC.
-          <span class="mx-2 text-gray-600">•</span>
-          <a href="https://meshtastic.org/docs/legal" class="text-white hover:text-meshtastic transition-colors">Legal Information</a>
+          <span class="mx-2 text-theme-muted/50">•</span>
+          <a href="https://meshtastic.org/docs/legal" class="link-theme">Legal Information</a>
         </p>
       </div>
     </footer>
@@ -231,12 +232,14 @@ import {
 import { useDeviceStore } from './stores/deviceStore'
 import { useFirmwareStore } from './stores/firmwareStore'
 import { useSerialMonitorStore } from './stores/serialMonitorStore'
+import { useThemeStore } from './stores/themeStore'
 
 const { t } = useI18n()
 
 const serialMonitorStore = useSerialMonitorStore()
 const firmwareStore = useFirmwareStore()
 const deviceStore = useDeviceStore()
+const themeStore = useThemeStore()
 
 const monitorSerial = async () => {
   await serialMonitorStore.monitorSerial()
@@ -246,7 +249,7 @@ const selectedDeviceImage = computed(() => {
   if (deviceStore.selectedTarget?.images?.length) {
     return `/img/devices/${deviceStore.selectedTarget.images[0]}`
   }
-  return '/img/devices/unknown-new.svg'
+  return themeStore.isDark ? '/img/devices/unknown-new.svg' : '/img/devices/unknown-new-light.svg'
 })
 
 const connectionButtonLabel = computed(() => {
@@ -339,6 +342,7 @@ onMounted(() => {
   initTooltips()
   initDrawers()
   initAccordions()
+  themeStore.initTheme()
 })
 </script>
 
@@ -365,6 +369,10 @@ onMounted(() => {
     --text-color: #FFFFFF;
     --primary-color: #67EA94;
     --secondary-color: #67EA94;
+  }
+  :root[data-theme="light"] {
+    --primary-color: #1A9B4A;
+    --secondary-color: #1A9B4A;
   }
   body {
     font-family: 'Atkinson Hyperlegible', 'Lato', system-ui, -apple-system, sans-serif;

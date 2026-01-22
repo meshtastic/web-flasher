@@ -20,24 +20,24 @@
           id="dropdownFirmware"
           ref="dropdownRef"
           v-show="isOpen"
-          class="fixed z-[120] rounded-xl shadow-2xl max-w-sm border border-white/10 overflow-y-auto bg-[rgba(39,39,42,0.98)]/100 backdrop-blur-xl"
+          class="fixed z-[120] rounded-xl shadow-2xl max-w-sm overflow-y-auto backdrop-blur-xl dropdown-menu"
           :style="dropdownStyle"
         >
       <div
         v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
-        class="px-4 py-2 text-sm text-meshtastic font-semibold border-b border-white/10"
+        class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
       >
         {{ $t('firmware.prerelease') }}
       </div>
       <ul
         v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
-        class="py-2 text-sm text-gray-300"
+        class="py-2 text-sm text-theme-muted"
         aria-labelledby="dropdownInformationButton"
       >
         <li v-for="release in store.$state.previews">
           <a
             href="#"
-            class="block px-4 py-2 hover:bg-white/10 hover:text-meshtastic cursor-pointer transition-colors"
+            class="block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary cursor-pointer transition-colors"
             @click="setSelectedFirmware(release)"
           >
             {{ release.title.replace('Meshtastic Firmware ', '').replace('Pre-release ', '') }}
@@ -46,19 +46,19 @@
       </ul>
       <div
         v-if="!store.couldntFetchFirmwareApi"
-        class="px-4 py-2 text-sm text-yellow-400 font-semibold border-b border-t border-white/10"
+        class="px-4 py-2 text-sm text-warning font-semibold border-theme-bottom border-theme-top"
       >
         {{ $t('firmware.unstable') }}
       </div>
       <ul
         v-if="!store.couldntFetchFirmwareApi"
-        class="py-2 text-sm text-gray-300"
+        class="py-2 text-sm text-theme-muted"
         aria-labelledby="dropdownInformationButton"
       >
         <li v-for="release in store.$state.alpha">
           <a
             href="#"
-            class="block px-4 py-2 hover:bg-white/10 hover:text-meshtastic cursor-pointer transition-colors"
+            class="block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary cursor-pointer transition-colors"
             @click="setSelectedFirmware(release)"
           >
             {{ release.title.replace('Meshtastic Firmware ', '') }}
@@ -67,18 +67,18 @@
       </ul>
       <div
         v-if="!store.couldntFetchFirmwareApi"
-        class="px-4 py-2 text-sm text-green-400 font-semibold border-b border-t border-white/10"
+        class="px-4 py-2 text-sm text-green-400 font-semibold border-theme-bottom border-theme-top"
       >
         {{ $t('firmware.stable') }}
       </div>
       <ul
         v-if="!store.couldntFetchFirmwareApi"
-        class="py-2 text-sm text-gray-300"
+        class="py-2 text-sm text-theme-muted"
         aria-labelledby="dropdownInformationButton"
       >
         <li v-for="release in store.$state.stable">
           <span
-            class="block px-4 py-2 hover:bg-white/10 hover:text-meshtastic cursor-pointer transition-colors"
+            class="block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary cursor-pointer transition-colors"
             @click="setSelectedFirmware(release)"
           >
             {{ release.title.replace('Meshtastic Firmware ', '') }}
@@ -87,7 +87,7 @@
       </ul>
       <div
         v-if="store.couldntFetchFirmwareApi"
-        class="px-3 sm:px-4 py-3 w-full sm:w-96 max-w-sm rounded-xl text-xs sm:text-sm text-yellow-200 bg-yellow-500/20 border border-yellow-500/30 break-words"
+        class="px-3 sm:px-4 py-3 w-full sm:w-96 max-w-sm rounded-xl text-xs sm:text-sm border error-fetch-box break-words"
       >
         <strong>{{ $t('firmware.error_fetching') }}</strong>
         <br>
@@ -113,7 +113,7 @@
     <div
       id="tooltip-file"
       role="tooltip"
-      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-zinc-700"
+      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-theme transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-surface-modal"
     >
       {{ $t('firmware.upload_tooltip') }}
       <div

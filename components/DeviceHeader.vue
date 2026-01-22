@@ -5,7 +5,7 @@
       <div class="flash-header-icon">
         <Plug class="w-5 h-5 text-meshtastic" />
       </div>
-      <h3 class="text-base sm:text-lg font-semibold text-white">
+      <h3 class="text-base sm:text-lg font-semibold text-theme">
         {{ $t('device.header') }}
       </h3>
     </div>

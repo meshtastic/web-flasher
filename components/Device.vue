@@ -23,7 +23,7 @@
     <div
       id="tooltip-auto"
       role="tooltip"
-      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-gray-700"
+      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-theme transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-surface-modal"
     >
       {{ $t('device.auto_detect') }}
       <div
@@ -42,7 +42,7 @@
           class="relative w-full max-w-6xl"
           :class="{ 'max-w-4xl': vendorCobrandingTag.length > 0, 'max-w-7xl': vendorCobrandingTag.length == 0 }"
         >
-          <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+          <div class="modal-content relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-theme">
           <DeviceHeader />
           <div class="flex-1 overflow-y-auto">
           <div class="flex flex-col gap-3 py-3 px-3">
@@ -131,7 +131,7 @@
               <button
                 v-for="arch in store.allArchs"
                 type="button"
-                class="tag-pill shrink-0 bg-indigo-500/20 border-indigo-500/50 text-indigo-300 hover:bg-indigo-500/30 hover:border-indigo-400"
+                class="tag-pill tag-pill-arch shrink-0"
                 @click="store.setSelectedTag(arch)"
               >
                 {{ arch }}
@@ -139,7 +139,7 @@
             </div>
           </div>
           <div
-            class="p-3 sm:p-4 mb-1 mx-3 my-3 text-xs sm:text-sm rounded-xl bg-zinc-800/50 border border-white/10 text-gray-300"
+            class="p-3 sm:p-4 mb-1 mx-3 my-3 text-xs sm:text-sm rounded-xl text-theme-muted step-card"
             role="alert"
           >
             <span class="font-medium">
@@ -156,7 +156,7 @@
             class="p-2 sm:p-3 m-1 sm:m-2 flex flex-wrap items-center justify-center gap-3"
           >
             <div class="w-full text-center mb-2">
-              <h2 class="text-xl sm:text-xl font-semibold text-white">
+              <h2 class="text-xl sm:text-xl font-semibold text-theme">
                 {{ $t('device.supported_devices') }}
               </h2>
             </div>
@@ -172,7 +172,7 @@
               v-if="uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"
               class="w-full text-center"
             >
-              <h2 class="text-xl sm:text-xl font-semibold text-yellow-400">
+              <h2 class="text-xl sm:text-xl font-semibold text-warning">
                 {{ $t('device.diy_devices') }}
               </h2>
             </div>

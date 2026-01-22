@@ -7,7 +7,14 @@
     >
       <div class="logo-container">
         <img
+          v-if="themeStore.isDark"
           src="@/assets/img/logo.svg"
+          class="logo-icon"
+          alt="Meshtastic Logo"
+        >
+        <img
+          v-else
+          src="@/assets/img/logo-dark.svg"
           class="logo-icon"
           alt="Meshtastic Logo"
         >
@@ -31,7 +38,14 @@
       <div class="logo-container">
         <div class="logo-glow">
           <img
+            v-if="themeStore.isDark"
             src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
             class="logo-icon"
             alt="Meshtastic Logo"
           >
@@ -47,6 +61,9 @@
 
 <script lang="ts" setup>
 import { vendorCobrandingTag } from '~/types/resources'
+import { useThemeStore } from '~/stores/themeStore'
+
+const themeStore = useThemeStore()
 </script>
 
 <style scoped>
@@ -76,7 +93,7 @@ import { vendorCobrandingTag } from '~/types/resources'
   content: '';
   position: absolute;
   inset: -8px;
-  background: radial-gradient(circle, rgba(103, 234, 148, 0.3), transparent 70%);
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
   border-radius: 50%;
   animation: logo-pulse 3s ease-in-out infinite;
   will-change: transform, opacity;
@@ -93,13 +110,13 @@ import { vendorCobrandingTag } from '~/types/resources'
   height: 4rem;
   width: 4rem;
   object-fit: contain;
-  filter: drop-shadow(0 0 20px rgba(103, 234, 148, 0.4));
+  filter: drop-shadow(0 0 20px var(--accent-glow));
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .logo-icon:hover {
   transform: scale(1.05);
-  filter: drop-shadow(0 0 30px rgba(103, 234, 148, 0.6));
+  filter: drop-shadow(0 0 30px var(--accent-subtle));
 }
 
 @media (min-width: 640px) {
@@ -130,7 +147,7 @@ import { vendorCobrandingTag } from '~/types/resources'
 
 .logo-separator {
   font-size: 2rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
   font-weight: 200;
 }
 
@@ -156,17 +173,26 @@ import { vendorCobrandingTag } from '~/types/resources'
 }
 
 .logo-title-gradient {
-  background: linear-gradient(135deg, #67EA94 0%, #3DE07A 40%, #22C55E 70%, #16A34A 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent) 40%, var(--accent-dark) 70%, var(--accent-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-shadow: none;
-  filter: drop-shadow(0 2px 10px rgba(103, 234, 148, 0.3));
+  filter: drop-shadow(0 2px 10px var(--accent-glow));
+}
+
+:root[data-theme="light"] .logo-title-gradient {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  color: #000000;
+  filter: none;
 }
 
 .logo-tagline {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   max-width: 80%;
   text-align: center;
   margin-top: 0.25rem;

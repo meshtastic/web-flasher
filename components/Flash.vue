@@ -25,7 +25,7 @@
     <div
       id="tooltip-erase"
       role="tooltip"
-      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300  rounded-lg shadow-sm opacity-0 tooltip bg-zinc-700"
+      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-theme transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-surface-modal"
     >
       {{ $t('flash.erase_flash_prefix') }} {{ deviceStore.selectedTarget?.displayName }}.
       <div
@@ -42,7 +42,7 @@
       >
         <div class="flex h-full w-full items-start justify-center">
           <div class="relative w-full max-w-5xl">
-            <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+            <div class="modal-content relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-theme">
               <!-- Chirpy Bouncing Background -->
               <video
                 v-if="firmwareStore.isFlashing && firmwareStore.$state.prereleaseUnlocked"
@@ -73,7 +73,7 @@
       >
         <div class="flex h-full w-full items-start justify-center">
           <div class="relative w-full max-w-3xl">
-            <div class="relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-white bg-zinc-900/95 border border-white/10">
+            <div class="modal-content relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-theme">
               <!-- Chirpy Bouncing Background -->
               <video
                 v-if="firmwareStore.isFlashing && firmwareStore.$state.prereleaseUnlocked"
