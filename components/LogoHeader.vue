@@ -158,6 +158,7 @@ const themeStore = useThemeStore()
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0;
+  color: var(--text-default);
 }
 
 @media (min-width: 640px) {
@@ -186,7 +187,7 @@ const themeStore = useThemeStore()
   -webkit-background-clip: unset;
   -webkit-text-fill-color: unset;
   background-clip: unset;
-  color: #000000;
+  color: #1a1a1a;
   filter: none;
 }
 

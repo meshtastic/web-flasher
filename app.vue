@@ -560,11 +560,11 @@ onMounted(() => {
   }
   h1 {
     font-size: 2em;
-    color: #FFFFFF;
+    color: var(--text-default);
   }
   h2 {
     font-size: 1.5em;
-    color: #FFFFFF;
+    color: var(--text-default);
   }
   .unsupported-browser-warning {
     background-color: #ffcc00;
