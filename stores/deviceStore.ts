@@ -255,16 +255,21 @@ export const useDeviceStore = defineStore('device', {
 
       this.isConnecting = true
       try {
-        // Configure the device so transport streams are properly set up
-        // Promise.race for connection timeout
+        // Open device connection (includes port selection)
+        // Use a longer timeout since it includes user interaction
         const connectionPromise = this.openDeviceConnection(false)
         const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('timeout')), 5000),
+          setTimeout(() => reject(new Error('timeout')), 30000),
         )
         try {
           device = await Promise.race([connectionPromise, timeoutPromise])
         }
-        catch (error) {
+        catch (error: unknown) {
+          // User cancelled port selection
+          if ((error as Error)?.name === 'NotFoundError') {
+            this.isConnecting = false
+            return
+          }
           if ((error as Error).message === 'timeout') {
             const errorTitle = tFunc?.('dfu.error_connection_title') || 'Device Connection Failed'
             const errorMessage = tFunc?.('dfu.error_connection') || 'Failed to connect to device. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.'
@@ -276,33 +281,21 @@ export const useDeviceStore = defineStore('device', {
           }
         }
 
-        // Create a promise that resolves when we receive MyNodeInfo (device is ready)
-        const deviceReadyPromise = new Promise<void>((resolve) => {
-          device!.events.onMyNodeInfo.subscribe((info) => {
-            console.log('Received MyNodeInfo event:', info)
-            resolve()
-          })
-        })
-
+        // Configure the device - this may hang even though config is received
+        // Use a timeout and proceed anyway if it times out
         try {
-          await device.configure()
+          const configurePromise = device.configure()
+          const configureTimeout = new Promise<void>((resolve) =>
+            setTimeout(resolve, 5000),
+          )
+          await Promise.race([configurePromise, configureTimeout])
         }
         catch (error) {
           console.error('Error configuring device:', error)
-          const errorTitle = tFunc?.('dfu.error_title') || 'DFU Mode Failed'
-          const errorMessage = tFunc?.('dfu.error_message') || 'Failed to enter DFU mode. Please disconnect and reconnect the device, then try again.'
-          toastStore.error(errorTitle, errorMessage)
-          throw error
+          // Continue anyway - we may still be able to enter DFU mode
         }
 
-        // Wait for device to be ready (MyNodeInfo received) or timeout
-        const readyTimeout = new Promise<void>((resolve) => setTimeout(resolve, 3000))
-        await Promise.race([deviceReadyPromise, readyTimeout])
-
-        // Small delay to ensure device is fully ready
-        await new Promise(resolve => setTimeout(resolve, 500))
-
-        // Now enter DFU mode
+        // Enter DFU mode
         await device.enterDfuMode()
 
         // Show success message
