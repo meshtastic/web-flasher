@@ -747,9 +747,9 @@ export const useFirmwareStore = defineStore('firmware', {
         const flashOptions: FlashOptions = {
           // Write OTA first, then filesystem, then app - ensures proper bootloader state after reset
           fileArray: [
+            { data: appContent, address: 0x00 },
             { data: otaContent, address: otaOffset },
             { data: littleFsContent, address: spiffsOffset },
-            { data: appContent, address: 0x00 },
           ],
           flashSize: 'keep',
           eraseAll: true,
