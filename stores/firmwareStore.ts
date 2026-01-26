@@ -624,45 +624,20 @@ export const useFirmwareStore = defineStore('firmware', {
     async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
       await espLoader.writeFlash(flashOptions)
       
-      // Perform hard reset to boot the chip (esptool-js method)
-      await espLoader.after('hard_reset')
+      // Perform hard reset - toggle RTS to reset the chip
+      // This matches the original working reset sequence that was used before PR #297
+      terminal.writeln('\x1b[33mHard resetting via RTS pin...\x1b[0m')
+      await transport.setRTS(true)   // EN=LOW (chip in reset)
+      await new Promise(resolve => setTimeout(resolve, 100))
+      await transport.setRTS(false)  // EN=HIGH (chip out of reset - starts booting)
       
-      // Disconnect the esptool transport to release the reader lock
-      try {
-        await transport.disconnect()
-        await transport.waitForUnlock(1500)
-      }
-      catch (e) {
-        console.warn('Error disconnecting transport:', e)
-      }
-      
-      // Small delay to let the chip boot
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Reopen the port at application baud rate (115200) and read serial output
+      // Read serial output after reset - port is still open from flash operation
       if (this.port) {
-        try {
-          await this.port.open({ baudRate: 115200 })
-          await this.readSerial(this.port, terminal)
-        }
-        catch (e) {
-          console.warn('Error reopening port for serial monitor:', e)
-        }
+        await this.readSerial(this.port, terminal)
       }
       else {
         throw new Error('Serial port is not defined')
       }
-    },
-    async resetEsp32(transport: Transport) {
-      // Classic reset sequence to boot the chip after flashing
-      // Based on esptool-js ClassicReset strategy
-      await transport.setDTR(false)  // IO0=HIGH
-      await transport.setRTS(true)   // EN=LOW (chip in reset)
-      await new Promise(resolve => setTimeout(resolve, 100))
-      await transport.setDTR(true)   // IO0=LOW (not needed for normal boot, but part of sequence)
-      await transport.setRTS(false)  // EN=HIGH (chip out of reset - starts booting)
-      await new Promise(resolve => setTimeout(resolve, 50))
-      await transport.setDTR(false)  // IO0=HIGH (ensure normal boot mode, not download mode)
     },
     trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean) {
       if (selectedTarget.hwModelSlug?.length > 0) {
@@ -770,10 +745,11 @@ export const useFirmwareStore = defineStore('firmware', {
 
         this.isFlashing = true
         const flashOptions: FlashOptions = {
+          // Write OTA first, then filesystem, then app - ensures proper bootloader state after reset
           fileArray: [
-            { data: appContent, address: 0x00 },
             { data: otaContent, address: otaOffset },
             { data: littleFsContent, address: spiffsOffset },
+            { data: appContent, address: 0x00 },
           ],
           flashSize: 'keep',
           eraseAll: true,
