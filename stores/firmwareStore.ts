@@ -631,8 +631,17 @@ export const useFirmwareStore = defineStore('firmware', {
       await new Promise(resolve => setTimeout(resolve, 100))
       await transport.setRTS(false)  // EN=HIGH (chip out of reset - starts booting)
       
-      // Read serial output after reset - port is still open from flash operation
+      // Disconnect the esptool transport to release its reader lock
+      // This also closes the port, so we need to reopen it
+      await transport.disconnect()
+      await transport.waitForUnlock(1500)
+      
+      // Small delay to let the chip start booting
+      await new Promise(resolve => setTimeout(resolve, 200))
+      
+      // Reopen the port at application baud rate (115200) to read boot logs
       if (this.port) {
+        await this.port.open({ baudRate: 115200 })
         await this.readSerial(this.port, terminal)
       }
       else {
