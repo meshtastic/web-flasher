@@ -1,9 +1,9 @@
 {
   "title": "Meshtastic Web Flasher",
   "header": "Flasher",
-  "description": "Update your Meshtastic device with official firmware, straight from your browser",
+  "description": "A web-based tool for ESP32 firmware flashing",
   "browser_warning": "Your browser does not support the WebSerial API. Please switch to a compatible browser, such as Chrome or Edge, for full functionality.",
-  "header_title": "Meshtastic Web Flasher",
+  "header_title": "FLASHER",
   "language": "Taal",
   "actions": {
     "connect": "Verbinding maken",
@@ -109,7 +109,6 @@
     "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
     "disconnect": "Disconnect",
     "reconnect": "Try Reconnecting",
-    "waiting_for_data": "Wachten op gegevens...",
     "log_levels": {
       "all": "Alles",
       "debug": "Debug",
