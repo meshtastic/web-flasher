@@ -14,7 +14,9 @@ import { openTerminal } from '~/utils/terminal'
 import {
   currentPrerelease,
   showPrerelease,
+  eventMode,
 } from '~/types/resources'
+import { getFirmwareBaseUrl } from '~/utils/firmwareUrl'
 
 import { track } from '@vercel/analytics'
 import { useSessionStorage } from '@vueuse/core'
@@ -24,11 +26,10 @@ import {
   ZipReader,
 } from '@zip.js/zip.js'
 
-import {
-  type DeviceHardware,
-  type FirmwareReleases,
-  type FirmwareResource,
-  getCorsFriendyReleaseUrl,
+import type {
+  DeviceHardware,
+  FirmwareReleases,
+  FirmwareResource,
 } from '../types/api'
 
 import {
@@ -56,9 +57,7 @@ function hasGetData(entry: unknown): entry is ZipEntryWithData {
  */
 async function fetchReleaseNotes(version: string): Promise<string> {
   try {
-    // Remove 'v' prefix if present
-    const cleanVersion = version.replace(/^v/, '')
-    const url = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-${cleanVersion}/release_notes.md`
+    const url = `${getFirmwareBaseUrl(version)}/release_notes.md`
     const response = await fetch(url)
     if (!response.ok) {
       console.warn(`Could not fetch release notes from ${url}`)
@@ -80,7 +79,7 @@ async function fetchReleaseNotes(version: string): Promise<string> {
 async function fetchReleaseManifest(version: string): Promise<ReleaseManifest | undefined> {
   try {
     const cleanVersion = version.replace(/^v/, '')
-    const url = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-${cleanVersion}/firmware-${cleanVersion}.json`
+    const url = `${getFirmwareBaseUrl(version)}/firmware-${cleanVersion}.json`
     const response = await fetch(url)
     if (!response.ok) {
       console.warn(`Could not fetch release manifest from ${url}`)
@@ -103,7 +102,7 @@ async function fetchReleaseManifest(version: string): Promise<ReleaseManifest | 
 async function fetchTargetManifest(version: string, targetBoard: string): Promise<FirmwareManifest | undefined> {
   try {
     const cleanVersion = version.replace(/^v/, '')
-    const url = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-${cleanVersion}/firmware-${targetBoard}-${cleanVersion}.mt.json`
+    const url = `${getFirmwareBaseUrl(version)}/firmware-${targetBoard}-${cleanVersion}.mt.json`
     const response = await fetch(url)
     if (!response.ok) {
       console.warn(`Could not fetch target manifest from ${url}`)
@@ -124,7 +123,7 @@ export const useFirmwareStore = defineStore('firmware', {
       alpha: new Array<FirmwareResource>(),
       previews: previews,
       pullRequests: new Array<FirmwareResource>(),
-      selectedFirmware: <FirmwareResource | undefined>{},
+      selectedFirmware: eventMode.enabled ? eventMode.firmware : <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
       baudRate: 115200,
       hasSeenReleaseNotes: false,
@@ -145,6 +144,7 @@ export const useFirmwareStore = defineStore('firmware', {
       hasManifest: false,
       manifest: <FirmwareManifest | undefined>undefined,
       releaseManifest: <ReleaseManifest | undefined>undefined,
+      eventModeEnabled: eventMode.enabled,
     }
   },
   getters: {
@@ -169,6 +169,12 @@ export const useFirmwareStore = defineStore('firmware', {
       this.hasSeenReleaseNotes = true
     },
     async fetchList() {
+      // Skip fetching firmware list in event mode - use locked firmware only
+      if (eventMode.enabled) {
+        console.log('Event mode enabled, skipping firmware API fetch')
+        return
+      }
+      
       firmwareApi.get<FirmwareReleases>()
         .then(async (response: FirmwareReleases) => {
           // Fetch release notes for each firmware version from meshtastic.github.io
@@ -239,9 +245,8 @@ export const useFirmwareStore = defineStore('firmware', {
       }
     },
     getReleaseFileUrl(fileName: string): string {
-      if (!this.selectedFirmware?.zip_url) return ''
-      const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url)
-      return `${baseUrl}/${fileName}`
+      if (!this.selectedFirmware?.id) return ''
+      return `${getFirmwareBaseUrl(this.selectedFirmware.id)}/${fileName}`
     },
     async downloadUf2FileSystem(searchRegex: RegExp) {
       if (!this.selectedFile) return
@@ -781,8 +786,8 @@ export const useFirmwareStore = defineStore('firmware', {
       }
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
-      if (this.selectedFirmware?.zip_url) {
-        const baseUrl = getCorsFriendyReleaseUrl(this.selectedFirmware.zip_url)
+      if (this.selectedFirmware?.id) {
+        const baseUrl = getFirmwareBaseUrl(this.selectedFirmware.id)
         const response = await fetch(`${baseUrl}/${fileName}`)
         const blob = await response.blob()
         const data = await blob.arrayBuffer()

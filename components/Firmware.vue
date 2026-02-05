@@ -23,6 +23,31 @@
           class="fixed z-[120] rounded-xl shadow-2xl max-w-sm overflow-y-auto backdrop-blur-xl dropdown-menu"
           :style="dropdownStyle"
         >
+      <!-- Event Mode: Single firmware option -->
+      <template v-if="eventMode.enabled">
+        <div
+          class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
+        >
+          {{ eventMode.eventName }}
+        </div>
+        <ul
+          class="py-2 text-sm text-theme-muted"
+          aria-labelledby="dropdownInformationButton"
+        >
+          <li>
+            <a
+              href="#"
+              class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
+              @click="setSelectedFirmware(eventMode.firmware)"
+            >
+              {{ eventMode.firmware.title.replace('Meshtastic Firmware ', '') }}
+            </a>
+          </li>
+        </ul>
+      </template>
+
+      <!-- Normal Mode: Full firmware list -->
+      <template v-else>
       <div
         v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
         class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
@@ -95,6 +120,7 @@
         {{ $t('firmware.upload_alternative') }}
         <FolderOpen class="h-3 w-3 inline" /> {{ $t('firmware.icon') }}
       </div>
+      </template>
       </div>
     </Teleport>
     <button
@@ -138,9 +164,11 @@ import { FolderOpen, ChevronDown } from 'lucide-vue-next'
 import { useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import type { FirmwareResource } from '~/types/api'
+import { useEventMode } from '~/composables/useEventMode'
 
 const { t } = useI18n()
 
+const { eventMode } = useEventMode()
 const store = useFirmwareStore()
 const deviceStore = useDeviceStore()
 store.fetchList()

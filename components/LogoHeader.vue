@@ -30,6 +30,39 @@
       </h1>
     </div>
 
+    <!-- Hamcation event branding variant -->
+    <div
+      v-else-if="eventMode.enabled && eventMode.eventTag === 'Hamcation'"
+      class="logo-header-content"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+        <span class="logo-separator">×</span>
+        <img
+          src="@/assets/img/hamcation.svg"
+          class="logo-icon-event"
+          alt="Hamcation Logo"
+        >
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">{{ eventMode.eventName }}</p>
+    </div>
+
     <!-- Standard variant -->
     <div
       v-else
@@ -62,8 +95,10 @@
 <script lang="ts" setup>
 import { vendorCobrandingTag } from '~/types/resources'
 import { useThemeStore } from '~/stores/themeStore'
+import { useEventMode } from '~/composables/useEventMode'
 
 const themeStore = useThemeStore()
+const { eventMode } = useEventMode()
 </script>
 
 <style scoped>
@@ -145,6 +180,24 @@ const themeStore = useThemeStore()
   }
 }
 
+.logo-icon-event {
+  height: 5rem;
+  width: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .logo-icon-event {
+    height: 6rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .logo-icon-event {
+    height: 7rem;
+  }
+}
 .logo-separator {
   font-size: 2rem;
   color: var(--text-muted);
