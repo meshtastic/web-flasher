@@ -23,6 +23,25 @@ export interface EventModeConfig {
 
 const eventFirmwareId = '2.7.18.7e03cae';
 
+const eventReleaseNotes = `
+## Welcome to Orlando Hamcation 2026!
+
+This firmware has been customized for Hamcation with factory default configurations.
+
+### ⚠️ Important: Backup Before Flashing
+
+If your device has existing settings or encryption keys, **backup your keys / configurations** before proceeding. Flashing will reset your device to factory settings for the event.
+
+### Quick Start
+
+1. Ensure a **data-capable USB cable** is connected
+2. Select your device type
+3. Choose "Full Erase and Install"
+4. After flashing, download the Meshtastic app and pair via Bluetooth
+
+**73 and happy meshing!**
+`;
+
 export const eventMode: EventModeConfig = {
   enabled: false,
   eventName: 'Orlando Hamcation 2026',
@@ -31,6 +50,7 @@ export const eventMode: EventModeConfig = {
     id: `v${eventFirmwareId}`,
     title: `Meshtastic Firmware ${eventFirmwareId}`,
     zip_url: `https://github.com/meshtastic/meshtastic.github.io/raw/master/event/hamcation2026/firmware-${eventFirmwareId}.zip`,
+    release_notes: eventReleaseNotes,
   },
 };
 

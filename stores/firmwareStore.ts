@@ -126,7 +126,7 @@ export const useFirmwareStore = defineStore('firmware', {
       selectedFirmware: eventMode.enabled ? eventMode.firmware : <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
       baudRate: 115200,
-      hasSeenReleaseNotes: eventMode.enabled, // Auto-skip release notes in event mode
+      hasSeenReleaseNotes: false,
       shouldCleanInstall: false,
       shouldBundleWebUI: false,
       shouldInstallMui: false,
