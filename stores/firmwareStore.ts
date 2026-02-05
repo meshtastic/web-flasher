@@ -224,6 +224,16 @@ export const useFirmwareStore = defineStore('firmware', {
       this.manifest = undefined
       this.releaseManifest = undefined
 
+      // Fetch release notes if not already present
+      if (firmware.id && (!firmware.release_notes || firmware.release_notes.trim().length === 0)) {
+        firmware.release_notes = await fetchReleaseNotes(firmware.id)
+      }
+
+      // Auto-skip release notes step if there are no notes to show
+      if (!firmware.release_notes || firmware.release_notes.trim().length === 0) {
+        this.hasSeenReleaseNotes = true
+      }
+
       // Fetch the release manifest that lists all available targets
       if (firmware.id) {
         const releaseManifest = await fetchReleaseManifest(firmware.id)
