@@ -3,7 +3,7 @@
   "header": "Flasher",
   "description": "Webový nástroj pro flashování firmwaru ESP32",
   "browser_warning": "Váš prohlížeč nepodporuje WebSerial API. Pro plnou funkčnost přepněte do kompatibilního prohlížeče, jako je Chrome nebo Edge.",
-  "header_title": "Meshtastic Web Flasher",
+  "header_title": "FLASHER",
   "language": "Jazyk",
   "actions": {
     "connect": "Připojit",
@@ -109,9 +109,6 @@
     "instructions": "Pokud proces odpojení trvá příliš dlouho, můžete zařízení odpojit ručně.",
     "disconnect": "Odpojit",
     "reconnect": "Try Reconnecting",
-      "waiting_for_data": "Čekání na data...",
-      "busy_title": "Serial Port Busy",
-      "busy_message": "A serial connection is already open. Please close it before continuing.",
     "log_levels": {
       "all": "Vše",
       "debug": "Debug",
