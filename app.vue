@@ -32,12 +32,16 @@
               <LogoHeader />
             </div>
             <div class="header-accent-container">
-              <div class="header-accent-line"></div>
+              <div class="header-accent-line" />
             </div>
           </div>
           <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
             <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up">
-              <div class="card-modern p-6 h-80 flex flex-col items-center relative">
+              <div
+                class="card-modern p-6 h-80 flex flex-col items-center relative"
+                @mouseenter="isDeviceCardHovered = true"
+                @mouseleave="isDeviceCardHovered = false"
+              >
                 <div class="absolute top-3 left-3 w-8 h-8 rounded-full step-badge-circle flex items-center justify-center">
                   <span class="step-number">1</span>
                 </div>
@@ -46,7 +50,7 @@
                   class="h-40 w-40 mb-4 mx-auto object-contain drop-shadow-lg"
                   :alt="$t('device.title')"
                 >
-                <Device />
+                <Device :card-hovered="isDeviceCardHovered" />
               </div>
               <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
                 {{ $t('device.title') }}
@@ -143,11 +147,17 @@
       <div class="container mx-auto px-3 sm:px-5 py-2 sm:py-4 text-center">
         <p class="text-xs sm:text-sm text-theme-muted">
           Powered by
-          <a href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss" class="link-theme">▲ Vercel</a>
+          <a
+            href="https://vercel.com/?utm_source=meshtastic&utm_campaign=oss"
+            class="link-theme"
+          >▲ Vercel</a>
           <span class="mx-2 text-theme-muted/50">•</span>
           Meshtastic® is a registered trademark of Meshtastic LLC.
           <span class="mx-2 text-theme-muted/50">•</span>
-          <a href="https://meshtastic.org/docs/legal" class="link-theme">Legal Information</a>
+          <a
+            href="https://meshtastic.org/docs/legal"
+            class="link-theme"
+          >Legal Information</a>
         </p>
       </div>
     </footer>
@@ -173,7 +183,10 @@
       </transition-group>
     </div>
 
-    <div v-show="isConnected" class="fixed right-2 sm:right-4 top-4 sm:top-6 group z-[10000]">
+    <div
+      v-show="isConnected"
+      class="fixed right-2 sm:right-4 top-4 sm:top-6 group z-[10000]"
+    >
       <button
         type="button"
         :disabled="true"
@@ -277,6 +290,8 @@ const isStep3Enabled = computed(() => {
   return hasDevice && hasFirmware
 })
 
+const isDeviceCardHovered = ref(false)
+
 // WebSerial API support check
 const isWebSerialSupported = computed(() => {
   return 'serial' in navigator
@@ -289,12 +304,12 @@ let konamiKeyId = 0
 
 const getKeyDisplay = (key) => {
   const keyMap = {
-    'ArrowUp': '↑',
-    'ArrowDown': '↓',
-    'ArrowLeft': '←',
-    'ArrowRight': '→',
-    'b': 'B',
-    'a': 'A',
+    ArrowUp: '↑',
+    ArrowDown: '↓',
+    ArrowLeft: '←',
+    ArrowRight: '→',
+    b: 'B',
+    a: 'A',
   }
   return keyMap[key] || key
 }
@@ -302,7 +317,7 @@ const getKeyDisplay = (key) => {
 window.addEventListener('keydown', (event) => {
   if (event.key === konamiKeys[konamiCodeIndex.value]) {
     console.log('konami code key match', konamiCodeIndex.value)
-    
+
     // Add key to animation queue with unique ID
     const keyToDisplay = konamiKeys[konamiCodeIndex.value]
     const keyEntry = { key: keyToDisplay, id: konamiKeyId++ }
@@ -311,7 +326,7 @@ window.addEventListener('keydown', (event) => {
       const idx = activeKonamiKeys.value.findIndex(k => k.id === keyEntry.id)
       if (idx > -1) activeKonamiKeys.value.splice(idx, 1)
     }, 1000)
-    
+
     konamiCodeIndex.value++
     if (konamiCodeIndex.value === konamiKeys.length) {
       console.log('Unlocking pre-release section')
@@ -392,10 +407,10 @@ onMounted(() => {
     background-size: 400% 400% !important;
     animation: konamiGradient 8s ease infinite !important;
     /* Smooth transition for background change */
-    transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1), 
+    transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1),
                 color 1.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
-  
+
   /* Light mode konami - use light retro background */
   :root[data-theme="light"] .konami-code {
     background: linear-gradient(
@@ -409,13 +424,13 @@ onMounted(() => {
     ) !important;
     color: #1a3a1a !important;
   }
-  
+
   :root[data-theme="light"] .konami-code,
   :root[data-theme="light"] .konami-code * {
     color: #1a3a1a !important;
     text-shadow: none !important;
   }
-  
+
   :root[data-theme="light"] .konami-code h2 {
     color: #0d5f0d !important;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5) !important;
@@ -489,7 +504,7 @@ onMounted(() => {
   /* Neon glow effect on cards in konami mode */
   .konami-code .card-modern {
     border: 1px solid rgba(103, 234, 148, 0.5) !important;
-    box-shadow: 
+    box-shadow:
       0 0 10px rgba(103, 234, 148, 0.3),
       0 0 20px rgba(103, 234, 148, 0.1),
       inset 0 0 20px rgba(103, 234, 148, 0.05) !important;
@@ -498,13 +513,13 @@ onMounted(() => {
 
   @keyframes neonPulse {
     0%, 100% {
-      box-shadow: 
+      box-shadow:
         0 0 10px rgba(103, 234, 148, 0.3),
         0 0 20px rgba(103, 234, 148, 0.1),
         inset 0 0 20px rgba(103, 234, 148, 0.05);
     }
     50% {
-      box-shadow: 
+      box-shadow:
         0 0 15px rgba(103, 234, 148, 0.5),
         0 0 30px rgba(103, 234, 148, 0.2),
         inset 0 0 25px rgba(103, 234, 148, 0.1);
@@ -513,7 +528,7 @@ onMounted(() => {
 
   /* Retro pixel-style text shadow on headings */
   .konami-code h2 {
-    text-shadow: 
+    text-shadow:
       2px 2px 0 rgba(103, 234, 148, 0.3),
       -1px -1px 0 rgba(0, 0, 0, 0.5) !important;
   }

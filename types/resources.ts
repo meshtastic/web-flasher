@@ -55,5 +55,5 @@ export const eventMode: EventModeConfig = {
   },
 };
 
-export const vendorCobrandingTag = "";
+export const vendorCobrandingTag: string = "";
 export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow", "M5Stack", "NomadStar", "muzi"];

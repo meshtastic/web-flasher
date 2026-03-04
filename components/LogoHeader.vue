@@ -37,6 +37,7 @@
     >
       <div class="logo-container">
         <div class="logo-glow">
+          <div class="logo-glow-animation" />
           <img
             v-if="themeStore.isDark"
             src="@/assets/img/logo.svg"
@@ -60,7 +61,9 @@
       <h1 class="logo-title">
         <span class="logo-title-gradient">{{ $t('header_title') }}</span>
       </h1>
-      <p class="logo-tagline">{{ eventMode.eventName }}</p>
+      <p class="logo-tagline">
+        {{ eventMode.eventName }}
+      </p>
     </div>
 
     <!-- Standard variant -->
@@ -70,6 +73,7 @@
     >
       <div class="logo-container">
         <div class="logo-glow">
+          <div class="logo-glow-animation" />
           <img
             v-if="themeStore.isDark"
             src="@/assets/img/logo.svg"
@@ -87,7 +91,9 @@
       <h1 class="logo-title">
         <span class="logo-title-gradient">{{ $t('header_title') }}</span>
       </h1>
-      <p class="logo-tagline">{{ $t('description') }}</p>
+      <p class="logo-tagline">
+        {{ $t('description') }}
+      </p>
     </div>
   </div>
 </template>
@@ -122,17 +128,28 @@ const { eventMode } = useEventMode()
 
 .logo-glow {
   position: relative;
+  display: inline-block;
 }
 
-.logo-glow::before {
-  content: '';
+.logo-glow-animation {
   position: absolute;
-  inset: -8px;
-  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  inset: -4px;
+  background: var(--accent-glow);
+  opacity: 0.3;
+  filter: blur(32px);
   border-radius: 50%;
+  pointer-events: none;
   animation: logo-pulse 3s ease-in-out infinite;
   will-change: transform, opacity;
   transform: translateZ(0);
+}
+
+[data-theme="light"] .logo-glow-animation {
+  animation: none;
+  background: none;
+  box-shadow: 0 0 32px var(--accent-glow);
+  inset: 4px;
+  border-radius: 12.5%;
 }
 
 @keyframes logo-pulse {

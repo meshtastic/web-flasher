@@ -34,6 +34,7 @@ export default {
         'fade-in-up-delayed-2': 'fadeInUp 0.6s ease-out 0.2s both',
         'glow': 'glow 2s ease-in-out infinite alternate',
         'float': 'float 3s ease-in-out infinite',
+        'bounce-in-place': 'bounceInPlace 1.2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -51,6 +52,10 @@ export default {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        bounceInPlace: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-25%)' },
         },
       },
       boxShadow: {
