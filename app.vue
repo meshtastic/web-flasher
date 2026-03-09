@@ -173,7 +173,7 @@
       </transition-group>
     </div>
 
-    <div v-show="isConnected" class="fixed right-2 sm:right-4 top-4 sm:top-6 group z-[10000]">
+    <div v-show="isConnected" class="fixed right-2 sm:right-4 top-4 sm:top-6 group z-[60]">
       <button
         type="button"
         :disabled="true"

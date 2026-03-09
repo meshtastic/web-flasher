@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="fixed top-6 right-6 z-50 space-y-3">
+    <div class="fixed top-6 right-6 z-[70] space-y-3">
       <TransitionGroup
         name="toast"
         tag="div"
