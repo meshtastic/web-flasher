@@ -136,6 +136,8 @@
 
     <ToastNotifications />
 
+    <AnalyticsFooter />
+
     <footer
       id="footer"
       class="footer-modern text-theme mt-8 py-6"
