@@ -109,7 +109,6 @@
     "instructions": "Se o processo de desconexão estiver a demorar muito tempo, pode desligar o dispositivo manualmente.",
     "disconnect": "Desligar",
     "reconnect": "Try Reconnecting",
-    "waiting_for_data": "Aguardando dados...",
     "log_levels": {
       "all": "Tudo",
       "debug": "Depuração",

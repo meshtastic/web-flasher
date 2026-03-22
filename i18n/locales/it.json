@@ -69,7 +69,7 @@
       "webui_space_warning": "Inoltre, includere l'interfaccia web occuperà più memoria flash, riducendo lo spazio per le funzioni base e rallentando l'installazione.",
       "doc_guide": "Guarda questa guida nella nostra documentazione.",
       "process_warning": "Questo processo potrebbe richiedere un po' di tempo.",
-      "reset_after_flash": "Dopo che il processo di flashing è completo, potrebbe essere necessario premere il pulsante RST se il dispositivo non si riavvia automaticamente o dice \"in attesa di download\" nella consola.",
+      "reset_after_flash": "Dopo che il processo di flashing è completo, potrebbe essere necessario premere il pulsante RST se il dispositivo non si riavvia automaticamente o dice \"in attesa di download\" nella console.",
       "erase_and_install": "Cancella Flash e Installa",
       "update": "Aggiorna",
       "start_over": "Ricomincia da capo",
@@ -109,9 +109,6 @@
     "instructions": "Se il processo di disconnessione richiede troppo tempo, è possibile scollegare manualmente il dispositivo.",
     "disconnect": "Disconnetti",
     "reconnect": "Prova a Riconnetterti",
-    "waiting_for_data": "In attesa di dati...",
-    "busy_title": "Serial Port Busy",
-    "busy_message": "A serial connection is already open. Please close it before continuing.",
     "log_levels": {
       "all": "Tutti",
       "debug": "Debug",
