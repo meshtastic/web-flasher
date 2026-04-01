@@ -1237,6 +1237,22 @@
     ]
   },
   {
+    "hwModel": 112,
+    "hwModelSlug": "M5STACK_CARDPUTER_ADV",
+    "platformioTarget": "m5stack-cardputer-adv",
+    "architecture": "esp32s3",
+    "activelySupported": false,
+    "supportLevel": 1,
+    "displayName": "Cardputer Adv",
+    "tags": [
+      "M5Stack"
+    ],
+    "images": [
+      "m5stack_cardputer.svg"
+    ],
+    "partitionScheme": "8MB"
+  },
+  {
     "hwModel": 113,
     "hwModelSlug": "HELTEC_WIRELESS_TRACKER_V2",
     "platformioTarget": "heltec-wireless-tracker-v2",
@@ -1306,7 +1322,7 @@
     "hwModelSlug": "THINKNODE_M4",
     "platformioTarget": "thinknode_m4",
     "architecture": "nrf52840",
-    "activelySupported": false,
+    "activelySupported": true,
     "supportLevel": 1,
     "displayName": "ThinkNode M4",
     "tags": [
@@ -1322,7 +1338,7 @@
     "hwModelSlug": "THINKNODE_M6",
     "platformioTarget": "thinknode_m6",
     "architecture": "nrf52840",
-    "activelySupported": false,
+    "activelySupported": true,
     "supportLevel": 1,
     "displayName": "ThinkNode M6",
     "tags": [
