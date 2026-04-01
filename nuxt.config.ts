@@ -1,7 +1,17 @@
 // nuxt.config.ts
 import { defineNuxtConfig } from 'nuxt/config'
 
+const ignoredDevWatchPaths = [
+  '**/.claude/**',
+  '**/.git/**',
+  '**/.nuxt/**',
+  '**/.output/**',
+  '**/.playwright-mcp/**',
+  '**/test-results/**',
+]
+
 export default defineNuxtConfig({
+  ignore: ignoredDevWatchPaths,
 
   modules: ['@pinia/nuxt', '@vite-pwa/nuxt', '@nuxtjs/i18n', '@nuxt/eslint'],
 
@@ -38,9 +48,18 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-09-03',
 
+  watchers: {
+    chokidar: {
+      ignored: ignoredDevWatchPaths,
+    },
+  },
+
   vite: {
     plugins: [],
     server: {
+      watch: {
+        ignored: ignoredDevWatchPaths,
+      },
       hmr: {
         overlay: true, // Enable HMR overlay for errors
       },
