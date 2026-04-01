@@ -45,6 +45,7 @@
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@types/file-saver": "^2.0.7",
     "@types/w3c-web-serial": "^1.0.8",
+    "@types/web-bluetooth": "^0.0.21",
     "@vite-pwa/nuxt": "^1.1.0",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
