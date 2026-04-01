@@ -121,7 +121,7 @@
     }
   },
   "ble": {
-    "provision_wifi": "Provision WiFi",
+    "provision_wifi": "mPWRD-OS WiFi Provisioning",
     "connect_device": "Connect to BLE Device",
     "connecting": "Connecting...",
     "connected": "Connected",
