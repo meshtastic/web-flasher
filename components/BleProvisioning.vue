@@ -78,17 +78,19 @@
                       <label class="text-xs font-medium text-theme-muted uppercase tracking-wider">
                         {{ $t('ble.available_networks') }}
                       </label>
-                      <div class="max-h-32 overflow-y-auto rounded-lg border border-[var(--border-default)]">
+                      <div class="max-h-40 overflow-y-auto rounded-lg border border-[var(--border-default)]">
                         <button
                           v-for="network in bleStore.availableNetworks"
-                          :key="network"
+                          :key="network.bssid || network.ssid"
                           type="button"
                           class="w-full text-left px-3 py-2 text-sm text-theme hover:bg-[var(--accent-glow)] transition-colors border-b border-[var(--border-default)] last:border-b-0 flex items-center gap-2"
-                          :class="{ 'bg-[var(--accent-glow)]': bleStore.ssid === network }"
-                          @click="bleStore.ssid = network"
+                          :class="{ 'bg-[var(--accent-glow)]': bleStore.ssid === network.ssid }"
+                          @click="bleStore.ssid = network.ssid"
                         >
-                          <Wifi class="h-3 w-3 text-theme-muted shrink-0" />
-                          {{ network }}
+                          <Wifi class="h-3 w-3 shrink-0" :class="signalClass(network.signalStrength)" />
+                          <span class="flex-1 truncate">{{ network.ssid }}</span>
+                          <Lock v-if="network.isProtected" class="h-3 w-3 text-theme-muted shrink-0" />
+                          <span class="text-xs text-theme-muted shrink-0">{{ network.signalStrength }} dBm</span>
                         </button>
                       </div>
                     </div>
@@ -144,9 +146,9 @@
                     class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
                     :class="statusClass"
                   >
-                    <Loader2 v-if="bleStore.status === 'applying'" class="h-4 w-4 animate-spin" />
-                    <CheckCircle v-else-if="bleStore.status === 'applied'" class="h-4 w-4" />
-                    <XCircle v-else class="h-4 w-4" />
+                    <Loader2 v-if="bleStore.status === 'provisioning'" class="h-4 w-4 animate-spin" />
+                    <CheckCircle v-else-if="bleStore.status === 'success'" class="h-4 w-4" />
+                    <XCircle v-else-if="bleStore.status === 'failed'" class="h-4 w-4" />
                     {{ statusText }}
                   </div>
 
@@ -190,6 +192,7 @@ import {
   XCircle,
   Eye,
   EyeOff,
+  Lock,
   X,
 } from 'lucide-vue-next'
 
@@ -201,20 +204,26 @@ const bleStore = useBleProvisioningStore()
 const showPassword = ref(false)
 const hasScanned = ref(false)
 
-watch(() => bleStore.isScanning, (scanning, waScanning) => {
-  if (waScanning && !scanning) {
+watch(() => bleStore.isScanning, (scanning, wasScanning) => {
+  if (wasScanning && !scanning) {
     hasScanned.value = true
   }
 })
 
+const signalClass = (dbm: number) => {
+  if (dbm >= -50) return 'text-green-400'
+  if (dbm >= -70) return 'text-yellow-400'
+  return 'text-red-400'
+}
+
 const statusClass = computed(() => {
   switch (bleStore.status) {
-    case 'applying':
+    case 'provisioning':
+    case 'scanning':
       return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-    case 'applied':
+    case 'success':
       return 'bg-green-500/10 text-green-400 border border-green-500/20'
-    case 'apply-failed':
-    case 'missing-ssid-or-psk':
+    case 'failed':
       return 'bg-red-500/10 text-red-400 border border-red-500/20'
     default:
       return 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
@@ -223,14 +232,14 @@ const statusClass = computed(() => {
 
 const statusText = computed(() => {
   switch (bleStore.status) {
-    case 'applying':
+    case 'provisioning':
       return t('ble.status_applying')
-    case 'applied':
+    case 'scanning':
+      return t('ble.scanning')
+    case 'success':
       return t('ble.status_applied')
-    case 'apply-failed':
+    case 'failed':
       return t('ble.status_apply_failed')
-    case 'missing-ssid-or-psk':
-      return t('ble.status_missing_credentials')
     default:
       return t('ble.status_idle')
   }

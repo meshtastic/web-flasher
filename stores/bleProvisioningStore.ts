@@ -7,38 +7,111 @@ declare global {
   }
 }
 
-const WIFI_SERVICE_UUID = '7b9c0000-3c1b-4f52-9e1a-1d5f0e9c1000'
-const CHAR_SSID_UUID = '7b9c0000-3c1b-4f52-9e1a-1d5f0e9c1001'
-const CHAR_PSK_UUID = '7b9c0000-3c1b-4f52-9e1a-1d5f0e9c1002'
-const CHAR_STATUS_UUID = '7b9c0000-3c1b-4f52-9e1a-1d5f0e9c1003'
-const CHAR_APPLY_UUID = '7b9c0000-3c1b-4f52-9e1a-1d5f0e9c1004'
-const CHAR_SCAN_RESULTS_UUID = '7b9c0000-3c1b-4f52-9e1a-1d5f0e9c1005'
+// nymea-networkmanager GATT UUIDs
+// Reference: https://github.com/nymea/nymea-networkmanager
+const WIRELESS_SERVICE_UUID = 'e081fec0-f757-4449-b9c9-bfa83133f7fc'
+const WIRELESS_COMMANDER_UUID = 'e081fec1-f757-4449-b9c9-bfa83133f7fc'
+const COMMANDER_RESPONSE_UUID = 'e081fec2-f757-4449-b9c9-bfa83133f7fc'
 
-type ProvisioningStatus = 'idle' | 'missing-ssid-or-psk' | 'applying' | 'applied' | 'apply-failed'
+// nymea command codes
+const CMD_GET_NETWORKS = 0
+const CMD_CONNECT = 1
+const CMD_SCAN = 4
+
+// nymea response codes
+const RESPONSE_SUCCESS = 0
+
+// Protocol constants
+const MAX_PACKET_SIZE = 20
+const STREAM_TERMINATOR = '\n'
+const RESPONSE_TIMEOUT_MS = 15000
+const SUBSCRIPTION_SETTLE_MS = 300
 
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
+
+export interface WifiNetwork {
+  ssid: string
+  bssid: string
+  signalStrength: number
+  isProtected: boolean
+}
+
+type ProvisioningStatus = 'idle' | 'scanning' | 'provisioning' | 'success' | 'failed'
+
+/**
+ * Encode a JSON string into ≤20-byte BLE packets with newline terminator.
+ */
+function encodePackets(json: string): Uint8Array[] {
+  const payload = encoder.encode(json + STREAM_TERMINATOR)
+  const packets: Uint8Array[] = []
+  let offset = 0
+  while (offset < payload.length) {
+    const end = Math.min(offset + MAX_PACKET_SIZE, payload.length)
+    packets.push(payload.slice(offset, end))
+    offset = end
+  }
+  return packets
+}
+
+/**
+ * Reassembler for inbound BLE notification packets.
+ * Buffers UTF-8 chunks until a newline terminator is received.
+ */
+class PacketReassembler {
+  private buffer = ''
+
+  feed(bytes: ArrayBuffer): string | null {
+    this.buffer += decoder.decode(bytes)
+    if (this.buffer.endsWith(STREAM_TERMINATOR)) {
+      const message = this.buffer.trimEnd()
+      this.buffer = ''
+      return message
+    }
+    return null
+  }
+
+  reset() {
+    this.buffer = ''
+  }
+}
+
+function nymeaErrorMessage(code: number): string {
+  switch (code) {
+    case 1: return 'Invalid command'
+    case 2: return 'Invalid parameter'
+    case 3: return 'NetworkManager not available'
+    case 4: return 'Wireless adapter not available'
+    case 5: return 'Networking disabled'
+    case 6: return 'Wireless disabled'
+    default: return `Unknown error (code ${code})`
+  }
+}
 
 export const useBleProvisioningStore = defineStore('bleProvisioning', {
   state: () => ({
     device: undefined as BluetoothDevice | undefined,
     server: undefined as BluetoothRemoteGATTServer | undefined,
     service: undefined as BluetoothRemoteGATTService | undefined,
+    commanderChar: undefined as BluetoothRemoteGATTCharacteristic | undefined,
+    responseChar: undefined as BluetoothRemoteGATTCharacteristic | undefined,
     isConnecting: false,
     isConnected: false,
-    availableNetworks: [] as string[],
+    availableNetworks: [] as WifiNetwork[],
     isScanning: false,
     ssid: '',
     psk: '',
     status: 'idle' as ProvisioningStatus,
     isProvisioning: false,
+    _reassembler: null as PacketReassembler | null,
+    _responseResolve: null as ((value: string) => void) | null,
   }),
   getters: {
     isWebBluetoothSupported(): boolean {
       return typeof navigator !== 'undefined' && 'bluetooth' in navigator
     },
     canProvision(): boolean {
-      return this.isConnected && this.ssid.length > 0 && this.psk.length > 0 && !this.isProvisioning
+      return this.isConnected && this.ssid.length > 0 && !this.isProvisioning
     },
   },
   actions: {
@@ -48,7 +121,7 @@ export const useBleProvisioningStore = defineStore('bleProvisioning', {
 
       try {
         const device = await navigator.bluetooth.requestDevice({
-          filters: [{ services: [WIFI_SERVICE_UUID] }],
+          filters: [{ services: [WIRELESS_SERVICE_UUID] }],
         })
 
         device.addEventListener('gattserverdisconnected', () => {
@@ -56,11 +129,39 @@ export const useBleProvisioningStore = defineStore('bleProvisioning', {
         })
 
         const server = await device.gatt!.connect()
-        const service = await server.getPrimaryService(WIFI_SERVICE_UUID)
+        const service = await server.getPrimaryService(WIRELESS_SERVICE_UUID)
+
+        // Get characteristics
+        const commanderChar = await service.getCharacteristic(WIRELESS_COMMANDER_UUID)
+        const responseChar = await service.getCharacteristic(COMMANDER_RESPONSE_UUID)
+
+        // Set up response reassembler and notification handler
+        const reassembler = new PacketReassembler()
+        this._reassembler = reassembler
+
+        responseChar.addEventListener('characteristicvaluechanged', (event: Event) => {
+          const target = event.target as BluetoothRemoteGATTCharacteristic
+          if (!target.value) return
+          const message = reassembler.feed(target.value.buffer)
+          if (message !== null) {
+            console.log('BLE response:', message)
+            if (this._responseResolve) {
+              this._responseResolve(message)
+              this._responseResolve = null
+            }
+          }
+        })
+
+        await responseChar.startNotifications()
+
+        // Allow subscription to settle
+        await new Promise(resolve => setTimeout(resolve, SUBSCRIPTION_SETTLE_MS))
 
         this.device = device
         this.server = server
         this.service = service
+        this.commanderChar = commanderChar
+        this.responseChar = responseChar
         this.isConnected = true
 
         toastStore.success(
@@ -70,7 +171,6 @@ export const useBleProvisioningStore = defineStore('bleProvisioning', {
       }
       catch (error: unknown) {
         if ((error as Error)?.name === 'NotFoundError') {
-          // User cancelled device selection
           return
         }
         console.error('BLE connection error:', error)
@@ -101,24 +201,63 @@ export const useBleProvisioningStore = defineStore('bleProvisioning', {
       this.resetState()
     },
 
+    /**
+     * Send a JSON command via the nymea commander characteristic,
+     * chunked into ≤20-byte packets with newline terminator.
+     */
+    async sendCommand(json: string) {
+      if (!this.commanderChar) throw new Error('Not connected')
+      console.log('BLE command:', json)
+      const packets = encodePackets(json)
+      for (const packet of packets) {
+        await this.commanderChar.writeValueWithResponse(packet)
+      }
+    },
+
+    /**
+     * Wait for a complete JSON response from the notification stream.
+     */
+    waitForResponse(): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          this._responseResolve = null
+          reject(new Error('Response timeout'))
+        }, RESPONSE_TIMEOUT_MS)
+
+        this._responseResolve = (value: string) => {
+          clearTimeout(timeout)
+          resolve(value)
+        }
+      })
+    },
+
     async scanNetworks(tFunc?: (key: string) => string) {
       const toastStore = useToastStore()
-      if (!this.service) return
+      if (!this.isConnected) return
 
       this.isScanning = true
       try {
-        const characteristic = await this.service.getCharacteristic(CHAR_SCAN_RESULTS_UUID)
-        const value = await characteristic.readValue()
-        const text = decoder.decode(value)
+        // Step 1: Trigger a fresh WiFi scan (CMD_SCAN = 4)
+        this.sendCommand(JSON.stringify({ c: CMD_SCAN }))
+        const scanResponse = JSON.parse(await this.waitForResponse())
+        if (scanResponse.r !== RESPONSE_SUCCESS) {
+          throw new Error(nymeaErrorMessage(scanResponse.r))
+        }
 
-        // Try JSON array first, fall back to newline-separated
-        try {
-          const parsed = JSON.parse(text)
-          this.availableNetworks = Array.isArray(parsed) ? parsed : [text]
+        // Step 2: Get network list (CMD_GET_NETWORKS = 0)
+        this.sendCommand(JSON.stringify({ c: CMD_GET_NETWORKS }))
+        const networksResponse = JSON.parse(await this.waitForResponse())
+        if (networksResponse.r !== RESPONSE_SUCCESS) {
+          throw new Error(nymeaErrorMessage(networksResponse.r))
         }
-        catch {
-          this.availableNetworks = text.split('\n').filter(s => s.trim().length > 0)
-        }
+
+        // Parse network entries: {e: ssid, m: bssid, s: signal, p: protected}
+        this.availableNetworks = (networksResponse.p || []).map((entry: { e: string, m: string, s: number, p: number }) => ({
+          ssid: entry.e,
+          bssid: entry.m || '',
+          signalStrength: entry.s || 0,
+          isProtected: entry.p !== 0,
+        }))
       }
       catch (error) {
         console.error('BLE scan error:', error)
@@ -134,71 +273,42 @@ export const useBleProvisioningStore = defineStore('bleProvisioning', {
 
     async provisionWifi(tFunc?: (key: string) => string) {
       const toastStore = useToastStore()
-      if (!this.service || !this.ssid || !this.psk) return
+      if (!this.isConnected || !this.ssid) return
 
       this.isProvisioning = true
-      this.status = 'idle'
+      this.status = 'provisioning'
 
       try {
-        // Write SSID
-        const ssidChar = await this.service.getCharacteristic(CHAR_SSID_UUID)
-        await ssidChar.writeValueWithResponse(encoder.encode(this.ssid))
+        // Send connect command: {c: 1, p: {e: "SSID", p: "password"}}
+        const command = {
+          c: CMD_CONNECT,
+          p: { e: this.ssid, p: this.psk },
+        }
+        this.sendCommand(JSON.stringify(command))
 
-        // Write PSK
-        const pskChar = await this.service.getCharacteristic(CHAR_PSK_UUID)
-        await pskChar.writeValueWithResponse(encoder.encode(this.psk))
+        const responseJson = await this.waitForResponse()
+        const response = JSON.parse(responseJson)
 
-        // Subscribe to status notifications
-        const statusChar = await this.service.getCharacteristic(CHAR_STATUS_UUID)
-
-        const statusPromise = new Promise<ProvisioningStatus>((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            reject(new Error('timeout'))
-          }, 30000)
-
-          const handler = (event: Event) => {
-            const target = event.target as BluetoothRemoteGATTCharacteristic
-            const statusText = decoder.decode(target.value!) as ProvisioningStatus
-            this.status = statusText
-
-            if (statusText === 'applied' || statusText === 'apply-failed') {
-              clearTimeout(timeout)
-              statusChar.removeEventListener('characteristicvaluechanged', handler)
-              statusChar.stopNotifications().catch(() => {})
-              resolve(statusText)
-            }
-          }
-
-          statusChar.addEventListener('characteristicvaluechanged', handler)
-        })
-
-        await statusChar.startNotifications()
-
-        // Write apply trigger
-        const applyChar = await this.service.getCharacteristic(CHAR_APPLY_UUID)
-        await applyChar.writeValueWithResponse(new Uint8Array([1]))
-
-        this.status = 'applying'
-
-        // Wait for terminal status
-        const finalStatus = await statusPromise
-
-        if (finalStatus === 'applied') {
+        if (response.r === RESPONSE_SUCCESS) {
+          this.status = 'success'
           toastStore.success(
             tFunc?.('ble.status_applied') || 'WiFi Configured',
             tFunc?.('ble.provision_success') || 'WiFi credentials applied successfully!',
           )
         }
         else {
+          this.status = 'failed'
+          const errorMsg = nymeaErrorMessage(response.r)
           toastStore.error(
             tFunc?.('ble.error_provision_title') || 'Provisioning Failed',
-            tFunc?.('ble.status_apply_failed') || 'Failed to apply WiFi configuration.',
+            errorMsg,
           )
         }
       }
       catch (error: unknown) {
         console.error('BLE provisioning error:', error)
-        if ((error as Error).message === 'timeout') {
+        this.status = 'failed'
+        if ((error as Error).message === 'Response timeout') {
           toastStore.error(
             tFunc?.('ble.error_timeout_title') || 'Provisioning Timeout',
             tFunc?.('ble.error_timeout') || 'The device did not respond in time. Please try again.',
@@ -217,9 +327,14 @@ export const useBleProvisioningStore = defineStore('bleProvisioning', {
     },
 
     resetState() {
+      this._reassembler?.reset()
+      this._reassembler = null
+      this._responseResolve = null
       this.device = undefined
       this.server = undefined
       this.service = undefined
+      this.commanderChar = undefined
+      this.responseChar = undefined
       this.isConnected = false
       this.isConnecting = false
       this.availableNetworks = []
