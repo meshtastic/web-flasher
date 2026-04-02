@@ -112,6 +112,7 @@
         >
           {{ $t('buttons.serial_monitor') }} <Terminal class="h-4 w-4 shrink-0" />
         </button>
+        <BleProvisioning v-if="!serialMonitorStore.isConnected" />
         <a
           v-if="!serialMonitorStore.isConnected"
           href="https://meshtastic.org/docs"

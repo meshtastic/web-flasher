@@ -99,6 +99,9 @@ importers:
       '@types/w3c-web-serial':
         specifier: ^1.0.8
         version: 1.0.8
+      '@types/web-bluetooth':
+        specifier: ^0.0.21
+        version: 0.0.21
       '@vite-pwa/nuxt':
         specifier: ^1.1.0
         version: 1.1.0(magicast@0.5.1)(vite@7.3.1(@types/node@24.3.0)(jiti@2.6.1)(terser@5.44.0)(yaml@2.8.2))(workbox-build@7.1.1)(workbox-window@7.1.0)
