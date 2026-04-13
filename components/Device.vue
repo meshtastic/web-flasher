@@ -216,7 +216,7 @@ import {
   Rocket,
 } from 'lucide-vue-next'
 
-import { useDeviceStore } from '../stores/deviceStore'
+import { shouldAutoSelectMui, useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import DeviceDetail from './DeviceDetail.vue'
 import { useI18n } from 'vue-i18n'
@@ -248,8 +248,7 @@ const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device)
   firmwareStore.clearState()
 
-  // Auto-select MUI for devices that support it (after clearing state)
-  if (device.hasMui === true) {
+  if (shouldAutoSelectMui(device)) {
     firmwareStore.$state.shouldInstallMui = true
   }
 }
