@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { getManifestBasePath, getFirmwareBaseUrl, GITHUB_IO_BASE } from './firmwareUrl'
+import { eventMode } from '~/types/resources'
 
 describe('firmwareUrl', () => {
   describe('getManifestBasePath', () => {
@@ -8,14 +9,20 @@ describe('firmwareUrl', () => {
       const eventVersion = '2.7.18.7e03cae'
       const result = getManifestBasePath(eventVersion)
       console.log(`[EVENT] getManifestBasePath('${eventVersion}') => ${result}`)
-      expect(result).toBe('event/hamcation2026/firmware-2.7.18.7e03cae')
+      expect(result).toBe('event/hamvention2026/firmware-2.7.18.7e03cae')
     })
 
     it('returns event path for event firmware version with v prefix', () => {
       const eventVersion = 'v2.7.18.7e03cae'
       const result = getManifestBasePath(eventVersion)
       console.log(`[EVENT] getManifestBasePath('${eventVersion}') => ${result}`)
-      expect(result).toBe('event/hamcation2026/firmware-2.7.18.7e03cae')
+      expect(result).toBe('event/hamvention2026/firmware-2.7.18.7e03cae')
+    })
+
+    it('uses pathPrefix from the active eventMode config', () => {
+      const result = getManifestBasePath(eventMode.firmware.id)
+      console.log(`[ACTIVE EVENT] pathPrefix='${eventMode.pathPrefix}' => ${result}`)
+      expect(result).toBe(`event/${eventMode.pathPrefix}/firmware-${eventMode.firmware.id.replace(/^v/, '')}`)
     })
 
     it('returns standard path for regular firmware version', () => {
@@ -46,7 +53,7 @@ describe('firmwareUrl', () => {
       const result = getFirmwareBaseUrl(eventVersion)
       console.log(`[EVENT FULL URL] getFirmwareBaseUrl('${eventVersion}') =>\n  ${result}`)
       expect(result).toBe(
-        `${GITHUB_IO_BASE}/event/hamcation2026/firmware-2.7.18.7e03cae`
+        `${GITHUB_IO_BASE}/event/hamvention2026/firmware-2.7.18.7e03cae`
       )
     })
 

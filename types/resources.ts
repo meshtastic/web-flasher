@@ -18,12 +18,14 @@ export interface EventModeConfig {
   enabled: boolean;
   eventName: string;
   eventTag: string;
+  pathPrefix: string;
+  domain: string;
   firmware: FirmwareResource;
 }
 
 const eventFirmwareId = '2.7.18.7e03cae';
 
-const eventReleaseNotes = `
+const hamcationReleaseNotes = `
 ## Welcome to Orlando Hamcation 2026!
 
 This firmware has been customized for Hamcation with factory default configurations.
@@ -43,17 +45,56 @@ If your device has existing settings or encryption keys, **backup your keys / co
 **73 and happy meshing!**
 `;
 
-export const eventMode: EventModeConfig = {
+const hamventionReleaseNotes = `
+## Welcome to Dayton Hamvention 2026!
+
+This firmware has been customized for Hamvention with factory default configurations.
+
+### ⚠️ Important: Backup Before Flashing
+
+If your device has existing settings or encryption keys, **backup your keys / configurations** before proceeding. Flashing will reset your device to factory settings for the event.
+
+### Quick Start
+
+1. Ensure a **data-capable USB cable** is connected
+2. Select your device type
+3. Choose "Full Erase and Install"
+4. After flashing, download the Meshtastic app and pair via Bluetooth
+5. If you updated from a previous version or installed a UF2 on an NRF52 device, you will need to perform a factory reset on the device to activate the Hamvention mode.
+
+**73 and happy meshing from Dayton!**
+`;
+
+const hamcationEventMode: EventModeConfig = {
   enabled: false,
   eventName: 'Orlando Hamcation 2026',
   eventTag: 'Hamcation',
+  pathPrefix: 'hamcation2026',
+  domain: 'hamcation.meshtastic.org',
   firmware: {
     id: `v${eventFirmwareId}`,
     title: `Meshtastic Firmware ${eventFirmwareId}`,
     zip_url: `https://github.com/meshtastic/meshtastic.github.io/raw/master/event/hamcation2026/firmware-${eventFirmwareId}.zip`,
-    release_notes: eventReleaseNotes,
+    release_notes: hamcationReleaseNotes,
   },
 };
+
+const hamventionEventMode: EventModeConfig = {
+  enabled: false,
+  eventName: 'Dayton Hamvention 2026',
+  eventTag: 'Hamvention',
+  pathPrefix: 'hamvention2026',
+  domain: 'hamvention.meshtastic.org',
+  firmware: {
+    id: `v${eventFirmwareId}`,
+    title: `Meshtastic Firmware ${eventFirmwareId}`,
+    zip_url: `https://github.com/meshtastic/meshtastic.github.io/raw/master/event/hamvention2026/firmware-${eventFirmwareId}.zip`,
+    release_notes: hamventionReleaseNotes,
+  },
+};
+
+// Active event — change this line to switch which event the flasher locks to.
+export const eventMode: EventModeConfig = hamventionEventMode;
 
 export const vendorCobrandingTag = "";
 export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow", "M5Stack", "NomadStar", "muzi"];

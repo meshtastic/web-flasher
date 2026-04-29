@@ -2,16 +2,15 @@ import { computed } from 'vue'
 import { eventMode as staticEventMode } from '~/types/resources'
 
 export const useEventMode = () => {
-  const isHamcationDomain = computed(() => {
+  const isEventDomain = computed(() => {
     if (process.client) {
-      const hostname = window.location.hostname
-      return hostname.includes('hamcation.meshtastic.org')
+      return window.location.hostname.includes(staticEventMode.domain)
     }
     return false
   })
 
   const eventMode = computed(() => {
-    if (isHamcationDomain.value) {
+    if (isEventDomain.value) {
       return {
         ...staticEventMode,
         enabled: true,
@@ -20,5 +19,5 @@ export const useEventMode = () => {
     return staticEventMode
   })
 
-  return { eventMode, isHamcationDomain }
+  return { eventMode, isEventDomain }
 }

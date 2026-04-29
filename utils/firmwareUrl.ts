@@ -13,7 +13,7 @@ export function getManifestBasePath(version: string): string {
   const eventVersion = eventMode.firmware.id.replace(/^v/, '')
   // Check if this is the event firmware version
   if (cleanVersion === eventVersion) {
-    return `event/hamcation2026/firmware-${cleanVersion}`
+    return `event/${eventMode.pathPrefix}/firmware-${cleanVersion}`
   }
   return `firmware-${cleanVersion}`
 }
