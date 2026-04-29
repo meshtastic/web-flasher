@@ -69,21 +69,6 @@
       class="logo-header-content logo-header-hamvention"
     >
       <div class="logo-container">
-        <div class="logo-glow">
-          <img
-            v-if="themeStore.isDark"
-            src="@/assets/img/logo.svg"
-            class="logo-icon"
-            alt="Meshtastic Logo"
-          >
-          <img
-            v-else
-            src="@/assets/img/logo-dark.svg"
-            class="logo-icon"
-            alt="Meshtastic Logo"
-          >
-        </div>
-        <span class="logo-separator">×</span>
         <img
           src="@/assets/img/hamvention.svg"
           class="logo-icon-event"
@@ -257,6 +242,11 @@ const { eventMode } = useEventMode()
   -webkit-text-fill-color: #fff;
   background: none;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="light"] .logo-header-hamvention .logo-title-gradient {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
 }
 
 .logo-separator {
