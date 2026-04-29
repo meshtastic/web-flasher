@@ -23,7 +23,7 @@ export interface EventModeConfig {
   firmware: FirmwareResource;
 }
 
-const eventFirmwareId = '2.7.18.7e03cae';
+const eventFirmwareId = '2.7.23.2a858be';
 
 const hamcationReleaseNotes = `
 ## Welcome to Orlando Hamcation 2026!
@@ -83,12 +83,12 @@ const hamventionEventMode: EventModeConfig = {
   enabled: false,
   eventName: 'Dayton Hamvention 2026',
   eventTag: 'Hamvention',
-  pathPrefix: 'hamvention2026',
+  pathPrefix: 'dayton2026',
   domain: 'hamvention.meshtastic.org',
   firmware: {
     id: `v${eventFirmwareId}`,
     title: `Meshtastic Firmware ${eventFirmwareId}`,
-    zip_url: `https://github.com/meshtastic/meshtastic.github.io/raw/master/event/hamvention2026/firmware-${eventFirmwareId}.zip`,
+    zip_url: `https://github.com/meshtastic/meshtastic.github.io/raw/master/event/dayton2026/firmware-${eventFirmwareId}.zip`,
     release_notes: hamventionReleaseNotes,
   },
 };

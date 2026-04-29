@@ -9,14 +9,14 @@ describe('firmwareUrl', () => {
       const eventVersion = '2.7.18.7e03cae'
       const result = getManifestBasePath(eventVersion)
       console.log(`[EVENT] getManifestBasePath('${eventVersion}') => ${result}`)
-      expect(result).toBe('event/hamvention2026/firmware-2.7.18.7e03cae')
+      expect(result).toBe('event/dayton2026/firmware-2.7.18.7e03cae')
     })
 
     it('returns event path for event firmware version with v prefix', () => {
       const eventVersion = 'v2.7.18.7e03cae'
       const result = getManifestBasePath(eventVersion)
       console.log(`[EVENT] getManifestBasePath('${eventVersion}') => ${result}`)
-      expect(result).toBe('event/hamvention2026/firmware-2.7.18.7e03cae')
+      expect(result).toBe('event/dayton2026/firmware-2.7.18.7e03cae')
     })
 
     it('uses pathPrefix from the active eventMode config', () => {
@@ -53,7 +53,7 @@ describe('firmwareUrl', () => {
       const result = getFirmwareBaseUrl(eventVersion)
       console.log(`[EVENT FULL URL] getFirmwareBaseUrl('${eventVersion}') =>\n  ${result}`)
       expect(result).toBe(
-        `${GITHUB_IO_BASE}/event/hamvention2026/firmware-2.7.18.7e03cae`
+        `${GITHUB_IO_BASE}/event/dayton2026/firmware-2.7.18.7e03cae`
       )
     })
 
