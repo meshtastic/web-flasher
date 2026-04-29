@@ -95,3 +95,4 @@ sw.*
 .vercel
 
 .playwright-mcp
+.vscode/settings.json

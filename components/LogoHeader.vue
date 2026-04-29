@@ -63,6 +63,39 @@
       <p class="logo-tagline">{{ eventMode.eventName }}</p>
     </div>
 
+    <!-- Hamvention event branding variant -->
+    <div
+      v-else-if="eventMode.enabled && eventMode.eventTag === 'Hamvention'"
+      class="logo-header-content logo-header-hamvention"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+        <span class="logo-separator">×</span>
+        <img
+          src="@/assets/img/hamvention.svg"
+          class="logo-icon-event"
+          alt="Hamvention Logo"
+        >
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">{{ eventMode.eventName }}</p>
+    </div>
+
     <!-- Standard variant -->
     <div
       v-else
@@ -198,6 +231,34 @@ const { eventMode } = useEventMode()
     height: 7rem;
   }
 }
+
+.logo-header-hamvention {
+  position: relative;
+  background-image: url('@/assets/img/hamvention-bg.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 1rem;
+  padding: 2rem 1rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.logo-header-hamvention::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.45) 100%);
+  z-index: -1;
+}
+
+.logo-header-hamvention .logo-title-gradient,
+.logo-header-hamvention .logo-tagline {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  background: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
 .logo-separator {
   font-size: 2rem;
   color: var(--text-muted);
