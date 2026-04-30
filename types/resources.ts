@@ -23,7 +23,7 @@ export interface EventModeConfig {
   firmware: FirmwareResource;
 }
 
-const eventFirmwareId = '2.7.23.2a858be';
+const eventFirmwareId = '2.7.23.07741e6';
 
 const hamcationReleaseNotes = `
 ## Welcome to Orlando Hamcation 2026!
