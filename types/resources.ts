@@ -4,7 +4,7 @@ import type { FirmwareResource } from './api';
 
 const currentPrereleaseId = '2.7.23.b246bcd';
 
-export const showPrerelease = true;
+export const showPrerelease = false;
 
 export const currentPrerelease = <FirmwareResource>{
   id: `v${currentPrereleaseId}`,
