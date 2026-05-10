@@ -10,7 +10,7 @@
       {{ $t('flash.title') }}
     </button>
     <button
-      v-show="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)"
+      v-show="uf2Architectures.includes(deviceStore.selectedArchitecture)"
       data-tooltip-target="tooltip-erase"
       class="btn-icon mx-2"
       type="button"
@@ -56,7 +56,7 @@
               </video>
               <FlashHeader />
               <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative z-10">
-                <TargetsUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
+                <TargetsUf2 v-if="uf2Architectures.includes(deviceStore.selectedArchitecture)" />
                 <TargetsEsp32 v-if="deviceStore.selectedArchitecture.startsWith('esp32')" />
               </div>
             </div>
@@ -90,7 +90,7 @@
                 :title-override="`${$t('flash.erase_flash')} ${deviceStore.$state.selectedTarget?.displayName || ''}`"
               />
               <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative z-10">
-                <TargetsEraseUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
+                <TargetsEraseUf2 v-if="uf2Architectures.includes(deviceStore.selectedArchitecture)" />
               </div>
             </div>
           </div>
@@ -115,6 +115,7 @@ const deviceStore = useDeviceStore()
 const serialMonitorStore = useSerialMonitorStore()
 
 const fileExistsOnServer = ref(false)
+const uf2Architectures = ['nrf52840', 'rp2040', 'rp2350']
 
 watch(() => firmwareStore.$state.selectedFirmware, async () => {
   await preflightCheck()
@@ -137,7 +138,7 @@ const preflightCheck = async () => {
     return
   }
 
-  if (['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)) {
+  if (uf2Architectures.includes(deviceStore.selectedArchitecture)) {
     const firmwareVersion = firmwareStore.selectedFirmware!.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
     fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile))

@@ -483,6 +483,40 @@
     ]
   },
   {
+    "hwModel": 113,
+    "hwModelSlug": "RPI_PICO2",
+    "platformioTarget": "pico2",
+    "architecture": "rp2350",
+    "activelySupported": true,
+    "supportLevel": 3,
+    "displayName": "Raspberry Pi Pico 2",
+    "tags": [
+      "RPi",
+      "DIY"
+    ],
+    "requiresDfu": true,
+    "images": [
+      "pico2.svg"
+    ]
+  },
+  {
+    "hwModel": 113,
+    "hwModelSlug": "RPI_PICO2",
+    "platformioTarget": "pico2w",
+    "architecture": "rp2350",
+    "activelySupported": true,
+    "supportLevel": 3,
+    "displayName": "Raspberry Pi Pico 2 W",
+    "tags": [
+      "RPi",
+      "DIY"
+    ],
+    "requiresDfu": true,
+    "images": [
+      "pico2w.svg"
+    ]
+  },
+  {
     "hwModel": 48,
     "hwModelSlug": "HELTEC_WIRELESS_TRACKER",
     "platformioTarget": "heltec-wireless-tracker",
