@@ -42,14 +42,17 @@ export default {
         info: {
           DEFAULT: '#5C6BC0',
           light: '#E8EAF6',
+          dark: '#3949AB',
         },
         warning: {
           DEFAULT: '#E8A33E',
           light: '#FFF3E0',
+          dark: '#9A4E00',
         },
         error: {
           DEFAULT: '#E05252',
           light: '#FDEAEA',
+          dark: '#C62828',
         },
       },
       animation: {

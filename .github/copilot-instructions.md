@@ -88,27 +88,43 @@ Use the project's Tailwind theme tokens (defined in `tailwind.config.js`) instea
 
 #### Semantic Colors (`info-*`, `warning-*`, `error-*`)
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `info` | `#5C6BC0` | Informational indicators / links |
-| `info-light` | `#E8EAF6` | Info tint background |
-| `warning` | `#E8A33E` | Caution / attention |
-| `warning-light` | `#FFF3E0` | Warning tint background |
-| `error` | `#E05252` | Errors / destructive actions |
-| `error-light` | `#FDEAEA` | Error tint background |
+| Token | Hex | Contrast on White | Usage |
+|-------|-----|-------------------|-------|
+| `info` | `#5C6BC0` | 4.9:1 ✓ | Informational indicators / links |
+| `info-light` | `#E8EAF6` | — | Info tint background |
+| `info-dark` | `#3949AB` | 7.7:1 ✓ | Info text on light backgrounds |
+| `warning` | `#E8A33E` | 2.2:1 ✗ | Warning icons / badges only (not text) |
+| `warning-light` | `#FFF3E0` | — | Warning tint background |
+| `warning-dark` | `#9A4E00` | 6.1:1 ✓ | Warning text on light backgrounds |
+| `error` | `#E05252` | 3.8:1 ✗ | Error icons / large text only |
+| `error-light` | `#FDEAEA` | — | Error tint background |
+| `error-dark` | `#C62828` | 5.6:1 ✓ | Error text on light backgrounds |
 
 ### CSS Custom Properties
 
 For theme-aware styling (dark/light mode), use the CSS variables defined in `assets/css/main.css`:
-- `var(--accent)` / `var(--accent-dark)` — brand green (adapts per theme)
-- `var(--text-default)` / `var(--text-muted)` — text colors
+- `var(--accent)` / `var(--accent-dark)` — brand green (adapts per theme: `#67EA94` dark, `#1A9B4A` light)
+- `var(--text-default)` / `var(--text-muted)` — text colors (adapt per theme)
 - `var(--surface-primary)` / `var(--surface-secondary)` / `var(--surface-card)` — backgrounds
 - `var(--border-default)` / `var(--border-hover)` — borders
 - Utility classes: `text-theme`, `text-theme-muted`, `text-theme-accent`, `bg-surface-primary`, `bg-surface-secondary`, `border-theme`
 
-### Accessibility Note
+### Light Mode Guidelines
 
-All foreground/background pairings must meet WCAG AA contrast (4.5:1 minimum). Use `meshtastic-600` or `meshtastic-700` for green text on light backgrounds — never the raw accent `meshtastic-300` (`#67EA94`), which does not meet contrast requirements on white.
+The light theme (`[data-theme="light"]`) requires special attention:
+- **Accent green**: Use `var(--accent)` which resolves to `meshtastic-600` (`#1A9B4A`) in light mode — never use raw `meshtastic-300` (`#67EA94`) for text.
+- **Semantic text colors**: Use the `-dark` variant tokens (`info-dark`, `warning-dark`, `error-dark`) for text on light backgrounds. The DEFAULT variants may fail WCAG AA contrast on white.
+- **Card/surface elements**: Already handled by CSS variables (`--surface-primary`, `--surface-card`), which adapt to warm cream tones in light mode.
+- **Borders**: Use `border-theme` class or `var(--border-default)` — never hardcode opacity-based borders.
+
+### Accessibility (WCAG AA)
+
+All foreground/background pairings must meet WCAG AA contrast (4.5:1 minimum for normal text, 3:1 for large text/UI components):
+- **Green text on light**: Use `meshtastic-600` (`#1A9B4A`, 3.6:1 — large text only) or `meshtastic-700` (`#137136`, 6.1:1 — all text). Never use `meshtastic-300` (`#67EA94`, 1.5:1) as text.
+- **Semantic text**: Use `-dark` variants for text: `info-dark` (7.7:1), `warning-dark` (6.1:1), `error-dark` (5.6:1).
+- **Body text**: `neutral-800` (`#2C2D3C`, 13.6:1) or `neutral-600` (`#555668`, 7.2:1) on white.
+- **Focus indicators**: Ensure visible focus rings on all interactive elements.
+- **Touch targets**: Minimum 44×44px (enforced via CSS for mobile).
 
 ## Firmware Flashing Architecture
 
