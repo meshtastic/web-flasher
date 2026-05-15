@@ -65,8 +65,8 @@ Use the project's Tailwind theme tokens (defined in `tailwind.config.js`) instea
 | `meshtastic-300` | `#67EA94` | **Brand accent** (DEFAULT) |
 | `meshtastic-400` | `#3DE07A` | Hover / active accent |
 | `meshtastic-500` | `#22C55E` | Darker accent |
-| `meshtastic-600` | `#1A9B4A` | Text on light backgrounds (meets WCAG AA) |
-| `meshtastic-700` | `#137136` | Strong / dark green text |
+| `meshtastic-600` | `#1A9B4A` | Large text or UI components on light backgrounds |
+| `meshtastic-700` | `#137136` | Normal text on light backgrounds / strong dark green text |
 | `meshtastic-800` | `#0C4722` | Very dark green |
 | `meshtastic-900` | `#051D0E` | Darkest green |
 
