@@ -46,54 +46,69 @@ All UI must comply with the [Meshtastic Client Design Standards](https://raw.git
 ### Brand Colors
 
 Primary/Foreground color:
-- `#2C2D3C` / `RGB 44 45 60`
+- `#2C2D3C` — available as `neutral-800` in Tailwind
 
 Secondary/Background/Accent color:
-- `#67EA94` / `RGB 103 234 148`
+- `#67EA94` — available as `meshtastic` / `meshtastic-300` in Tailwind
 
-### Extended Color Palette
+### Tailwind Color Tokens
 
-#### Neutral Scale (derived from Primary `#2C2D3C`)
+Use the project's Tailwind theme tokens (defined in `tailwind.config.js`) instead of raw hex values:
 
-| Name | Hex | Usage |
-|------|-----|-------|
-| Neutral 950 | `#0F1017` | Darkest background |
-| Neutral 900 | `#1A1B26` | Dark mode background |
-| Neutral 800 | `#2C2D3C` | **Primary** — dark mode surface / light mode text |
-| Neutral 700 | `#3D3E50` | Dark mode elevated surface |
-| Neutral 600 | `#555668` | Dark mode secondary text |
-| Neutral 500 | `#6E7082` | Placeholder text |
-| Neutral 400 | `#9496A6` | Disabled / tertiary |
-| Neutral 300 | `#B8BAC8` | Borders (light mode) |
-| Neutral 200 | `#D5D6E0` | Dividers |
-| Neutral 100 | `#ECEDF3` | Light mode surface / card |
-| Neutral 50  | `#F5F6FA` | Light mode background |
+#### Green / Accent Scale (`meshtastic-*`)
 
-#### Green Scale (derived from Accent `#67EA94`)
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `meshtastic-50` | `#E8FCF0` | Lightest tint background |
+| `meshtastic-100` | `#D1F9E1` | Success tint background |
+| `meshtastic-200` | `#A3F3C3` | Light highlight |
+| `meshtastic-300` | `#67EA94` | **Brand accent** (DEFAULT) |
+| `meshtastic-400` | `#3DE07A` | Hover / active accent |
+| `meshtastic-500` | `#22C55E` | Darker accent |
+| `meshtastic-600` | `#1A9B4A` | Text on light backgrounds (meets WCAG AA) |
+| `meshtastic-700` | `#137136` | Strong / dark green text |
+| `meshtastic-800` | `#0C4722` | Very dark green |
+| `meshtastic-900` | `#051D0E` | Darkest green |
 
-| Name | Hex | Usage |
-|------|-----|-------|
-| Green 100 | `#E5FCEE` | Success tint background |
-| Green 300 | `#B5F5CE` | Light highlight |
-| Green 400 | `#8FF0B2` | Hover / active accent |
-| Green 500 | `#67EA94` | **Accent** — primary action / brand highlight |
-| Green 600 | `#3FB86D` | Text on light backgrounds |
-| Green 700 | `#2D8F52` | Strong / dark green text |
+#### Neutral Scale (`neutral-*`)
 
-#### Semantic Colors
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `neutral-50` | `#F5F6FA` | Light mode background |
+| `neutral-100` | `#ECEDF3` | Light mode surface / card |
+| `neutral-200` | `#D5D6E0` | Dividers |
+| `neutral-300` | `#B8BAC8` | Borders (light mode) |
+| `neutral-400` | `#9496A6` | Disabled / tertiary |
+| `neutral-500` | `#6E7082` | Placeholder text |
+| `neutral-600` | `#555668` | Dark mode secondary text |
+| `neutral-700` | `#3D3E50` | Dark mode elevated surface |
+| `neutral-800` | `#2C2D3C` | **Primary** — dark mode surface / light mode text |
+| `neutral-900` | `#1A1B26` | Dark mode background |
+| `neutral-950` | `#0F1017` | Darkest background |
 
-| Name | Hex | Usage |
-|------|-----|-------|
-| Info | `#5C6BC0` | Informational indicators / links |
-| Info Light | `#E8EAF6` | Info tint background |
-| Warning | `#E8A33E` | Caution / attention |
-| Warning Light | `#FFF3E0` | Warning tint background |
-| Error | `#E05252` | Errors / destructive actions |
-| Error Light | `#FDEAEA` | Error tint background |
+#### Semantic Colors (`info-*`, `warning-*`, `error-*`)
+
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `info` | `#5C6BC0` | Informational indicators / links |
+| `info-light` | `#E8EAF6` | Info tint background |
+| `warning` | `#E8A33E` | Caution / attention |
+| `warning-light` | `#FFF3E0` | Warning tint background |
+| `error` | `#E05252` | Errors / destructive actions |
+| `error-light` | `#FDEAEA` | Error tint background |
+
+### CSS Custom Properties
+
+For theme-aware styling (dark/light mode), use the CSS variables defined in `assets/css/main.css`:
+- `var(--accent)` / `var(--accent-dark)` — brand green (adapts per theme)
+- `var(--text-default)` / `var(--text-muted)` — text colors
+- `var(--surface-primary)` / `var(--surface-secondary)` / `var(--surface-card)` — backgrounds
+- `var(--border-default)` / `var(--border-hover)` — borders
+- Utility classes: `text-theme`, `text-theme-muted`, `text-theme-accent`, `bg-surface-primary`, `bg-surface-secondary`, `border-theme`
 
 ### Accessibility Note
 
-All foreground/background pairings must meet WCAG AA contrast (4.5:1 minimum). Use `Green 600` or `Green 700` for green text on light backgrounds — never the raw accent `#67EA94`, which does not meet contrast requirements on white.
+All foreground/background pairings must meet WCAG AA contrast (4.5:1 minimum). Use `meshtastic-600` or `meshtastic-700` for green text on light backgrounds — never the raw accent `meshtastic-300` (`#67EA94`), which does not meet contrast requirements on white.
 
 ## Firmware Flashing Architecture
 

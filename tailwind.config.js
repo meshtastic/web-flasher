@@ -26,6 +26,31 @@ export default {
           800: '#0C4722',
           900: '#051D0E',
         },
+        neutral: {
+          50: '#F5F6FA',
+          100: '#ECEDF3',
+          200: '#D5D6E0',
+          300: '#B8BAC8',
+          400: '#9496A6',
+          500: '#6E7082',
+          600: '#555668',
+          700: '#3D3E50',
+          800: '#2C2D3C',
+          900: '#1A1B26',
+          950: '#0F1017',
+        },
+        info: {
+          DEFAULT: '#5C6BC0',
+          light: '#E8EAF6',
+        },
+        warning: {
+          DEFAULT: '#E8A33E',
+          light: '#FFF3E0',
+        },
+        error: {
+          DEFAULT: '#E05252',
+          light: '#FDEAEA',
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
