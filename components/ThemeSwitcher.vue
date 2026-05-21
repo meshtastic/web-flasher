@@ -53,9 +53,9 @@ const themeLabel = computed(() => {
 
 /* Light theme button styles */
 :root[data-theme="light"] .theme-toggle-btn {
-  @apply text-gray-600 hover:text-gray-900;
-  @apply bg-gray-100 hover:bg-gray-200;
-  @apply border border-gray-200 hover:border-gray-300;
+  @apply text-neutral-600 hover:text-neutral-900;
+  @apply bg-neutral-100 hover:bg-neutral-200;
+  @apply border border-neutral-200 hover:border-neutral-300;
 }
 
 .theme-icon {

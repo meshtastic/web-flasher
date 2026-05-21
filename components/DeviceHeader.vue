@@ -3,7 +3,7 @@
     <!-- Icon + title -->
     <div class="flex items-center gap-3">
       <div class="flash-header-icon">
-        <Plug class="w-5 h-5 text-meshtastic" />
+        <Plug class="w-5 h-5 text-theme-accent" />
       </div>
       <h3 class="text-base sm:text-lg font-semibold text-theme">
         {{ $t('device.header') }}

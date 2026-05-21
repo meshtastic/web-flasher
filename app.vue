@@ -17,7 +17,7 @@
 
     <section
       id="main"
-      class="flex-1 text-gray-400 body-font px-3 sm:px-5"
+      class="flex-1 text-neutral-400 body-font px-3 sm:px-5"
     >
       <transition
         name="flash"
@@ -188,7 +188,7 @@
         <span
           :class="{
             'text-purple-400': serialMonitorStore.isConnected && !serialMonitorStore.isReaderLocked,
-            'text-meshtastic': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
+            'text-theme-accent': (serialMonitorStore.isConnected && serialMonitorStore.isReaderLocked) || firmwareStore.isConnected,
             'connection-status-disconnected-text': !isConnected,
           }"
         >
@@ -365,20 +365,10 @@ onMounted(() => {
     font-style: normal;
     font-display: swap;
   }
-  :root {
-    --bg-color: #1e1f2a;
-    --text-color: #FFFFFF;
-    --primary-color: #67EA94;
-    --secondary-color: #67EA94;
-  }
-  :root[data-theme="light"] {
-    --primary-color: #1A9B4A;
-    --secondary-color: #1A9B4A;
-  }
   body {
     font-family: 'Atkinson Hyperlegible', 'Lato', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: var(--bg-deep);
+    color: var(--text-default);
   }
   .konami-code {
     background: linear-gradient(
@@ -535,29 +525,17 @@ onMounted(() => {
     filter: invert(1);
   }
   .text-meshtastic {
-    color: var(--primary-color);
+    color: var(--accent);
   }
   .bg-meshtastic {
-    background-color: var(--primary-color);
+    background-color: var(--accent);
   }
   .border-meshtastic {
-    border-color: var(--primary-color);
+    border-color: var(--accent);
   }
   .title-doto {
     font-family: 'Doto', sans-serif;
     text-transform: uppercase;
-  }
-  .bottom-button {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5;
-    @apply text-sm font-semibold text-center rounded-lg border border-meshtastic text-meshtastic;
-    @apply hover:text-black hover:bg-white hover:border-transparent hover:shadow transition duration-300 ease-in-out;
-    @apply focus:ring-4 focus:outline-none focus:ring-gray-300;
-  }
-  .footer {
-    background-color: var(--bg-color);
-  }
-  .footer a:hover {
-    text-decoration: underline;
   }
   h1 {
     font-size: 2em;
@@ -568,8 +546,8 @@ onMounted(() => {
     color: var(--text-default);
   }
   .unsupported-browser-warning {
-    background-color: #ffcc00;
-    color: black;
+    background-color: #FFF3E0;
+    color: #9A4E00;
     padding: 10px;
     text-align: center;
   }

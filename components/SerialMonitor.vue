@@ -11,8 +11,8 @@
         <!-- Connection Status -->
         <div class="flex items-center gap-3 min-w-0">
           <div class="relative flex-shrink-0">
-            <div class="w-3 h-3 rounded-full" :class="serialMonitorStore.isConnected ? 'bg-green-500' : 'bg-gray-500'" />
-            <div v-if="serialMonitorStore.isConnected" class="absolute inset-0 w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+            <div class="w-3 h-3 rounded-full" :class="serialMonitorStore.isConnected ? 'bg-meshtastic-500' : 'bg-neutral-500'" />
+            <div v-if="serialMonitorStore.isConnected" class="absolute inset-0 w-3 h-3 rounded-full bg-meshtastic-500 animate-pulse" />
           </div>
           <div class="flex flex-col gap-0.5 min-w-0">
             <span class="text-xs font-semibold uppercase tracking-wide leading-none" :class="serialMonitorStore.isConnected ? 'text-meshtastic-dark' : 'text-theme-muted'">
@@ -209,8 +209,8 @@ const saveToFile = () => {
 .loader {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(103, 234, 148, 0.2);
-  border-top-color: #67EA94;
+  border: 4px solid var(--accent-glow);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

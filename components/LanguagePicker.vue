@@ -4,7 +4,7 @@
       id="languageDropdownButton"
       data-dropdown-toggle="languageDropdown"
       type="button"
-      class="bottom-button border-meshtastic text-meshtastic"
+      class="btn-secondary"
     >
       {{ currentLanguageFlag }} {{ $t('language') }}
       <ChevronDown class="w-2.5 h-2.5 ml-2 shrink-0" />
@@ -24,7 +24,7 @@
           :key="locale.code"
         >
           <button
-            class="w-full text-left block px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary transition-colors"
+            class="w-full text-left block px-4 py-2 hover:text-theme-accent hover:bg-surface-secondary transition-colors"
             @click="switchLanguage(locale.code)"
           >
             {{ locale.flag }} {{ locale.name }}

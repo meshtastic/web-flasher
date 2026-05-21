@@ -24,10 +24,10 @@
         </div>
         <button
           type="button"
-          class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+          class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-meshtastic-200 focus:z-10 focus:ring-4 focus:ring-meshtastic-500 text-neutral-900"
           @click="() => deviceStore.enterDfuMode($t)"
         >
-          <FolderDown class="h-4 w-4 text-black" />
+          <FolderDown class="h-4 w-4 text-neutral-900" />
           {{ $t('flash.uf2.enter_dfu') }}
         </button>
       </li>
@@ -70,7 +70,7 @@
         <a
           :href="uf2File"
           download=""
-          class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+          class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-meshtastic-200 focus:z-10 focus:ring-4 focus:ring-meshtastic-500 text-neutral-900"
         >
           {{ $t('flash.uf2.download_uf2') }}
         </a>
@@ -91,7 +91,7 @@
         <div>
           <button
             v-if="deviceStore.isSelectedNrf"
-            class="text-black inline-flex w-[250px] justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            class="text-neutral-900 inline-flex w-[250px] justify-center bg-meshtastic hover:bg-meshtastic-200 focus:ring-4 focus:outline-none focus:ring-meshtastic-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             @click="openSerial"
           >
             {{ $t('buttons.serial_monitor') }}
@@ -114,7 +114,7 @@
         <div>
           <button
             type="button"
-            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
+            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-meshtastic-200 focus:z-10 focus:ring-4 focus:ring-meshtastic-500 text-neutral-900"
             @click="closeModal"
           >
             {{ $t('actions.continue') }}

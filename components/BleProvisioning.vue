@@ -22,7 +22,7 @@
               <!-- Header -->
               <div class="flex items-center justify-between p-4 border-b border-[var(--border-default)]">
                 <h3 class="text-lg font-semibold text-theme flex items-center gap-2">
-                  <Bluetooth class="h-5 w-5 text-meshtastic" />
+                  <Bluetooth class="h-5 w-5 text-theme-accent" />
                   {{ $t('ble.provision_wifi') }}
                 </h3>
                 <button
@@ -211,22 +211,22 @@ watch(() => bleStore.isScanning, (scanning, wasScanning) => {
 })
 
 const signalClass = (dbm: number) => {
-  if (dbm >= -50) return 'text-green-400'
-  if (dbm >= -70) return 'text-yellow-400'
-  return 'text-red-400'
+  if (dbm >= -50) return 'text-meshtastic-400'
+  if (dbm >= -70) return 'text-warning'
+  return 'text-error'
 }
 
 const statusClass = computed(() => {
   switch (bleStore.status) {
     case 'provisioning':
     case 'scanning':
-      return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+      return 'bg-warning/10 text-warning-dark dark:text-warning border border-warning/20'
     case 'success':
-      return 'bg-green-500/10 text-green-400 border border-green-500/20'
+      return 'bg-meshtastic-500/10 text-meshtastic-dark border border-meshtastic-500/20'
     case 'failed':
-      return 'bg-red-500/10 text-red-400 border border-red-500/20'
+      return 'bg-error/10 text-error-dark dark:text-error border border-error/20'
     default:
-      return 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+      return 'bg-neutral-500/10 text-theme-muted border border-neutral-500/20'
   }
 })
 

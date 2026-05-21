@@ -21,7 +21,7 @@
               <p class="mt-2">{{ $t('flash.esp32.reset_alternative') }}</p>
               <button
                 type="button"
-                class="inline-flex items-center gap-2 mt-3 px-4 py-2 text-sm font-medium text-gray-900 bg-meshtastic rounded-lg hover:bg-green-300 focus:ring-4 focus:ring-green-800 transition-colors"
+                class="inline-flex items-center gap-2 mt-3 px-4 py-2 text-sm font-medium text-neutral-900 bg-meshtastic rounded-lg hover:bg-meshtastic-200 focus:ring-4 focus:ring-meshtastic-500 transition-colors"
                 @click="deviceStore.baud1200()"
               >
                 <Cpu class="w-4 h-4" />
@@ -42,7 +42,7 @@
           </h3>
           <select
             v-model="firmwareStore.$state.baudRate"
-            class="border text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 text-theme bg-surface-primary border-theme"
+            class="border text-sm rounded-lg focus:ring-meshtastic-500 focus:border-meshtastic-500 block w-full p-2.5 text-theme bg-surface-primary border-theme"
           >
             <option value="115200">115200</option>
             <option value="230400">230400</option>
@@ -73,7 +73,7 @@
                 type="checkbox"
                 class="sr-only peer"
               >
-              <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600" />
+              <div class="w-11 h-6 bg-neutral-400 dark:bg-neutral-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-error rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-error" />
               <span class="ms-3 text-sm font-medium text-theme-muted">{{ $t('flash.esp32.full_erase') }}</span>
             </label>
             
@@ -86,7 +86,7 @@
                 type="checkbox"
                 class="sr-only peer"
               >
-              <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
+              <div class="w-11 h-6 bg-neutral-400 dark:bg-neutral-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-meshtastic-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-meshtastic-600" />
               <img
                 src="/img/Meshtastic-UI-Long.svg"
                 class="h-5 ms-3"
@@ -103,7 +103,7 @@
                 type="checkbox"
                 class="sr-only peer"
               >
-              <div class="w-11 h-6 bg-gray-400 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600" />
+              <div class="w-11 h-6 bg-neutral-400 dark:bg-neutral-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-meshtastic-500 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-meshtastic-600" />
               <span class="ms-3 text-sm font-medium text-theme-muted">{{ $t('flash.esp32.install_inkhud') }}</span>
             </label>
           </div>
@@ -111,7 +111,7 @@
           <!-- Warning Alert -->
           <div
             v-if="firmwareStore.$state.shouldCleanInstall"
-            class="flex flex-col p-4 mb-4 text-sm text-red-400 border border-red-800 rounded-lg bg-surface-primary"
+            class="flex flex-col p-4 mb-4 text-sm text-error-dark dark:text-error border border-error-dark/40 rounded-lg bg-surface-primary"
             role="alert"
           >
             <div class="flex items-center">
@@ -124,7 +124,7 @@
             <a
               href="https://meshtastic.org/docs/configuration/radio/security/#security-keys---backup-and-restore"
               target="_blank"
-              class="inline-flex items-center gap-1 mt-2 text-red-400 hover:text-red-300 underline transition-colors"
+              class="inline-flex items-center gap-1 mt-2 text-error-dark dark:text-error hover:opacity-80 underline transition-colors"
             >
               <Link class="w-4 h-4" />
               {{ $t('flash.esp32.doc_guide') }}
@@ -146,7 +146,7 @@
       <button
         v-if="showFlashButton"
         type="button"
-        class="w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
+        class="w-full text-neutral-900 bg-gradient-to-r from-meshtastic-400 via-meshtastic-500 to-meshtastic-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-meshtastic-500 shadow-lg shadow-meshtastic-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
         @click="flash"
       >
         {{ firmwareStore.$state.shouldCleanInstall ? $t('flash.esp32.erase_and_install') : $t('flash.esp32.update') }}
@@ -154,7 +154,7 @@
       <button
         v-if="firmwareStore.$state.flashPercentDone > 0 && !firmwareStore.$state.isFlashing"
         type="button"
-        class="w-full text-theme hover:opacity-80 focus:ring-4 focus:outline-none focus:ring-gray-600 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors step-card"
+        class="w-full text-theme hover:opacity-80 focus:ring-4 focus:outline-none focus:ring-neutral-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors step-card"
         @click="startOver"
       >
         {{ $t('flash.esp32.start_over') }}
@@ -168,7 +168,7 @@
         </div>
         <div class="w-full rounded-full h-2.5 progress-track">
           <div
-            class="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
+            class="bg-gradient-to-r from-meshtastic-400 to-meshtastic-600 h-2.5 rounded-full transition-all duration-300"
             :style="{ width: firmwareStore.percentDone }"
           />
         </div>
@@ -444,7 +444,7 @@ const updateEsp32 = async () => {
   margin-top: 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #67EA94;
+  color: var(--accent);
   text-align: center;
   animation: text-pulse 1.5s ease-in-out infinite;
 }

@@ -143,7 +143,7 @@
             role="alert"
           >
             <span class="font-medium">
-              <Info class="h-4 w-4 inline text-meshtastic" />
+              <Info class="h-4 w-4 inline text-theme-accent" />
               {{ $t('device.subheading') }} <button
                 type="button"
                 class="btn-primary inline-flex py-1.5 sm:py-2 mx-1 sm:mx-2 px-3 sm:px-4 text-xs sm:text-sm"

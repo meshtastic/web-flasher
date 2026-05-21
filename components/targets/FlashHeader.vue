@@ -6,7 +6,7 @@
     <!-- Device type icon + title -->
     <div class="flex items-center gap-3">
       <div class="flash-header-icon">
-        <component :is="deviceIcon" class="w-5 h-5 text-meshtastic" />
+        <component :is="deviceIcon" class="w-5 h-5 text-theme-accent" />
       </div>
       <h3 class="text-base sm:text-lg font-semibold text-theme">
         {{ headerTitle }}

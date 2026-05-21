@@ -640,7 +640,7 @@
   }
   
   .serial-action-btn:hover {
-    color: var(--primary-color);
+    color: var(--accent);
     background: var(--surface-primary);
   }
   

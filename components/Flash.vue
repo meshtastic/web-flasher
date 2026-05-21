@@ -19,7 +19,7 @@
     >
       <Trash
         class="h-4 w-4"
-        :class="{ 'animate-pulse text-red-400': deviceStore.$state.selectedTarget?.hwModel }"
+        :class="{ 'animate-pulse text-error-dark dark:text-error': deviceStore.$state.selectedTarget?.hwModel }"
       />
     </button>
     <div

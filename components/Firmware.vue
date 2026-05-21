@@ -26,7 +26,7 @@
       <!-- Event Mode: Single firmware option -->
       <template v-if="eventMode.enabled">
         <div
-          class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
+          class="px-4 py-2 text-sm text-theme-accent font-semibold border-theme-bottom"
         >
           {{ eventMode.eventName }}
         </div>
@@ -50,7 +50,7 @@
       <template v-else>
       <div
         v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
-        class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
+        class="px-4 py-2 text-sm text-theme-accent font-semibold border-theme-bottom"
       >
         {{ $t('firmware.prerelease') }}
       </div>
@@ -92,7 +92,7 @@
       </ul>
       <div
         v-if="!store.couldntFetchFirmwareApi"
-        class="px-4 py-2 text-sm text-green-400 font-semibold border-theme-bottom border-theme-top"
+        class="px-4 py-2 text-sm text-meshtastic-dark font-semibold border-theme-bottom border-theme-top"
       >
         {{ $t('firmware.stable') }}
       </div>
@@ -133,7 +133,7 @@
     >
       <FolderOpen
         class="h-4 w-4"
-        :class="{ 'animate-bounce text-meshtastic': (store.couldntFetchFirmwareApi && canSelectFirmware) }"
+        :class="{ 'animate-bounce text-theme-accent': (store.couldntFetchFirmwareApi && canSelectFirmware) }"
       />
     </button>
     <div

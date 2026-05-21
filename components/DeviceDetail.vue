@@ -2,27 +2,27 @@
   <div class="flex flex-col items-center p-2 w-full sm:w-56">
     <h5
       class="mb-1 text-xs sm:text-[0.75rem] text-theme"
-      :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }"
+      :class="{ 'text-warning-dark dark:text-warning': !isSupporterDevice(props.device) }"
     >
       {{ props.device.displayName }}
       <div class="float-right items-center mx-1">
         <BadgeCheck
           v-if="isSupporterDevice(props.device)"
-          class="w-6 h-6 text-green-400 opacity-75"
+          class="w-6 h-6 text-meshtastic-400 dark:text-meshtastic-300 opacity-75"
         />
         <ShieldAlert
           v-else
-          class="w-6 h-6 text-yellow-400 opacity-75"
+          class="w-6 h-6 text-warning-dark dark:text-warning opacity-75"
         />
       </div>
     </h5>
     <div class="flex justify-start w-full">
-      <span class="text-xs font-medium me-2 px-2.5 py-0.5 h-6 rounded bg-blue-600 dark:bg-blue-900 text-white dark:text-gray-100">
+      <span class="text-xs font-medium me-2 px-2.5 py-0.5 h-6 rounded bg-blue-600 dark:bg-blue-900 text-white dark:text-neutral-100">
         {{ props.device.architecture.replace('-', '') }}
       </span>
       <span
         v-for="tag in props.device.tags"
-        class="text-xs font-medium px-2.5 py-0.5 h-6 rounded bg-indigo-600 dark:bg-indigo-500 text-white dark:text-gray-100 me-1"
+        class="text-xs font-medium px-2.5 py-0.5 h-6 rounded bg-indigo-600 dark:bg-indigo-500 text-white dark:text-neutral-100 me-1"
       >
         {{ tag }}
       </span>
@@ -64,7 +64,7 @@
           title="Manufacturer page (external link)"
           class="text-theme hover:opacity-80"
         >
-          <Link2Icon class="w-6 h-6 text-meshtastic transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-12 cursor-default" />
+          <Link2Icon class="w-6 h-6 text-theme-accent transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-12 cursor-default" />
         </a>
       </div>
     </div>

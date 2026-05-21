@@ -29,7 +29,7 @@
               </div>
               <div class="ml-4 flex-shrink-0 flex">
                 <button
-                  class="bg-transparent rounded-md inline-flex text-theme-muted hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-meshtastic transition-colors duration-200"
+                  class="bg-transparent rounded-md inline-flex text-theme-muted hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-meshtastic-300 transition-colors duration-200"
                   @click="toastStore.removeToast(toast.id)"
                 >
                   <span class="sr-only">{{ $t('actions.close') }}</span>
@@ -51,7 +51,7 @@
                 {{ $t('actions.dismiss') }}
               </button>
               <button
-                class="ml-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors duration-200"
+                class="ml-2 text-sm font-medium text-error-dark dark:text-error hover:opacity-80 transition-colors duration-200"
                 @click="reloadPage"
               >
                 {{ $t('actions.reload') }}
@@ -87,14 +87,14 @@ const getIcon = (type: string) => {
 const getIconClass = (type: string) => {
   switch (type) {
     case 'success':
-      return 'text-green-400'
+      return 'text-meshtastic-400 dark:text-meshtastic-300'
     case 'error':
-      return 'text-red-400'
+      return 'text-error-dark dark:text-error'
     case 'warning':
-      return 'text-yellow-400'
+      return 'text-warning-dark dark:text-warning'
     case 'info':
     default:
-      return 'text-blue-400'
+      return 'text-info-dark dark:text-info'
   }
 }
 
@@ -126,107 +126,5 @@ function reloadPage() {
 /* Ensure proper font family */
 .max-w-sm {
   font-family: 'Atkinson Hyperlegible', 'Lato', 'Inter', sans-serif;
-}
-
-/* Custom focus ring for meshtastic theme */
-.focus\:ring-meshtastic:focus {
-  --tw-ring-color: #67EA94;
-}
-
-/* Meshtastic text color */
-.text-meshtastic {
-  color: #67EA94;
-}
-
-/* Toast container positioning */
-.toast-container {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  z-index: 9999;
-}
-
-/* Individual toast styling */
-.toast {
-  min-width: 280px;
-  margin-bottom: 16px;
-  padding: 16px 24px 16px 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  background: #fff;
-  color: #222;
-  display: flex;
-  flex-direction: column;
-  animation: toast-in 0.3s;
-}
-
-/* Toast type specific borders */
-.toast.success {
-  border-left: 6px solid #4caf50;
-}
-
-.toast.error {
-  border-left: 6px solid #f44336;
-}
-
-.toast.warning {
-  border-left: 6px solid #ff9800;
-}
-
-.toast.info {
-  border-left: 6px solid #2196f3;
-}
-
-/* Toast header styling */
-.toast-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Toast title styling */
-.toast-title {
-  font-weight: bold;
-  flex: 1;
-}
-
-/* Dismiss button styling */
-.toast-dismiss {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #888;
-  margin-left: 8px;
-}
-
-/* Reload button styling for error toasts */
-.toast-reload {
-  background: #f44336;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: 8px;
-}
-
-/* Toast message styling */
-.toast-message {
-  margin-top: 8px;
-  word-break: break-word;
-}
-
-/* Toast entry animation */
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 </style>
