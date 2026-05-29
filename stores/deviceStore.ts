@@ -125,12 +125,15 @@ export const useDeviceStore = defineStore('device', {
     setTargetsList(targets: DeviceHardware[]) {
       if (vendorCobrandingTag.length > 0) {
         this.targets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported && t.tags?.includes(vendorCobrandingTag),
+          (t: DeviceHardware) => t.activelySupported
+            && !t.architecture.toLowerCase().startsWith('portduino')
+            && t.tags?.includes(vendorCobrandingTag),
         )
       }
       else {
         this.targets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported,
+          (t: DeviceHardware) => t.activelySupported
+            && !t.architecture.toLowerCase().startsWith('portduino'),
         )
       }
     },
