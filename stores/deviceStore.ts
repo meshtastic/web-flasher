@@ -99,28 +99,52 @@ export const useDeviceStore = defineStore('device', {
   },
   actions: {
     async fetchList() {
-      try {
-        // First try to fetch from the API
-        const targets = await firmwareApi.get<DeviceHardware[]>()
-        this.setTargetsList(targets)
+      const [apiResult, offlineResult] = await Promise.allSettled([
+        firmwareApi.get<DeviceHardware[]>(),
+        this.loadOfflineHardwareList(),
+      ])
+
+      const apiTargets = apiResult.status === 'fulfilled' ? apiResult.value : []
+      const offlineTargets = offlineResult.status === 'fulfilled' ? offlineResult.value : []
+
+      if (apiResult.status === 'rejected') {
+        console.error(apiResult.reason)
       }
-      catch (ex) {
-        console.error(ex)
-        // Fallback to offline list from the JSON file
-        try {
-          const response = await fetch('/data/hardware-list.json')
-          if (response.ok) {
-            const offlineHardwareList = await response.json()
-            this.setTargetsList(offlineHardwareList)
-          }
-          else {
-            console.error('Failed to load hardware list from JSON file')
-          }
-        }
-        catch (error) {
-          console.error('Error loading hardware list from JSON file:', error)
-        }
+      if (offlineResult.status === 'rejected') {
+        console.error('Error loading hardware list from JSON file:', offlineResult.reason)
       }
+
+      const mergedTargets = this.mergeTargetsList(apiTargets, offlineTargets)
+
+      if (mergedTargets.length > 0) {
+        this.setTargetsList(mergedTargets)
+      }
+      else {
+        console.error('Failed to load hardware list from API and JSON file')
+      }
+    },
+    async loadOfflineHardwareList(): Promise<DeviceHardware[]> {
+      const response = await fetch('/data/hardware-list.json')
+      if (!response.ok) {
+        throw new Error('Failed to load hardware list from JSON file')
+      }
+
+      return response.json()
+    },
+    mergeTargetsList(apiTargets: DeviceHardware[], offlineTargets: DeviceHardware[]): DeviceHardware[] {
+      const getTargetKey = (target: DeviceHardware) => target.key || target.platformioTarget || `${target.hwModelSlug}-${target.displayName}`
+      const merged = new Map<string, DeviceHardware>()
+
+      apiTargets.forEach((target) => {
+        merged.set(getTargetKey(target), target)
+      })
+
+      // Local list overrides API entries so critical board fixes are always present
+      offlineTargets.forEach((target) => {
+        merged.set(getTargetKey(target), target)
+      })
+
+      return Array.from(merged.values())
     },
     setTargetsList(targets: DeviceHardware[]) {
       if (vendorCobrandingTag.length > 0) {
