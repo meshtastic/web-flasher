@@ -126,6 +126,9 @@ export const useFirmwareStore = defineStore('firmware', {
       prZipBlobs: <Record<string, Blob>>{},
       prActiveArch: <string | undefined>undefined,
       prDownload: <{ arch: string, received: number, total: number } | undefined>undefined,
+      // Bumped each time a PR build is loaded so in-flight downloads from a
+      // previous selection can detect they are stale and skip store writes
+      prGeneration: 0,
       selectedFirmware: eventMode.enabled ? eventMode.firmware : <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
       baudRate: 115200,
@@ -258,7 +261,7 @@ export const useFirmwareStore = defineStore('firmware', {
         const data = await response.json() as PrBuildResponse
         const prFirmware: FirmwareResource = {
           id: `v${data.version}`,
-          title: `PR #${data.pr.number} (${data.version})`,
+          title: `${t('firmware.pr.title', { pr: data.pr.number })} (${data.version})`,
           page_url: data.pr.page_url,
           release_notes: buildPrReleaseNotes(data),
           prBuild: {
@@ -278,6 +281,8 @@ export const useFirmwareStore = defineStore('firmware', {
         this.prZipBlobs = {}
         prZipPromises.clear()
         this.prActiveArch = undefined
+        // Invalidate any artifact download still in flight from a prior selection
+        this.prGeneration++
         await this.setSelectedFirmware(prFirmware)
         toastStore.info(t('firmware.pr.title', { pr: prNumber }), t('firmware.pr.loaded', { pr: prNumber }))
         return true
@@ -317,6 +322,11 @@ export const useFirmwareStore = defineStore('firmware', {
         throw new Error('PR build artifacts have expired')
       }
 
+      // Capture the current selection so a download that outlives a switch to
+      // a different PR build does not update progress or cache the wrong zip
+      const generation = this.prGeneration
+      const isCurrent = () => this.prGeneration === generation
+
       const downloadPromise = (async () => {
         const response = await fetch(createUrl(`api/github/firmware/artifact/${artifact.artifact_id}/download`))
         if (response.status === 404 || response.status === 410) {
@@ -328,7 +338,7 @@ export const useFirmwareStore = defineStore('firmware', {
           throw new Error(`Failed to download PR build artifact: ${response.status}`)
         }
         const total = Number(response.headers.get('content-length')) || artifact.size_in_bytes
-        this.prDownload = { arch, received: 0, total }
+        if (isCurrent()) this.prDownload = { arch, received: 0, total }
         const reader = response.body.getReader()
         const chunks: BlobPart[] = []
         let received = 0
@@ -338,15 +348,17 @@ export const useFirmwareStore = defineStore('firmware', {
           if (value) {
             chunks.push(value)
             received += value.length
-            this.prDownload = { arch, received, total }
+            if (isCurrent()) this.prDownload = { arch, received, total }
           }
         }
         const blob = new Blob(chunks, { type: 'application/zip' })
-        this.prZipBlobs[arch] = blob
+        if (isCurrent()) this.prZipBlobs[arch] = blob
         return blob
       })().finally(() => {
-        this.prDownload = undefined
-        prZipPromises.delete(arch)
+        // Only clear progress that still belongs to this download, and only
+        // remove our own promise (a newer request may have replaced it)
+        if (isCurrent() && this.prDownload?.arch === arch) this.prDownload = undefined
+        if (prZipPromises.get(arch) === downloadPromise) prZipPromises.delete(arch)
       })
       prZipPromises.set(arch, downloadPromise)
       return downloadPromise

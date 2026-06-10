@@ -10,14 +10,15 @@
     <!-- PR test build banner -->
     <div
       v-if="prBuild"
-      class="pr-build-banner"
+      class="bg-warning text-black text-center text-sm px-3 py-2.5"
     >
       <p>
         {{ $t('firmware.pr.banner', { pr: prBuild.prNumber, version: prBuild.version }) }}
         <a
           :href="prBuild.pageUrl"
           target="_blank"
-          class="underline font-semibold"
+          rel="noopener noreferrer"
+          class="underline font-semibold text-black"
         >{{ $t('firmware.pr.view_pr') }}</a>
         · {{ $t('firmware.pr.expires', { date: new Date(prBuild.expiresAt).toLocaleDateString() }) }}
         <span
@@ -661,16 +662,6 @@ onMounted(() => {
     color: black;
     padding: 10px;
     text-align: center;
-  }
-  .pr-build-banner {
-    background-color: #fbbf24;
-    color: black;
-    padding: 10px;
-    text-align: center;
-    font-size: 0.875rem;
-  }
-  .pr-build-banner a {
-    color: black;
   }
 
   .flash-enter-active ,

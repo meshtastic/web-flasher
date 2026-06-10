@@ -168,6 +168,28 @@ describe('firmwareStore PR builds', () => {
       expect(fetchMock).toHaveBeenCalledTimes(2)
     })
 
+    it('does not let a download from a previous PR pollute the new selection', async () => {
+      const store = useFirmwareStore()
+      const zip = await makeZip({ 'firmware-rak11200-2.8.0.7a414be.bin': 'STALE' })
+      let resolveArtifact: (r: Response) => void = () => {}
+      const heldDownload = new Promise<Response>((res) => { resolveArtifact = res })
+
+      fetchMock
+        .mockResolvedValueOnce(jsonResponse(makePayload())) // PR A metadata
+        .mockReturnValueOnce(heldDownload) // PR A artifact download (held in flight)
+        .mockResolvedValueOnce(jsonResponse(makePayload())) // PR B metadata
+
+      await store.loadPrFirmware(10665) // selects PR A, generation -> 1
+      const stale = store.getPrArchZip('esp32') // begins download, awaiting fetch
+      await store.loadPrFirmware(10665) // loads a new build, generation -> 2, clears caches
+      resolveArtifact(zipResponse(zip)) // PR A's download now completes
+      await stale
+
+      // The stale download neither caches its zip nor leaves progress behind
+      expect(store.prZipBlobs.esp32).toBeUndefined()
+      expect(store.prDownload).toBeUndefined()
+    })
+
     it('rejects an architecture the PR did not build', async () => {
       const store = useFirmwareStore()
       await loadPr(store)
