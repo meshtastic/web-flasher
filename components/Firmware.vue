@@ -49,6 +49,28 @@
       <!-- Normal Mode: Full firmware list -->
       <template v-else>
       <div
+        v-if="store.$state.prFirmware"
+        class="px-4 py-2 text-sm text-purple-400 font-semibold border-theme-bottom"
+      >
+        {{ $t('firmware.pull_request') }}
+      </div>
+      <ul
+        v-if="store.$state.prFirmware"
+        class="py-2 text-sm text-theme-muted"
+        aria-labelledby="dropdownInformationButton"
+      >
+        <li>
+          <a
+            href="#"
+            class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
+            @click="setSelectedFirmware(store.$state.prFirmware)"
+          >
+            {{ store.$state.prFirmware.title }}
+            <span class="block text-xs text-theme-muted truncate max-w-[18rem]">{{ store.$state.prFirmware.prBuild?.prTitle }}</span>
+          </a>
+        </li>
+      </ul>
+      <div
         v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
         class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
       >

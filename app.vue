@@ -7,6 +7,26 @@
     >
       <p>{{ $t('browser_warning') }}</p>
     </div>
+    <!-- PR test build banner -->
+    <div
+      v-if="prBuild"
+      class="bg-warning text-black text-center text-sm px-3 py-2.5"
+    >
+      <p>
+        {{ $t('firmware.pr.banner', { pr: prBuild.prNumber, version: prBuild.version }) }}
+        <a
+          :href="prBuild.pageUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline font-semibold text-black"
+        >{{ $t('firmware.pr.view_pr') }}</a>
+        · {{ $t('firmware.pr.expires', { date: new Date(prBuild.expiresAt).toLocaleDateString() }) }}
+        <span
+          v-if="prDeviceNotBuilt"
+          class="font-bold"
+        > — {{ $t('firmware.pr.device_not_built', { device: deviceStore.selectedTarget?.displayName }) }}</span>
+      </p>
+    </div>
     <Head>
       <Title>{{ $t('title') }}</Title>
       <Meta
@@ -234,6 +254,8 @@ import { useDeviceStore } from './stores/deviceStore'
 import { useFirmwareStore } from './stores/firmwareStore'
 import { useSerialMonitorStore } from './stores/serialMonitorStore'
 import { useThemeStore } from './stores/themeStore'
+import { useToastStore } from './stores/toastStore'
+import { useEventMode } from '~/composables/useEventMode'
 
 const { t } = useI18n()
 
@@ -241,6 +263,60 @@ const serialMonitorStore = useSerialMonitorStore()
 const firmwareStore = useFirmwareStore()
 const deviceStore = useDeviceStore()
 const themeStore = useThemeStore()
+const toastStore = useToastStore()
+const { eventMode } = useEventMode()
+
+const prBuild = computed(() => firmwareStore.selectedFirmware?.prBuild)
+
+const prDeviceNotBuilt = computed(() => {
+  const target = deviceStore.selectedTarget
+  return !!target?.platformioTarget && firmwareStore.isPrBuild && !firmwareStore.isPrTargetAvailable(target.platformioTarget)
+})
+
+// Wait for the device hardware list (fetched by Device.vue) to be available
+const waitForDeviceTargets = () => new Promise((resolve) => {
+  if (deviceStore.targets.length > 0) {
+    resolve(true)
+    return
+  }
+  const unwatch = watch(() => deviceStore.targets.length, (length) => {
+    if (length > 0) {
+      clearTimeout(timeout)
+      unwatch()
+      resolve(true)
+    }
+  })
+  const timeout = setTimeout(() => {
+    unwatch()
+    resolve(false)
+  }, 10000)
+})
+
+// Pre-select a device from a ?device= query param. Accepts CI board names,
+// which may carry a -tft/-inkhud variant suffix that maps to a toggle here.
+const selectDeviceFromQuery = async (deviceParam) => {
+  if (!deviceParam) return
+  if (!(await waitForDeviceTargets())) return
+  let target = deviceStore.targets.find(item => item.platformioTarget === deviceParam)
+  if (!target && deviceParam.endsWith('-tft')) {
+    target = deviceStore.targets.find(item => item.platformioTarget === deviceParam.slice(0, -'-tft'.length))
+    if (target) {
+      firmwareStore.$state.shouldInstallMui = true
+    }
+  }
+  else if (!target && deviceParam.endsWith('-inkhud')) {
+    target = deviceStore.targets.find(item => item.platformioTarget === deviceParam.slice(0, -'-inkhud'.length))
+    if (target) {
+      firmwareStore.$state.shouldInstallInkHud = true
+    }
+  }
+  if (target) {
+    deviceStore.setSelectedTarget(target)
+  }
+  else {
+    toastStore.warning(t('firmware.title'), t('firmware.pr.device_unknown'))
+  }
+}
 
 const monitorSerial = async () => {
   await serialMonitorStore.monitorSerial()
@@ -344,6 +420,20 @@ onMounted(() => {
   initDrawers()
   initAccordions()
   themeStore.initTheme()
+
+  // Load a PR test build when arriving via a ?pr= deep link (posted by the
+  // GitHub bot comment on firmware pull requests)
+  if (!eventMode.value.enabled) {
+    const params = new URLSearchParams(window.location.search)
+    const prNumber = Number.parseInt(params.get('pr') ?? '', 10)
+    if (Number.isInteger(prNumber) && prNumber > 0) {
+      firmwareStore.loadPrFirmware(prNumber).then((loaded) => {
+        if (loaded) {
+          selectDeviceFromQuery(params.get('device'))
+        }
+      })
+    }
+  }
 })
 </script>
 

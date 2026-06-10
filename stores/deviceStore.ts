@@ -143,7 +143,7 @@ export const useDeviceStore = defineStore('device', {
       const firmwareStore = useFirmwareStore()
 
       await new Promise(_ => setTimeout(_, 250))
-      if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && firmwareStore.stable.length > 0) {
+      if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && !firmwareStore.prDeepLinkPending && firmwareStore.stable.length > 0) {
         firmwareStore.setSelectedFirmware(firmwareStore.stable[0])
       }
 

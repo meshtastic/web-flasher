@@ -2,21 +2,23 @@ import { describe, it, expect } from 'vitest'
 import { getManifestBasePath, getFirmwareBaseUrl, GITHUB_IO_BASE } from './firmwareUrl'
 import { eventMode } from '~/types/resources'
 
+// Derived from the active event config so the tests don't go stale when the
+// event (or its firmware version) rotates in types/resources.ts
+const eventVersion = eventMode.firmware.id.replace(/^v/, '')
+const eventBasePath = `event/${eventMode.pathPrefix}/firmware-${eventVersion}`
+
 describe('firmwareUrl', () => {
   describe('getManifestBasePath', () => {
     it('returns event path for event firmware version', () => {
-      // Event firmware version from resources.ts: 2.7.18.7e03cae
-      const eventVersion = '2.7.18.7e03cae'
       const result = getManifestBasePath(eventVersion)
       console.log(`[EVENT] getManifestBasePath('${eventVersion}') => ${result}`)
-      expect(result).toBe('event/dayton2026/firmware-2.7.18.7e03cae')
+      expect(result).toBe(eventBasePath)
     })
 
     it('returns event path for event firmware version with v prefix', () => {
-      const eventVersion = 'v2.7.18.7e03cae'
-      const result = getManifestBasePath(eventVersion)
-      console.log(`[EVENT] getManifestBasePath('${eventVersion}') => ${result}`)
-      expect(result).toBe('event/dayton2026/firmware-2.7.18.7e03cae')
+      const result = getManifestBasePath(`v${eventVersion}`)
+      console.log(`[EVENT] getManifestBasePath('v${eventVersion}') => ${result}`)
+      expect(result).toBe(eventBasePath)
     })
 
     it('uses pathPrefix from the active eventMode config', () => {
@@ -49,11 +51,10 @@ describe('firmwareUrl', () => {
 
   describe('getFirmwareBaseUrl', () => {
     it('returns full event URL for event firmware', () => {
-      const eventVersion = '2.7.18.7e03cae'
       const result = getFirmwareBaseUrl(eventVersion)
       console.log(`[EVENT FULL URL] getFirmwareBaseUrl('${eventVersion}') =>\n  ${result}`)
       expect(result).toBe(
-        `${GITHUB_IO_BASE}/event/dayton2026/firmware-2.7.18.7e03cae`
+        `${GITHUB_IO_BASE}/${eventBasePath}`
       )
     })
 

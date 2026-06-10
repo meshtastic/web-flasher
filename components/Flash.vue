@@ -137,6 +137,13 @@ const preflightCheck = async () => {
     return
   }
 
+  // PR builds have no files on meshtastic.github.io — availability comes
+  // from the build's targets list instead of HEAD requests
+  if (firmwareStore.isPrBuild) {
+    fileExistsOnServer.value = firmwareStore.isPrTargetAvailable(deviceStore.$state.selectedTarget.platformioTarget)
+    return
+  }
+
   if (['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)) {
     const firmwareVersion = firmwareStore.selectedFirmware!.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`

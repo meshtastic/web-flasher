@@ -6,7 +6,7 @@ These guidelines help keep contributions consistent in this project.
 - Prefer composition API with `<script setup lang="ts">`. Use `defineProps`, `defineEmits`, `defineExpose` sparingly.
 - Keep files ASCII-only unless the file already uses Unicode for locales.
 - Keep logic small and focused; favor composables/util functions in `utils/` or store actions over in-component sprawl.
-- Use playwright to test your changes and view the context and outcomes as much as possible. The app is running with `npm run dev` on localhost:3000.
+- Package manager is **pnpm**. Run the app with `pnpm dev` (localhost:3000) and verify UI changes in a browser. Run unit tests with `pnpm test:run` (Vitest).
 
 
 ## Vue patterns
@@ -29,6 +29,8 @@ These guidelines help keep contributions consistent in this project.
 - When fetching firmware/device data, use store actions; avoid duplicating fetch logic.
 
 ## Testing & quality
+- Unit tests use **Vitest** and live next to the code they cover as `*.test.ts` under `utils/` and `stores/` (config in `vitest.config.ts`, `environment: 'node'`). Run with `pnpm test:run`.
+- CI runs the suite on every PR via `.github/workflows/test.yml`. Keep it green and add tests when you add util/store logic. Pure logic (URL building, zip extraction, escaping, store actions with mocked `fetch`) is preferred for coverage; components are verified in the browser.
 - Keep lint-friendly code: no unused imports/vars, consistent `async/await`, and null checks for DOM refs.
 - Handle failure paths (API fetch errors, missing device selection) with graceful UI states using existing toast patterns.
 
@@ -194,8 +196,20 @@ New firmware releases include `.mt.json` manifest files with:
 - Available files with MD5 checksums
 - Feature flags (`has_mui`, `has_inkhud`, `requiresDfu`)
 
+### PR Build Flashing
+Contributors can flash a firmware pull request's CI build via a deep link. A GitHub Actions bot (in `meshtastic/firmware`) comments `https://flasher.meshtastic.org/?pr=<number>&device=<board>` on PRs from org members.
+
+- **Entry point:** `app.vue` `onMounted` reads `?pr=` (and optional `?device=`) and calls `firmwareStore.loadPrFirmware(prNumber)`. PR builds load **only** via this deep link — they are never shown in the normal firmware list. The loaded build appears under a "Pull Request" section in the dropdown (`components/Firmware.vue`) with a warning banner (`app.vue`).
+- **Source:** unlike releases (served from `meshtastic.github.io`), PR builds come from CI artifact zips proxied by api.meshtastic.org: `GET /github/firmware/pr/:number` (metadata — version, per-arch artifacts, targets) and `GET /github/firmware/artifact/:id/download` (302 redirect to the signed artifact URL).
+- **Representation:** a `FirmwareResource` carrying a `prBuild` object (`types/api.ts`), with `id = v{version}` so existing version/file-name logic works unchanged.
+- **Download & extraction:** `firmwareStore.getPrArchZip(arch)` lazily downloads and caches the per-architecture artifact zip (progress in `prDownload`, race-guarded by `prGeneration`); manifests and binaries are extracted in-browser via `utils/zipUtils.ts`. The same manifest-driven ESP32 and UF2 flows then apply (no legacy fallback for PR builds).
+- **Security:** PR titles/authors are attacker-controlled. Release notes render through DOMPurify in `components/targets/ReleaseNotes.vue`, and `utils/prBuild.ts` (`buildPrReleaseNotes`) HTML- and markdown-escapes the title/author. Do not remove this sanitization.
+
+Key files: `utils/prBuild.ts`, `utils/zipUtils.ts`, the PR branches in `stores/firmwareStore.ts` (`loadPrFirmware`, `getPrArchZip`, plus PR cases in `loadTargetManifest`/`fetchBinaryContent`/`downloadUf2FileSystem`), `components/Firmware.vue`, `app.vue`.
+
 ### State Management
 - `firmwareStore` - Firmware selection, flashing state, progress tracking
 - `firmwareStore.manifest` - Loaded FirmwareManifest object (when available)
 - `deviceStore` - Device/target selection, serial port management
 - Key state: `isFlashing`, `flashPercentDone`, `selectedFirmware`, `selectedTarget`
+- PR build state: `prFirmware` (dropdown entry), `selectedFirmware.prBuild`, `prActiveArch`, `prZipBlobs` (cached arch zips), `prDownload` (download progress)
