@@ -90,11 +90,24 @@
 
     <!-- Download Actions -->
     <div v-if="firmwareStore.canShowFlash" class="space-y-3">
+      <!-- PR build artifact download progress -->
+      <div v-if="firmwareStore.$state.prDownload">
+        <div class="flex justify-between mb-1">
+          <span class="text-sm font-medium text-theme">{{ $t('firmware.pr.downloading', { arch: firmwareStore.$state.prDownload.arch }) }}</span>
+          <span class="text-sm font-medium text-accent">{{ firmwareStore.prDownloadPercent }}%</span>
+        </div>
+        <div class="w-full rounded-full h-2.5 progress-track">
+          <div
+            class="bg-gradient-to-r from-amber-400 to-amber-600 h-2.5 rounded-full transition-all duration-300"
+            :style="{ width: `${firmwareStore.prDownloadPercent}%` }"
+          />
+        </div>
+      </div>
       <template v-if="hasVariantChoices">
         <div class="grid gap-3">
           <template v-for="variant in variantTargets" :key="variant.platformioTarget">
             <a
-              v-if="firmwareStore.selectedFirmware?.id"
+              v-if="firmwareStore.selectedFirmware?.id && !firmwareStore.isPrBuild"
               :href="getDownloadUf2Url(variant)"
               class="w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
             >
@@ -113,7 +126,7 @@
       </template>
       <template v-else>
         <a
-          v-if="firmwareStore.selectedFirmware?.id"
+          v-if="firmwareStore.selectedFirmware?.id && !firmwareStore.isPrBuild"
           :href="getDownloadUf2Url(deviceStore.$state.selectedTarget)"
           class="block w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
         >
@@ -141,6 +154,7 @@ import { computed } from 'vue'
 
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
+import { artifactArchForDevice } from '~/utils/prBuild'
 import type { DeviceHardware } from '~/types/api'
 import ReleaseNotes from './ReleaseNotes.vue'
 
@@ -193,7 +207,8 @@ const downloadUf2FileFsForTarget = (target?: DeviceHardware) => {
   const searchRegex = new RegExp(`firmware-${target.platformioTarget}${suffix}-.+.uf2`)
   console.log(searchRegex)
   firmwareStore.trackDownload(target, false)
-  firmwareStore.downloadUf2FileSystem(searchRegex)
+  // PR build artifacts are arch-scoped zips (e.g. esp32-s3 → esp32s3)
+  firmwareStore.downloadUf2FileSystem(searchRegex, artifactArchForDevice(target.architecture))
 }
 
 const isNewFirmware = computed(() => {

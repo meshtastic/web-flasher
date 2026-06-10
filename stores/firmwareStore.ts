@@ -20,16 +20,15 @@ import { getFirmwareBaseUrl } from '~/utils/firmwareUrl'
 
 import { track } from '@vercel/analytics'
 import { useSessionStorage } from '@vueuse/core'
-import {
-  BlobReader,
-  BlobWriter,
-  ZipReader,
-} from '@zip.js/zip.js'
+import { extractZipEntry } from '~/utils/zipUtils'
+import { buildPrReleaseNotes } from '~/utils/prBuild'
+import { t } from '~/utils/i18n'
 
 import type {
   DeviceHardware,
   FirmwareReleases,
   FirmwareResource,
+  PrBuildResponse,
 } from '../types/api'
 
 import {
@@ -41,16 +40,15 @@ import {
 } from '../types/manifest'
 
 import { createUrl } from './store'
+import { useToastStore } from './toastStore'
 
 const previews = showPrerelease ? [currentPrerelease] : []
 
 const firmwareApi = mande(createUrl('api/github/firmware/list'))
 
-type ZipEntryWithData = { filename: string; getData: (writer: BlobWriter) => Promise<Blob> }
-
-function hasGetData(entry: unknown): entry is ZipEntryWithData {
-  return !!entry && typeof (entry as any).getData === 'function'
-}
+// In-flight PR artifact downloads, keyed by architecture. Kept outside the
+// store state so the promises are not made reactive.
+const prZipPromises = new Map<string, Promise<Blob>>()
 
 /**
  * Fetch release notes from meshtastic.github.io
@@ -123,6 +121,11 @@ export const useFirmwareStore = defineStore('firmware', {
       alpha: new Array<FirmwareResource>(),
       previews: previews,
       pullRequests: new Array<FirmwareResource>(),
+      prFirmware: <FirmwareResource | undefined>undefined,
+      prDeepLinkPending: false,
+      prZipBlobs: <Record<string, Blob>>{},
+      prActiveArch: <string | undefined>undefined,
+      prDownload: <{ arch: string, received: number, total: number } | undefined>undefined,
       selectedFirmware: eventMode.enabled ? eventMode.firmware : <FirmwareResource | undefined>{},
       selectedFile: <File | undefined>{},
       baudRate: 115200,
@@ -150,6 +153,18 @@ export const useFirmwareStore = defineStore('firmware', {
   getters: {
     hasOnlineFirmware: state => (state.selectedFirmware?.id || '').length > 0,
     hasFirmwareFile: state => (state.selectedFile?.name || '').length > 0,
+    isPrBuild: state => !!state.selectedFirmware?.prBuild,
+    prDownloadPercent: state => state.prDownload ? Math.round((state.prDownload.received / Math.max(state.prDownload.total, 1)) * 100) : 0,
+    /**
+     * Whether the selected PR build includes firmware for a device target.
+     * Accepts variant-only boards (e.g. only the -tft env was built) so the
+     * Flash button stays enabled; the exact lookup happens at flash time.
+     */
+    isPrTargetAvailable: state => (pioTarget: string): boolean => {
+      const targets = state.selectedFirmware?.prBuild?.targets
+      if (!targets) return false
+      return targets.some(t => t.board === pioTarget || t.board === `${pioTarget}-tft` || t.board === `${pioTarget}-inkhud`)
+    },
     percentDone: state => `${state.flashPercentDone}%`,
     firmwareVersion: state => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: state => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true,
@@ -211,6 +226,131 @@ export const useFirmwareStore = defineStore('firmware', {
           this.couldntFetchFirmwareApi = true
         })
     },
+    /**
+     * Load a pull request's CI build as a selectable firmware version.
+     * Resolves PR metadata and artifact info through api.meshtastic.org.
+     * @param prNumber - The meshtastic/firmware pull request number
+     * @returns True if the PR build was loaded and selected
+     */
+    async loadPrFirmware(prNumber: number): Promise<boolean> {
+      const toastStore = useToastStore()
+      this.prDeepLinkPending = true
+      try {
+        const response = await fetch(createUrl(`api/github/firmware/pr/${prNumber}`))
+        if (!response.ok) {
+          let errorCode = ''
+          try {
+            errorCode = (await response.json())?.error ?? ''
+          }
+          catch {
+            // Non-JSON error body
+          }
+          const message = errorCode === 'pr_not_found'
+            ? t('firmware.pr.not_found')
+            : errorCode === 'artifacts_expired'
+              ? t('firmware.pr.expired')
+              : errorCode === 'no_successful_run' || errorCode === 'no_artifacts'
+                ? t('firmware.pr.no_build')
+                : t('firmware.pr.load_failed')
+          toastStore.error(t('firmware.pr.title', { pr: prNumber }), message)
+          return false
+        }
+        const data = await response.json() as PrBuildResponse
+        const prFirmware: FirmwareResource = {
+          id: `v${data.version}`,
+          title: `PR #${data.pr.number} (${data.version})`,
+          page_url: data.pr.page_url,
+          release_notes: buildPrReleaseNotes(data),
+          prBuild: {
+            prNumber: data.pr.number,
+            prTitle: data.pr.title,
+            pageUrl: data.pr.page_url,
+            author: data.pr.author,
+            headSha: data.pr.head_sha,
+            runId: data.run_id,
+            version: data.version,
+            expiresAt: data.expires_at,
+            artifacts: data.artifacts,
+            targets: data.targets,
+          },
+        }
+        this.prFirmware = prFirmware
+        this.prZipBlobs = {}
+        prZipPromises.clear()
+        this.prActiveArch = undefined
+        await this.setSelectedFirmware(prFirmware)
+        toastStore.info(t('firmware.pr.title', { pr: prNumber }), t('firmware.pr.loaded', { pr: prNumber }))
+        return true
+      }
+      catch (error) {
+        console.error(`Error loading PR build ${prNumber}:`, error)
+        toastStore.error(t('firmware.pr.title', { pr: prNumber }), t('firmware.pr.load_failed'))
+        return false
+      }
+      finally {
+        this.prDeepLinkPending = false
+      }
+    },
+    /**
+     * Download (and cache) the per-architecture artifact zip for the selected
+     * PR build. Concurrent calls for the same arch share one download.
+     * @param arch - Artifact architecture (e.g. 'esp32s3', 'nrf52840')
+     */
+    async getPrArchZip(arch: string): Promise<Blob> {
+      const cachedZip = this.prZipBlobs[arch]
+      if (cachedZip) return cachedZip
+      const inflight = prZipPromises.get(arch)
+      if (inflight) return inflight
+
+      const prBuild = this.selectedFirmware?.prBuild
+      if (!prBuild) {
+        throw new Error('No PR build selected')
+      }
+      const toastStore = useToastStore()
+      const artifact = prBuild.artifacts.find(a => a.arch === arch)
+      if (!artifact) {
+        toastStore.error(t('firmware.pr.title', { pr: prBuild.prNumber }), t('firmware.pr.arch_not_built', { arch }))
+        throw new Error(`PR build does not include ${arch} firmware`)
+      }
+      if (new Date(artifact.expires_at).getTime() < Date.now()) {
+        toastStore.error(t('firmware.pr.title', { pr: prBuild.prNumber }), t('firmware.pr.expired'))
+        throw new Error('PR build artifacts have expired')
+      }
+
+      const downloadPromise = (async () => {
+        const response = await fetch(createUrl(`api/github/firmware/artifact/${artifact.artifact_id}/download`))
+        if (response.status === 404 || response.status === 410) {
+          toastStore.error(t('firmware.pr.title', { pr: prBuild.prNumber }), t('firmware.pr.expired'))
+          throw new Error('PR build artifacts have expired')
+        }
+        if (!response.ok || !response.body) {
+          toastStore.error(t('firmware.pr.title', { pr: prBuild.prNumber }), t('firmware.pr.download_failed'))
+          throw new Error(`Failed to download PR build artifact: ${response.status}`)
+        }
+        const total = Number(response.headers.get('content-length')) || artifact.size_in_bytes
+        this.prDownload = { arch, received: 0, total }
+        const reader = response.body.getReader()
+        const chunks: BlobPart[] = []
+        let received = 0
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          if (value) {
+            chunks.push(value)
+            received += value.length
+            this.prDownload = { arch, received, total }
+          }
+        }
+        const blob = new Blob(chunks, { type: 'application/zip' })
+        this.prZipBlobs[arch] = blob
+        return blob
+      })().finally(() => {
+        this.prDownload = undefined
+        prZipPromises.delete(arch)
+      })
+      prZipPromises.set(arch, downloadPromise)
+      return downloadPromise
+    },
     async setSelectedFirmware(firmware: FirmwareResource) {
       this.selectedFirmware = firmware
       this.selectedFile = undefined
@@ -224,8 +364,14 @@ export const useFirmwareStore = defineStore('firmware', {
       this.manifest = undefined
       this.releaseManifest = undefined
 
+      // PR builds carry their targets list and synthesized release notes with
+      // them — nothing is hosted on meshtastic.github.io for these versions
+      if (firmware.prBuild) {
+        this.releaseManifest = { version: firmware.prBuild.version, targets: firmware.prBuild.targets }
+      }
+
       // Fetch release notes if not already present
-      if (firmware.id && (!firmware.release_notes || firmware.release_notes.trim().length === 0)) {
+      if (firmware.id && !firmware.prBuild && (!firmware.release_notes || firmware.release_notes.trim().length === 0)) {
         firmware.release_notes = await fetchReleaseNotes(firmware.id)
       }
 
@@ -235,7 +381,7 @@ export const useFirmwareStore = defineStore('firmware', {
       }
 
       // Fetch the release manifest that lists all available targets
-      if (firmware.id) {
+      if (firmware.id && !firmware.prBuild) {
         const releaseManifest = await fetchReleaseManifest(firmware.id)
         if (releaseManifest) {
           this.releaseManifest = releaseManifest
@@ -255,29 +401,21 @@ export const useFirmwareStore = defineStore('firmware', {
       }
     },
     getReleaseFileUrl(fileName: string): string {
-      if (!this.selectedFirmware?.id) return ''
+      // PR build files come from artifact zips, not meshtastic.github.io
+      if (!this.selectedFirmware?.id || this.selectedFirmware.prBuild) return ''
       return `${getFirmwareBaseUrl(this.selectedFirmware.id)}/${fileName}`
     },
-    async downloadUf2FileSystem(searchRegex: RegExp) {
-      if (!this.selectedFile) return
-      const reader = new BlobReader(this.selectedFile)
-      const zipReader = new ZipReader(reader)
-      const entries = await zipReader.getEntries() as unknown as ZipEntryWithData[]
-      console.log('Zip entries:', entries)
-      const file = entries.find(entry => searchRegex.test(entry.filename))
-      if (file) {
-        if (hasGetData(file)) {
-          const data = await file.getData(new BlobWriter())
-          saveAs(data, file.filename)
-        }
-        else {
-          throw new Error(`Could not find file with pattern ${searchRegex} in zip`)
-        }
+    async downloadUf2FileSystem(searchRegex: RegExp, arch?: string) {
+      let source: Blob | undefined = this.hasFirmwareFile ? this.selectedFile : undefined
+      if (!source && this.selectedFirmware?.prBuild && arch) {
+        source = await this.getPrArchZip(arch)
       }
-      else {
+      if (!source) return
+      const entry = await extractZipEntry(source, filename => searchRegex.test(filename))
+      if (!entry) {
         throw new Error(`Could not find file with pattern ${searchRegex} in zip`)
       }
-      zipReader.close()
+      saveAs(entry.blob, entry.filename)
     },
     async setFirmwareFile(file: File) {
       this.selectedFile = file
@@ -425,6 +563,39 @@ export const useFirmwareStore = defineStore('firmware', {
         this.manifest = undefined
         this.hasManifest = false
         return false
+      }
+
+      // PR builds: read the target manifest from the artifact zip
+      if (this.selectedFirmware.prBuild) {
+        const prBuild = this.selectedFirmware.prBuild
+        const target = prBuild.targets.find(t => t.board === targetBoard)
+        if (!target) {
+          this.manifest = undefined
+          this.hasManifest = false
+          return false
+        }
+        try {
+          const zip = await this.getPrArchZip(target.platform)
+          this.prActiveArch = target.platform
+          const manifestName = `firmware-${targetBoard}-${prBuild.version}.mt.json`
+          const entry = await extractZipEntry(zip, name => name === manifestName)
+          if (!entry) {
+            console.warn(`Could not find ${manifestName} in PR build artifact`)
+            this.manifest = undefined
+            this.hasManifest = false
+            return false
+          }
+          this.manifest = JSON.parse(await entry.blob.text()) as FirmwareManifest
+          this.hasManifest = true
+          console.log(`Loaded target manifest for ${targetBoard} from PR build artifact`)
+          return true
+        }
+        catch (error) {
+          console.error(`Error loading PR build manifest for ${targetBoard}:`, error)
+          this.manifest = undefined
+          this.hasManifest = false
+          return false
+        }
       }
 
       // Fetch the target-specific manifest
@@ -678,6 +849,7 @@ export const useFirmwareStore = defineStore('firmware', {
         if (import.meta.client) {
           const flashData = {
             firmware_version: this.selectedFirmware?.id || '',
+            pr_number: this.selectedFirmware?.prBuild?.prNumber,
             hw_model: selectedTarget.hwModel,
             hw_model_slug: selectedTarget.hwModelSlug,
             platformio_target: selectedTarget.platformioTarget,
@@ -796,6 +968,24 @@ export const useFirmwareStore = defineStore('firmware', {
       }
     },
     async fetchBinaryContent(fileName: string): Promise<string> {
+      if (this.selectedFirmware?.prBuild) {
+        if (!this.prActiveArch) {
+          throw new Error('Cannot flash a PR build before its target manifest is loaded')
+        }
+        const zip = await this.getPrArchZip(this.prActiveArch)
+        // Manifest-driven file names are exact; fall back to regex for
+        // convention-based lookups
+        let entry = await extractZipEntry(zip, name => name === fileName)
+        if (!entry) {
+          const fileRegex = new RegExp(fileName)
+          entry = await extractZipEntry(zip, name => fileRegex.test(name))
+        }
+        if (!entry) {
+          throw new Error(`Could not find file ${fileName} in PR build artifact`)
+        }
+        const arrayBuffer = await entry.blob.arrayBuffer()
+        return convertToBinaryString(new Uint8Array(arrayBuffer))
+      }
       if (this.selectedFirmware?.id) {
         const baseUrl = getFirmwareBaseUrl(this.selectedFirmware.id)
         const response = await fetch(`${baseUrl}/${fileName}`)
@@ -804,24 +994,16 @@ export const useFirmwareStore = defineStore('firmware', {
         return convertToBinaryString(new Uint8Array(data))
       }
       if (this.selectedFile && this.isZipFile) {
-        const reader = new BlobReader(this.selectedFile)
-        const zipReader = new ZipReader(reader)
-        const entries = await zipReader.getEntries() as unknown as ZipEntryWithData[]
-        console.log('Zip entries:', entries)
         console.log('Looking for file matching pattern:', fileName)
-        const file = entries.find((entry) => {
+        const entry = await extractZipEntry(this.selectedFile, (filename) => {
           if (fileName.startsWith('firmware-tbeam-.'))
-            return !entry.filename.includes('s3') && new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') === entry.filename.endsWith('update.bin'))
-          return new RegExp(fileName).test(entry.filename) && (fileName.endsWith('update.bin') === entry.filename.endsWith('update.bin'))
+            return !filename.includes('s3') && new RegExp(fileName).test(filename) && (fileName.endsWith('update.bin') === filename.endsWith('update.bin'))
+          return new RegExp(fileName).test(filename) && (fileName.endsWith('update.bin') === filename.endsWith('update.bin'))
         })
-        if (file) {
-          console.log('Found file:', file.filename)
-          if (hasGetData(file)) {
-            const blob = await file.getData(new BlobWriter())
-            const arrayBuffer = await blob.arrayBuffer()
-            return convertToBinaryString(new Uint8Array(arrayBuffer))
-          }
-          throw new Error(`Could not find file with pattern ${fileName} in zip`)
+        if (entry) {
+          console.log('Found file:', entry.filename)
+          const arrayBuffer = await entry.blob.arrayBuffer()
+          return convertToBinaryString(new Uint8Array(arrayBuffer))
         }
       }
       else if (this.selectedFile && !this.isZipFile) {

@@ -143,6 +143,19 @@
     </ol>
     <!-- Flash Actions -->
     <div v-if="firmwareStore.canShowFlash" class="space-y-4">
+      <!-- PR build artifact download progress -->
+      <div v-if="firmwareStore.$state.prDownload">
+        <div class="flex justify-between mb-1">
+          <span class="text-sm font-medium text-theme">{{ $t('firmware.pr.downloading', { arch: firmwareStore.$state.prDownload.arch }) }}</span>
+          <span class="text-sm font-medium text-accent">{{ firmwareStore.prDownloadPercent }}%</span>
+        </div>
+        <div class="w-full rounded-full h-2.5 progress-track">
+          <div
+            class="bg-gradient-to-r from-amber-400 to-amber-600 h-2.5 rounded-full transition-all duration-300"
+            :style="{ width: `${firmwareStore.prDownloadPercent}%` }"
+          />
+        </div>
+      </div>
       <button
         v-if="showFlashButton"
         type="button"
@@ -188,13 +201,11 @@ import {
   Info,
   Link,
 } from 'lucide-vue-next'
-import {
-  BlobReader,
-  ZipReader,
-} from '@zip.js/zip.js'
 
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
+import { useToastStore } from '../../stores/toastStore'
+import { listZipEntries } from '~/utils/zipUtils'
 import ReleaseNotes from './ReleaseNotes.vue'
 
 const { t } = useI18n()
@@ -282,11 +293,13 @@ watch(() => firmwareStore.$state.shouldInstallMui, () => {
 
 watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
   if (firmwareStore.isZipFile && firmwareStore.$state.selectedFile) {
-    const reader = new BlobReader(firmwareStore.$state.selectedFile)
-    const zipReader = new ZipReader(reader)
-    const entries = await zipReader.getEntries()
-    const foundWebUI = entries.find(entry => entry.filename.startsWith('littlefswebui'))
+    const entries = await listZipEntries(firmwareStore.$state.selectedFile)
+    const foundWebUI = entries.find(filename => filename.startsWith('littlefswebui'))
     canBundleWebUI.value = !!foundWebUI
+  }
+  else if (firmwareStore.isPrBuild) {
+    // CI artifacts never include the bundled WebUI filesystem
+    canBundleWebUI.value = false
   }
   else if (firmwareStore.selectedFirmware) {
     canBundleWebUI.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(littleFsFileName.value)) && !firmwareStore.$state.shouldInstallMui
@@ -348,6 +361,10 @@ const cleanInstallEsp32 = async () => {
     console.log('Using manifest-driven clean install')
     await firmwareStore.cleanInstallEspFlash(selectedTarget)
   }
+  else if (firmwareStore.isPrBuild) {
+    // PR builds have no files on meshtastic.github.io for the legacy path
+    useToastStore().error(t('firmware.pr.flash_error_title'), t('firmware.pr.manifest_missing'))
+  }
   else {
     // Legacy: use convention-based file naming
     const firmwareFile = firmwareStore.$state.hasManifest
@@ -392,6 +409,10 @@ const updateEsp32 = async () => {
   if (firmwareStore.$state.manifest) {
     console.log('Using manifest-driven update flash')
     await firmwareStore.updateEspFlash(selectedTarget)
+  }
+  else if (firmwareStore.isPrBuild) {
+    // PR builds have no files on meshtastic.github.io for the legacy path
+    useToastStore().error(t('firmware.pr.flash_error_title'), t('firmware.pr.manifest_missing'))
   }
   else {
     // Legacy: use convention-based file naming

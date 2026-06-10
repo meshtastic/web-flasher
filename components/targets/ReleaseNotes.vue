@@ -22,6 +22,7 @@
 
 <script lang="ts" setup>
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 
 import { useFirmwareStore } from '../../stores/firmwareStore'
 
@@ -36,7 +37,10 @@ const renderReleaseNotes = async () => {
     return
   }
 
-  const output = await marked(notes)
+  // Release notes can contain untrusted content (e.g. PR titles for PR builds),
+  // so sanitize the rendered HTML before it reaches v-html. The trusted
+  // hardcoded markup below is applied after sanitization.
+  const output = DOMPurify.sanitize(await marked(notes))
   releaseNotes.value = output
     .replaceAll('<p>', '<blockquote class="p-4 my-4 border-s-4 border-meshtastic release-notes-quote">')
     .replaceAll('</p>', '</blockquote>')

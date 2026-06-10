@@ -65,7 +65,9 @@ export default defineNuxtConfig({
       },
       proxy: {
         '^/api/.*': {
-          target: 'https://api.meshtastic.org/',
+          // Point at a local api.meshtastic.org instance with e.g.
+          // API_PROXY_TARGET=http://localhost:4000 pnpm dev
+          target: process.env.API_PROXY_TARGET ?? 'https://api.meshtastic.org/',
           changeOrigin: true,
           followRedirects: true,
           rewrite: path => path.replace(/^\/api/, ''),

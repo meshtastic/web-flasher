@@ -4,7 +4,7 @@ import { resolve } from 'path'
 export default defineConfig({
   test: {
     environment: 'node',
-    include: ['utils/**/*.test.ts'],
+    include: ['utils/**/*.test.ts', 'stores/**/*.test.ts'],
     exclude: ['node_modules', '.trunk', 'dist'],
   },
   resolve: {
