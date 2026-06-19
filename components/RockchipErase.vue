@@ -3,11 +3,11 @@
     <div v-if="!embedded">
       <h2 class="flex items-center gap-2 text-2xl font-bold text-theme">
         <HardDrive class="w-6 h-6" />
-        Rockchip Flash Eraser
+        Rockchip Flash Tool
       </h2>
       <p class="mt-1 text-sm text-theme-muted">
-        Erase the on-board flash of a Rockchip device over WebUSB, a browser port of
-        <code class="text-theme-accent">rkdeveloptool ef</code>. The device must be in
+        Write an image to, or erase, a Rockchip device's storage over WebUSB; a browser port of
+        <code class="text-theme-accent">rkdeveloptool</code>. The device must be in
         <strong>Loader</strong> mode (held in Maskrom needs a loader downloaded first, which this tool does not do).
       </p>
     </div>
@@ -25,21 +25,8 @@
     </div>
 
     <template v-else>
-      <!-- Pre-erase warning (from the mPWRD-OS wiki) -->
-      <div
-        class="flex p-4 text-sm text-yellow-400 border border-yellow-700 rounded-lg bg-surface-primary"
-        role="alert"
-      >
-        <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
-        <div>
-          <strong>Remove the microSD card before erasing.</strong>
-          On boards that ship pre-flashed from the factory, leaving it in can target the wrong
-          storage or let the board keep booting from the card.
-        </div>
-      </div>
-
-      <!-- Step 1: Connect -->
       <ol class="relative ms-3.5 border-theme-left">
+        <!-- Step 1: Connect -->
         <li class="mb-8 ms-8">
           <span class="absolute -start-4 step-badge">1</span>
           <div class="p-4 rounded-lg shadow-sm step-card">
@@ -58,7 +45,6 @@
                   Put the board into download mode first:
                 </p>
                 <ol class="ms-5 space-y-0.5 list-decimal text-theme-muted">
-                  <li>Remove the microSD card.</li>
                   <li>
                     Hold the board's <strong>Maskrom / BOOT</strong> button (~5&nbsp;s) while connecting USB.
                     The exact button varies by board; check its manual or the
@@ -70,7 +56,10 @@
                     >mPWRD-OS wiki</a>.
                   </li>
                   <li>
-                    Connect below. A <strong>Loader</strong> badge means the flash is accessible;
+                    To write the microSD, leave the card inserted. To erase onboard flash, remove the card first.
+                  </li>
+                  <li>
+                    Connect below. A <strong>Loader</strong> badge means storage is accessible;
                     <strong>Maskrom</strong> means a loader must be downloaded first (not supported here).
                   </li>
                 </ol>
@@ -87,16 +76,27 @@
                 <Usb class="w-4 h-4" />
                 Connect Rockchip device
               </button>
-              <button
-                v-else
-                type="button"
-                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-theme bg-surface-primary border border-theme rounded-lg hover:bg-surface-secondary disabled:opacity-50 transition-colors"
-                :disabled="isBusy"
-                @click="disconnect"
-              >
-                <Unplug class="w-4 h-4" />
-                Disconnect
-              </button>
+              <template v-else>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-theme bg-surface-primary border border-theme rounded-lg hover:bg-surface-secondary disabled:opacity-50 transition-colors"
+                  :disabled="isBusy"
+                  @click="disconnect"
+                >
+                  <Unplug class="w-4 h-4" />
+                  Disconnect
+                </button>
+                <button
+                  v-if="!isMaskrom"
+                  type="button"
+                  class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-theme bg-surface-primary border border-theme rounded-lg hover:bg-surface-secondary disabled:opacity-50 transition-colors"
+                  :disabled="isBusy"
+                  @click="reset"
+                >
+                  <RotateCcw class="w-4 h-4" />
+                  Reset device
+                </button>
+              </template>
             </div>
 
             <!-- Device info -->
@@ -120,11 +120,13 @@
                 <dd class="text-theme">
                   {{ usbId }}
                 </dd>
-                <template v-if="flashInfo">
-                  <dt>Storage</dt>
+                <template v-if="currentStorage !== null">
+                  <dt>Active storage</dt>
                   <dd class="text-theme">
-                    {{ storageType }}
+                    {{ storageName(currentStorage) }}
                   </dd>
+                </template>
+                <template v-if="flashInfo">
                   <dt>Capacity</dt>
                   <dd class="text-theme">
                     {{ formatBytes(flashInfo.sizeBytes) }}
@@ -145,7 +147,7 @@
             >
               <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
               <div>
-                This device is in <strong>Maskrom</strong> mode. The flash can't be read or erased until a
+                This device is in <strong>Maskrom</strong> mode. Storage can't be read or written until a
                 loader is downloaded to it (the <code>db</code> step), which this tool doesn't perform. Put the
                 board into Loader mode and reconnect.
               </div>
@@ -153,9 +155,127 @@
           </div>
         </li>
 
-        <!-- Step 2: Erase -->
-        <li class="ms-8">
+        <!-- Step 2: Write image -->
+        <li class="mb-8 ms-8">
           <span class="absolute -start-4 step-badge">2</span>
+          <div class="p-4 rounded-lg shadow-sm step-card">
+            <h3 class="mb-3 text-lg font-semibold text-theme">
+              Write image
+            </h3>
+
+            <!-- Target storage -->
+            <label
+              for="rk-target-storage"
+              class="block mb-1 text-sm font-medium text-theme"
+            >Target storage</label>
+            <select
+              id="rk-target-storage"
+              v-model.number="targetStorage"
+              :disabled="!canFlash"
+              class="block w-full p-2.5 mb-3 text-sm rounded-lg border text-theme bg-surface-primary border-theme focus:ring-green-500 focus:border-green-500 disabled:opacity-50"
+            >
+              <option
+                v-for="opt in storageOptions"
+                :key="opt.id"
+                :value="opt.id"
+              >
+                {{ opt.name }}
+              </option>
+            </select>
+
+            <p
+              v-if="isSdTarget"
+              class="mb-3 text-xs text-theme-muted"
+            >
+              Insert the target microSD card before flashing. It will be completely overwritten.
+            </p>
+
+            <!-- Image file -->
+            <label
+              for="rk-image-file"
+              class="block mb-1 text-sm font-medium text-theme"
+            >Image file (.img or .img.gz)</label>
+            <input
+              id="rk-image-file"
+              type="file"
+              accept=".img,.img.gz,.gz"
+              :disabled="!canFlash"
+              class="block w-full mb-1 text-sm rounded-lg border cursor-pointer text-theme bg-surface-primary border-theme file:mr-3 file:py-2 file:px-3 file:border-0 file:text-sm file:font-medium file:bg-surface-secondary file:text-theme disabled:opacity-50"
+              @change="onFileChange"
+            >
+            <p
+              v-if="imageFile"
+              class="mb-3 text-xs text-theme-muted"
+            >
+              {{ imageFile.name }} ({{ formatBytes(imageFile.size) }}{{ isGzImage ? ', compressed' : '' }})
+            </p>
+            <div
+              v-else
+              class="mb-3"
+            />
+
+            <!-- Destructive warning -->
+            <div
+              class="flex p-4 mb-4 text-sm text-red-400 border border-red-800 rounded-lg bg-surface-primary"
+              role="alert"
+            >
+              <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3" />
+              <span>Writing overwrites everything on the selected storage, including the partition table. There is no undo.</span>
+            </div>
+
+            <label class="flex items-center gap-2 mb-4 cursor-pointer">
+              <input
+                v-model="flashConfirmed"
+                type="checkbox"
+                :disabled="!canFlash"
+                class="w-4 h-4 rounded accent-red-600"
+              >
+              <span class="text-sm text-theme-muted">I understand this overwrites the selected storage.</span>
+            </label>
+
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-meshtastic rounded-lg hover:bg-green-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              :disabled="!canFlashNow"
+              @click="flash(imageFile)"
+            >
+              <LoaderCircle
+                v-if="isFlashing"
+                class="w-4 h-4 animate-spin"
+              />
+              <Upload
+                v-else
+                class="w-4 h-4"
+              />
+              {{ isFlashing ? 'Writing…' : 'Write image' }}
+            </button>
+
+            <!-- Flash progress -->
+            <div
+              v-if="isFlashing || flashProgress > 0"
+              class="mt-4"
+            >
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium text-theme">{{ status }}</span>
+                <span
+                  v-if="!flashIndeterminate"
+                  class="text-sm font-medium text-theme-accent"
+                >{{ flashProgress }}%</span>
+              </div>
+              <div class="w-full rounded-full h-2.5 progress-track">
+                <div
+                  class="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
+                  :class="{ 'w-full animate-pulse': flashIndeterminate }"
+                  :style="flashIndeterminate ? undefined : { width: `${flashProgress}%` }"
+                />
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Step 3: Erase -->
+        <li class="ms-8">
+          <span class="absolute -start-4 step-badge">3</span>
           <div class="p-4 rounded-lg shadow-sm step-card">
             <h3 class="mb-3 text-lg font-semibold text-theme">
               Erase flash
@@ -167,9 +287,13 @@
             >
               <div class="flex items-center">
                 <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3" />
-                <span>This permanently erases the entire flash. There is no undo. Back up anything you need first.</span>
+                <span>This permanently erases the entire active storage. There is no undo. Back up anything you need first.</span>
               </div>
             </div>
+
+            <p class="mb-4 text-xs text-theme-muted">
+              To erase onboard flash, remove the microSD card first so the board targets the right storage.
+            </p>
 
             <label class="flex items-center gap-2 mb-4 cursor-pointer">
               <input
@@ -198,7 +322,7 @@
               {{ isErasing ? 'Erasing…' : 'Erase flash' }}
             </button>
 
-            <!-- Progress -->
+            <!-- Erase progress -->
             <div
               v-if="isErasing || progress > 0"
               class="mt-4"
@@ -213,21 +337,6 @@
                   :style="{ width: `${progress}%` }"
                 />
               </div>
-            </div>
-
-            <div
-              v-if="isConnected && !isMaskrom"
-              class="mt-4"
-            >
-              <button
-                type="button"
-                class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-theme bg-surface-primary border border-theme rounded-lg hover:bg-surface-secondary disabled:opacity-50 transition-colors"
-                :disabled="isBusy"
-                @click="reset"
-              >
-                <RotateCcw class="w-3.5 h-3.5" />
-                Reset device
-              </button>
             </div>
           </div>
         </li>
@@ -274,9 +383,11 @@ import {
   Trash2,
   TriangleAlert,
   Unplug,
+  Upload,
   Usb,
 } from 'lucide-vue-next'
 import { formatBytes, useRockchipErase } from '~/composables/useRockchipErase'
+import { Storage, STORAGE_NAMES } from '~/utils/rockchip/rkusb'
 
 defineProps<{ embedded?: boolean }>()
 
@@ -285,22 +396,42 @@ const {
   isConnected,
   isBusy,
   isErasing,
+  isFlashing,
   canErase,
+  canFlash,
   isMaskrom,
   status,
   deviceInfo,
   flashInfo,
+  currentStorage,
+  targetStorage,
   progress,
+  flashProgress,
+  flashIndeterminate,
   error,
   log,
   connect,
   erase,
+  flash,
   reset,
   disconnect,
 } = useRockchipErase()
 
 const confirmed = ref(false)
+const flashConfirmed = ref(false)
+const imageFile = ref<File | null>(null)
 const logEl = ref<HTMLElement | null>(null)
+
+const storageOptions = [
+  { id: Storage.EMMC, name: STORAGE_NAMES[Storage.EMMC] },
+  { id: Storage.SD, name: STORAGE_NAMES[Storage.SD] },
+  { id: Storage.SPINOR, name: STORAGE_NAMES[Storage.SPINOR] },
+]
+
+const storageName = (id: number) => STORAGE_NAMES[id] ?? `id ${id}`
+const isSdTarget = computed(() => targetStorage.value === Storage.SD)
+const isGzImage = computed(() => !!imageFile.value && /\.gz$/i.test(imageFile.value.name))
+const canFlashNow = computed(() => canFlash.value && !!imageFile.value && flashConfirmed.value)
 
 const usbId = computed(() => {
   if (!deviceInfo.value) return ''
@@ -308,12 +439,10 @@ const usbId = computed(() => {
   return `0x${pad(deviceInfo.value.vendorId)}:0x${pad(deviceInfo.value.productId)}`
 })
 
-const storageType = computed(() => {
-  if (!flashInfo.value) return ''
-  if (flashInfo.value.isEmmc) return 'eMMC'
-  if (flashInfo.value.directLba) return 'Direct LBA'
-  return 'Raw NAND'
-})
+function onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  imageFile.value = input.files?.[0] ?? null
+}
 
 // Auto-scroll the log to the newest line.
 watch(() => log.value.length, async () => {
@@ -321,8 +450,12 @@ watch(() => log.value.length, async () => {
   if (logEl.value) logEl.value.scrollTop = logEl.value.scrollHeight
 })
 
-// Reset the confirmation guard whenever a device disconnects.
+// Reset the confirmation guards whenever a device disconnects.
 watch(isConnected, (connected) => {
-  if (!connected) confirmed.value = false
+  if (!connected) {
+    confirmed.value = false
+    flashConfirmed.value = false
+    imageFile.value = null
+  }
 })
 </script>

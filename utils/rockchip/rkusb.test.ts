@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCBW,
   countChipSelects,
+  firstSetBit,
   isCswValid,
   isEmmcId,
   LBA_ERASE_CHUNK_SECTORS,
   OpCode,
+  padToSector,
   parseCSW,
   parseFlashInfo,
   planLbaErase,
+  sectorCount,
+  Storage,
 } from './rkusb'
 
 /** Encode a CSW the way a device would, for round-trip tests. */
@@ -191,5 +195,72 @@ describe('countChipSelects', () => {
     expect(countChipSelects(0x01)).toBe(1)
     expect(countChipSelects(0x03)).toBe(2)
     expect(countChipSelects(0xff)).toBe(8)
+  })
+})
+
+describe('firstSetBit', () => {
+  it('returns the active storage id from a READ_STORAGE word', () => {
+    expect(firstSetBit(1 << Storage.EMMC)).toBe(Storage.EMMC) // 1
+    expect(firstSetBit(1 << Storage.SD)).toBe(Storage.SD) // 2
+    expect(firstSetBit(1 << Storage.SPINOR)).toBe(Storage.SPINOR) // 9
+  })
+
+  it('returns the lowest set bit when several are set', () => {
+    expect(firstSetBit(0b101000)).toBe(3)
+  })
+
+  it('returns 0 for an empty word', () => {
+    expect(firstSetBit(0)).toBe(0)
+  })
+})
+
+describe('sectorCount', () => {
+  it('rounds byte lengths up to whole 512-byte sectors', () => {
+    expect(sectorCount(0)).toBe(0)
+    expect(sectorCount(1)).toBe(1)
+    expect(sectorCount(512)).toBe(1)
+    expect(sectorCount(513)).toBe(2)
+    expect(sectorCount(1024 * 1024)).toBe(2048)
+  })
+})
+
+describe('padToSector', () => {
+  it('leaves sector-aligned buffers untouched', () => {
+    const aligned = new Uint8Array(1024).fill(7)
+    expect(padToSector(aligned)).toBe(aligned)
+  })
+
+  it('zero-pads a partial final sector', () => {
+    const partial = new Uint8Array([1, 2, 3])
+    const padded = padToSector(partial)
+    expect(padded.length).toBe(512)
+    expect([...padded.slice(0, 3)]).toEqual([1, 2, 3])
+    expect(padded[3]).toBe(0)
+    expect(padded[511]).toBe(0)
+  })
+
+  it('rounds up across multiple sectors', () => {
+    expect(padToSector(new Uint8Array(513)).length).toBe(1024)
+  })
+})
+
+describe('buildCBW for WRITE_LBA', () => {
+  it('encodes an outbound 10-byte command block with the data length and sector address', () => {
+    const sectors = 2048
+    const cbw = buildCBW({
+      opcode: OpCode.WRITE_LBA,
+      direction: 0x00,
+      cbLength: 10,
+      transferLength: sectors * 512,
+      address: 0,
+      length: sectors,
+      tag: 0,
+    })
+    const view = new DataView(cbw.buffer)
+    expect(cbw[12]).toBe(0x00) // OUT
+    expect(cbw[14]).toBe(10) // CBWCB length
+    expect(cbw[15]).toBe(OpCode.WRITE_LBA)
+    expect(view.getUint32(8, true)).toBe(sectors * 512) // transfer length (LE)
+    expect([...cbw.slice(22, 24)]).toEqual([0x08, 0x00]) // sector count 2048 (big-endian)
   })
 })

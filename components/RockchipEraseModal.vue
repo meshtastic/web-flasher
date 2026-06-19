@@ -13,7 +13,7 @@
             <div class="flex items-center justify-between p-4 border-b border-[var(--border-default)]">
               <h3 class="text-lg font-semibold text-theme flex items-center gap-2">
                 <HardDrive class="h-5 w-5 text-meshtastic" />
-                Rockchip Flash Eraser
+                Rockchip Flash Tool
               </h3>
               <button
                 type="button"

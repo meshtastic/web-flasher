@@ -88,6 +88,8 @@ export const OpCode = {
   ERASE_LBA: 0x25, // eMMC / direct-LBA erase
   READ_FLASH_INFO: 0x1a,
   READ_CAPABILITY: 0xaa,
+  CHANGE_STORAGE: 0x2a,
+  READ_STORAGE: 0x2b,
   DEVICE_RESET: 0xff,
 } as const
 
@@ -96,6 +98,20 @@ export const ResetSubCode = {
   RESET: 0x00,
   RESET_MASKROM: 0x03,
 } as const
+
+/** Storage targets for CHANGE_STORAGE (matches rkdeveloptool's `cs` ids). */
+export const Storage = {
+  EMMC: 1,
+  SD: 2,
+  SPINOR: 9,
+} as const
+
+export const STORAGE_NAMES: Record<number, string> = {
+  0: 'unknown',
+  1: 'eMMC',
+  2: 'SD card',
+  9: 'SPI NOR',
+}
 
 const SECTOR_SIZE = 512
 const CBW_LENGTH = 31
@@ -109,6 +125,12 @@ const DIRECTION_OUT = 0x00
 export const LBA_ERASE_CHUNK_SECTORS = 32 * 1024
 /** Max blocks per ERASE_FORCE command (rkdeveloptool MAX_ERASE_BLOCKS). */
 export const MAX_ERASE_BLOCKS = 16
+/**
+ * Sectors per WRITE_LBA command when streaming an image (2048 = 1 MiB).
+ * rkdeveloptool uses 128 (64 KiB); a larger chunk cuts USB round-trips. Lower
+ * it if a particular loader rejects large bulk transfers.
+ */
+export const WRITE_LBA_CHUNK_SECTORS = 2048
 
 export interface CbwOptions {
   opcode: number
@@ -265,6 +287,31 @@ export function countChipSelects(flashCs: number): number {
     if (flashCs & (1 << i)) count++
   }
   return count
+}
+
+/** Index of the lowest set bit, which READ_STORAGE uses to report the active storage id (0 if none). */
+export function firstSetBit(value: number): number {
+  for (let i = 0; i < 32; i++) {
+    if (value & (1 << i)) return i
+  }
+  return 0
+}
+
+/** Whole 512-byte sectors needed to hold `byteLength` bytes. */
+export function sectorCount(byteLength: number): number {
+  return Math.ceil(byteLength / SECTOR_SIZE)
+}
+
+/**
+ * Return `bytes` padded with zeros up to a whole-sector boundary. Returns the
+ * input unchanged when it is already sector-aligned.
+ */
+export function padToSector(bytes: Uint8Array): Uint8Array {
+  const remainder = bytes.length % SECTOR_SIZE
+  if (remainder === 0) return bytes
+  const padded = new Uint8Array(bytes.length + (SECTOR_SIZE - remainder))
+  padded.set(bytes)
+  return padded
 }
 
 function makeTag(): number {
@@ -500,6 +547,57 @@ export class RockusbDevice {
     if (csw.status !== 0 && csw.status !== 1) {
       throw new RockusbError(`ERASE_FORCE failed at block ${pos} (cs ${cs})`, csw.status)
     }
+  }
+
+  /** READ_STORAGE: the currently-active storage id (see {@link Storage}). */
+  async readStorage(): Promise<number> {
+    const { data, csw } = await this.commandIn(
+      { opcode: OpCode.READ_STORAGE, cbLength: 6, transferLength: 4 },
+      4,
+    )
+    if (csw.status !== 0) throw new RockusbError('READ_STORAGE failed', csw.status)
+    const view = new DataView(data.buffer, data.byteOffset, data.byteLength)
+    return firstSetBit(view.getUint32(0, true))
+  }
+
+  /**
+   * CHANGE_STORAGE then confirm via read-back. The device does NOT return an
+   * error status when the requested storage is unavailable, so we must read the
+   * active storage back and check it actually switched (mirrors rkdeveloptool).
+   */
+  async changeStorage(storage: number): Promise<void> {
+    const csw = await this.command({
+      opcode: OpCode.CHANGE_STORAGE,
+      direction: DIRECTION_OUT,
+      cbLength: 6,
+      subCode: storage,
+    })
+    if (csw.status !== 0) throw new RockusbError('CHANGE_STORAGE failed', csw.status)
+    const current = await this.readStorage()
+    if (current !== storage) {
+      throw new RockusbError(`${STORAGE_NAMES[storage] ?? `storage ${storage}`} is not available on this device`)
+    }
+  }
+
+  /** WRITE_LBA: write `data` (must be a whole number of 512-byte sectors) starting at sector `pos`. */
+  async writeLba(pos: number, data: Uint8Array): Promise<void> {
+    if (data.length === 0 || data.length % SECTOR_SIZE !== 0) {
+      throw new RockusbError('writeLba expects a non-empty multiple of 512 bytes')
+    }
+    const count = data.length / SECTOR_SIZE
+    const tag = makeTag()
+    await this.writeOut(buildCBW({
+      opcode: OpCode.WRITE_LBA,
+      direction: DIRECTION_OUT,
+      cbLength: 10,
+      transferLength: data.length,
+      address: pos,
+      length: count,
+      tag,
+    }))
+    await this.writeOut(data)
+    const csw = await this.readCsw(tag)
+    if (csw.status !== 0) throw new RockusbError(`WRITE_LBA failed at sector ${pos}`, csw.status)
   }
 
   /** DEVICE_RESET: reset the device (optionally back into Maskrom). */

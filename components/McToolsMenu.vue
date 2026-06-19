@@ -40,7 +40,7 @@
             @click="closeDropdown"
           >
             <HardDrive class="h-4 w-4 shrink-0" />
-            Rockchip Flash Eraser
+            Rockchip Flash Tool
           </button>
         </li>
       </ul>
