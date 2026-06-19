@@ -10,6 +10,7 @@ import {
   STORAGE_NAMES,
   WRITE_LBA_CHUNK_SECTORS,
 } from '~/utils/rockchip/rkusb'
+import { createDecompressedStream, detectCompression } from '~/utils/rockchip/imageStream'
 
 export interface RockchipDeviceInfo {
   vendorId: number
@@ -34,13 +35,6 @@ export function formatBytes(bytes: number): string {
 
 function hex(value: number): string {
   return `0x${value.toString(16).padStart(4, '0')}`
-}
-
-/** Best-effort uncompressed size of a gzip file from its 4-byte ISIZE trailer (mod 2^32). */
-async function gzipUncompressedSize(file: File): Promise<number> {
-  if (file.size < 4) return 0
-  const tail = await file.slice(file.size - 4).arrayBuffer()
-  return new DataView(tail).getUint32(0, true)
 }
 
 const sleepMs = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms))
@@ -83,8 +77,6 @@ export function useRockchipErase() {
   const targetStorage = ref<number>(Storage.SD)
   const progress = ref(0)
   const flashProgress = ref(0)
-  /** True while writing an image whose total size is unknown (show an indeterminate bar). */
-  const flashIndeterminate = ref(false)
   /** Loader-download (db) state for Maskrom devices. */
   const isDownloadingBoot = ref(false)
   const bootProgress = ref(0)
@@ -280,16 +272,21 @@ export function useRockchipErase() {
   }
 
   /**
-   * Stream a (possibly gzip) image to the device via chunked WRITE_LBA.
-   * `capacity` (the storage size in bytes) is enforced as we go, so an
-   * oversized image is rejected even when `total` is unknown or unreliable
-   * (gzip ISIZE wraps at 4 GiB and is only a best-effort progress hint).
+   * Stream an image (raw, gzip or xz) to the device via chunked WRITE_LBA.
+   * Progress tracks compressed bytes consumed (so it works for every format),
+   * and `capacity` (the storage size) is enforced as decompressed data is
+   * written, rejecting an oversized image mid-stream.
    */
-  async function streamImage(file: File, total: number, capacity: number): Promise<void> {
-    const isGz = /\.gz$/i.test(file.name)
-    let stream: ReadableStream<Uint8Array> = file.stream()
-    if (isGz) stream = stream.pipeThrough(new DecompressionStream('gzip'))
-    const reader = stream.getReader()
+  async function streamImage(file: File, capacity: number): Promise<void> {
+    const compression = detectCompression(file.name) ?? 'raw'
+    let compressedRead = 0
+    const counted = file.stream().pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        compressedRead += chunk.byteLength
+        controller.enqueue(chunk)
+      },
+    }))
+    const reader = (await createDecompressedStream(counted, compression)).getReader()
 
     const chunkBytes = WRITE_LBA_CHUNK_SECTORS * SECTOR_SIZE
     const staging = new Uint8Array(chunkBytes)
@@ -304,7 +301,7 @@ export function useRockchipErase() {
     }
     const report = () => {
       // Stay below 100 mid-stream; flash() sets 100 only once the stream ends.
-      flashProgress.value = total > 0 ? Math.min(99, Math.round((written / total) * 100)) : 0
+      flashProgress.value = file.size > 0 ? Math.min(99, Math.round((compressedRead / file.size) * 100)) : 0
     }
 
     try {
@@ -347,11 +344,11 @@ export function useRockchipErase() {
 
   async function flash(file: File | null): Promise<void> {
     if (!rk || !file || !flashInfo.value) return
-    // Only raw .img and gzip .img.gz are supported. Browsers can't decompress
-    // xz/zip/bz2, and treating them as raw would write corrupt data.
-    const name = file.name.toLowerCase()
-    if (!name.endsWith('.img') && !name.endsWith('.gz')) {
-      error.value = 'Unsupported image type. Use a raw .img or gzip .img.gz. For .xz or .zip, decompress it first, or flash it with Etcher / a card reader.'
+    // Supported: raw .img, gzip .img.gz, and xz .img.xz. Anything else (zip,
+    // bz2, …) can't be decompressed in-browser and would write corrupt data.
+    const compression = detectCompression(file.name)
+    if (!compression) {
+      error.value = 'Unsupported image type. Use a raw .img, gzip .img.gz, or xz .img.xz.'
       appendLog(`Flash aborted: ${error.value}`)
       return
     }
@@ -360,7 +357,6 @@ export function useRockchipErase() {
     isFlashing.value = true
     flashProgress.value = 0
     progress.value = 0
-    flashIndeterminate.value = false
     const storageName = STORAGE_NAMES[targetStorage.value] ?? `storage ${targetStorage.value}`
     status.value = `Selecting ${storageName}…`
     appendLog(`Flashing ${file.name} to ${storageName}…`)
@@ -372,25 +368,20 @@ export function useRockchipErase() {
       const info = await rk.getFlashInfo()
       flashInfo.value = info
 
-      // A raw image reports its exact size; gzip ISIZE is only a best-effort hint
-      // (it wraps at 4 GiB), so for .gz the real capacity check happens during the
-      // stream and the progress bar runs indeterminate when the size is unknown.
-      const isGz = /\.gz$/i.test(file.name)
-      const total = isGz ? await gzipUncompressedSize(file) : file.size
-      flashIndeterminate.value = total <= 0
-      if (!isGz) {
-        if (total === 0) throw new Error('The selected image is empty.')
-        if (info.sizeBytes > 0 && total > info.sizeBytes) {
-          throw new Error(`Image (${formatBytes(total)}) is larger than ${storageName} (${formatBytes(info.sizeBytes)}).`)
+      // Raw images report an exact size up front; compressed ones are bounded
+      // against the device capacity as they stream.
+      if (compression === 'raw') {
+        if (file.size === 0) throw new Error('The selected image is empty.')
+        if (info.sizeBytes > 0 && file.size > info.sizeBytes) {
+          throw new Error(`Image (${formatBytes(file.size)}) is larger than ${storageName} (${formatBytes(info.sizeBytes)}).`)
         }
       }
-      appendLog(`Writing ${total > 0 ? formatBytes(total) : 'image'} to ${storageName}…`)
+      appendLog(`Writing ${file.name} (${formatBytes(file.size)}${compression === 'raw' ? '' : `, ${compression}`}) to ${storageName}…`)
 
       status.value = `Writing image to ${storageName}…`
-      await streamImage(file, total, info.sizeBytes)
+      await streamImage(file, info.sizeBytes)
 
       flashProgress.value = 100
-      flashIndeterminate.value = false
       status.value = 'Flash complete'
       appendLog('Image write complete. Remove USB and boot the device.')
     }
@@ -452,7 +443,6 @@ export function useRockchipErase() {
     currentStorage.value = null
     progress.value = 0
     flashProgress.value = 0
-    flashIndeterminate.value = false
     isDownloadingBoot.value = false
     bootProgress.value = 0
     needsReconnect.value = false
@@ -477,7 +467,6 @@ export function useRockchipErase() {
     targetStorage,
     progress: readonly(progress),
     flashProgress: readonly(flashProgress),
-    flashIndeterminate: readonly(flashIndeterminate),
     isDownloadingBoot: readonly(isDownloadingBoot),
     bootProgress: readonly(bootProgress),
     needsReconnect: readonly(needsReconnect),

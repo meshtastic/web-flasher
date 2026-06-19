@@ -38,7 +38,8 @@
     "nuxt": "^3.21.7",
     "pinia": "^3.0.4",
     "vue": "^3.5.26",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "xz-decompress": "^0.2.3"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.7.0",

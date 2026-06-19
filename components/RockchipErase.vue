@@ -300,11 +300,11 @@
             <label
               for="rk-image-file"
               class="block mb-1 text-sm font-medium text-theme"
-            >Image file (.img or .img.gz)</label>
+            >Image file (.img, .img.gz, or .img.xz)</label>
             <input
               id="rk-image-file"
               type="file"
-              accept=".img,.img.gz,.gz"
+              accept=".img,.img.gz,.gz,.img.xz,.xz"
               :disabled="!canFlash"
               class="block w-full mb-1 text-sm rounded-lg border cursor-pointer text-theme bg-surface-primary border-theme file:mr-3 file:py-2 file:px-3 file:border-0 file:text-sm file:font-medium file:bg-surface-secondary file:text-theme disabled:opacity-50"
               @change="onFileChange"
@@ -313,7 +313,7 @@
               v-if="imageFile"
               class="mb-3 text-xs text-theme-muted"
             >
-              {{ imageFile.name }} ({{ formatBytes(imageFile.size) }}{{ isGzImage ? ', compressed' : '' }})
+              {{ imageFile.name }} ({{ formatBytes(imageFile.size) }}{{ isCompressedImage ? ', compressed' : '' }})
             </p>
             <div
               v-else
@@ -363,16 +363,12 @@
             >
               <div class="flex justify-between mb-1">
                 <span class="text-sm font-medium text-theme">{{ status }}</span>
-                <span
-                  v-if="!flashIndeterminate"
-                  class="text-sm font-medium text-theme-accent"
-                >{{ flashProgress }}%</span>
+                <span class="text-sm font-medium text-theme-accent">{{ flashProgress }}%</span>
               </div>
               <div class="w-full rounded-full h-2.5 progress-track">
                 <div
                   class="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
-                  :class="{ 'w-full animate-pulse': flashIndeterminate }"
-                  :style="flashIndeterminate ? undefined : { width: `${flashProgress}%` }"
+                  :style="{ width: `${flashProgress}%` }"
                 />
               </div>
             </div>
@@ -514,7 +510,6 @@ const {
   targetStorage,
   progress,
   flashProgress,
-  flashIndeterminate,
   isDownloadingBoot,
   bootProgress,
   needsReconnect,
@@ -548,7 +543,7 @@ const storageOptions = [
 
 const storageName = (id: number) => STORAGE_NAMES[id] ?? `id ${id}`
 const isSdTarget = computed(() => targetStorage.value === Storage.SD)
-const isGzImage = computed(() => !!imageFile.value && /\.gz$/i.test(imageFile.value.name))
+const isCompressedImage = computed(() => !!imageFile.value && /\.(gz|xz)$/i.test(imageFile.value.name))
 const canFlashNow = computed(() => canFlash.value && !!imageFile.value && flashConfirmed.value)
 
 const usbId = computed(() => {

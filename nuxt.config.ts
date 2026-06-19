@@ -56,6 +56,11 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [],
+    // xz-decompress ships WASM and is lazy-imported only when flashing an .xz
+    // image; keep Vite's dev pre-bundler from choking on it.
+    optimizeDeps: {
+      exclude: ['xz-decompress'],
+    },
     server: {
       watch: {
         ignored: ignoredDevWatchPaths,
