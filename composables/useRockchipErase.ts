@@ -163,9 +163,9 @@ export function useRockchipErase() {
       try {
         const active = await withTimeout(rk.readStorage(), 3000)
         currentStorage.value = active
-        if (active === Storage.EMMC || active === Storage.SD || active === Storage.SPINOR) {
-          targetStorage.value = active
-        }
+        // Default to the device's active/onboard storage (what it actually
+        // exposes over USB), like rkdeveloptool writes to the default storage.
+        if (active > 0) targetStorage.value = active
         appendLog(`Active storage: ${STORAGE_NAMES[active] ?? `id ${active}`}.`)
       }
       catch {

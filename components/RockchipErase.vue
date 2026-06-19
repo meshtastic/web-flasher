@@ -535,11 +535,16 @@ const bundledOptions = [
 ]
 const logEl = ref<HTMLElement | null>(null)
 
-const storageOptions = [
-  { id: Storage.EMMC, name: STORAGE_NAMES[Storage.EMMC] },
-  { id: Storage.SD, name: STORAGE_NAMES[Storage.SD] },
-  { id: Storage.SPINOR, name: STORAGE_NAMES[Storage.SPINOR] },
-]
+const storageOptions = computed(() => {
+  const ids = [Storage.EMMC, Storage.SD, Storage.SPINOR]
+  // Surface the device's active/onboard storage (e.g. SPI NAND) even when it
+  // isn't one of the standard targets, so it can be written in the browser.
+  const active = currentStorage.value
+  if (active != null && active > 0 && !ids.includes(active)) {
+    ids.unshift(active)
+  }
+  return ids.map(id => ({ id, name: STORAGE_NAMES[id] ?? `Onboard storage (id ${id})` }))
+})
 
 const storageName = (id: number) => STORAGE_NAMES[id] ?? `id ${id}`
 const isSdTarget = computed(() => targetStorage.value === Storage.SD)

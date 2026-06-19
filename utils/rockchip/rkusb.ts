@@ -118,6 +118,7 @@ export const STORAGE_NAMES: Record<number, string> = {
   0: 'unknown',
   1: 'eMMC',
   2: 'SD card',
+  8: 'SPI NAND',
   9: 'SPI NOR',
 }
 
