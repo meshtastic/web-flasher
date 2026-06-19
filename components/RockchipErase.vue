@@ -87,7 +87,7 @@
                   Disconnect
                 </button>
                 <button
-                  v-if="!isMaskrom"
+                  v-if="storageReady"
                   type="button"
                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-theme bg-surface-primary border border-theme rounded-lg hover:bg-surface-secondary disabled:opacity-50 transition-colors"
                   :disabled="isBusy"
@@ -110,9 +110,9 @@
                 </span>
                 <span
                   class="px-2 py-0.5 text-xs font-semibold rounded-full"
-                  :class="isMaskrom ? 'bg-yellow-500/20 text-yellow-500' : 'bg-green-500/20 text-green-500'"
+                  :class="storageReady ? 'bg-green-500/20 text-green-500' : 'bg-yellow-500/20 text-yellow-500'"
                 >
-                  {{ isMaskrom ? 'Maskrom' : 'Loader' }}
+                  {{ storageReady ? 'Loader' : 'Maskrom' }}
                 </span>
               </div>
               <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-theme-muted">
@@ -139,9 +139,9 @@
               </dl>
             </div>
 
-            <!-- Maskrom: download a loader (db) -->
+            <!-- Storage not reachable: download a loader (db) -->
             <div
-              v-if="isConnected && isMaskrom"
+              v-if="isConnected && !storageReady"
               class="mt-4 p-4 text-sm border border-yellow-700 rounded-lg bg-surface-primary"
             >
               <div class="flex text-yellow-400">
@@ -506,7 +506,7 @@ const {
   isFlashing,
   canErase,
   canFlash,
-  isMaskrom,
+  storageReady,
   status,
   deviceInfo,
   flashInfo,

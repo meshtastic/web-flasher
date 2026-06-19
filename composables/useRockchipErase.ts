@@ -43,6 +43,25 @@ async function gzipUncompressedSize(file: File): Promise<number> {
   return new DataView(tail).getUint32(0, true)
 }
 
+const sleepMs = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms))
+
+/** Reject after `ms` if `promise` hasn't settled — WebUSB transfers have no native timeout. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Operation timed out')), ms)
+    promise.then(
+      (value) => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      (err) => {
+        clearTimeout(timer)
+        reject(err)
+      },
+    )
+  })
+}
+
 /**
  * Reactive wrapper around {@link RockusbDevice} for the standalone Rockchip
  * flash tool. Owns connection state, progress and a human-readable log, and
@@ -74,9 +93,14 @@ export function useRockchipErase() {
   const error = ref<string | null>(null)
   const log = ref<string[]>([])
 
-  /** Ready once we have a flash-accessible (Loader-mode) device with geometry read. */
-  const canErase = computed(() => isConnected.value && !isBusy.value && !!flashInfo.value)
-  const canFlash = computed(() => isConnected.value && !isBusy.value && !isMaskrom.value)
+  /**
+   * Storage is reachable when READ_FLASH_INFO succeeded — this, not the bcdUSB
+   * mode bit, is what gates erase/write. Some loaders report an even bcdUSB
+   * (so look like "maskrom") yet are fully functional.
+   */
+  const storageReady = computed(() => isConnected.value && !!flashInfo.value)
+  const canErase = computed(() => storageReady.value && !isBusy.value)
+  const canFlash = computed(() => storageReady.value && !isBusy.value)
   const isMaskrom = computed(() => mode.value === 'maskrom')
 
   let rk: RockusbDevice | null = null
@@ -124,7 +148,11 @@ export function useRockchipErase() {
     }
   }
 
-  /** Read mode, identity, geometry and active storage for the current device. */
+  /**
+   * Read identity, then probe storage. We decide "loader vs maskrom" by whether
+   * READ_FLASH_INFO answers (with a timeout so a true maskrom doesn't hang),
+   * NOT by the bcdUSB bit — some working loaders report an even bcdUSB.
+   */
   async function loadDeviceInfo(): Promise<void> {
     if (!rk) return
     mode.value = rk.mode
@@ -135,27 +163,31 @@ export function useRockchipErase() {
       productName: rk.device.productName,
       serialNumber: rk.device.serialNumber,
     }
-    if (rk.mode === 'maskrom') {
-      status.value = 'Connected (Maskrom, loader required)'
-      appendLog('Device is in Maskrom mode. Download a loader below to make storage accessible, or boot the board into Loader mode.')
-      return
-    }
     status.value = 'Reading flash info…'
-    const info = await rk.getFlashInfo()
-    flashInfo.value = info
-    appendLog(`Flash: ${formatBytes(info.sizeBytes)} (${info.totalSectors.toLocaleString()} sectors), ${info.isEmmc ? 'eMMC' : info.directLba ? 'direct-LBA' : 'raw NAND'}.`)
     try {
-      const active = await rk.readStorage()
-      currentStorage.value = active
-      if (active === Storage.EMMC || active === Storage.SD || active === Storage.SPINOR) {
-        targetStorage.value = active
+      const info = await withTimeout(rk.getFlashInfo(), 5000)
+      flashInfo.value = info
+      appendLog(`Flash: ${formatBytes(info.sizeBytes)} (${info.totalSectors.toLocaleString()} sectors), ${info.isEmmc ? 'eMMC' : info.directLba ? 'direct-LBA' : 'raw NAND'}.`)
+      try {
+        const active = await withTimeout(rk.readStorage(), 3000)
+        currentStorage.value = active
+        if (active === Storage.EMMC || active === Storage.SD || active === Storage.SPINOR) {
+          targetStorage.value = active
+        }
+        appendLog(`Active storage: ${STORAGE_NAMES[active] ?? `id ${active}`}.`)
       }
-      appendLog(`Active storage: ${STORAGE_NAMES[active] ?? `id ${active}`}.`)
+      catch {
+        // READ_STORAGE is optional; some loaders may not implement it.
+      }
+      status.value = 'Ready'
     }
     catch {
-      // READ_STORAGE is optional; some loaders may not implement it.
+      // Storage not reachable — treat as needing a loader (typical of Maskrom).
+      flashInfo.value = null
+      currentStorage.value = null
+      status.value = 'Connected (loader required)'
+      appendLog('Storage is not accessible yet (likely Maskrom). Download a loader below, or boot the board into Loader mode.')
     }
-    status.value = 'Ready'
   }
 
   /** Download a loader (.bin) to a Maskrom device and re-acquire it as a Loader (rkdeveloptool `db`). */
@@ -173,37 +205,40 @@ export function useRockchipErase() {
         bootProgress.value = total > 0 ? Math.round((done / total) * 100) : 0
       })
       bootProgress.value = 100
-      appendLog('Loader sent; waiting for the device to re-enter Loader mode…')
-      status.value = 'Waiting for Loader mode…'
+      appendLog('Loader sent; waiting for the device to re-enumerate…')
+      status.value = 'Waiting for the loader…'
       await rk.close().catch(() => {})
       rk = null
+      await sleepMs(2500) // give the loader time to come up and re-enumerate
 
-      const loader = await RockusbDevice.waitForLoader()
-      if (!loader) {
-        needsReconnect.value = true
+      // Re-acquire by capability: open whatever 0x2207 device is now present and
+      // see if its storage answers (the loader may report an even bcdUSB).
+      const candidate = await RockusbDevice.getAuthorized()
+      if (candidate) {
+        try {
+          rk = candidate
+          await rk.open()
+          isConnected.value = true
+          await loadDeviceInfo()
+          if (flashInfo.value) {
+            needsReconnect.value = false
+            appendLog(`Loader ready: ${hex(rk.vendorId)}:${hex(rk.productId)}.`)
+            return
+          }
+        }
+        catch {
+          // fall through to a manual reconnect
+        }
+        if (rk) {
+          await rk.close().catch(() => {})
+          rk = null
+        }
         isConnected.value = false
-        mode.value = null
-        status.value = 'Reconnect required'
-        appendLog('Loader is running, but the browser needs you to re-select it. Click "Connect Rockchip device" again.')
-        return
       }
-      rk = loader
-      try {
-        await rk.open()
-        isConnected.value = true
-        needsReconnect.value = false
-        appendLog(`Re-acquired ${hex(rk.vendorId)}:${hex(rk.productId)} in ${rk.mode.toUpperCase()} mode.`)
-        await loadDeviceInfo()
-      }
-      catch (reacquireErr) {
-        // Don't leak the re-acquired handle; fall back to a manual reconnect.
-        await rk.close().catch(() => {})
-        rk = null
-        isConnected.value = false
-        mode.value = null
-        needsReconnect.value = true
-        throw reacquireErr
-      }
+      needsReconnect.value = true
+      mode.value = null
+      status.value = 'Reconnect required'
+      appendLog('Could not auto-acquire the loader. Click "Connect Rockchip device" again and select the device.')
     }
     catch (err) {
       error.value = describeError(err)
@@ -311,7 +346,7 @@ export function useRockchipErase() {
   }
 
   async function flash(file: File | null): Promise<void> {
-    if (!rk || !file || isMaskrom.value) return
+    if (!rk || !file || !flashInfo.value) return
     error.value = null
     isBusy.value = true
     isFlashing.value = true
@@ -426,6 +461,7 @@ export function useRockchipErase() {
     canErase,
     canFlash,
     isMaskrom,
+    storageReady,
     status: readonly(status),
     deviceInfo: readonly(deviceInfo),
     flashInfo: readonly(flashInfo),
