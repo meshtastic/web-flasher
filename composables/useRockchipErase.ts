@@ -66,6 +66,11 @@ export function useRockchipErase() {
   const flashProgress = ref(0)
   /** True while writing an image whose total size is unknown (show an indeterminate bar). */
   const flashIndeterminate = ref(false)
+  /** Loader-download (db) state for Maskrom devices. */
+  const isDownloadingBoot = ref(false)
+  const bootProgress = ref(0)
+  /** Set when the loader ran but the browser needs a fresh user gesture to re-select it. */
+  const needsReconnect = ref(false)
   const error = ref<string | null>(null)
   const log = ref<string[]>([])
 
@@ -96,44 +101,18 @@ export function useRockchipErase() {
     }
     error.value = null
     isBusy.value = true
+    needsReconnect.value = false
     status.value = 'Requesting device…'
     try {
+      if (rk) {
+        await rk.close().catch(() => {})
+        rk = null
+      }
       rk = await RockusbDevice.request()
       await rk.open()
       isConnected.value = true
-      mode.value = rk.mode
-      deviceInfo.value = {
-        vendorId: rk.vendorId,
-        productId: rk.productId,
-        manufacturerName: rk.device.manufacturerName,
-        productName: rk.device.productName,
-        serialNumber: rk.device.serialNumber,
-      }
       appendLog(`Connected to ${hex(rk.vendorId)}:${hex(rk.productId)} in ${rk.mode.toUpperCase()} mode.`)
-
-      if (rk.mode === 'maskrom') {
-        status.value = 'Connected (Maskrom, loader required)'
-        appendLog('Device is in Maskrom mode. Flash is not accessible until a loader is downloaded; erase and write are unavailable. Put the device in Loader mode and reconnect.')
-        return
-      }
-
-      status.value = 'Reading flash info…'
-      const info = await rk.getFlashInfo()
-      flashInfo.value = info
-      appendLog(`Flash: ${formatBytes(info.sizeBytes)} (${info.totalSectors.toLocaleString()} sectors), ${info.isEmmc ? 'eMMC' : info.directLba ? 'direct-LBA' : 'raw NAND'}.`)
-
-      try {
-        const active = await rk.readStorage()
-        currentStorage.value = active
-        if (active === Storage.EMMC || active === Storage.SD || active === Storage.SPINOR) {
-          targetStorage.value = active
-        }
-        appendLog(`Active storage: ${STORAGE_NAMES[active] ?? `id ${active}`}.`)
-      }
-      catch {
-        // READ_STORAGE is optional; some loaders may not implement it.
-      }
-      status.value = 'Ready'
+      await loadDeviceInfo()
     }
     catch (err) {
       error.value = describeError(err)
@@ -141,6 +120,98 @@ export function useRockchipErase() {
       status.value = isConnected.value ? 'Connected (flash info unavailable)' : 'Not connected'
     }
     finally {
+      isBusy.value = false
+    }
+  }
+
+  /** Read mode, identity, geometry and active storage for the current device. */
+  async function loadDeviceInfo(): Promise<void> {
+    if (!rk) return
+    mode.value = rk.mode
+    deviceInfo.value = {
+      vendorId: rk.vendorId,
+      productId: rk.productId,
+      manufacturerName: rk.device.manufacturerName,
+      productName: rk.device.productName,
+      serialNumber: rk.device.serialNumber,
+    }
+    if (rk.mode === 'maskrom') {
+      status.value = 'Connected (Maskrom, loader required)'
+      appendLog('Device is in Maskrom mode. Download a loader below to make storage accessible, or boot the board into Loader mode.')
+      return
+    }
+    status.value = 'Reading flash info…'
+    const info = await rk.getFlashInfo()
+    flashInfo.value = info
+    appendLog(`Flash: ${formatBytes(info.sizeBytes)} (${info.totalSectors.toLocaleString()} sectors), ${info.isEmmc ? 'eMMC' : info.directLba ? 'direct-LBA' : 'raw NAND'}.`)
+    try {
+      const active = await rk.readStorage()
+      currentStorage.value = active
+      if (active === Storage.EMMC || active === Storage.SD || active === Storage.SPINOR) {
+        targetStorage.value = active
+      }
+      appendLog(`Active storage: ${STORAGE_NAMES[active] ?? `id ${active}`}.`)
+    }
+    catch {
+      // READ_STORAGE is optional; some loaders may not implement it.
+    }
+    status.value = 'Ready'
+  }
+
+  /** Download a loader (.bin) to a Maskrom device and re-acquire it as a Loader (rkdeveloptool `db`). */
+  async function downloadLoader(file: File | null): Promise<void> {
+    if (!rk || !file) return
+    error.value = null
+    isBusy.value = true
+    isDownloadingBoot.value = true
+    bootProgress.value = 0
+    status.value = 'Downloading loader…'
+    appendLog(`Downloading loader ${file.name}…`)
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer())
+      await rk.downloadBoot(bytes, (done, total) => {
+        bootProgress.value = total > 0 ? Math.round((done / total) * 100) : 0
+      })
+      bootProgress.value = 100
+      appendLog('Loader sent; waiting for the device to re-enter Loader mode…')
+      status.value = 'Waiting for Loader mode…'
+      await rk.close().catch(() => {})
+      rk = null
+
+      const loader = await RockusbDevice.waitForLoader()
+      if (!loader) {
+        needsReconnect.value = true
+        isConnected.value = false
+        mode.value = null
+        status.value = 'Reconnect required'
+        appendLog('Loader is running, but the browser needs you to re-select it. Click "Connect Rockchip device" again.')
+        return
+      }
+      rk = loader
+      try {
+        await rk.open()
+        isConnected.value = true
+        needsReconnect.value = false
+        appendLog(`Re-acquired ${hex(rk.vendorId)}:${hex(rk.productId)} in ${rk.mode.toUpperCase()} mode.`)
+        await loadDeviceInfo()
+      }
+      catch (reacquireErr) {
+        // Don't leak the re-acquired handle; fall back to a manual reconnect.
+        await rk.close().catch(() => {})
+        rk = null
+        isConnected.value = false
+        mode.value = null
+        needsReconnect.value = true
+        throw reacquireErr
+      }
+    }
+    catch (err) {
+      error.value = describeError(err)
+      appendLog(`Loader download failed: ${error.value}`)
+      status.value = 'Loader download failed'
+    }
+    finally {
+      isDownloadingBoot.value = false
       isBusy.value = false
     }
   }
@@ -323,6 +394,9 @@ export function useRockchipErase() {
     progress.value = 0
     flashProgress.value = 0
     flashIndeterminate.value = false
+    isDownloadingBoot.value = false
+    bootProgress.value = 0
+    needsReconnect.value = false
     status.value = 'Not connected'
     appendLog('Disconnected.')
   }
@@ -344,11 +418,15 @@ export function useRockchipErase() {
     progress: readonly(progress),
     flashProgress: readonly(flashProgress),
     flashIndeterminate: readonly(flashIndeterminate),
+    isDownloadingBoot: readonly(isDownloadingBoot),
+    bootProgress: readonly(bootProgress),
+    needsReconnect: readonly(needsReconnect),
     error: readonly(error),
     log: readonly(log),
     connect,
     erase,
     flash,
+    downloadLoader,
     reset,
     disconnect,
   }

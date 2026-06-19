@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   buildCBW,
   countChipSelects,
+  crcCcitt,
   firstSetBit,
   isCswValid,
   isEmmcId,
@@ -10,6 +11,7 @@ import {
   padToSector,
   parseCSW,
   parseFlashInfo,
+  parseRkBoot,
   planLbaErase,
   sectorCount,
   Storage,
@@ -195,6 +197,71 @@ describe('countChipSelects', () => {
     expect(countChipSelects(0x01)).toBe(1)
     expect(countChipSelects(0x03)).toBe(2)
     expect(countChipSelects(0xff)).toBe(8)
+  })
+})
+
+describe('crcCcitt', () => {
+  // Reference values produced by compiling rkdeveloptool's CRC_CCITT.
+  it('matches CRC-16/CCITT-FALSE reference vectors', () => {
+    const hex = (n: number) => n.toString(16).padStart(4, '0')
+    expect(hex(crcCcitt(new TextEncoder().encode('123456789')))).toBe('29b1')
+    expect(hex(crcCcitt(new Uint8Array([0x00])))).toBe('e1f0')
+    expect(hex(crcCcitt(new Uint8Array([0x01, 0x02, 0x03, 0x04])))).toBe('89c3')
+    expect(hex(crcCcitt(new Uint8Array([0xde, 0xad, 0xbe, 0xef])))).toBe('4097')
+  })
+
+  it('returns the init value 0xFFFF for empty input', () => {
+    expect(crcCcitt(new Uint8Array(0))).toBe(0xffff)
+  })
+})
+
+describe('parseRkBoot', () => {
+  /** Build a minimal RKBOOT image with one 471 and one 472 entry. */
+  function makeRkBoot(): Uint8Array {
+    const entrySize = 57
+    const h471Off = 100
+    const h472Off = h471Off + entrySize // 157
+    const data471Off = 300
+    const data472Off = 310
+    const buf = new Uint8Array(320)
+    const view = new DataView(buf.buffer)
+    view.setUint32(0, 0x544f4f42, true) // tag "BOOT"
+    view.setUint8(25, 1) // code471Num
+    view.setUint32(26, h471Off, true) // code471Offset
+    view.setUint8(30, entrySize) // code471Size
+    view.setUint8(31, 1) // code472Num
+    view.setUint32(32, h472Off, true) // code472Offset
+    view.setUint8(36, entrySize) // code472Size
+    // 471 entry
+    view.setUint32(h471Off + 45, data471Off, true)
+    view.setUint32(h471Off + 49, 4, true)
+    view.setUint32(h471Off + 53, 10, true) // delay 10 ms
+    buf.set([0xaa, 0xbb, 0xcc, 0xdd], data471Off)
+    // 472 entry
+    view.setUint32(h472Off + 45, data472Off, true)
+    view.setUint32(h472Off + 49, 3, true)
+    view.setUint32(h472Off + 53, 0, true)
+    buf.set([0x11, 0x22, 0x33], data472Off)
+    return buf
+  }
+
+  it('extracts 471 and 472 entry data and delays', () => {
+    const boot = parseRkBoot(makeRkBoot())
+    expect(boot.entries471).toHaveLength(1)
+    expect([...boot.entries471[0].data]).toEqual([0xaa, 0xbb, 0xcc, 0xdd])
+    expect(boot.entries471[0].delayMs).toBe(10)
+    expect(boot.entries472).toHaveLength(1)
+    expect([...boot.entries472[0].data]).toEqual([0x11, 0x22, 0x33])
+    expect(boot.entries472[0].delayMs).toBe(0)
+  })
+
+  it('rejects a file without the RKBOOT tag', () => {
+    const bogus = new Uint8Array(64)
+    expect(() => parseRkBoot(bogus)).toThrow(/RKBOOT tag/)
+  })
+
+  it('rejects a file that is too small', () => {
+    expect(() => parseRkBoot(new Uint8Array(8))).toThrow(/too small/)
   })
 })
 

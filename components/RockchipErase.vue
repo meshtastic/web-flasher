@@ -35,7 +35,7 @@
             </h3>
             <!-- How to enter download mode -->
             <div
-              v-if="!isConnected"
+              v-if="!isConnected && !needsReconnect"
               class="flex p-3 mb-4 text-sm rounded-lg alert-box"
               role="note"
             >
@@ -60,7 +60,7 @@
                   </li>
                   <li>
                     Connect below. A <strong>Loader</strong> badge means storage is accessible;
-                    <strong>Maskrom</strong> means a loader must be downloaded first (not supported here).
+                    <strong>Maskrom</strong> means you download a loader (below) first.
                   </li>
                 </ol>
               </div>
@@ -139,17 +139,82 @@
               </dl>
             </div>
 
-            <!-- Maskrom warning -->
+            <!-- Maskrom: download a loader (db) -->
             <div
               v-if="isConnected && isMaskrom"
-              class="flex mt-4 p-4 text-sm text-yellow-400 border border-yellow-700 rounded-lg bg-surface-primary"
-              role="alert"
+              class="mt-4 p-4 text-sm border border-yellow-700 rounded-lg bg-surface-primary"
             >
-              <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
+              <div class="flex text-yellow-400">
+                <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
+                <div>
+                  This device is in <strong>Maskrom</strong> mode. Download a USB loader to make its storage
+                  accessible (the <code>db</code> step). For RK3506 / Luckfox Lyra this is
+                  <code>rk3506_spl_loader_*.bin</code> from the
+                  <a
+                    href="https://wiki.luckfox.com/Luckfox-Lyra/Download/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="underline text-theme-accent"
+                  >Luckfox SDK</a>.
+                </div>
+              </div>
+
+              <label
+                for="rk-loader-file"
+                class="block mt-3 mb-1 text-xs font-medium text-theme"
+              >Loader file (.bin)</label>
+              <input
+                id="rk-loader-file"
+                type="file"
+                accept=".bin"
+                :disabled="isBusy"
+                class="block w-full mb-3 text-sm rounded-lg border cursor-pointer text-theme bg-surface-primary border-theme file:mr-3 file:py-2 file:px-3 file:border-0 file:text-sm file:font-medium file:bg-surface-secondary file:text-theme disabled:opacity-50"
+                @change="onLoaderChange"
+              >
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-meshtastic rounded-lg hover:bg-green-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                :disabled="isBusy || !loaderFile"
+                @click="downloadLoader(loaderFile)"
+              >
+                <LoaderCircle
+                  v-if="isDownloadingBoot"
+                  class="w-4 h-4 animate-spin"
+                />
+                <FolderDown
+                  v-else
+                  class="w-4 h-4"
+                />
+                {{ isDownloadingBoot ? 'Downloading loader…' : 'Download loader' }}
+              </button>
+
+              <div
+                v-if="isDownloadingBoot || bootProgress > 0"
+                class="mt-3"
+              >
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-medium text-theme">{{ status }}</span>
+                  <span class="text-sm font-medium text-theme-accent">{{ bootProgress }}%</span>
+                </div>
+                <div class="w-full rounded-full h-2.5 progress-track">
+                  <div
+                    class="bg-gradient-to-r from-green-400 to-green-600 h-2.5 rounded-full transition-all duration-300"
+                    :style="{ width: `${bootProgress}%` }"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Re-select prompt after a loader download -->
+            <div
+              v-if="needsReconnect && !isConnected"
+              class="flex mt-4 p-3 text-sm rounded-lg alert-box"
+              role="note"
+            >
+              <Info class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
               <div>
-                This device is in <strong>Maskrom</strong> mode. Storage can't be read or written until a
-                loader is downloaded to it (the <code>db</code> step), which this tool doesn't perform. Put the
-                board into Loader mode and reconnect.
+                The loader is running. Click <strong>Connect Rockchip device</strong> again and pick the device
+                (now in Loader mode) to continue.
               </div>
             </div>
           </div>
@@ -376,6 +441,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch } from 'vue'
 import {
+  FolderDown,
   HardDrive,
   Info,
   LoaderCircle,
@@ -408,11 +474,15 @@ const {
   progress,
   flashProgress,
   flashIndeterminate,
+  isDownloadingBoot,
+  bootProgress,
+  needsReconnect,
   error,
   log,
   connect,
   erase,
   flash,
+  downloadLoader,
   reset,
   disconnect,
 } = useRockchipErase()
@@ -420,6 +490,7 @@ const {
 const confirmed = ref(false)
 const flashConfirmed = ref(false)
 const imageFile = ref<File | null>(null)
+const loaderFile = ref<File | null>(null)
 const logEl = ref<HTMLElement | null>(null)
 
 const storageOptions = [
@@ -444,6 +515,11 @@ function onFileChange(event: Event) {
   imageFile.value = input.files?.[0] ?? null
 }
 
+function onLoaderChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  loaderFile.value = input.files?.[0] ?? null
+}
+
 // Auto-scroll the log to the newest line.
 watch(() => log.value.length, async () => {
   await nextTick()
@@ -456,6 +532,7 @@ watch(isConnected, (connected) => {
     confirmed.value = false
     flashConfirmed.value = false
     imageFile.value = null
+    loaderFile.value = null
   }
 })
 </script>

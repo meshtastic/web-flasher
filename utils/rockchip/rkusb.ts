@@ -66,6 +66,14 @@ export interface UsbDevice {
   releaseInterface(interfaceNumber: number): Promise<void>
   transferIn(endpointNumber: number, length: number): Promise<UsbInTransferResult>
   transferOut(endpointNumber: number, data: BufferSource): Promise<UsbOutTransferResult>
+  controlTransferOut(setup: UsbControlTransferParameters, data?: BufferSource): Promise<UsbOutTransferResult>
+}
+interface UsbControlTransferParameters {
+  requestType: 'standard' | 'class' | 'vendor'
+  recipient: 'device' | 'interface' | 'endpoint' | 'other'
+  request: number
+  value: number
+  index: number
 }
 interface UsbRequestOptions {
   filters: Array<{ vendorId?: number, productId?: number, classCode?: number }>
@@ -131,6 +139,15 @@ export const MAX_ERASE_BLOCKS = 16
  * it if a particular loader rejects large bulk transfers.
  */
 export const WRITE_LBA_CHUNK_SECTORS = 2048
+
+/** Vendor control-transfer request used to download a loader to Maskrom (rkdeveloptool DownloadBoot). */
+export const BOOT_VENDOR_REQUEST = 0x0c
+/** wIndex values for the two loader stages: DDR init (471) and usbplug (472). */
+export const BootStage = { CODE_471: 0x0471, CODE_472: 0x0472 } as const
+/** RKBOOT container tags ("BOOT" little-endian, and "LDR "). */
+const RKBOOT_TAGS = [0x544f4f42, 0x2052444c]
+/** Bytes per loader control transfer (the BootROM packet size). */
+const BOOT_CHUNK = 4096
 
 export interface CbwOptions {
   opcode: number
@@ -314,6 +331,61 @@ export function padToSector(bytes: Uint8Array): Uint8Array {
   return padded
 }
 
+/** CRC-16/CCITT-FALSE (poly 0x1021, init 0xFFFF) — the loader-download checksum. */
+export function crcCcitt(data: Uint8Array): number {
+  let crc = 0xffff
+  for (let n = 0; n < data.length; n++) {
+    const ch = data[n]
+    for (let i = 0x80; i !== 0; i >>= 1) {
+      crc = (crc & 0x8000) ? (((crc << 1) & 0xffff) ^ 0x1021) : ((crc << 1) & 0xffff)
+      if (ch & i) crc ^= 0x1021
+    }
+  }
+  return crc & 0xffff
+}
+
+export interface RkBootEntry {
+  data: Uint8Array
+  delayMs: number
+}
+
+export interface RkBoot {
+  entries471: RkBootEntry[]
+  entries472: RkBootEntry[]
+}
+
+/**
+ * Parse a Rockchip RKBOOT loader (.bin) into its 471 (DDR init) and 472
+ * (usbplug) entries — the blobs DownloadBoot streams to a Maskrom device.
+ * Header and entry layouts are #pragma pack(1) (boot_merger.h / RKBoot.h):
+ * header has code471 {num@25, offset@26, size@30} and code472 {num@31,
+ * offset@32, size@36}; each entry has dataOffset@45, dataSize@49, delay@53.
+ */
+export function parseRkBoot(bytes: Uint8Array): RkBoot {
+  if (bytes.length < 45) throw new Error('Loader file is too small to be an RKBOOT image')
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+  if (!RKBOOT_TAGS.includes(view.getUint32(0, true))) {
+    throw new Error('Not a Rockchip loader (bad RKBOOT tag)')
+  }
+  const readEntries = (count: number, offset: number, size: number): RkBootEntry[] => {
+    const entries: RkBootEntry[] = []
+    for (let i = 0; i < count; i++) {
+      const base = offset + i * size
+      const dataOffset = view.getUint32(base + 45, true)
+      const dataSize = view.getUint32(base + 49, true)
+      const delayMs = view.getUint32(base + 53, true)
+      entries.push({ data: bytes.subarray(dataOffset, dataOffset + dataSize), delayMs })
+    }
+    return entries
+  }
+  return {
+    entries471: readEntries(view.getUint8(25), view.getUint32(26, true), view.getUint8(30)),
+    entries472: readEntries(view.getUint8(31), view.getUint32(32, true), view.getUint8(36)),
+  }
+}
+
+const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms))
+
 function makeTag(): number {
   // 32-bit random tag, like rkdeveloptool's MakeCBWTag.
   return Math.floor(Math.random() * 0x100000000) >>> 0
@@ -363,6 +435,24 @@ export class RockusbDevice {
     const devices = await getUsb().getDevices()
     const match = devices.find(d => d.vendorId === ROCKCHIP_VENDOR_ID)
     return match ? new RockusbDevice(match) : null
+  }
+
+  /**
+   * Poll for the device re-enumerating as a Loader after a loader download.
+   * Returns null on timeout (e.g. the loader gets a new PID the page hasn't
+   * been granted, in which case the caller must prompt a fresh connect).
+   */
+  static async waitForLoader(timeoutMs = 12000): Promise<RockusbDevice | null> {
+    if (!isWebUsbSupported()) return null
+    const usb = getUsb()
+    const start = Date.now()
+    while (Date.now() - start < timeoutMs) {
+      const devices = await usb.getDevices()
+      const loader = devices.find(d => d.vendorId === ROCKCHIP_VENDOR_ID && (d.usbVersionSubminor & 1) === 1)
+      if (loader) return new RockusbDevice(loader)
+      await sleep(400)
+    }
+    return null
   }
 
   get vendorId(): number {
@@ -608,6 +698,78 @@ export class RockusbDevice {
       cbLength: 6,
       subCode,
     })
+  }
+
+  // --- loader download (db) ----------------------------------------------
+
+  /**
+   * Send one loader stage to a Maskrom device via vendor control transfers,
+   * appending a CRC-16/CCITT and padding around the 4096-byte boundary exactly
+   * as rkdeveloptool's RKU_DeviceRequest does.
+   */
+  async deviceRequest(wIndex: number, data: Uint8Array): Promise<void> {
+    const buffer = new Uint8Array(data.length + 5) // zero-filled slack for pad + CRC
+    buffer.set(data)
+    let size = data.length
+    let sendPendingPacket = false
+    switch (size % BOOT_CHUNK) {
+      case BOOT_CHUNK - 1: // 4095: fold one zero pad byte into the CRC
+        size += 1
+        break
+      case BOOT_CHUNK - 2: // 4094: data+CRC fills a packet exactly, so terminate with a short packet
+        sendPendingPacket = true
+        break
+      default:
+        break
+    }
+    const crc = crcCcitt(buffer.subarray(0, size))
+    buffer[size] = (crc >> 8) & 0xff
+    buffer[size + 1] = crc & 0xff
+    size += 2
+
+    const setup = {
+      requestType: 'vendor' as const,
+      recipient: 'device' as const,
+      request: BOOT_VENDOR_REQUEST,
+      value: 0,
+      index: wIndex,
+    }
+    let sent = 0
+    while (sent < size) {
+      const n = Math.min(BOOT_CHUNK, size - sent)
+      const res = await this.device.controlTransferOut(setup, buffer.subarray(sent, sent + n))
+      if (res.status !== 'ok' || res.bytesWritten !== n) {
+        throw new RockusbError(`Loader transfer failed (stage 0x${wIndex.toString(16)})`)
+      }
+      sent += n
+    }
+    if (sendPendingPacket) {
+      const res = await this.device.controlTransferOut(setup, new Uint8Array(1))
+      if (res.status !== 'ok') throw new RockusbError(`Loader transfer failed (stage 0x${wIndex.toString(16)})`)
+    }
+  }
+
+  /**
+   * Download a loader (.bin, RKBOOT format) into a Maskrom device's RAM, then
+   * the device resets and re-enumerates as a Loader (re-acquire with
+   * {@link RockusbDevice.waitForLoader}). Mirrors rkdeveloptool `db`.
+   */
+  async downloadBoot(loader: Uint8Array, onProgress?: EraseProgress): Promise<void> {
+    const boot = parseRkBoot(loader)
+    const stages = [
+      ...boot.entries471.map(entry => ({ wIndex: BootStage.CODE_471, entry })),
+      ...boot.entries472.map(entry => ({ wIndex: BootStage.CODE_472, entry })),
+    ]
+    if (stages.length === 0) throw new RockusbError('Loader has no 471/472 entries')
+    let done = 0
+    for (const { wIndex, entry } of stages) {
+      if (entry.data.length > 0) {
+        await this.deviceRequest(wIndex, entry.data)
+        if (entry.delayMs > 0) await sleep(entry.delayMs)
+      }
+      onProgress?.(++done, stages.length)
+    }
+    await sleep(1000) // let the loader start before it re-enumerates
   }
 
   // --- high level ---------------------------------------------------------
