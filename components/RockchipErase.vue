@@ -148,20 +148,61 @@
                 <TriangleAlert class="flex-shrink-0 inline w-5 h-5 me-3 mt-0.5" />
                 <div>
                   This device is in <strong>Maskrom</strong> mode. Download a USB loader to make its storage
-                  accessible (the <code>db</code> step). For RK3506 / Luckfox Lyra this is
-                  <code>rk3506_spl_loader_*.bin</code> from the
+                  accessible (the <code>db</code> step). Use a bundled RK3506 loader below, or supply your own
+                  (these are built from the official Rockchip
                   <a
-                    href="https://wiki.luckfox.com/Luckfox-Lyra/Download/"
+                    href="https://github.com/rockchip-linux/rkbin"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="underline text-theme-accent"
-                  >Luckfox SDK</a>.
+                  >rkbin</a>).
                 </div>
               </div>
 
+              <!-- Quick option: bundled loader -->
+              <label
+                for="rk-bundled-loader"
+                class="block mt-3 mb-1 text-xs font-medium text-theme"
+              >Bundled loader (recommended)</label>
+              <div class="flex flex-wrap gap-2">
+                <select
+                  id="rk-bundled-loader"
+                  v-model="bundledLoader"
+                  :disabled="isBusy"
+                  class="flex-1 min-w-[12rem] p-2.5 text-sm rounded-lg border text-theme bg-surface-primary border-theme disabled:opacity-50"
+                >
+                  <option
+                    v-for="opt in bundledOptions"
+                    :key="opt.value"
+                    :value="opt.value"
+                  >
+                    {{ opt.label }}
+                  </option>
+                </select>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-meshtastic rounded-lg hover:bg-green-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  :disabled="isBusy"
+                  @click="fetchAndDownloadLoader(bundledLoader)"
+                >
+                  <LoaderCircle
+                    v-if="isDownloadingBoot"
+                    class="w-4 h-4 animate-spin"
+                  />
+                  <FolderDown
+                    v-else
+                    class="w-4 h-4"
+                  />
+                  Use bundled loader
+                </button>
+              </div>
+
+              <p class="mt-3 text-xs text-theme-muted">
+                or supply your own loader file:
+              </p>
               <label
                 for="rk-loader-file"
-                class="block mt-3 mb-1 text-xs font-medium text-theme"
+                class="block mt-1 mb-1 text-xs font-medium text-theme"
               >Loader file (.bin)</label>
               <input
                 id="rk-loader-file"
@@ -483,6 +524,7 @@ const {
   erase,
   flash,
   downloadLoader,
+  fetchAndDownloadLoader,
   reset,
   disconnect,
 } = useRockchipErase()
@@ -491,6 +533,11 @@ const confirmed = ref(false)
 const flashConfirmed = ref(false)
 const imageFile = ref<File | null>(null)
 const loaderFile = ref<File | null>(null)
+const bundledLoader = ref('/rockchip/rk3506_spl_loader.bin')
+const bundledOptions = [
+  { value: '/rockchip/rk3506_spl_loader.bin', label: 'RK3506G2 (Lyra, Lyra W, Lyra Plus)' },
+  { value: '/rockchip/rk3506b_spl_loader.bin', label: 'RK3506B (Lyra Zero W, Lyra Ultra)' },
+]
 const logEl = ref<HTMLElement | null>(null)
 
 const storageOptions = [

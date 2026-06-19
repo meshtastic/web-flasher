@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   buildCBW,
@@ -262,6 +264,20 @@ describe('parseRkBoot', () => {
 
   it('rejects a file that is too small', () => {
     expect(() => parseRkBoot(new Uint8Array(8))).toThrow(/too small/)
+  })
+
+  // The shipped loaders are built from official rkbin components; make sure the
+  // real parser extracts the DDR (471) and usbplug (472) blobs from them.
+  it.each([
+    'rk3506_spl_loader.bin',
+    'rk3506b_spl_loader.bin',
+  ])('parses the bundled %s into ddr(471) + usbplug(472)', (file) => {
+    const bytes = new Uint8Array(readFileSync(resolve(process.cwd(), 'public/rockchip', file)))
+    const boot = parseRkBoot(bytes)
+    expect(boot.entries471).toHaveLength(1)
+    expect(boot.entries471[0].data.length).toBeGreaterThan(0)
+    expect(boot.entries472).toHaveLength(1)
+    expect(boot.entries472[0].data.length).toBe(48680) // shared rk3506_usbplug_v1.03.bin
   })
 })
 

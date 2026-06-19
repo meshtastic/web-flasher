@@ -362,6 +362,22 @@ export function useRockchipErase() {
     }
   }
 
+  /** Fetch a bundled loader by URL and run the db flow with it. */
+  async function fetchAndDownloadLoader(url: string): Promise<void> {
+    if (!rk) return
+    try {
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`Could not fetch bundled loader (HTTP ${res.status})`)
+      const blob = await res.blob()
+      await downloadLoader(new File([blob], url.split('/').pop() ?? 'loader.bin'))
+    }
+    catch (err) {
+      error.value = describeError(err)
+      appendLog(`Loader download failed: ${error.value}`)
+      status.value = 'Loader download failed'
+    }
+  }
+
   async function reset(): Promise<void> {
     if (!rk) return
     error.value = null
@@ -427,6 +443,7 @@ export function useRockchipErase() {
     erase,
     flash,
     downloadLoader,
+    fetchAndDownloadLoader,
     reset,
     disconnect,
   }
