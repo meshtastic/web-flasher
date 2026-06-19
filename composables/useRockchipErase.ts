@@ -347,6 +347,14 @@ export function useRockchipErase() {
 
   async function flash(file: File | null): Promise<void> {
     if (!rk || !file || !flashInfo.value) return
+    // Only raw .img and gzip .img.gz are supported. Browsers can't decompress
+    // xz/zip/bz2, and treating them as raw would write corrupt data.
+    const name = file.name.toLowerCase()
+    if (!name.endsWith('.img') && !name.endsWith('.gz')) {
+      error.value = 'Unsupported image type. Use a raw .img or gzip .img.gz. For .xz or .zip, decompress it first, or flash it with Etcher / a card reader.'
+      appendLog(`Flash aborted: ${error.value}`)
+      return
+    }
     error.value = null
     isBusy.value = true
     isFlashing.value = true
