@@ -1,14 +1,5 @@
 <template>
   <div v-if="bleStore.isWebBluetoothSupported">
-    <button
-      type="button"
-      class="btn-secondary"
-      data-modal-target="ble-provisioning-modal"
-      data-modal-toggle="ble-provisioning-modal"
-    >
-      {{ $t('ble.provision_wifi') }} <Bluetooth class="h-4 w-4 shrink-0" />
-    </button>
-
     <Teleport to="body">
       <div
         id="ble-provisioning-modal"
@@ -49,8 +40,14 @@
                     :disabled="bleStore.isConnecting"
                     @click="bleStore.connect(t)"
                   >
-                    <Loader2 v-if="bleStore.isConnecting" class="h-4 w-4 animate-spin" />
-                    <Bluetooth v-else class="h-4 w-4" />
+                    <Loader2
+                      v-if="bleStore.isConnecting"
+                      class="h-4 w-4 animate-spin"
+                    />
+                    <Bluetooth
+                      v-else
+                      class="h-4 w-4"
+                    />
                     {{ bleStore.isConnecting ? $t('ble.connecting') : $t('ble.connect_device') }}
                   </button>
                 </div>
@@ -65,8 +62,14 @@
                       :disabled="bleStore.isScanning"
                       @click="bleStore.scanNetworks(t)"
                     >
-                      <Loader2 v-if="bleStore.isScanning" class="h-4 w-4 animate-spin" />
-                      <Wifi v-else class="h-4 w-4" />
+                      <Loader2
+                        v-if="bleStore.isScanning"
+                        class="h-4 w-4 animate-spin"
+                      />
+                      <Wifi
+                        v-else
+                        class="h-4 w-4"
+                      />
                       {{ bleStore.isScanning ? $t('ble.scanning') : $t('ble.scan_networks') }}
                     </button>
 
@@ -87,9 +90,15 @@
                           :class="{ 'bg-[var(--accent-glow)]': bleStore.ssid === network.ssid }"
                           @click="bleStore.ssid = network.ssid"
                         >
-                          <Wifi class="h-3 w-3 shrink-0" :class="signalClass(network.signalStrength)" />
+                          <Wifi
+                            class="h-3 w-3 shrink-0"
+                            :class="signalClass(network.signalStrength)"
+                          />
                           <span class="flex-1 truncate">{{ network.ssid }}</span>
-                          <Lock v-if="network.isProtected" class="h-3 w-3 text-theme-muted shrink-0" />
+                          <Lock
+                            v-if="network.isProtected"
+                            class="h-3 w-3 text-theme-muted shrink-0"
+                          />
                           <span class="text-xs text-theme-muted shrink-0">{{ network.signalStrength }} dBm</span>
                         </button>
                       </div>
@@ -134,8 +143,14 @@
                         :aria-label="showPassword ? $t('ble.hide_password') : $t('ble.show_password')"
                         @click="showPassword = !showPassword"
                       >
-                        <EyeOff v-if="showPassword" class="h-4 w-4" />
-                        <Eye v-else class="h-4 w-4" />
+                        <EyeOff
+                          v-if="showPassword"
+                          class="h-4 w-4"
+                        />
+                        <Eye
+                          v-else
+                          class="h-4 w-4"
+                        />
                       </button>
                     </div>
                   </div>
@@ -146,9 +161,18 @@
                     class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
                     :class="statusClass"
                   >
-                    <Loader2 v-if="bleStore.status === 'provisioning'" class="h-4 w-4 animate-spin" />
-                    <CheckCircle v-else-if="bleStore.status === 'success'" class="h-4 w-4" />
-                    <XCircle v-else-if="bleStore.status === 'failed'" class="h-4 w-4" />
+                    <Loader2
+                      v-if="bleStore.status === 'provisioning'"
+                      class="h-4 w-4 animate-spin"
+                    />
+                    <CheckCircle
+                      v-else-if="bleStore.status === 'success'"
+                      class="h-4 w-4"
+                    />
+                    <XCircle
+                      v-else-if="bleStore.status === 'failed'"
+                      class="h-4 w-4"
+                    />
                     {{ statusText }}
                   </div>
 
@@ -160,8 +184,14 @@
                       :disabled="!bleStore.canProvision"
                       @click="bleStore.provisionWifi(t)"
                     >
-                      <Loader2 v-if="bleStore.isProvisioning" class="h-4 w-4 animate-spin" />
-                      <Wifi v-else class="h-4 w-4" />
+                      <Loader2
+                        v-if="bleStore.isProvisioning"
+                        class="h-4 w-4 animate-spin"
+                      />
+                      <Wifi
+                        v-else
+                        class="h-4 w-4"
+                      />
                       {{ bleStore.isProvisioning ? $t('ble.provisioning') : $t('ble.apply') }}
                     </button>
                     <button

@@ -5,7 +5,8 @@
       "name": "flasher-dev",
       "runtimeExecutable": "env",
       "runtimeArgs": ["API_PROXY_TARGET=http://localhost:4000", "pnpm", "dev"],
-      "port": 3000
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }
