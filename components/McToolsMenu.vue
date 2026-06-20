@@ -43,17 +43,30 @@
             Rockchip Flash Tool
           </button>
         </li>
+        <li>
+          <button
+            type="button"
+            class="w-full text-left flex items-center gap-2 px-4 py-2 hover:text-meshtastic hover:bg-surface-secondary transition-colors"
+            data-modal-target="fastboot-tool-modal"
+            data-modal-toggle="fastboot-tool-modal"
+            @click="closeDropdown"
+          >
+            <Terminal class="h-4 w-4 shrink-0" />
+            U-Boot / Fastboot
+          </button>
+        </li>
       </ul>
     </div>
 
     <!-- Tool modals (teleported to body) -->
     <BleProvisioning />
     <RockchipEraseModal />
+    <FastbootToolModal />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Bluetooth, ChevronDown, HardDrive } from 'lucide-vue-next'
+import { Bluetooth, ChevronDown, HardDrive, Terminal } from 'lucide-vue-next'
 import { useBleProvisioningStore } from '~/stores/bleProvisioningStore'
 
 const bleStore = useBleProvisioningStore()
