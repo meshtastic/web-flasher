@@ -279,6 +279,55 @@ describe('parseRkBoot', () => {
     expect(boot.entries472).toHaveLength(1)
     expect(boot.entries472[0].data.length).toBe(48680) // shared rk3506_usbplug_v1.03.bin
   })
+
+  // The official rkbin/Armbian loader is the full boot_merger output (tag "LDR "):
+  // it carries TWO 471 entries (a UsbHead stub + the DDR) plus the usbplug, so the
+  // db sequence must stream both 471 entries. Guards that parseRkBoot reads them all.
+  it.each([
+    'rk3506_spl_loader_v1.06.112.bin',
+    'rk3506b_spl_loader_v1.06.112.bin',
+  ])('parses the official rkbin loader %s (tag "LDR ") with two 471 entries + usbplug', (file) => {
+    const bytes = new Uint8Array(readFileSync(resolve(process.cwd(), 'public/rockchip', file)))
+    const boot = parseRkBoot(bytes)
+    expect(boot.entries471).toHaveLength(2) // UsbHead (2048) + rk3506[b]_ddr (20480)
+    expect(boot.entries471[0].data.length).toBe(2048)
+    expect(boot.entries471[1].data.length).toBe(20480)
+    expect(boot.entries472).toHaveLength(1)
+    expect(boot.entries472[0].data.length).toBe(49152) // shared rk3506_usbplug_v1
+  })
+
+  // A synthetic 2x471 + 1x472 image: downloadBoot relies on every 471 entry being
+  // returned (not just the first), which is exactly what the official loader needs.
+  it('returns every 471 entry when there is more than one', () => {
+    const entrySize = 57
+    const off0 = 100
+    const off1 = off0 + entrySize
+    const off472 = off1 + entrySize
+    const d0 = 300
+    const d1 = 310
+    const d2 = 320
+    const buf = new Uint8Array(340)
+    const view = new DataView(buf.buffer)
+    view.setUint32(0, 0x2052444c, true) // tag "LDR "
+    view.setUint8(25, 2) // code471Num = 2
+    view.setUint32(26, off0, true)
+    view.setUint8(30, entrySize)
+    view.setUint8(31, 1) // code472Num = 1
+    view.setUint32(32, off472, true)
+    view.setUint8(36, entrySize)
+    view.setUint32(off0 + 45, d0, true)
+    view.setUint32(off0 + 49, 4, true)
+    buf.set([1, 2, 3, 4], d0)
+    view.setUint32(off1 + 45, d1, true)
+    view.setUint32(off1 + 49, 5, true)
+    buf.set([5, 6, 7, 8, 9], d1)
+    view.setUint32(off472 + 45, d2, true)
+    view.setUint32(off472 + 49, 2, true)
+    buf.set([10, 11], d2)
+    const boot = parseRkBoot(buf)
+    expect(boot.entries471.map(e => [...e.data])).toEqual([[1, 2, 3, 4], [5, 6, 7, 8, 9]])
+    expect(boot.entries472.map(e => [...e.data])).toEqual([[10, 11]])
+  })
 })
 
 describe('firstSetBit', () => {

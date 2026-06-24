@@ -177,12 +177,35 @@ to flash. **Only the 471/472 entries are used for maskrom USB bring‑up.**
 
 ---
 
-## Option B — minimal db‑only merge (what this web‑flasher bundles)
+## What this web‑flasher bundles
+
+The **primary** loaders are the official `boot_merger` outputs hosted by Armbian
+(`armbian/rkbin`, added in [PR #46](https://github.com/armbian/rkbin/pull/46) by
+the Luckfox Lyra board maintainer), served from
+[`public/rockchip/`](../public/rockchip/):
+
+| File | Variant | Source |
+|------|---------|--------|
+| `rk3506_spl_loader_v1.06.112.bin`  | RK3506 G2 | `armbian/rkbin` `rk35/` (canonical) |
+| `rk3506b_spl_loader_v1.06.112.bin` | RK3506B   | `armbian/rkbin` `rk35/` (canonical) |
+
+These are the full `LDR `‑tag images (UsbHead + DDR in code 471, usbplug in code
+472, plus a flash‑loader section); the `db` path streams every 471 entry then the
+472 entry. Track `armbian/rkbin` as the source of truth rather than re‑merging.
+
+> SD over USB on RK3506: the maskrom **usbplug** in these loaders exposes only the
+> onboard SPI NAND. To reach the microSD over USB you need *full* mainline U‑Boot
+> (Armbian pins Kwiboo's tree) and its **rockusb** gadget — `rockusb 0 mmc 1` —
+> which is vendor class `0xFF/6/5`, the same protocol this flasher speaks. `ums`
+> is USB Mass Storage and not WebUSB‑claimable; fastboot is off by default on
+> RK3506. See the project notes for the rockusb‑from‑U‑Boot path.
+
+## Option B — minimal db‑only merge (the older bundled fallback)
 
 The maskrom **db** path reads only the **471** and **472** entries; it ignores
 `chipType`, the `LOADER` section, the IDB, and the file‑level CRC32. So the two
-loaders we ship in [`public/rockchip/`](../public/rockchip/) are a *stripped*
-RKBOOT image — just the two entries the BootROM needs:
+*minimal* loaders we also ship in [`public/rockchip/`](../public/rockchip/) are a
+*stripped* RKBOOT image — just the two entries the BootROM needs:
 
 | File (our name)            | Built from            | 471 (ddr)      | 472 (usbplug)   |
 |----------------------------|-----------------------|----------------|-----------------|

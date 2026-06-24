@@ -528,10 +528,12 @@ const confirmed = ref(false)
 const flashConfirmed = ref(false)
 const imageFile = ref<File | null>(null)
 const loaderFile = ref<File | null>(null)
-const bundledLoader = ref('/rockchip/rk3506_spl_loader.bin')
+const bundledLoader = ref('/rockchip/rk3506_spl_loader_v1.06.112.bin')
 const bundledOptions = [
-  { value: '/rockchip/rk3506_spl_loader.bin', label: 'RK3506G2 (Lyra, Lyra W, Lyra Plus)' },
-  { value: '/rockchip/rk3506b_spl_loader.bin', label: 'RK3506B (Lyra Zero W, Lyra Ultra)' },
+  { value: '/rockchip/rk3506_spl_loader_v1.06.112.bin', label: 'RK3506G2 official rkbin v1.06.112 (Lyra, Lyra W, Lyra Plus)' },
+  { value: '/rockchip/rk3506b_spl_loader_v1.06.112.bin', label: 'RK3506B official rkbin v1.06.112 (Lyra Zero W, Lyra Ultra)' },
+  { value: '/rockchip/rk3506_spl_loader.bin', label: 'RK3506G2 minimal (bundled fallback)' },
+  { value: '/rockchip/rk3506b_spl_loader.bin', label: 'RK3506B minimal (bundled fallback)' },
 ]
 const logEl = ref<HTMLElement | null>(null)
 
