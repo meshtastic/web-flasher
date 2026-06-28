@@ -3,16 +3,16 @@
   "header": "Flasher",
   "description": "Una herramienta web para flashear firmware en ESP32",
   "browser_warning": "Tu navegador no es compatible con la API WebSerial. Por favor, cambia a un navegador compatible, como Chrome o Edge, para una funcionalidad completa.",
-  "header_title": "Meshtastic Web Flasher",
+  "header_title": "FLASHER",
   "language": "Idioma",
   "actions": {
     "connect": "Conectar",
     "disconnect": "Desconectar",
     "continue": "Continuar",
     "close_dialog": "Cerrar diálogo",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Descartar",
+    "close": "Cerrar",
+    "reload": "Recargar"
   },
   "state": {
     "connected": "Conectado",
@@ -108,7 +108,7 @@
   "serial": {
     "instructions": "Si el proceso de desconexión tarda demasiado, puedes desenchufar el dispositivo manualmente.",
     "disconnect": "Desconectar",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Reconectar",
     "log_levels": {
       "all": "Todos",
       "debug": "Depuración",
@@ -118,13 +118,13 @@
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
-    "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
-    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_unresponsive_title": "Device Unresponsive",
-    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+    "success_title": "Modo DFU",
+    "success_message": "Dispositivo entró en modo DFU exitosamente",
+    "error_title": "Error en Modo DFU",
+    "error_message": "Error al entrar en modo DFU. Por favor, desconecte y vuelva a conectar el dispositivo e inténtelo de nuevo. Si el problema persiste, recargue la página.",
+    "error_connection_title": "Error de conexión del dispositivo",
+    "error_connection": "Error al conectar al dispositivo o el dispositivo ya está en modo DFU. Por favor, desconecte y vuelva a conectar el dispositivo e inténtelo de nuevo. Si el problema persiste, recargue la página.",
+    "error_unresponsive_title": "Dispositivo no responde",
+    "error_unresponsive": "El dispositivo no responde. Por favor, asegúrese de que esté correctamente conectado y que no se encuentre en modo DFU. Si el problema persiste, recargue la página."
   }
 }
