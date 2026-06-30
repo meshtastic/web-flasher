@@ -45,7 +45,7 @@
             </li>
             <li v-else>
               <span class="block px-4 py-2 italic text-theme-muted">
-                Firmware coming soon
+                {{ $t('firmware.coming_soon') }}
               </span>
             </li>
           </ul>

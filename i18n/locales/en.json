@@ -60,6 +60,7 @@
     "stable": "Stable (or Beta)",
     "unstable": "Unstable (Alpha)",
     "prerelease": "Pre-release",
+    "coming_soon": "Firmware coming soon",
     "error_fetching": "Could not fetch firmware versions from API.",
     "refresh_later": "Refresh the page later to try again.",
     "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
