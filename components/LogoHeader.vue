@@ -60,7 +60,9 @@
       <h1 class="logo-title">
         <span class="logo-title-gradient">{{ $t('header_title') }}</span>
       </h1>
-      <p class="logo-tagline">{{ eventMode.eventName }}</p>
+      <p class="logo-tagline">
+        {{ eventMode.eventName }}
+      </p>
     </div>
 
     <!-- Hamvention event branding variant -->
@@ -78,7 +80,44 @@
       <h1 class="logo-title">
         <span class="logo-title-gradient">{{ $t('header_title') }}</span>
       </h1>
-      <p class="logo-tagline">{{ eventMode.eventName }}</p>
+      <p class="logo-tagline">
+        {{ eventMode.eventName }}
+      </p>
+    </div>
+
+    <!-- Generic event branding (theme-driven, e.g. DEFCON) -->
+    <div
+      v-else-if="eventMode.enabled"
+      class="logo-header-content"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="eventMode.iconUrl"
+            :src="eventMode.iconUrl"
+            class="logo-icon-event"
+            :alt="`${eventMode.eventName} Logo`"
+          >
+          <img
+            v-else-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">
+        {{ eventMode.tagline || eventMode.eventName }}
+      </p>
     </div>
 
     <!-- Standard variant -->
@@ -105,7 +144,9 @@
       <h1 class="logo-title">
         <span class="logo-title-gradient">{{ $t('header_title') }}</span>
       </h1>
-      <p class="logo-tagline">{{ $t('description') }}</p>
+      <p class="logo-tagline">
+        {{ $t('description') }}
+      </p>
     </div>
   </div>
 </template>
