@@ -65,6 +65,41 @@
       </p>
     </div>
 
+    <!-- Open Sauce event branding variant -->
+    <div
+      v-else-if="eventMode.enabled && eventMode.eventTag === 'Open Sauce'"
+      class="logo-header-content"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+        <span class="logo-separator">×</span>
+        <img
+          src="@/assets/img/opensauce.webp"
+          class="logo-icon-event logo-icon-opensauce"
+          alt="Open Sauce 2026 Logo"
+        >
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">
+        {{ eventMode.tagline || eventMode.eventName }}
+      </p>
+    </div>
+
     <!-- Hamvention event branding variant -->
     <div
       v-else-if="eventMode.enabled && eventMode.eventTag === 'Hamvention'"
@@ -244,6 +279,12 @@ const { eventMode } = useEventMode()
   width: auto;
   object-fit: contain;
   border-radius: 0.5rem;
+}
+
+/* The Open Sauce logo ships white for dark headers; darken to a solid
+   silhouette in light mode so it stays visible on a light background. */
+:root[data-theme="light"] .logo-icon-opensauce {
+  filter: brightness(0);
 }
 
 @media (min-width: 640px) {

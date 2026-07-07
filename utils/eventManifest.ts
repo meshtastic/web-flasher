@@ -100,6 +100,21 @@ export function manifestEditionToEventMode(edition: EventFirmwareEdition): Event
   }
 }
 
+/**
+ * Whether applying `next` would DOWNGRADE the currently-active event: it's the
+ * same event (matched by non-empty domain) but its build hasn't shipped yet
+ * (empty firmware id) while we already resolved a flashable build for it. The
+ * background API refresh uses this to avoid reverting a shipped bundled build
+ * back to "coming soon" when the live manifest still lags behind.
+ */
+export function isFirmwareDowngrade(current: EventModeConfig, next: EventModeConfig): boolean {
+  return current.enabled
+    && !!current.firmware.id
+    && !next.firmware.id
+    && !!current.domain
+    && current.domain === next.domain
+}
+
 function clampByte(n: number): number {
   return Math.max(0, Math.min(255, Math.round(n)))
 }

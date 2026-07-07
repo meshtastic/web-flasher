@@ -50,19 +50,19 @@
         { "label": "Event Website", "url": "https://opensauce.com" }
       ],
       "theme": {
-        "name": null,
-        "tagline": null,
+        "name": "Makers & Mesh",
+        "tagline": "Where makers, science, and mesh collide.",
         "colors": { "primary": "#E94F1D", "secondary": null, "accent": null },
         "palette": ["#E94F1D"],
         "fonts": null
       },
       "firmware": {
         "slug": "opensauce2026",
-        "version": null,
-        "id": null,
-        "title": null,
-        "zipUrl": null,
-        "releaseNotes": null
+        "version": "2.7.26.004b486",
+        "id": "v2.7.26.004b486",
+        "title": "Meshtastic Firmware 2.7.26.004b486",
+        "zipUrl": "https://github.com/meshtastic/meshtastic.github.io/raw/master/event/opensauce2026/firmware-2.7.26.004b486.zip",
+        "releaseNotes": "## Welcome to Open Sauce 2026! 🔧\n\nThis firmware has been customized for Open Sauce with factory default configurations.\n\n### ⚠️ Important: Backup Before Flashing\n\nIf your device has existing settings or encryption keys, **backup your keys / configurations** before proceeding. Flashing will reset your device to factory settings for the event.\n\n### Quick Start\n\n1. Ensure a **data-capable USB cable** is connected\n2. Select your device type\n3. Choose \"Full Erase and Install\"\n4. After flashing, download the Meshtastic app and pair via Bluetooth\n5. If you updated from a previous version or installed a UF2 on an NRF52 device, you will need to perform a factory reset on the device to activate the Open Sauce mode.\n\n**Happy meshing from San Mateo!**"
       }
     },
     {
