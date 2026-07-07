@@ -37,6 +37,14 @@ export default defineNuxtConfig({
       datadogClientToken: process.env.DATADOG_CLIENT_TOKEN || '',
       datadogEnv: process.env.NODE_ENV || 'production',
       cookieyesClientId: process.env.COOKIEYES_CLIENT_ID || '',
+      // Alphanaut feedback tool (hidden bug reporter). Empty URL = feature disabled.
+      feedbackWebhookUrl: process.env.FEEDBACK_WEBHOOK_URL || '',
+      // NOTE: public runtime config ships in the browser bundle, so this token is
+      // intentionally NOT a secret — it is only a best-effort speed-bump against
+      // low-effort bots hitting the "Anyone"-access Apps Script endpoint. This is
+      // an SPA (ssr: false) with no server runtime to proxy through; real controls
+      // are the Apps Script's required-field validation, size caps, and kill switch.
+      feedbackToken: process.env.FEEDBACK_TOKEN || '',
     },
   },
   ignore: ignoredDevWatchPaths,
