@@ -5,6 +5,7 @@ import type {
   AlphanautSnapshot,
   QueuedSubmission,
 } from '~/types/alphanaut'
+import type { FirmwareResource } from '~/types/api'
 import { buildPayload, isAlphanautVersion, postReport } from '~/utils/alphanautSubmit'
 import { useDeviceStore } from './deviceStore'
 import { useFirmwareStore } from './firmwareStore'
@@ -12,6 +13,19 @@ import { useFirmwareStore } from './firmwareStore'
 // Cap the retry queue so a persistently-offline tester can't grow localStorage
 // without bound. Oldest is dropped when exceeded (logged, not silent).
 const MAX_QUEUE = 20
+
+/**
+ * Resolve the selected firmware's id + version from one place so currentVersion
+ * and captureContext can't drift: release builds carry a 'v'-prefixed id with
+ * the hash; PR/CI builds carry only prBuild.version.
+ */
+function parseFirmwareVersion(selected: FirmwareResource | undefined): { id: string, version: string } {
+  const id = selected?.id
+  return {
+    id: id ?? '',
+    version: id ? id.replace(/^v/, '') : (selected?.prBuild?.version ?? ''),
+  }
+}
 
 export type SubmitOutcome
   = { status: 'sent', deduped?: boolean }
@@ -39,10 +53,7 @@ export const useAlphanautStore = defineStore('alphanaut', {
 
     /** Selected firmware version (without leading 'v'), or '' if none. */
     currentVersion(): string {
-      const fw = useFirmwareStore()
-      const id = fw.selectedFirmware?.id
-      if (id) return id.replace(/^v/, '')
-      return fw.selectedFirmware?.prBuild?.version ?? ''
+      return parseFirmwareVersion(useFirmwareStore().selectedFirmware).version
     },
 
     isTargetVersion(): boolean {
@@ -75,11 +86,11 @@ export const useAlphanautStore = defineStore('alphanaut', {
       const dev = useDeviceStore()
 
       const selected = fw.selectedFirmware
-      const id = selected?.id
-      const firmware = (id || selected?.prBuild)
+      const { id, version } = parseFirmwareVersion(selected)
+      const firmware = (selected?.id || selected?.prBuild)
         ? {
-            id: id ?? '',
-            version: id ? id.replace(/^v/, '') : (selected?.prBuild?.version ?? ''),
+            id,
+            version,
             isPrBuild: !!selected?.prBuild,
             prNumber: selected?.prBuild?.prNumber ?? null,
           }

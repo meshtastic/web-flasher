@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { AlphanautReportForm, AlphanautSnapshot } from '~/types/alphanaut'
-import { buildPayload, isAlphanautVersion, postReport } from './alphanautSubmit'
+import { MAX_LOG_CHARS, buildPayload, isAlphanautVersion, postReport } from './alphanautSubmit'
 
 const snapshot: AlphanautSnapshot = {
   firmware: { id: 'v2.8.0.b246bcd', version: '2.8.0.b246bcd', isPrBuild: false, prNumber: null },
@@ -75,6 +75,23 @@ describe('buildPayload', () => {
     })
     expect('token' in payload).toBe(false)
     expect(payload.logs.serialLog).toBe('INFO boot')
+  })
+
+  it('caps oversized serial and app logs to the tail, under MAX_LOG_CHARS', () => {
+    const bigSerial = `HEAD${'s'.repeat(MAX_LOG_CHARS)}TAIL`
+    const bigApp = `HEAD${'a'.repeat(MAX_LOG_CHARS)}TAIL`
+    const payload = buildPayload({
+      snapshot,
+      form: makeForm({ appLogs: bigApp }),
+      serialLog: bigSerial,
+      submissionId: 'id-cap',
+      submittedAt: '2026-07-07T00:00:00.000Z',
+    })
+    expect(payload.logs.serialLog!.length).toBe(MAX_LOG_CHARS)
+    expect(payload.logs.serialLog!.endsWith('TAIL')).toBe(true)
+    expect(payload.logs.serialLog!.startsWith('HEAD')).toBe(false)
+    expect(payload.logs.appLogs!.length).toBe(MAX_LOG_CHARS)
+    expect(payload.logs.appLogs!.endsWith('TAIL')).toBe(true)
   })
 })
 

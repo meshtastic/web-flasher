@@ -9,10 +9,14 @@
  *   - Who has access:  Anyone
  * Copy the /exec URL into the web-flasher env var FEEDBACK_WEBHOOK_URL.
  *
- * OPTIONAL anti-spam token:
- *   Project Settings → Script Properties → add SHARED_TOKEN = <secret>.
+ * OPTIONAL anti-spam token (best-effort only — NOT a secret):
+ *   Project Settings → Script Properties → add SHARED_TOKEN = <token>.
  *   Set the same value in the web-flasher env var FEEDBACK_TOKEN. If the
- *   property is absent, the token check is skipped.
+ *   property is absent, the token check is skipped (endpoint stays open).
+ *   Because FEEDBACK_TOKEN ships in the public SPA bundle it is readable by
+ *   anyone, so the token only deters low-effort bots — it is not real auth.
+ *   Required-field validation, payload size caps, and unpublishing the
+ *   deployment are the real controls for a public "Anyone"-access web app.
  *
  * The client POSTs Content-Type: text/plain (a CORS "simple request", so no
  * preflight — Apps Script has no doOptions). The body is JSON; we JSON.parse it.
@@ -22,7 +26,6 @@ var SHEET_NAME = 'feedback';
 var MAX_CELL = 45000; // stay under Sheets' ~50,000 char/cell limit
 var DEDUPE_LOOKBACK = 250; // scan the last N submissionIds for idempotency
 var MIN_SCHEMA = 1;
-var SUBMISSION_ID_COL_INDEX = 3; // 1-based column of 'submissionId' — keep in sync with COLUMNS
 
 // Fixed column order. The header row equals these keys; order is load-bearing.
 var COLUMNS = [
@@ -35,6 +38,9 @@ var COLUMNS = [
   'logs.serialLog', 'logs.appLogs',
   'rawJson' // hidden — full JSON for forward-compat / debugging
 ];
+
+// Derived from COLUMNS so it can't silently drift if columns are reordered.
+var SUBMISSION_ID_COL_INDEX = COLUMNS.indexOf('submissionId') + 1; // 1-based
 
 var NUMERIC_COLS = { 'schemaVersion': 1, 'firmware.prNumber': 1, 'report.rating': 1 };
 var BOOLEAN_COLS = { 'firmware.isPrBuild': 1 };
@@ -117,8 +123,13 @@ function getSheet() {
 
 function ensureHeader(sheet) {
   if (sheet.getLastRow() >= 1) {
-    var first = sheet.getRange(1, 1).getValue();
-    if (first === COLUMNS[0]) return; // header already current
+    // Compare the whole header row, not just the first cell, so a schema change
+    // (added/reordered column) rewrites the header instead of silently
+    // appending misaligned rows under a stale one.
+    var existing = sheet.getRange(1, 1, 1, COLUMNS.length).getValues()[0];
+    var matches = existing.length === COLUMNS.length
+      && existing.every(function (v, i) { return v === COLUMNS[i]; });
+    if (matches) return; // header already current
   }
   sheet.getRange(1, 1, 1, COLUMNS.length).setValues([COLUMNS]);
   sheet.setFrozenRows(1);
@@ -155,6 +166,9 @@ function coerce(col, v) {
     return isNaN(n) ? '' : n;
   }
   if (BOOLEAN_COLS[col]) return (v === true || v === 'true');
+  // Objects/arrays would stringify to a useless "[object Object]"; serialize
+  // them so a malformed payload's real content is preserved for inspection.
+  if (typeof v === 'object') return truncate(JSON.stringify(v), MAX_CELL);
   return truncate(String(v), MAX_CELL);
 }
 

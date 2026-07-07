@@ -15,8 +15,20 @@ export const ALPHANAUT_VERSION_PREFIX = '2.8'
 
 export const ALPHANAUT_SCHEMA_VERSION = 1
 
+/**
+ * Client-side cap for log fields. A single Google Sheet cell tops out at ~50k
+ * chars; cap below that so a long serial capture or pasted log isn't truncated
+ * server-side without the tester knowing. Keeps the tail (most recent output).
+ */
+export const MAX_LOG_CHARS = 45000
+
 /** Request timeout — an abort is treated as a transient failure (safe: retries are idempotent). */
 const REQUEST_TIMEOUT_MS = 15000
+
+/** Keep only the last MAX_LOG_CHARS of a log so it fits in one Sheet cell. */
+function capLog(value: string): string {
+  return value.length > MAX_LOG_CHARS ? value.slice(-MAX_LOG_CHARS) : value
+}
 
 /** True when a selected firmware version belongs to the alphanaut test line. */
 export function isAlphanautVersion(version?: string | null): boolean {
@@ -60,8 +72,8 @@ export function buildPayload(args: BuildPayloadArgs): AlphanautPayload {
       otherInfo: nullIfBlank(form.otherInfo),
     },
     logs: {
-      serialLog: nullIfBlank(serialLog),
-      appLogs: nullIfBlank(form.appLogs),
+      serialLog: nullIfBlank(capLog(serialLog)),
+      appLogs: nullIfBlank(capLog(form.appLogs)),
     },
   }
 }
