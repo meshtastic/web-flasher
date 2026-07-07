@@ -37,6 +37,9 @@ export default defineNuxtConfig({
       datadogClientToken: process.env.DATADOG_CLIENT_TOKEN || '',
       datadogEnv: process.env.NODE_ENV || 'production',
       cookieyesClientId: process.env.COOKIEYES_CLIENT_ID || '',
+      // Alphanaut feedback tool (hidden bug reporter). Empty = feature disabled.
+      feedbackWebhookUrl: process.env.FEEDBACK_WEBHOOK_URL || '',
+      feedbackToken: process.env.FEEDBACK_TOKEN || '',
     },
   },
   ignore: ignoredDevWatchPaths,
