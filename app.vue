@@ -390,12 +390,20 @@ const getKeyDisplay = (key) => {
 }
 
 window.addEventListener('keydown', (event) => {
-  if (event.key === konamiKeys[konamiCodeIndex.value]) {
+  // Ignore OS key auto-repeat. Holding a key (easy to do on the doubled
+  // ArrowUp/ArrowDown steps) fires extra keydown events that would push the
+  // index past a repeated key and silently reset the whole sequence. Repeat
+  // timing differs across browsers/OSes, so this was a common reason the code
+  // "wouldn't trigger" for some testers.
+  if (event.repeat) return
+
+  const expectedKey = konamiKeys[konamiCodeIndex.value]
+  // Case-insensitive compare so Shift / Caps Lock on the final b/a still match.
+  if (event.key.toLowerCase() === expectedKey.toLowerCase()) {
     console.log('konami code key match', konamiCodeIndex.value)
 
     // Add key to animation queue with unique ID
-    const keyToDisplay = konamiKeys[konamiCodeIndex.value]
-    const keyEntry = { key: keyToDisplay, id: konamiKeyId++ }
+    const keyEntry = { key: expectedKey, id: konamiKeyId++ }
     activeKonamiKeys.value.push(keyEntry)
     setTimeout(() => {
       const idx = activeKonamiKeys.value.findIndex(k => k.id === keyEntry.id)
@@ -405,10 +413,10 @@ window.addEventListener('keydown', (event) => {
     konamiCodeIndex.value++
     if (konamiCodeIndex.value === konamiKeys.length) {
       console.log('Unlocking pre-release section')
-      document.body.classList.add('konami-code')
-      document.getElementById('main').classList.add('konami-code')
-      document.getElementById('footer').classList.add('konami-code')
       firmwareStore.$state.prereleaseUnlocked = true
+      document.body.classList.add('konami-code')
+      document.getElementById('main')?.classList.add('konami-code')
+      document.getElementById('footer')?.classList.add('konami-code')
       konamiCodeIndex.value = 0
     }
   }
