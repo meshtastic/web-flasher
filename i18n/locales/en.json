@@ -60,6 +60,7 @@
     "stable": "Stable (or Beta)",
     "unstable": "Unstable (Alpha)",
     "prerelease": "Pre-release",
+    "nightly": "Nightly (develop)",
     "coming_soon": "Firmware coming soon",
     "error_fetching": "Could not fetch firmware versions from API.",
     "refresh_later": "Refresh the page later to try again.",
