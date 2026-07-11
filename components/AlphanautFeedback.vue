@@ -7,7 +7,7 @@
       v-show="!open"
       ref="badgeButton"
       type="button"
-      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[9999] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl bg-meshtastic px-3 py-2 text-xs font-semibold text-black shadow-lg transition-all duration-300 hover:bg-meshtastic-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[9999] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl border border-meshtastic/50 bg-meshtastic/10 px-3 py-2 text-xs font-medium text-meshtastic shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-meshtastic/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
       :title="$t('alphanaut.badge_title')"
       @click="openPanel"
     >
@@ -15,7 +15,7 @@
       <span class="hidden sm:inline">{{ $t('alphanaut.badge_label') }}</span>
       <span
         v-if="store.pendingCount > 0"
-        class="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-black px-1 text-[10px] font-bold text-meshtastic"
+        class="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-meshtastic px-1 text-[10px] font-bold text-black"
       >{{ store.pendingCount }}</span>
     </button>
 
