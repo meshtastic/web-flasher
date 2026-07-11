@@ -32,7 +32,7 @@ var COLUMNS = [
   'serverReceivedAt', 'submittedAt', 'submissionId', 'schemaVersion',
   'firmware.id', 'firmware.version', 'firmware.isPrBuild', 'firmware.prNumber',
   'device.platformioTarget', 'device.displayName',
-  'report.handle', 'report.contact', 'report.rating', 'report.whatHappened',
+  'report.handle', 'report.contact', 'report.outcome', 'report.whatHappened',
   'report.expectedBehavior', 'report.reproSteps', 'report.appPlatform',
   'report.appVersion', 'report.otherInfo',
   'logs.serialLog', 'logs.appLogs',
@@ -42,7 +42,7 @@ var COLUMNS = [
 // Derived from COLUMNS so it can't silently drift if columns are reordered.
 var SUBMISSION_ID_COL_INDEX = COLUMNS.indexOf('submissionId') + 1; // 1-based
 
-var NUMERIC_COLS = { 'schemaVersion': 1, 'firmware.prNumber': 1, 'report.rating': 1 };
+var NUMERIC_COLS = { 'schemaVersion': 1, 'firmware.prNumber': 1 };
 var BOOLEAN_COLS = { 'firmware.isPrBuild': 1 };
 
 function doPost(e) {
@@ -78,11 +78,13 @@ function doPost(e) {
     }
 
     // Required fields (whitelist means any extras are ignored, not stored).
-    if (!getByPath(payload, 'device.platformioTarget')) {
-      return jsonOut({ ok: false, error: 'missing device.platformioTarget' });
-    }
+    // device is optional — the client allows "not specified" (null device).
     if (!getByPath(payload, 'report.handle') || !getByPath(payload, 'report.whatHappened')) {
       return jsonOut({ ok: false, error: 'missing required report fields' });
+    }
+    // Outcome is required and constrained; this endpoint is public.
+    if (['pass', 'fail', 'observation'].indexOf(getByPath(payload, 'report.outcome')) === -1) {
+      return jsonOut({ ok: false, error: 'invalid report.outcome' });
     }
 
     var sheet = getSheet();

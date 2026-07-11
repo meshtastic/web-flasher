@@ -1,10 +1,11 @@
 <template>
   <div v-if="store.isVisible">
-    <!-- Floating reveal badge (subtle, bottom-left so it clears the connection badge) -->
+    <!-- Floating reveal badge (bottom-right; the connection badge lives top-right) -->
     <button
       ref="badgeButton"
       type="button"
-      class="fixed left-2 sm:left-4 bottom-2 sm:bottom-4 z-[55] inline-flex items-center gap-2 rounded-xl border border-meshtastic/50 bg-meshtastic/10 px-3 py-2 text-xs font-medium text-meshtastic shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-meshtastic/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
+      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[55] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl border border-meshtastic/50 bg-meshtastic/10 px-3 py-2 text-xs font-medium text-meshtastic shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-meshtastic/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
+      :class="{ 'alphanaut-attention': showAttention }"
       :title="$t('alphanaut.badge_title')"
       @click="openPanel"
     >
@@ -52,22 +53,12 @@
 
               <!-- Body -->
               <div class="flex-1 space-y-4 overflow-y-auto p-4">
-                <!-- Auto-captured context (read-only) -->
+                <!-- Auto-captured firmware context (read-only) -->
                 <div class="rounded-lg border border-theme bg-surface-primary p-3 text-sm">
                   <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-theme-muted">
                     {{ $t('alphanaut.captured') }}
                   </p>
                   <dl class="grid grid-cols-[auto,1fr] gap-x-3 gap-y-1">
-                    <dt class="text-theme-muted">
-                      {{ $t('alphanaut.hardware') }}
-                    </dt>
-                    <dd class="break-all font-mono text-theme-accent">
-                      {{ store.snapshot.device?.platformioTarget || '—' }}
-                      <span
-                        v-if="store.snapshot.device?.displayName"
-                        class="text-theme-muted"
-                      >({{ store.snapshot.device.displayName }})</span>
-                    </dd>
                     <dt class="text-theme-muted">
                       {{ $t('alphanaut.firmware') }}
                     </dt>
@@ -81,36 +72,65 @@
                   </dl>
                 </div>
 
-                <!-- Handle + rating -->
-                <div class="grid gap-4 sm:grid-cols-2">
-                  <label class="block">
-                    <span class="text-sm text-theme-muted">{{ $t('alphanaut.handle') }} *</span>
-                    <input
-                      ref="handleInput"
-                      v-model="form.handle"
-                      type="text"
-                      :placeholder="$t('alphanaut.handle_ph')"
-                      :class="inputClass"
+                <!-- Hardware — auto-detected, but the tester can correct it -->
+                <label class="block">
+                  <span class="text-sm text-theme-muted">{{ $t('alphanaut.hardware') }}</span>
+                  <select
+                    v-model="selectedHardware"
+                    :class="inputClass"
+                  >
+                    <option value="">
+                      {{ $t('alphanaut.hardware_unknown') }}
+                    </option>
+                    <option
+                      v-for="opt in hardwareOptions"
+                      :key="opt.platformioTarget"
+                      :value="opt.platformioTarget"
                     >
-                  </label>
-                  <div class="block">
-                    <span class="text-sm text-theme-muted">{{ $t('alphanaut.rating') }} *</span>
-                    <div class="mt-1 flex items-center gap-1">
-                      <button
-                        v-for="n in 5"
-                        :key="n"
-                        type="button"
-                        class="flex h-11 w-11 items-center justify-center rounded transition-colors hover:bg-surface-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
-                        :aria-label="$t('alphanaut.rate_aria', { n })"
-                        :aria-pressed="n <= form.rating"
-                        @click="form.rating = n"
-                      >
-                        <Star
-                          class="h-6 w-6"
-                          :class="n <= form.rating ? 'fill-meshtastic text-meshtastic' : 'text-theme-muted'"
-                        />
-                      </button>
-                    </div>
+                      {{ opt.displayName ? `${opt.displayName} (${opt.platformioTarget})` : opt.platformioTarget }}
+                    </option>
+                  </select>
+                  <span class="mt-1 block text-xs text-theme-muted">{{ $t('alphanaut.hardware_hint') }}</span>
+                </label>
+
+                <!-- Handle -->
+                <label class="block">
+                  <span class="text-sm text-theme-muted">{{ $t('alphanaut.handle') }} *</span>
+                  <input
+                    ref="handleInput"
+                    v-model="form.handle"
+                    type="text"
+                    :placeholder="$t('alphanaut.handle_ph')"
+                    :class="inputClass"
+                  >
+                </label>
+
+                <!-- Outcome: pass / fail / observation -->
+                <div class="block">
+                  <span class="text-sm text-theme-muted">{{ $t('alphanaut.outcome') }} *</span>
+                  <div
+                    class="mt-1 grid grid-cols-3 gap-2"
+                    role="radiogroup"
+                    :aria-label="$t('alphanaut.outcome')"
+                  >
+                    <button
+                      v-for="(opt, i) in outcomeOptions"
+                      :key="opt.value"
+                      type="button"
+                      role="radio"
+                      :aria-checked="form.outcome === opt.value"
+                      :tabindex="outcomeTabindex(i)"
+                      class="flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
+                      :class="form.outcome === opt.value ? opt.activeClass : 'border-theme text-theme-muted hover:bg-surface-secondary'"
+                      @click="form.outcome = opt.value"
+                      @keydown="onOutcomeKeydown($event, i)"
+                    >
+                      <component
+                        :is="opt.icon"
+                        class="h-4 w-4 shrink-0"
+                      />
+                      {{ $t(opt.label) }}
+                    </button>
                   </div>
                 </div>
 
@@ -276,11 +296,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
-import { onKeyStroke, useEventListener } from '@vueuse/core'
-import { Bug, CircleCheck, LoaderCircle, RefreshCw, Send, Star, TriangleAlert, X } from 'lucide-vue-next'
+import { computed, nextTick, onMounted, reactive, ref, watch, type Component } from 'vue'
+import { onKeyStroke, useEventListener, useLocalStorage } from '@vueuse/core'
+import { Bug, CircleCheck, CircleX, Eye, LoaderCircle, RefreshCw, Send, TriangleAlert, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
-import type { AlphanautReportForm, AppPlatform } from '~/types/alphanaut'
+import type { AlphanautOutcome, AlphanautReportForm, AppPlatform } from '~/types/alphanaut'
 import { useAlphanautStore } from '~/stores/alphanautStore'
 import { useFirmwareStore } from '~/stores/firmwareStore'
 import { useSerialMonitorStore } from '~/stores/serialMonitorStore'
@@ -294,10 +314,24 @@ const toastStore = useToastStore()
 
 const appPlatforms: AppPlatform[] = ['Android', 'iOS', 'macOS', 'Linux', 'Windows', 'Web', 'N/A']
 
+// Pass/fail/observation verdict, replacing the old star rating. activeClass is
+// applied only to the selected option.
+const outcomeOptions: { value: AlphanautOutcome, label: string, icon: Component, activeClass: string }[] = [
+  { value: 'pass', label: 'alphanaut.outcome_pass', icon: CircleCheck, activeClass: 'border-meshtastic bg-meshtastic/15 text-meshtastic' },
+  { value: 'fail', label: 'alphanaut.outcome_fail', icon: CircleX, activeClass: 'border-red-500 bg-red-500/15 text-red-400' },
+  { value: 'observation', label: 'alphanaut.outcome_observation', icon: Eye, activeClass: 'border-amber-500 bg-amber-500/15 text-amber-400' },
+]
+
 const inputClass = 'mt-1 w-full px-3 py-2 text-sm rounded-lg bg-surface-primary border border-theme text-theme focus:outline-none focus:ring-2 focus:ring-meshtastic/60 focus:border-meshtastic'
 const textareaClass = `${inputClass} resize-y`
 
 const open = ref(false)
+// Once a tester opens the panel we stop nagging with the attention pulse. Persist
+// so returning testers who've already found it don't get pulsed on every visit.
+const badgeAcknowledged = useLocalStorage('alphanautBadgeSeen', false)
+// The badge is only ever visible when a 2.8 build is selected (store.isVisible),
+// so pulsing while unacknowledged draws attention exactly on that selection.
+const showAttention = computed(() => store.isVisible && !badgeAcknowledged.value)
 const badgeButton = ref<HTMLButtonElement | null>(null)
 const handleInput = ref<HTMLInputElement | null>(null)
 type Status = 'idle' | 'submitting' | 'sent' | 'queued' | 'rejected'
@@ -308,7 +342,7 @@ function blankForm(): AlphanautReportForm {
   return {
     handle: '',
     contact: '',
-    rating: 0,
+    outcome: '',
     whatHappened: '',
     expectedBehavior: '',
     reproSteps: '',
@@ -323,12 +357,57 @@ const form = reactive<AlphanautReportForm>(blankForm())
 
 const serialLineCount = computed(() => serialMonitorStore.terminalBuffer.length)
 
+// Hardware selector: defaults to the auto-detected target (re-captured each time
+// the panel opens) but the tester can pick a different board. Writing back through
+// the store's snapshot.device is all the submitted payload reads.
+const hardwareOptions = computed(() => store.hardwareOptions)
+const selectedHardware = computed<string>({
+  get: () => store.snapshot.device?.platformioTarget ?? '',
+  set: (target) => {
+    store.setDevice(hardwareOptions.value.find(o => o.platformioTarget === target) ?? null)
+  },
+})
+
 const canSubmit = computed(() =>
   form.handle.trim().length > 0
-  && form.rating >= 1
+  && form.outcome !== ''
   && form.whatHappened.trim().length > 0
   && form.expectedBehavior.trim().length > 0,
 )
+
+// ARIA radiogroup keyboard support: only the selected option (or the first, when
+// none is chosen) stays in the tab order; arrow keys move selection with wrapping.
+function outcomeTabindex(i: number): number {
+  const selected = outcomeOptions.findIndex(o => o.value === form.outcome)
+  return i === (selected >= 0 ? selected : 0) ? 0 : -1
+}
+
+function onOutcomeKeydown(e: KeyboardEvent, i: number) {
+  const n = outcomeOptions.length
+  let next = i
+  switch (e.key) {
+    case 'ArrowRight':
+    case 'ArrowDown':
+      next = (i + 1) % n
+      break
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      next = (i - 1 + n) % n
+      break
+    case 'Home':
+      next = 0
+      break
+    case 'End':
+      next = n - 1
+      break
+    default:
+      return
+  }
+  e.preventDefault()
+  form.outcome = outcomeOptions[next].value
+  const group = (e.currentTarget as HTMLElement).parentElement
+  group?.querySelectorAll<HTMLElement>('[role="radio"]')[next]?.focus()
+}
 
 const statusMessage = computed(() => {
   switch (status.value) {
@@ -351,6 +430,7 @@ const statusClass = computed(() => {
 
 function openPanel() {
   store.captureContext()
+  badgeAcknowledged.value = true
   status.value = 'idle'
   statusError.value = ''
   open.value = true
@@ -415,3 +495,35 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+/* Expanding "radar ping" ring drawn on a pseudo-element so it never overrides the
+   button's own shadow-lg. Only active while .alphanaut-attention is bound. */
+.alphanaut-attention::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: alphanaut-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Theme-aware accent tokens (bright green in dark, darker in light); fade the
+   ring to `transparent` since alpha is ~0 by the time the hue would matter. */
+@keyframes alphanaut-ping {
+  0% {
+    box-shadow: 0 0 0 0 var(--accent-subtle);
+  }
+  75%,
+  100% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alphanaut-attention::after {
+    animation: none;
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+}
+</style>

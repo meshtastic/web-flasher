@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useLocalStorage } from '@vueuse/core'
 import type {
+  AlphanautDeviceContext,
   AlphanautReportForm,
   AlphanautSnapshot,
   QueuedSubmission,
@@ -65,6 +66,27 @@ export const useAlphanautStore = defineStore('alphanaut', {
       return this.enabled && this.unlocked && this.isTargetVersion
     },
 
+    /**
+     * Hardware the tester can pick from to correct the auto-detected target
+     * (deduped by platformioTarget). The auto-detected device is guaranteed to be
+     * in the list even if the device catalogue filtered it out.
+     */
+    hardwareOptions(): AlphanautDeviceContext[] {
+      const seen = new Set<string>()
+      const opts: AlphanautDeviceContext[] = []
+      for (const t of useDeviceStore().sortedDevices ?? []) {
+        if (t.platformioTarget && !seen.has(t.platformioTarget)) {
+          seen.add(t.platformioTarget)
+          opts.push({ platformioTarget: t.platformioTarget, displayName: t.displayName ?? '' })
+        }
+      }
+      const current = this.snapshot.device
+      if (current?.platformioTarget && !seen.has(current.platformioTarget)) {
+        opts.unshift(current)
+      }
+      return opts
+    },
+
     pendingCount: state => state.queue.length,
   },
 
@@ -103,6 +125,15 @@ export const useAlphanautStore = defineStore('alphanaut', {
 
       this.snapshot = { firmware, device }
       return this.snapshot
+    },
+
+    /**
+     * Let the tester correct the hardware before submitting (the auto-detected
+     * target can be wrong or absent). The submitted payload reads snapshot.device,
+     * so overriding it here is all that's needed. null = "not specified".
+     */
+    setDevice(device: AlphanautDeviceContext | null) {
+      this.snapshot = { ...this.snapshot, device }
     },
 
     /** Build + POST a report; queue it on transient failure. */

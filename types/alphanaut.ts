@@ -5,6 +5,9 @@
 export type AppPlatform
   = 'Android' | 'iOS' | 'macOS' | 'Linux' | 'Windows' | 'Web' | 'N/A'
 
+/** Tester's verdict on the build under test. */
+export type AlphanautOutcome = 'pass' | 'fail' | 'observation'
+
 /** Firmware context auto-captured from firmwareStore.selectedFirmware. */
 export interface AlphanautFirmwareContext {
   id: string // e.g. 'v2.8.0.b246bcd' (version WITH git hash), '' if unknown
@@ -29,7 +32,7 @@ export interface AlphanautSnapshot {
 export interface AlphanautReportForm {
   handle: string
   contact: string
-  rating: number // 1-5
+  outcome: AlphanautOutcome | '' // '' = not yet chosen
   whatHappened: string
   expectedBehavior: string
   reproSteps: string
@@ -51,7 +54,7 @@ export interface AlphanautPayload {
   report: {
     handle: string
     contact: string | null
-    rating: number
+    outcome: AlphanautOutcome
     whatHappened: string
     expectedBehavior: string
     reproSteps: string | null
