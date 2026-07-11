@@ -97,6 +97,27 @@
             </li>
           </ul>
           <div
+            v-if="store.prereleaseUnlocked && store.$state.nightly.length > 0"
+            class="px-4 py-2 text-sm text-cyan-400 font-semibold border-theme-bottom"
+          >
+            {{ $t('firmware.nightly') }}
+          </div>
+          <ul
+            v-if="store.prereleaseUnlocked && store.$state.nightly.length > 0"
+            class="py-2 text-sm text-theme-muted"
+            aria-labelledby="dropdownInformationButton"
+          >
+            <li v-for="release in store.$state.nightly">
+              <a
+                href="#"
+                class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
+                @click="setSelectedFirmware(release)"
+              >
+                {{ release.title.replace('Meshtastic Firmware ', '') }}
+              </a>
+            </li>
+          </ul>
+          <div
             v-if="!store.couldntFetchFirmwareApi"
             class="px-4 py-2 text-sm text-warning font-semibold border-theme-bottom border-theme-top"
           >
@@ -199,6 +220,7 @@ const { eventMode } = useEventMode()
 const store = useFirmwareStore()
 const deviceStore = useDeviceStore()
 store.fetchList()
+store.fetchNightly()
 
 const selectedVersion = computed(() => {
   if (store.$state.selectedFirmware?.id) {

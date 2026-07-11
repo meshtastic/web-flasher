@@ -16,7 +16,12 @@ import {
   showPrerelease,
   eventMode,
 } from '~/types/resources'
-import { getFirmwareBaseUrl } from '~/utils/firmwareUrl'
+import {
+  getFirmwareBaseUrl,
+  GITHUB_IO_BASE,
+  NIGHTLY_DIR,
+  setNightlyVersion,
+} from '~/utils/firmwareUrl'
 
 import { track } from '@vercel/analytics'
 import { useSessionStorage } from '@vueuse/core'
@@ -120,6 +125,7 @@ export const useFirmwareStore = defineStore('firmware', {
       stable: new Array<FirmwareResource>(),
       alpha: new Array<FirmwareResource>(),
       previews: previews,
+      nightly: new Array<FirmwareResource>(),
       pullRequests: new Array<FirmwareResource>(),
       prFirmware: <FirmwareResource | undefined>undefined,
       prDeepLinkPending: false,
@@ -228,6 +234,33 @@ export const useFirmwareStore = defineStore('firmware', {
           console.error('Error fetching firmware list:', error)
           this.couldntFetchFirmwareApi = true
         })
+    },
+    /**
+     * Discover the current develop "nightly" build published to
+     * meshtastic.github.io/firmware-nightly/. Only ever surfaced behind the
+     * konami code, and skipped entirely in event mode (never on event firmwares).
+     */
+    async fetchNightly() {
+      if (eventMode.enabled) return
+      try {
+        const response = await fetch(`${GITHUB_IO_BASE}/${NIGHTLY_DIR}/index.json`)
+        if (!response.ok) return // 404 before the first nightly is published -> no section
+        const data = await response.json() as { version?: string, id?: string, title?: string }
+        const id = data.id ?? (data.version ? `v${data.version}` : undefined)
+        if (!id) {
+          console.warn('Nightly index.json missing id/version', data)
+          return // malformed pointer -> don't surface a broken entry
+        }
+        setNightlyVersion(id) // register so getManifestBasePath routes it to firmware-nightly/
+        const version = id.replace(/^v/, '')
+        this.nightly = [{
+          id,
+          title: data.title ?? `Meshtastic Firmware ${version} Nightly`,
+        }]
+      }
+      catch (error) {
+        console.warn('No nightly build available', error)
+      }
     },
     /**
      * Load a pull request's CI build as a selectable firmware version.
