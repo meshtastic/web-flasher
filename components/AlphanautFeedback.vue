@@ -1,10 +1,13 @@
 <template>
   <div v-if="store.isVisible">
-    <!-- Floating reveal badge (bottom-right; the connection badge lives top-right) -->
+    <!-- Floating reveal badge. z-[9999] keeps it above the konami vignette overlay
+         (::after, z-index 9998) and app modal backdrops so it never gets dimmed;
+         hidden while its own panel is open so it can't overlap the dialog. -->
     <button
+      v-show="!open"
       ref="badgeButton"
       type="button"
-      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[55] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl bg-meshtastic px-3 py-2 text-xs font-semibold text-black shadow-lg transition-all duration-300 hover:bg-meshtastic-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[9999] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl bg-meshtastic px-3 py-2 text-xs font-semibold text-black shadow-lg transition-all duration-300 hover:bg-meshtastic-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       :title="$t('alphanaut.badge_title')"
       @click="openPanel"
     >
