@@ -545,27 +545,6 @@ onMounted(() => {
     }
   }
 
-  /* Scanlines overlay for CRT effect - subtle */
-  .konami-code::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.03),
-      rgba(0, 0, 0, 0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-    opacity: 0;
-    animation: fadeInScanlines 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
   /* CRT vignette effect */
   .konami-code::after {
     content: '';
@@ -584,12 +563,6 @@ onMounted(() => {
     );
     opacity: 0;
     animation: fadeInVignette 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  @keyframes fadeInScanlines {
-    to {
-      opacity: 1;
-    }
   }
 
   @keyframes fadeInVignette {
