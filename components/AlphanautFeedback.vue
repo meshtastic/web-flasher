@@ -4,7 +4,7 @@
     <button
       ref="badgeButton"
       type="button"
-      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[55] inline-flex items-center gap-2 rounded-xl border border-meshtastic/50 bg-meshtastic/10 px-3 py-2 text-xs font-medium text-meshtastic shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-meshtastic/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
+      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[55] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl border border-meshtastic/50 bg-meshtastic/10 px-3 py-2 text-xs font-medium text-meshtastic shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-meshtastic/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
       :class="{ 'alphanaut-attention': showAttention }"
       :title="$t('alphanaut.badge_title')"
       @click="openPanel"
@@ -114,14 +114,16 @@
                     :aria-label="$t('alphanaut.outcome')"
                   >
                     <button
-                      v-for="opt in outcomeOptions"
+                      v-for="(opt, i) in outcomeOptions"
                       :key="opt.value"
                       type="button"
                       role="radio"
                       :aria-checked="form.outcome === opt.value"
+                      :tabindex="outcomeTabindex(i)"
                       class="flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
                       :class="form.outcome === opt.value ? opt.activeClass : 'border-theme text-theme-muted hover:bg-surface-secondary'"
                       @click="form.outcome = opt.value"
+                      @keydown="onOutcomeKeydown($event, i)"
                     >
                       <component
                         :is="opt.icon"
@@ -373,6 +375,40 @@ const canSubmit = computed(() =>
   && form.expectedBehavior.trim().length > 0,
 )
 
+// ARIA radiogroup keyboard support: only the selected option (or the first, when
+// none is chosen) stays in the tab order; arrow keys move selection with wrapping.
+function outcomeTabindex(i: number): number {
+  const selected = outcomeOptions.findIndex(o => o.value === form.outcome)
+  return i === (selected >= 0 ? selected : 0) ? 0 : -1
+}
+
+function onOutcomeKeydown(e: KeyboardEvent, i: number) {
+  const n = outcomeOptions.length
+  let next = i
+  switch (e.key) {
+    case 'ArrowRight':
+    case 'ArrowDown':
+      next = (i + 1) % n
+      break
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      next = (i - 1 + n) % n
+      break
+    case 'Home':
+      next = 0
+      break
+    case 'End':
+      next = n - 1
+      break
+    default:
+      return
+  }
+  e.preventDefault()
+  form.outcome = outcomeOptions[next].value
+  const group = (e.currentTarget as HTMLElement).parentElement
+  group?.querySelectorAll<HTMLElement>('[role="radio"]')[next]?.focus()
+}
+
 const statusMessage = computed(() => {
   switch (status.value) {
     case 'submitting': return t('alphanaut.status_submitting')
@@ -472,20 +508,22 @@ onMounted(() => {
   animation: alphanaut-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
+/* Theme-aware accent tokens (bright green in dark, darker in light); fade the
+   ring to `transparent` since alpha is ~0 by the time the hue would matter. */
 @keyframes alphanaut-ping {
   0% {
-    box-shadow: 0 0 0 0 rgba(103, 234, 148, 0.5);
+    box-shadow: 0 0 0 0 var(--accent-subtle);
   }
   75%,
   100% {
-    box-shadow: 0 0 0 12px rgba(103, 234, 148, 0);
+    box-shadow: 0 0 0 12px transparent;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .alphanaut-attention::after {
     animation: none;
-    box-shadow: 0 0 0 3px rgba(103, 234, 148, 0.35);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
   }
 }
 </style>

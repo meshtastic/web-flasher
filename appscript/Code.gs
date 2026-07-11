@@ -78,11 +78,13 @@ function doPost(e) {
     }
 
     // Required fields (whitelist means any extras are ignored, not stored).
-    if (!getByPath(payload, 'device.platformioTarget')) {
-      return jsonOut({ ok: false, error: 'missing device.platformioTarget' });
-    }
+    // device is optional — the client allows "not specified" (null device).
     if (!getByPath(payload, 'report.handle') || !getByPath(payload, 'report.whatHappened')) {
       return jsonOut({ ok: false, error: 'missing required report fields' });
+    }
+    // Outcome is required and constrained; this endpoint is public.
+    if (['pass', 'fail', 'observation'].indexOf(getByPath(payload, 'report.outcome')) === -1) {
+      return jsonOut({ ok: false, error: 'invalid report.outcome' });
     }
 
     var sheet = getSheet();
