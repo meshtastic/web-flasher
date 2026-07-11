@@ -11,7 +11,10 @@ import { useAlphanautStore } from './alphanautStore'
 // the (hoisted) vi.mock factories reference them while keeping imports on top.
 const { fakeFirmware, fakeDevice } = vi.hoisted(() => ({
   fakeFirmware: { selectedFirmware: {} as Record<string, unknown> },
-  fakeDevice: { selectedTarget: undefined as Record<string, unknown> | undefined },
+  fakeDevice: {
+    selectedTarget: undefined as Record<string, unknown> | undefined,
+    sortedDevices: [] as Array<Record<string, unknown>>,
+  },
 }))
 
 vi.mock('./firmwareStore', () => ({ useFirmwareStore: () => fakeFirmware }))
@@ -29,7 +32,7 @@ function makeForm(overrides: Partial<AlphanautReportForm> = {}): AlphanautReport
   return {
     handle: 'KJ7XYZ',
     contact: '',
-    rating: 4,
+    outcome: 'fail',
     whatHappened: 'bug',
     expectedBehavior: 'no bug',
     reproSteps: '',
@@ -50,6 +53,7 @@ beforeEach(() => {
   setActivePinia(createPinia())
   fakeFirmware.selectedFirmware = {}
   fakeDevice.selectedTarget = undefined
+  fakeDevice.sortedDevices = []
   postReportMock.mockReset()
 })
 
@@ -116,6 +120,44 @@ describe('captureContext', () => {
     const snap = store.captureContext()
     expect(snap.firmware).toEqual({ id: 'v2.8.0.abc', version: '2.8.0.abc', isPrBuild: true, prNumber: 7 })
     expect(snap.device).toEqual({ platformioTarget: 'heltec-v4', displayName: 'Heltec V4' })
+  })
+})
+
+describe('hardware override', () => {
+  it('lists selectable hardware, deduped, with the auto-detected target guaranteed present', () => {
+    const store = useAlphanautStore()
+    fakeDevice.sortedDevices = [
+      { platformioTarget: 'tbeam', displayName: 'T-Beam' },
+      { platformioTarget: 'tbeam', displayName: 'T-Beam (dup)' },
+      { platformioTarget: 'rak4631', displayName: 'RAK4631' },
+    ]
+    fakeDevice.selectedTarget = { platformioTarget: 'heltec-v4', displayName: 'Heltec V4' }
+    store.captureContext()
+
+    expect(store.hardwareOptions.map(o => o.platformioTarget)).toEqual(['heltec-v4', 'tbeam', 'rak4631'])
+  })
+
+  it('submits the tester-selected hardware instead of the auto-detected one', async () => {
+    const store = useAlphanautStore()
+    fakeDevice.selectedTarget = { platformioTarget: 'heltec-v4', displayName: 'Heltec V4' }
+    store.configure('https://x/exec', '')
+    store.captureContext()
+    expect(store.snapshot.device?.platformioTarget).toBe('heltec-v4')
+
+    store.setDevice({ platformioTarget: 'tbeam', displayName: 'T-Beam' })
+    postReportMock.mockResolvedValue({ ok: true })
+    await store.submit(makeForm(), '')
+
+    const sent = postReportMock.mock.calls[0][1] as AlphanautPayload
+    expect(sent.device).toEqual({ platformioTarget: 'tbeam', displayName: 'T-Beam' })
+  })
+
+  it('clears the hardware when set to null (not specified)', () => {
+    const store = useAlphanautStore()
+    fakeDevice.selectedTarget = { platformioTarget: 'heltec-v4', displayName: 'Heltec V4' }
+    store.captureContext()
+    store.setDevice(null)
+    expect(store.snapshot.device).toBeNull()
   })
 })
 

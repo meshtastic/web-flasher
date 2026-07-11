@@ -32,7 +32,7 @@ var COLUMNS = [
   'serverReceivedAt', 'submittedAt', 'submissionId', 'schemaVersion',
   'firmware.id', 'firmware.version', 'firmware.isPrBuild', 'firmware.prNumber',
   'device.platformioTarget', 'device.displayName',
-  'report.handle', 'report.contact', 'report.rating', 'report.whatHappened',
+  'report.handle', 'report.contact', 'report.outcome', 'report.whatHappened',
   'report.expectedBehavior', 'report.reproSteps', 'report.appPlatform',
   'report.appVersion', 'report.otherInfo',
   'logs.serialLog', 'logs.appLogs',
@@ -42,7 +42,7 @@ var COLUMNS = [
 // Derived from COLUMNS so it can't silently drift if columns are reordered.
 var SUBMISSION_ID_COL_INDEX = COLUMNS.indexOf('submissionId') + 1; // 1-based
 
-var NUMERIC_COLS = { 'schemaVersion': 1, 'firmware.prNumber': 1, 'report.rating': 1 };
+var NUMERIC_COLS = { 'schemaVersion': 1, 'firmware.prNumber': 1 };
 var BOOLEAN_COLS = { 'firmware.isPrBuild': 1 };
 
 function doPost(e) {

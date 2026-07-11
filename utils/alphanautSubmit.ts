@@ -63,7 +63,8 @@ export function buildPayload(args: BuildPayloadArgs): AlphanautPayload {
     report: {
       handle: form.handle.trim(),
       contact: nullIfBlank(form.contact),
-      rating: form.rating,
+      // Submission is gated on a chosen outcome (see canSubmit), so '' never ships.
+      outcome: form.outcome as Exclude<typeof form.outcome, ''>,
       whatHappened: form.whatHappened.trim(),
       expectedBehavior: form.expectedBehavior.trim(),
       reproSteps: nullIfBlank(form.reproSteps),

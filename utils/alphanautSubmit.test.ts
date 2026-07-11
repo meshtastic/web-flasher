@@ -11,7 +11,7 @@ function makeForm(overrides: Partial<AlphanautReportForm> = {}): AlphanautReport
   return {
     handle: 'KJ7XYZ',
     contact: '',
-    rating: 4,
+    outcome: 'fail',
     whatHappened: 'Screen blank after flash',
     expectedBehavior: 'Display lights up',
     reproSteps: '',
@@ -45,7 +45,7 @@ describe('buildPayload', () => {
   it('shapes the payload and blanks empty optional fields to null', () => {
     const payload = buildPayload({
       snapshot,
-      form: makeForm({ contact: '  ', reproSteps: '', appVersion: '2.5.13' }),
+      form: makeForm({ contact: '  ', reproSteps: '', appVersion: '2.5.13', outcome: 'observation' }),
       serialLog: '',
       submissionId: 'id-1',
       submittedAt: '2026-07-07T00:00:00.000Z',
@@ -58,6 +58,7 @@ describe('buildPayload', () => {
     expect(payload.firmware?.version).toBe('2.8.0.b246bcd')
     expect(payload.device?.platformioTarget).toBe('heltec-v4')
     expect(payload.report.handle).toBe('KJ7XYZ')
+    expect(payload.report.outcome).toBe('observation')
     expect(payload.report.contact).toBeNull()
     expect(payload.report.reproSteps).toBeNull()
     expect(payload.report.otherInfo).toBeNull() // whitespace-only -> null
