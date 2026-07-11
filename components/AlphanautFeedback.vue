@@ -4,8 +4,7 @@
     <button
       ref="badgeButton"
       type="button"
-      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[55] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl border border-meshtastic/50 bg-meshtastic/10 px-3 py-2 text-xs font-medium text-meshtastic shadow-lg backdrop-blur-md transition-all duration-300 hover:bg-meshtastic/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic"
-      :class="{ 'alphanaut-attention': showAttention }"
+      class="fixed right-2 sm:right-4 bottom-2 sm:bottom-4 z-[55] inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl bg-meshtastic px-3 py-2 text-xs font-semibold text-black shadow-lg transition-all duration-300 hover:bg-meshtastic-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-meshtastic focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       :title="$t('alphanaut.badge_title')"
       @click="openPanel"
     >
@@ -13,7 +12,7 @@
       <span class="hidden sm:inline">{{ $t('alphanaut.badge_label') }}</span>
       <span
         v-if="store.pendingCount > 0"
-        class="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-meshtastic px-1 text-[10px] font-bold text-black"
+        class="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-black px-1 text-[10px] font-bold text-meshtastic"
       >{{ store.pendingCount }}</span>
     </button>
 
@@ -297,7 +296,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref, watch, type Component } from 'vue'
-import { onKeyStroke, useEventListener, useLocalStorage } from '@vueuse/core'
+import { onKeyStroke, useEventListener } from '@vueuse/core'
 import { Bug, CircleCheck, CircleX, Eye, LoaderCircle, RefreshCw, Send, TriangleAlert, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import type { AlphanautOutcome, AlphanautReportForm, AppPlatform } from '~/types/alphanaut'
@@ -326,12 +325,6 @@ const inputClass = 'mt-1 w-full px-3 py-2 text-sm rounded-lg bg-surface-primary 
 const textareaClass = `${inputClass} resize-y`
 
 const open = ref(false)
-// Once a tester opens the panel we stop nagging with the attention pulse. Persist
-// so returning testers who've already found it don't get pulsed on every visit.
-const badgeAcknowledged = useLocalStorage('alphanautBadgeSeen', false)
-// The badge is only ever visible when a 2.8 build is selected (store.isVisible),
-// so pulsing while unacknowledged draws attention exactly on that selection.
-const showAttention = computed(() => store.isVisible && !badgeAcknowledged.value)
 const badgeButton = ref<HTMLButtonElement | null>(null)
 const handleInput = ref<HTMLInputElement | null>(null)
 type Status = 'idle' | 'submitting' | 'sent' | 'queued' | 'rejected'
@@ -430,7 +423,6 @@ const statusClass = computed(() => {
 
 function openPanel() {
   store.captureContext()
-  badgeAcknowledged.value = true
   status.value = 'idle'
   statusError.value = ''
   open.value = true
@@ -495,35 +487,3 @@ onMounted(() => {
   }
 })
 </script>
-
-<style scoped>
-/* Expanding "radar ping" ring drawn on a pseudo-element so it never overrides the
-   button's own shadow-lg. Only active while .alphanaut-attention is bound. */
-.alphanaut-attention::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  animation: alphanaut-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-/* Theme-aware accent tokens (bright green in dark, darker in light); fade the
-   ring to `transparent` since alpha is ~0 by the time the hue would matter. */
-@keyframes alphanaut-ping {
-  0% {
-    box-shadow: 0 0 0 0 var(--accent-subtle);
-  }
-  75%,
-  100% {
-    box-shadow: 0 0 0 12px transparent;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .alphanaut-attention::after {
-    animation: none;
-    box-shadow: 0 0 0 3px var(--accent-subtle);
-  }
-}
-</style>
