@@ -164,11 +164,6 @@ function onAccentText(hex: string): string {
 }
 
 /**
- * Re-tint the UI from the edition theme by overriding the accent CSS variables
- * defined in assets/css/main.css. The whole interface (logo glow, gradient
- * title, buttons) reads these, so this is all the wiring branding needs.
- */
-/**
  * Resolve the accent CSS variables an event theme drives. Pure (no DOM) so the
  * accent-selection and on-accent contrast logic is unit-testable. Returns null
  * when the theme has no usable primary colour.
@@ -207,6 +202,11 @@ export function resolveEventAccentVars(theme?: EventFirmwareTheme | null): Recor
   return vars
 }
 
+/**
+ * Re-tint the UI from the edition theme by overriding the accent CSS variables
+ * defined in assets/css/main.css. The whole interface (logo glow, gradient
+ * title, buttons) reads these, so this is all the wiring branding needs.
+ */
 export function applyEventTheme(theme?: EventFirmwareTheme | null): void {
   const vars = resolveEventAccentVars(theme)
   if (!vars) return
