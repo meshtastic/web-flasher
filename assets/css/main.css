@@ -33,6 +33,9 @@
   --accent-dark: #22C55E;
   --accent-glow: rgba(103, 234, 148, 0.3);
   --accent-subtle: rgba(103, 234, 148, 0.5);
+  /* Legible text on a solid --accent fill (buttons, badges). Overridden per
+     event theme by applyEventTheme() to stay contrast-safe on any accent. */
+  --on-accent: #000000;
   
   /* Button colors */
   --btn-icon-bg: rgba(255, 255, 255, 0.05);
@@ -329,14 +332,15 @@
 
 /* Modern UI Components */
 @layer components {
-  /* Gradient primary button */
+  /* Solid primary button */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2;
-    @apply font-normal text-sm text-black;
+    @apply font-normal text-sm;
     @apply px-5 py-2.5 rounded-xl;
     @apply transition-all duration-300 ease-out;
     @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    background: var(--accent);
+    color: var(--on-accent);
     box-shadow: 0 4px 15px var(--accent-glow);
   }
 
@@ -407,9 +411,10 @@
   .step-badge {
     @apply inline-flex items-center justify-center;
     @apply w-8 h-8 rounded-full;
-    @apply text-sm font-bold text-black;
+    @apply text-sm font-bold;
     @apply mb-4;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    background: var(--accent);
+    color: var(--on-accent);
     box-shadow: 0 0 20px var(--accent-glow);
   }
 
