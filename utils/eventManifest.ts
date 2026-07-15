@@ -140,25 +140,78 @@ function darken(hex: string, amount: number): string | null {
   return `#${[r, g, b].map(c => c.toString(16).padStart(2, '0')).join('')}`
 }
 
+/** WCAG relative luminance of an [r, g, b] triple (0–255 channels). */
+function relativeLuminance([r, g, b]: [number, number, number]): number {
+  const channel = (c: number) => {
+    const s = c / 255
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+}
+
+/**
+ * Black or white text — whichever has more contrast against `hex`. Used for
+ * content sitting ON a solid accent fill (buttons, step badges) so a dark event
+ * accent (e.g. DEF CON) doesn't leave black text on a dark button.
+ */
+function onAccentText(hex: string): string {
+  const rgb = parseHex(hex)
+  if (!rgb) return '#000000'
+  const lum = relativeLuminance(rgb)
+  const contrastWhite = 1.05 / (lum + 0.05)
+  const contrastBlack = (lum + 0.05) / 0.05
+  return contrastWhite >= contrastBlack ? '#ffffff' : '#000000'
+}
+
 /**
  * Re-tint the UI from the edition theme by overriding the accent CSS variables
  * defined in assets/css/main.css. The whole interface (logo glow, gradient
  * title, buttons) reads these, so this is all the wiring branding needs.
  */
-export function applyEventTheme(theme?: EventFirmwareTheme | null): void {
+/**
+ * Resolve the accent CSS variables an event theme drives. Pure (no DOM) so the
+ * accent-selection and on-accent contrast logic is unit-testable. Returns null
+ * when the theme has no usable primary colour.
+ */
+export function resolveEventAccentVars(theme?: EventFirmwareTheme | null): Record<string, string> | null {
   const primary = theme?.colors?.primary
-  if (!primary || !parseHex(primary)) return
-  const root = document.documentElement
-  const secondary = theme?.colors?.secondary && parseHex(theme.colors.secondary)
-    ? theme.colors.secondary
-    : darken(primary, 0.25)
+  if (!primary || !parseHex(primary)) return null
+  // The interactive accent drives buttons, badges, borders, glows and the
+  // gradient title. Prefer the theme's dedicated accent colour when set — a
+  // theme's `primary` can be a dark brand/background colour (e.g. DEF CON's
+  // navy) that is illegible as an accent on a dark UI. Fall back to primary for
+  // themes that only specify one colour (Hamvention, Open Sauce, …).
+  const accent = theme?.colors?.accent && parseHex(theme.colors.accent)
+    ? theme.colors.accent
+    : primary
 
-  root.style.setProperty('--accent', primary)
-  if (secondary) root.style.setProperty('--accent-dark', secondary)
-  const glow = hexToRgba(primary, 0.3)
-  if (glow) root.style.setProperty('--accent-glow', glow)
-  const subtle = hexToRgba(primary, 0.5)
-  if (subtle) root.style.setProperty('--accent-subtle', subtle)
-  // Also feed the manifest-theme.css variables some components reference.
-  root.style.setProperty('--primary-color', primary)
+  const vars: Record<string, string> = {
+    '--accent': accent,
+    // Legible text for content sitting on the solid accent (buttons, badges).
+    '--on-accent': onAccentText(accent),
+    // The brand-colour utilities (.text-meshtastic / .bg-meshtastic /
+    // .border-meshtastic, link + plug icons, etc.) read --primary-color. In the
+    // default theme it equals --accent, so keep them unified here too — using
+    // the raw (possibly dark) primary would leave those icons illegible on a
+    // dark UI (e.g. DEF CON's navy link icon).
+    '--primary-color': accent,
+  }
+  // Keep the gradient title cohesive: darken the SAME accent hue rather than
+  // jumping to the (possibly unrelated) secondary colour.
+  const accentDark = darken(accent, 0.25)
+  if (accentDark) vars['--accent-dark'] = accentDark
+  const glow = hexToRgba(accent, 0.3)
+  if (glow) vars['--accent-glow'] = glow
+  const subtle = hexToRgba(accent, 0.5)
+  if (subtle) vars['--accent-subtle'] = subtle
+  return vars
+}
+
+export function applyEventTheme(theme?: EventFirmwareTheme | null): void {
+  const vars = resolveEventAccentVars(theme)
+  if (!vars) return
+  const root = document.documentElement
+  for (const [key, value] of Object.entries(vars)) {
+    root.style.setProperty(key, value)
+  }
 }

@@ -100,6 +100,41 @@
       </p>
     </div>
 
+    <!-- DEF CON event branding variant -->
+    <div
+      v-else-if="eventMode.enabled && eventMode.eventTag === 'DEFCON'"
+      class="logo-header-content"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+        <span class="logo-separator">×</span>
+        <img
+          src="@/assets/img/defcon.svg"
+          class="logo-icon-event logo-icon-defcon"
+          alt="DEF CON 34 Logo"
+        >
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">
+        {{ eventMode.tagline || eventMode.eventName }}
+      </p>
+    </div>
+
     <!-- Hamvention event branding variant -->
     <div
       v-else-if="eventMode.enabled && eventMode.eventTag === 'Hamvention'"
@@ -296,6 +331,26 @@ const { eventMode } = useEventMode()
 @media (min-width: 768px) {
   .logo-icon-event {
     height: 7rem;
+  }
+}
+
+/* The full DEF CON 34 mark (mesh burst + skull) is a detailed square, so it runs
+   a little larger than the M to let the artwork read. It ships transparent and
+   theme-adaptive: the opaque gradient mesh reads on either background and the
+   skull's knockout face shows the page behind it, so it needs no filter/tile. */
+.logo-icon-defcon {
+  height: 6rem;
+}
+
+@media (min-width: 640px) {
+  .logo-icon-defcon {
+    height: 7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .logo-icon-defcon {
+    height: 8rem;
   }
 }
 
