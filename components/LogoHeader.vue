@@ -135,6 +135,41 @@
       </p>
     </div>
 
+    <!-- FAB26 Boston event branding variant -->
+    <div
+      v-else-if="eventMode.enabled && eventMode.eventTag === 'FAB26'"
+      class="logo-header-content"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+        <span class="logo-separator">×</span>
+        <img
+          src="@/assets/img/fab26.png"
+          class="logo-icon-event logo-icon-fab26"
+          alt="FAB26 Boston Logo"
+        >
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">
+        {{ eventMode.tagline || eventMode.eventName }}
+      </p>
+    </div>
+
     <!-- Hamvention event branding variant -->
     <div
       v-else-if="eventMode.enabled && eventMode.eventTag === 'Hamvention'"
@@ -350,6 +385,28 @@ const { eventMode } = useEventMode()
 
 @media (min-width: 768px) {
   .logo-icon-defcon {
+    height: 8rem;
+  }
+}
+
+/* The FAB26 Boston mark is a round badge with the "26" tab breaking its top-right
+   edge, so it runs a little larger than the M to let the badge read. It ships
+   transparent: the navy disc pops on the cream light header and stays distinct
+   from the near-black dark header, while its cream/gold/red interior reads on
+   both — so it needs no filter. */
+.logo-icon-fab26 {
+  height: 6rem;
+  border-radius: 0;
+}
+
+@media (min-width: 640px) {
+  .logo-icon-fab26 {
+    height: 7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .logo-icon-fab26 {
     height: 8rem;
   }
 }
