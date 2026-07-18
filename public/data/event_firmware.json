@@ -76,7 +76,7 @@
       "location": "MIT, Cambridge, Massachusetts, USA",
       "iconUrl": "https://api.meshtastic.org/resource/eventFirmware/fab26.png",
       "accentColor": "#13293D",
-      "domain": "fab26.meshtastic.org",
+      "domain": "fab.meshtastic.org",
       "links": [
         { "label": "Event Website", "url": "https://fab26.fabevent.org" },
         { "label": "Fab Foundation", "url": "https://fabfoundation.org" }
