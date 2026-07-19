@@ -39,12 +39,13 @@ const renderReleaseNotes = async () => {
 
   // Release notes can contain untrusted content (e.g. PR titles for PR builds),
   // so sanitize the rendered HTML before it reaches v-html. The trusted
-  // hardcoded markup below is applied after sanitization.
+  // hardcoded markup below (alert icons) is applied after sanitization.
+  //
+  // Markdown block structure (paragraphs, headings, lists, blockquotes) is left
+  // intact and styled with the scoped CSS below — only real `> ...` blockquotes
+  // in the source render with the accent bar.
   const output = DOMPurify.sanitize(await marked(notes))
   releaseNotes.value = output
-    .replaceAll('<p>', '<blockquote class="p-4 my-4 border-s-4 border-meshtastic release-notes-quote">')
-    .replaceAll('</p>', '</blockquote>')
-    .replaceAll('<br>', '')
     .replaceAll('[!CAUTION]', '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>')
     .replaceAll('[!IMPORTANT]', '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>')
     .replaceAll('[!WARNING]', '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>')
@@ -64,6 +65,71 @@ watch(
   overflow-y: auto;
   scrollbar-gutter: stable both-edges;
 }
+
+/* v-html content is not touched by Vue's scoped attribute, so :deep() is
+   required to style the markdown that marked renders. */
+.release-notes-box :deep(h1),
+.release-notes-box :deep(h2),
+.release-notes-box :deep(h3) {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.release-notes-box :deep(h1) { font-size: 1.25rem; }
+.release-notes-box :deep(h2) { font-size: 1.125rem; }
+.release-notes-box :deep(h3) { font-size: 1rem; }
+
+.release-notes-box :deep(p) {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+.release-notes-box :deep(ul),
+.release-notes-box :deep(ol) {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.release-notes-box :deep(ul) { list-style: disc; }
+.release-notes-box :deep(ol) { list-style: decimal; }
+.release-notes-box :deep(li) { margin: 0.25rem 0; }
+
+.release-notes-box :deep(a) {
+  color: #67ea94;
+  text-decoration: underline;
+}
+
+.release-notes-box :deep(code) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.release-notes-box :deep(pre) {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.release-notes-box :deep(pre code) {
+  padding: 0;
+  background: none;
+}
+
+/* Only real `> ...` blockquotes in the source get the accent bar. */
+.release-notes-box :deep(blockquote) {
+  border-left: 4px solid #67ea94;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+}
+
+.release-notes-box :deep(blockquote) > :first-child { margin-top: 0; }
+.release-notes-box :deep(blockquote) > :last-child { margin-bottom: 0; }
 
 .release-notes-box::-webkit-scrollbar {
   width: 10px;
