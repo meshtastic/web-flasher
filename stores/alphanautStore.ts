@@ -34,13 +34,11 @@ export type SubmitOutcome
     | { status: 'rejected', error?: string }
 
 /**
- * State + orchestration for the hidden alphanaut feedback tool. Reads live
+ * State + orchestration for the alphanaut feedback tool. Reads live
  * device/firmware/serial state; never writes to any core flasher store.
  */
 export const useAlphanautStore = defineStore('alphanaut', {
   state: () => ({
-    // Persists across visits — once Konami reveals the tool it stays revealed.
-    unlocked: useLocalStorage('alphanautUnlocked', false),
     queue: useLocalStorage<QueuedSubmission[]>('alphanautQueue', []),
     flushing: false,
     endpoint: '',
@@ -61,9 +59,9 @@ export const useAlphanautStore = defineStore('alphanaut', {
       return isAlphanautVersion(this.currentVersion)
     },
 
-    /** The badge shows only when enabled + Konami-unlocked + a 2.8 build is selected. */
+    /** The badge shows whenever the tool is enabled and a 2.8 build is selected. */
     isVisible(): boolean {
-      return this.enabled && this.unlocked && this.isTargetVersion
+      return this.enabled && this.isTargetVersion
     },
 
     /**
@@ -95,11 +93,6 @@ export const useAlphanautStore = defineStore('alphanaut', {
     configure(url: string | undefined, token: string | undefined) {
       this.endpoint = url ?? ''
       this.token = token ?? ''
-    },
-
-    /** Latch the persistent unlock flag (called when Konami fires). */
-    unlock() {
-      this.unlocked = true
     },
 
     /** Snapshot the live firmware + hardware context when the panel opens. */

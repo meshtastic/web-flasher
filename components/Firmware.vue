@@ -7,7 +7,7 @@
       id="dropdownFirmwareButton"
       ref="buttonRef"
       class="btn-primary disabled:bg-zinc-600"
-      :class="{ 'animate-bounce': store.prereleaseUnlocked && !store.$state.selectedFirmware?.id }"
+      :class="{ 'animate-bounce': store.konamiUnlocked && !store.$state.selectedFirmware?.id }"
       type="button"
       :disabled="!canSelectFirmware"
       @click.stop="toggleDropdown"
@@ -76,13 +76,13 @@
             </li>
           </ul>
           <div
-            v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
+            v-if="store.$state.previews.length > 0"
             class="px-4 py-2 text-sm text-meshtastic font-semibold border-theme-bottom"
           >
             {{ $t('firmware.prerelease') }}
           </div>
           <ul
-            v-if="store.prereleaseUnlocked && store.$state.previews.length > 0"
+            v-if="store.$state.previews.length > 0"
             class="py-2 text-sm text-theme-muted"
             aria-labelledby="dropdownInformationButton"
           >
@@ -97,13 +97,13 @@
             </li>
           </ul>
           <div
-            v-if="store.prereleaseUnlocked && store.$state.nightly.length > 0"
+            v-if="store.$state.nightly.length > 0"
             class="px-4 py-2 text-sm text-cyan-400 font-semibold border-theme-bottom"
           >
             {{ $t('firmware.nightly') }}
           </div>
           <ul
-            v-if="store.prereleaseUnlocked && store.$state.nightly.length > 0"
+            v-if="store.$state.nightly.length > 0"
             class="py-2 text-sm text-theme-muted"
             aria-labelledby="dropdownInformationButton"
           >

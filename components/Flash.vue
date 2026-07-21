@@ -45,7 +45,7 @@
             <div class="modal-content relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-theme">
               <!-- Chirpy Bouncing Background -->
               <video
-                v-if="firmwareStore.isFlashing && firmwareStore.$state.prereleaseUnlocked"
+                v-if="firmwareStore.isFlashing && firmwareStore.$state.konamiUnlocked"
                 autoplay
                 loop
                 muted
@@ -76,7 +76,7 @@
             <div class="modal-content relative flex flex-col max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-theme">
               <!-- Chirpy Bouncing Background -->
               <video
-                v-if="firmwareStore.isFlashing && firmwareStore.$state.prereleaseUnlocked"
+                v-if="firmwareStore.isFlashing && firmwareStore.$state.konamiUnlocked"
                 autoplay
                 loop
                 muted

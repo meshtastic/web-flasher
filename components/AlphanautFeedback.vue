@@ -298,19 +298,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, watch, type Component } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, type Component } from 'vue'
 import { onKeyStroke, useEventListener } from '@vueuse/core'
 import { Bug, CircleCheck, CircleX, Eye, LoaderCircle, RefreshCw, Send, TriangleAlert, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import type { AlphanautOutcome, AlphanautReportForm, AppPlatform } from '~/types/alphanaut'
 import { useAlphanautStore } from '~/stores/alphanautStore'
-import { useFirmwareStore } from '~/stores/firmwareStore'
 import { useSerialMonitorStore } from '~/stores/serialMonitorStore'
 import { useToastStore } from '~/stores/toastStore'
 
 const { t } = useI18n()
 const store = useAlphanautStore()
-const firmwareStore = useFirmwareStore()
 const serialMonitorStore = useSerialMonitorStore()
 const toastStore = useToastStore()
 
@@ -475,13 +473,6 @@ async function retryQueued() {
 onMounted(() => {
   const config = useRuntimeConfig()
   store.configure(config.public.feedbackWebhookUrl as string, config.public.feedbackToken as string)
-
-  // Reuse the existing Konami handler (it sets prereleaseUnlocked) to reveal the
-  // tool, and persist that unlock across visits.
-  if (firmwareStore.prereleaseUnlocked) store.unlock()
-  watch(() => firmwareStore.prereleaseUnlocked, (v) => {
-    if (v) store.unlock()
-  })
 
   // Drain any reports queued while offline in a previous session.
   if (store.enabled) {
