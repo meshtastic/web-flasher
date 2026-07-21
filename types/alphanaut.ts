@@ -1,4 +1,4 @@
-// Types for the alphanaut feedback tool (hidden bug reporter for the 2.8
+// Types for the alphanaut feedback tool (bug reporter for the 2.8
 // pre-release testing group). Self-contained: nothing here is imported by core
 // flasher code. See stores/alphanautStore.ts and utils/alphanautSubmit.ts.
 

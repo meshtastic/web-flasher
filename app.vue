@@ -412,8 +412,10 @@ window.addEventListener('keydown', (event) => {
 
     konamiCodeIndex.value++
     if (konamiCodeIndex.value === konamiKeys.length) {
-      console.log('Unlocking pre-release section')
-      firmwareStore.$state.prereleaseUnlocked = true
+      // Pre-release and nightly builds are available to everyone now, so the
+      // code only turns on the easter eggs.
+      console.log('Unlocking easter eggs')
+      firmwareStore.$state.konamiUnlocked = true
       document.body.classList.add('konami-code')
       document.getElementById('main')?.classList.add('konami-code')
       document.getElementById('footer')?.classList.add('konami-code')

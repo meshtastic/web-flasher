@@ -7,9 +7,9 @@ export const GITHUB_IO_BASE = 'https://raw.githubusercontent.com/meshtastic/mesh
 export const NIGHTLY_DIR = 'firmware-nightly'
 
 // Nightly (develop) build version, discovered at runtime from
-// firmware-nightly/index.json and only ever surfaced behind the konami code
-// (never in event mode). Reactive so the dropdown re-renders when it resolves;
-// read synchronously below to route this version to the firmware-nightly/ folder.
+// firmware-nightly/index.json (never surfaced in event mode). Reactive so the
+// dropdown re-renders when it resolves; read synchronously below to route this
+// version to the firmware-nightly/ folder.
 export const nightlyState = reactive<{ id: string }>({ id: '' })
 
 /** Record the current nightly firmware version id (e.g. 'v2.8.0.abc1234'). */

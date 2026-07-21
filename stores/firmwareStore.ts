@@ -152,7 +152,8 @@ export const useFirmwareStore = defineStore('firmware', {
       isConnected: false,
       port: <SerialPort | undefined>{},
       couldntFetchFirmwareApi: false,
-      prereleaseUnlocked: useSessionStorage('prereleaseUnlocked', false),
+      // Konami code easter eggs (retro theme + chirpy flash background) only.
+      konamiUnlocked: useSessionStorage('konamiUnlocked', false),
       hasManifest: false,
       manifest: <FirmwareManifest | undefined>undefined,
       releaseManifest: <ReleaseManifest | undefined>undefined,
@@ -237,8 +238,8 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     /**
      * Discover the current develop "nightly" build published to
-     * meshtastic.github.io/firmware-nightly/. Only ever surfaced behind the
-     * konami code, and skipped entirely in event mode (never on event firmwares).
+     * meshtastic.github.io/firmware-nightly/. Skipped entirely in event mode
+     * (never on event firmwares).
      */
     async fetchNightly() {
       if (eventMode.enabled) return

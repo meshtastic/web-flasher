@@ -58,11 +58,10 @@ beforeEach(() => {
 })
 
 describe('visibility gate', () => {
-  it('is visible only when enabled + unlocked + a 2.8 firmware is selected', () => {
+  it('is visible when enabled + a 2.8 firmware is selected', () => {
     const store = useAlphanautStore()
     fakeFirmware.selectedFirmware = { id: 'v2.8.0.abc' }
     store.configure('https://x/exec', '')
-    store.unlock()
 
     expect(store.currentVersion).toBe('2.8.0.abc')
     expect(store.isTargetVersion).toBe(true)
@@ -73,7 +72,6 @@ describe('visibility gate', () => {
     const store = useAlphanautStore()
     fakeFirmware.selectedFirmware = { id: 'v2.7.9.abc' }
     store.configure('https://x/exec', '')
-    store.unlock()
     expect(store.isTargetVersion).toBe(false)
     expect(store.isVisible).toBe(false)
   })
@@ -82,16 +80,7 @@ describe('visibility gate', () => {
     const store = useAlphanautStore()
     fakeFirmware.selectedFirmware = { id: 'v2.8.0.abc' }
     store.configure('', '')
-    store.unlock()
     expect(store.enabled).toBe(false)
-    expect(store.isVisible).toBe(false)
-  })
-
-  it('hides while locked', () => {
-    const store = useAlphanautStore()
-    fakeFirmware.selectedFirmware = { id: 'v2.8.0.abc' }
-    store.configure('https://x/exec', '')
-    expect(store.unlocked).toBe(false)
     expect(store.isVisible).toBe(false)
   })
 
@@ -99,7 +88,6 @@ describe('visibility gate', () => {
     const store = useAlphanautStore()
     fakeFirmware.selectedFirmware = { id: '', prBuild: { version: '2.8.0', prNumber: 42 } }
     store.configure('https://x/exec', '')
-    store.unlock()
     expect(store.currentVersion).toBe('2.8.0')
     expect(store.isTargetVersion).toBe(true)
   })

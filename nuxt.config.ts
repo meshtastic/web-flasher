@@ -37,7 +37,7 @@ export default defineNuxtConfig({
       datadogClientToken: process.env.DATADOG_CLIENT_TOKEN || '',
       datadogEnv: process.env.NODE_ENV || 'production',
       cookieyesClientId: process.env.COOKIEYES_CLIENT_ID || '',
-      // Alphanaut feedback tool (hidden bug reporter). Empty URL = feature disabled.
+      // Alphanaut feedback tool (2.8 bug reporter). Empty URL = feature disabled.
       feedbackWebhookUrl: process.env.FEEDBACK_WEBHOOK_URL || '',
       // NOTE: public runtime config ships in the browser bundle, so this token is
       // intentionally NOT a secret — it is only a best-effort speed-bump against
