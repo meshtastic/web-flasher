@@ -32,7 +32,8 @@
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
     "auto_detect": "Auto-detect",
     "supported_devices": "Supported Devices",
-    "diy_devices": "Community Supported Devices"
+    "diy_devices": "Community Supported Devices",
+    "ham_license_required": "Amateur radio band — an amateur radio license is required to transmit"
   },
   "firmware": {
     "title": "Firmware",

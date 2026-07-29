@@ -32,6 +32,13 @@
         class="h-6 m-1 pb-1"
         alt="Meshtastic UI"
       >
+      <img
+        v-if="requiresHamLicense(props.device)"
+        src="@/assets/img/hamvention.svg"
+        class="h-6 m-1 pb-1"
+        :title="$t('device.ham_license_required')"
+        :alt="$t('device.ham_license_required')"
+      >
     </div>
     <div
       v-if="props.device.images && isSupporterDevice(props.device)"
@@ -74,6 +81,7 @@
 <script lang="ts" setup>
 import type { DeviceHardware } from '~/types/api'
 import { supportedVendorDeviceTags } from '~/types/resources'
+import { requiresHamLicense } from '~/utils/deviceBadges'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import { computed } from 'vue'
 

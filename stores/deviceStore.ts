@@ -1,8 +1,10 @@
 import { mande } from 'mande'
 import { defineStore } from 'pinia'
 import {
+  eventMode,
   vendorCobrandingTag,
 } from '~/types/resources'
+import { applyEventDeviceOverrides } from '~/utils/eventDevices'
 
 import { MeshDevice } from '@meshtastic/core'
 import { TransportWebSerial } from '@meshtastic/transport-web-serial'
@@ -37,7 +39,7 @@ export const useDeviceStore = defineStore('device', {
       selectedDevice: <DeviceHardware | undefined>undefined,
       selectedTarget: <DeviceHardware | undefined>undefined,
       tag: <string | undefined>undefined,
-      targets: <DeviceHardware[]>[],
+      apiTargets: <DeviceHardware[]>[],
       isConnecting: false,
       abortController: <AbortController | undefined>undefined,
       readerClosed: <Promise<any> | undefined>undefined,
@@ -46,6 +48,17 @@ export const useDeviceStore = defineStore('device', {
     }
   },
   getters: {
+    /**
+     * The API device list plus any devices only the active event's firmware
+     * build ships. Derived (not baked into state) so it stays correct however
+     * event mode and the device fetch interleave — plugins/eventMode.client.ts
+     * can still re-resolve the edition from the live API after mount.
+     */
+    targets(): DeviceHardware[] {
+      // Co-branded builds are pinned to one vendor's devices; never widen them.
+      if (vendorCobrandingTag.length > 0) return this.apiTargets
+      return applyEventDeviceOverrides(this.apiTargets, eventMode.enabled ? eventMode.eventTag : undefined)
+    },
     filteredDevices(): DeviceHardware[] {
       if (this.tag) {
         return this.targets.filter(t => t.tags?.includes(this.tag ?? '') || t.architecture === this.tag)
@@ -124,14 +137,14 @@ export const useDeviceStore = defineStore('device', {
     },
     setTargetsList(targets: DeviceHardware[]) {
       if (vendorCobrandingTag.length > 0) {
-        this.targets = targets.filter(
+        this.apiTargets = targets.filter(
           (t: DeviceHardware) => t.activelySupported
             && !t.architecture.toLowerCase().startsWith('portduino')
             && t.tags?.includes(vendorCobrandingTag),
         )
       }
       else {
-        this.targets = targets.filter(
+        this.apiTargets = targets.filter(
           (t: DeviceHardware) => t.activelySupported
             && !t.architecture.toLowerCase().startsWith('portduino'),
         )
