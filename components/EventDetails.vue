@@ -6,7 +6,7 @@
     class="btn-secondary"
     @click="openPanel"
   >
-    {{ $t('event.details_button') }} <Settings class="h-4 w-4 shrink-0" />
+    {{ $t('event.details_button') }} <Info class="h-4 w-4 shrink-0" />
   </button>
 
   <Teleport to="body">
@@ -29,7 +29,7 @@
                 id="event-details-title"
                 class="flex items-center gap-2 text-lg font-semibold text-theme"
               >
-                <Settings class="h-5 w-5 text-meshtastic" />
+                <Info class="h-5 w-5 text-meshtastic" />
                 {{ $t('event.details_title') }}
               </h3>
               <button
@@ -43,9 +43,72 @@
               </button>
             </div>
 
-            <!-- Body: radio settings from the event branch's userPrefs.jsonc -->
+            <!-- Body -->
             <div class="flex-1 space-y-4 overflow-y-auto p-4">
-              <!-- LoRa -->
+              <!-- Event -->
+              <div class="rounded-lg border border-theme bg-surface-primary p-3 text-sm">
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-theme-muted">
+                  {{ $t('event.section_event') }}
+                </p>
+                <dl class="grid grid-cols-[auto,1fr] gap-x-3 gap-y-1">
+                  <dt class="text-theme-muted">
+                    {{ $t('event.label_name') }}
+                  </dt>
+                  <dd>{{ eventMode.eventName }}</dd>
+                  <template v-if="dateRange">
+                    <dt class="text-theme-muted">
+                      {{ $t('event.label_dates') }}
+                    </dt>
+                    <dd>{{ dateRange }}</dd>
+                  </template>
+                  <template v-if="edition?.location">
+                    <dt class="text-theme-muted">
+                      {{ $t('event.label_location') }}
+                    </dt>
+                    <dd>{{ edition.location }}</dd>
+                  </template>
+                  <template v-if="edition?.timeZone">
+                    <dt class="text-theme-muted">
+                      {{ $t('event.label_timezone') }}
+                    </dt>
+                    <dd>{{ edition.timeZone }}</dd>
+                  </template>
+                </dl>
+                <p
+                  v-if="edition?.welcomeMessage"
+                  class="mt-2 text-theme-muted"
+                >
+                  {{ edition.welcomeMessage }}
+                </p>
+              </div>
+
+              <!-- Firmware -->
+              <div
+                v-if="eventMode.firmware.title || firmwareVersion"
+                class="rounded-lg border border-theme bg-surface-primary p-3 text-sm"
+              >
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-theme-muted">
+                  {{ $t('event.section_firmware') }}
+                </p>
+                <dl class="grid grid-cols-[auto,1fr] gap-x-3 gap-y-1">
+                  <template v-if="eventMode.firmware.title">
+                    <dt class="text-theme-muted">
+                      {{ $t('event.label_build') }}
+                    </dt>
+                    <dd>{{ eventMode.firmware.title }}</dd>
+                  </template>
+                  <template v-if="firmwareVersion">
+                    <dt class="text-theme-muted">
+                      {{ $t('event.label_version') }}
+                    </dt>
+                    <dd class="break-all font-mono text-theme-accent">
+                      {{ firmwareVersion }}
+                    </dd>
+                  </template>
+                </dl>
+              </div>
+
+              <!-- LoRa (from the event branch's userPrefs.jsonc) -->
               <div
                 v-if="hasLora"
                 class="rounded-lg border border-theme bg-surface-primary p-3 text-sm"
@@ -182,7 +245,7 @@
                 </dl>
               </div>
 
-              <!-- Fetch status + source link -->
+              <!-- Settings fetch status + source link -->
               <p
                 v-if="prefsState === 'loading'"
                 class="text-sm text-theme-muted"
@@ -190,7 +253,7 @@
                 {{ $t('event.settings_loading') }}
               </p>
               <p
-                v-else-if="prefsState === 'error' || !firmwareSlug"
+                v-else-if="prefsState === 'error'"
                 class="text-sm text-theme-muted"
               >
                 {{ $t('event.settings_unavailable') }}
@@ -205,6 +268,32 @@
                 {{ $t('event.view_userprefs') }}
                 <ExternalLink class="h-3.5 w-3.5 shrink-0" />
               </a>
+
+              <!-- Links -->
+              <div
+                v-if="edition?.links?.length"
+                class="rounded-lg border border-theme bg-surface-primary p-3 text-sm"
+              >
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-theme-muted">
+                  {{ $t('event.section_links') }}
+                </p>
+                <ul class="space-y-1">
+                  <li
+                    v-for="link in edition.links"
+                    :key="link.url"
+                  >
+                    <a
+                      :href="link.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 text-meshtastic underline underline-offset-2"
+                    >
+                      {{ link.label }}
+                      <ExternalLink class="h-3.5 w-3.5 shrink-0" />
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -216,17 +305,22 @@
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch } from 'vue'
 import { onKeyStroke } from '@vueuse/core'
-import { ExternalLink, Settings, X } from 'lucide-vue-next'
+import { ExternalLink, Info, X } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
 import type { EventUserPrefs } from '~/utils/eventUserPrefs'
 import { useSerialMonitorStore } from '~/stores/serialMonitorStore'
 
 const { eventMode } = useEventMode()
 const edition = useEventEdition()
 const serialMonitorStore = useSerialMonitorStore()
+const { locale } = useI18n()
 
 const open = ref(false)
 const triggerButton = ref<HTMLButtonElement | null>(null)
 const closeButton = ref<HTMLButtonElement | null>(null)
+
+const dateRange = computed(() => formatEventDateRange(edition.value?.eventStart, edition.value?.eventEnd, locale.value))
+const firmwareVersion = computed(() => edition.value?.firmware?.version || eventMode.value.firmware.id)
 
 // Radio settings from the event branch's userPrefs.jsonc, fetched lazily on
 // first open so non-event visitors and closed sheets cost nothing.
