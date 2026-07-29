@@ -1,6 +1,7 @@
 import { fetchApiManifest, fetchBundledManifest, hostMatches, isFirmwareDowngrade, manifestEditionToEventMode, resolveActiveEdition, applyEventTheme } from '~/utils/eventManifest'
 import type { EventFirmwareResponse } from '~/types/eventFirmware'
 import { eventMode, setActiveEventMode, staticEventModes } from '~/types/resources'
+import { setActiveEventEdition } from '~/composables/useEventEdition'
 
 // Resolve the active event edition for the current host. ssr:false guarantees
 // window is available, and Nuxt awaits async plugins — so we gate first paint
@@ -25,6 +26,9 @@ export default defineNuxtPlugin(async () => {
       return true
     }
     setActiveEventMode(next)
+    // Keep the full edition (dates, location, links, firmware version) for
+    // display — set only alongside setActiveEventMode so the two never diverge.
+    setActiveEventEdition(edition)
     applyEventTheme(edition.theme)
     return true
   }
