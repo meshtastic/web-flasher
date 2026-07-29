@@ -150,6 +150,7 @@
           {{ $t('buttons.contribute') }}
           <Github class="w-4 h-4 shrink-0" />
         </a>
+        <EventDetails v-if="!serialMonitorStore.isConnected" />
         <LanguagePicker v-if="!serialMonitorStore.isConnected" />
         <ThemeSwitcher v-if="!serialMonitorStore.isConnected" />
       </div>

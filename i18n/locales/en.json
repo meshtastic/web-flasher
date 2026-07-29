@@ -127,6 +127,23 @@
     "meshtastic_docs": "Meshtastic Docs",
     "contribute": "Contribute on GitHub"
   },
+  "event": {
+    "details_button": "Event Details",
+    "details_title": "Event Firmware Details",
+    "section_event": "Event",
+    "section_firmware": "Firmware",
+    "section_theme": "Theme",
+    "section_links": "Links",
+    "label_name": "Name",
+    "label_dates": "Dates",
+    "label_location": "Location",
+    "label_timezone": "Time zone",
+    "label_build": "Build",
+    "label_version": "Version",
+    "label_theme_name": "Theme",
+    "label_tagline": "Tagline",
+    "label_palette": "Palette"
+  },
   "serial": {
     "instructions": "If the disconnect process is taking too long, you can manually unplug the device.",
     "disconnect": "Disconnect",
