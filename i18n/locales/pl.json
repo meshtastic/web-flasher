@@ -1,5 +1,5 @@
 {
-  "title": "Meshtastic Web Flasher",
+  "title": "Przeglądarkowy Web Flasher",
   "header": "Flasher",
   "description": "Narzędzie internetowe do flashowania firmware ESP32",
   "browser_warning": "Twoja przeglądarka nie obsługuje WebSerial API. Przełącz się na zgodną przeglądarkę, taką jak Chrome lub Edge, aby uzyskać pełną funkcjonalność.",
@@ -10,9 +10,9 @@
     "disconnect": "Rozłącz",
     "continue": "Kontynuuj",
     "close_dialog": "Zamknij okno",
-    "dismiss": "Dismiss",
-    "close": "Close",
-    "reload": "Reload"
+    "dismiss": "Odrzuć",
+    "close": "Zamknij",
+    "reload": "Odśwież"
   },
   "state": {
     "connected": "Połączony",
@@ -35,7 +35,7 @@
     "diy_devices": "Urządzenia DIY"
   },
   "firmware": {
-    "title": "Firmware",
+    "title": "Oprogramowanie",
     "select_firmware": "Wybierz firmware",
     "instructions": "Wybierz z opcji wydania lub prześlij plik zip wydania pobrany z Github.",
     "stable": "Stabilny (lub Beta)",
@@ -75,7 +75,7 @@
       "start_over": "Zacznij od nowa",
       "flashing_complete": "Flashowanie",
       "complete": "zakończone",
-      "partition_app": "app",
+      "partition_app": "aplikacja",
       "partition_ota": "ota",
       "partition_fs": "fs"
     },
@@ -108,23 +108,23 @@
   "serial": {
     "instructions": "Jeśli proces rozłączania trwa zbyt długo, możesz ręcznie odłączyć urządzenie.",
     "disconnect": "Rozłącz",
-    "reconnect": "Try Reconnecting",
+    "reconnect": "Połącz ponownie",
     "log_levels": {
       "all": "Wszystkie",
-      "debug": "Debug",
-      "info": "Info",
+      "debug": "Debugowanie",
+      "info": "Informacje",
       "warn": "Ostrzeżenie",
       "error": "Błąd"
     }
   },
   "dfu": {
-    "success_title": "DFU Mode",
-    "success_message": "Device successfully entered DFU mode",
-    "error_title": "DFU Mode Failed",
-    "error_message": "Failed to enter DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_connection_title": "Device Connection Failed",
-    "error_connection": "Failed to connect to device or the device may already be in DFU mode. Please disconnect and reconnect the device, then try again. If the problem persists, reload the page.",
-    "error_unresponsive_title": "Device Unresponsive",
-    "error_unresponsive": "The device is not responding. Please ensure it is properly connected and not in DFU mode. If the problem persists, reload the page."
+    "success_title": "Tryb DFU",
+    "success_message": "Urządzenie pomyślnie włączyło tryb DFU",
+    "error_title": "Tryb DFU nie powiódł się",
+    "error_message": "Nie udało się uruchomić trybu DFU. Proszę odłączyć i ponownie połączyć urządzenie, a następnie spróbować ponownie. Jeśli problem będzie się powtarzał, odśwież stronę.",
+    "error_connection_title": "Połączenie urządzenia nie powiodło się",
+    "error_connection": "Nie udało się połączyć z urządzeniem lub urządzenie może być już w trybie DFU. Proszę odłączyć i ponownie połączyć urządzenie, a następnie spróbować ponownie. Jeśli problem będzie się powtarzał, odśwież stronę.",
+    "error_unresponsive_title": "Urządzenie nie reaguje",
+    "error_unresponsive": "Urządzenie nie odpowiada. Upewnij się, że jest poprawnie podłączone, a nie w trybie DFU. Jeśli problem będzie się powtarzał, odśwież stronę."
   }
 }
