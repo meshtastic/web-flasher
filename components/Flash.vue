@@ -10,7 +10,7 @@
       {{ $t('flash.title') }}
     </button>
     <button
-      v-show="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)"
+      v-show="deviceStore.supportsUf2Erase"
       data-tooltip-target="tooltip-erase"
       class="btn-icon mx-2"
       type="button"
@@ -90,7 +90,7 @@
                 :title-override="`${$t('flash.erase_flash')} ${deviceStore.$state.selectedTarget?.displayName || ''}`"
               />
               <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative z-10">
-                <TargetsEraseUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
+                <TargetsEraseUf2 v-if="deviceStore.supportsUf2Erase" />
               </div>
             </div>
           </div>

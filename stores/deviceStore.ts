@@ -95,6 +95,15 @@ export const useDeviceStore = defineStore('device', {
       const sd73Devices = ['WIO_WM1110', 'TRACKER_T1000_E', 'XIAO_NRF52_KIT', 'SEEED_SOLAR_NODE', 'SEEED_WIO_TRACKER_L1', 'SEEED_WIO_TRACKER_L1_EINK']
       return sd73Devices.includes(this.selectedTarget?.hwModelSlug || '')
     },
+    /**
+     * UF2 erase is offered for nRF52840/RP2040 targets, minus devices where the
+     * erase UF2 is not safe to use.
+     */
+    supportsUf2Erase(): boolean {
+      const noEraseUf2Devices = ['MESH_TRACKER_X1']
+      return ['nrf52840', 'rp2040'].includes(this.selectedArchitecture)
+        && !noEraseUf2Devices.includes(this.selectedTarget?.hwModelSlug || '')
+    },
     enterDfuVersion(): string {
       if (this.isSelectedNrf) {
         return '2.2.17'
