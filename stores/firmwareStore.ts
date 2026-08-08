@@ -136,7 +136,7 @@ export const useFirmwareStore = defineStore('firmware', {
       // previous selection can detect they are stale and skip store writes
       prGeneration: 0,
       selectedFirmware: eventMode.enabled ? eventMode.firmware : <FirmwareResource | undefined>{},
-      selectedFile: <File | undefined>{},
+      selectedFile: <File | undefined>undefined,
       baudRate: 115200,
       hasSeenReleaseNotes: false,
       shouldCleanInstall: false,
@@ -178,8 +178,11 @@ export const useFirmwareStore = defineStore('firmware', {
     percentDone: state => `${state.flashPercentDone}%`,
     firmwareVersion: state => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: state => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true,
-    isZipFile: state => state.selectedFile?.name.endsWith('.zip'),
-    isFactoryBin: state => state.selectedFile?.name.endsWith('.factory.bin'),
+    // Guard the name too, not just the file: a File is only ever set from a real
+    // upload, but reading these before one exists must not throw — they are
+    // evaluated from watchers and render (see components/targets/Esp32.vue).
+    isZipFile: state => (state.selectedFile?.name || '').endsWith('.zip'),
+    isFactoryBin: state => (state.selectedFile?.name || '').endsWith('.factory.bin'),
   },
   actions: {
     clearState() {
@@ -197,9 +200,18 @@ export const useFirmwareStore = defineStore('firmware', {
       // Skip fetching firmware list in event mode - use locked firmware only
       if (eventMode.enabled) {
         console.log('Event mode enabled, skipping firmware API fetch')
+        // The locked build is pre-seeded into state, so setSelectedFirmware()
+        // never runs for it — and that is the only place the release manifest is
+        // fetched. Without it every event flash falls through to the legacy
+        // convention-based path, which uses stale partition offsets and asks for
+        // bleota*.bin (gone since 2.8). Resolve it here so event domains take the
+        // same manifest-driven path as flash.meshtastic.org.
+        if (eventMode.firmware?.id && !this.releaseManifest) {
+          await this.setSelectedFirmware(eventMode.firmware)
+        }
         return
       }
-      
+
       firmwareApi.get<FirmwareReleases>()
         .then(async (response: FirmwareReleases) => {
           // Fetch release notes for each firmware version from meshtastic.github.io
@@ -1034,7 +1046,14 @@ export const useFirmwareStore = defineStore('firmware', {
       }
       if (this.selectedFirmware?.id) {
         const baseUrl = getFirmwareBaseUrl(this.selectedFirmware.id)
-        const response = await fetch(`${baseUrl}/${fileName}`)
+        const url = `${baseUrl}/${fileName}`
+        const response = await fetch(url)
+        // Without this a 404 body ("404: Not Found") is happily flashed to the
+        // partition as a 14-byte payload — silently corrupting it instead of
+        // failing the flash.
+        if (!response.ok) {
+          throw new Error(`Could not download ${fileName} (HTTP ${response.status} from ${url})`)
+        }
         const blob = await response.blob()
         const data = await blob.arrayBuffer()
         return convertToBinaryString(new Uint8Array(data))
