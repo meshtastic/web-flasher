@@ -316,6 +316,16 @@
     background: var(--surface-secondary);
   }
   
+  /* Survey inline validation errors. Shared by the survey components so the
+     colour comes from the theme rather than a hex literal duplicated per file. */
+  .survey-error {
+    color: theme('colors.error.dark');
+  }
+
+  :root[data-theme="dark"] .survey-error {
+    color: theme('colors.error.DEFAULT');
+  }
+
   /* Error fetch box - better contrast in both themes */
   .error-fetch-box {
     background: #fef3c7;

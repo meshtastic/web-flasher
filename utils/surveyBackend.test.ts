@@ -18,13 +18,18 @@ const source = ['Schema.gs', 'Code.gs']
   .join('\n')
 
 let turnstileSecret: string | null = 'test-secret'
+let allowInsecureBypass = false
 let turnstileSucceeds = true
 
 function loadBackend() {
   const stubs = {
     PropertiesService: {
       getScriptProperties: () => ({
-        getProperty: (key: string) => (key === 'TURNSTILE_SECRET' ? turnstileSecret : 'sheet-id'),
+        getProperty: (key: string) => {
+          if (key === 'TURNSTILE_SECRET') return turnstileSecret
+          if (key === 'ALLOW_INSECURE_TURNSTILE_BYPASS') return allowInsecureBypass ? 'true' : null
+          return 'sheet-id'
+        },
       }),
     },
     UrlFetchApp: {
@@ -35,7 +40,7 @@ function loadBackend() {
 
   const factory = new Function(
     ...Object.keys(stubs),
-    `${source}\n; return { validateSubmission, expectedHeaders, SCHEMA_VERSION, MIN_FILL_MS, QUESTIONS };`,
+    `${source}\n; return { validateSubmission, expectedHeaders, sanitizeCell, SCHEMA_VERSION, MIN_FILL_MS, QUESTIONS };`,
   )
   return factory(...Object.values(stubs))
 }
@@ -44,6 +49,7 @@ let gs: ReturnType<typeof loadBackend>
 
 beforeEach(() => {
   turnstileSecret = 'test-secret'
+  allowInsecureBypass = false
   turnstileSucceeds = true
   gs = loadBackend()
 })
@@ -133,12 +139,42 @@ describe('survey backend — anti-spam', () => {
     expect(submit().ok).toBe(false)
   })
 
-  it('skips the bot check without a secret, and records that it did', () => {
+  it('fails closed when no secret is configured', () => {
+    // A missing secret in production is a config error. Accepting everything
+    // would admit bots while the rows looked indistinguishable from real ones.
     turnstileSecret = null
+    gs = loadBackend()
+    const result = submit()
+    expect(result.ok).toBe(false)
+  })
+
+  it('bypasses the bot check only on explicit opt-in, and records that it did', () => {
+    turnstileSecret = null
+    allowInsecureBypass = true
     gs = loadBackend()
     const result = submit()
     expect(result.ok).toBe(true)
     expect(result.botCheck.mode).toBe('skipped')
+  })
+})
+
+describe('survey backend — spreadsheet formula injection', () => {
+  it.each([['=1+1'], ['+1'], ['-1'], ['@SUM(A1)'], ['\tx'], ['\rx']])(
+    'escapes a cell beginning with %j so Sheets stores it as text',
+    (value) => {
+      expect(gs.sanitizeCell(value)).toBe(`'${value}`)
+    },
+  )
+
+  it('leaves ordinary answers untouched', () => {
+    for (const value of ['More repeaters please', 't-deck', '!a1b2c3d4', '']) {
+      expect(gs.sanitizeCell(value)).toBe(value)
+    }
+  })
+
+  it('passes non-strings through unchanged', () => {
+    expect(gs.sanitizeCell(3)).toBe(3)
+    expect(gs.sanitizeCell(true)).toBe(true)
   })
 })
 

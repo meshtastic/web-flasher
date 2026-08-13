@@ -4,9 +4,10 @@
  * Source:     public/data/hardware-list.json
  * Regenerate: node scripts/gen-device-options.ts
  *
- * Codes are hwModelSlug values, which are permanent Meshtastic hardware
- * identifiers — safe to use as sheet column keys and to join against the
- * flasher's own data later.
+ * Codes are platformioTarget values (with explicit overrides where that field
+ * collides), which are permanent Meshtastic hardware identifiers — safe to use
+ * as sheet column keys and to join against the flasher's own data later.
+ * NEVER change an existing code: it is the answer key for collected responses.
  */
 
 export interface DeviceOption {
@@ -316,7 +317,7 @@ export const DEVICE_OPTIONS: DeviceOption[] = [
   },
   {
     "code": "heltec-mesh-pocket-10000",
-    "label": "Heltec MeshPocket",
+    "label": "Heltec MeshPocket (heltec-mesh-pocket-10000)",
     "slug": "HELTEC_MESH_POCKET",
     "vendor": "Heltec",
     "image": "heltec_mesh_pocket.svg",
@@ -324,7 +325,7 @@ export const DEVICE_OPTIONS: DeviceOption[] = [
   },
   {
     "code": "heltec-mesh-pocket-5000",
-    "label": "Heltec MeshPocket",
+    "label": "Heltec MeshPocket (heltec-mesh-pocket-5000)",
     "slug": "HELTEC_MESH_POCKET",
     "vendor": "Heltec",
     "image": "heltec_mesh_pocket.svg",

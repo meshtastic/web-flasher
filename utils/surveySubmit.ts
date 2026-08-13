@@ -37,7 +37,7 @@ export async function submitSurvey(
   if (!endpoint) {
     return {
       ok: false,
-      error: 'The survey endpoint is not configured. Set SURVEY_ENDPOINT and redeploy.',
+      error: 'The survey endpoint is not configured. Set SURVEY_WEBHOOK_URL and redeploy.',
       retryable: false,
     }
   }

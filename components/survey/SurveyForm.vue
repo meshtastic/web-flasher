@@ -190,6 +190,11 @@ watch(sectionIndex, () => {
 async function onSubmit() {
   if (submitting.value) return
 
+  // Validate the final section before spending a Turnstile token on a request
+  // the backend would reject. next() sets attemptedAdvance so the blank
+  // question shows its own error, and does not advance past the last section.
+  if (!next()) return
+
   if (turnstile.enabled && !turnstile.token.value) {
     submitError.value = 'Please complete the spam check before submitting.'
     return
@@ -251,12 +256,6 @@ async function onSubmit() {
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-default);
-}
-
-.survey-error {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  color: #f87171;
 }
 
 /* Honeypot: removed from the visual and tab order without display:none,

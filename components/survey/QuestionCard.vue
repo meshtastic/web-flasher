@@ -401,10 +401,4 @@ const textLength = computed(() =>
   text-align: right;
   margin-top: 0.25rem;
 }
-
-.survey-error {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: #f87171;
-}
 </style>

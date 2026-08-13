@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { DEVICE_OPTIONS } from '~/components/survey/devices.generated'
 import {
   type Answers,
   type Rule,
@@ -181,5 +182,24 @@ describe('survey branch lengths', () => {
     const base = { q_attend: 'venue', q_powered: 'whole_event', q_cohort: 'event_fw' }
     expect(seenBy({ ...base, q_issues: ['none'] })).not.toContain('q_worst_issue')
     expect(seenBy({ ...base, q_issues: ['ble_drops'] })).toContain('q_worst_issue')
+  })
+})
+
+describe('generated device options', () => {
+  it('has unique codes', () => {
+    const codes = DEVICE_OPTIONS.map(d => d.code)
+    expect(new Set(codes).size).toBe(codes.length)
+  })
+
+  it('has unique labels, so no two picker rows are indistinguishable', () => {
+    const labels = DEVICE_OPTIONS.map(d => d.label)
+    const duplicates = labels.filter((l, i) => labels.indexOf(l) !== i)
+    expect(duplicates).toEqual([])
+  })
+
+  it('leads with the devices actually seen at the event', () => {
+    expect(DEVICE_OPTIONS.slice(0, 3).map(d => d.code)).toEqual([
+      'rak4631', 'heltec-v3', 'tracker-t1000-e',
+    ])
   })
 })

@@ -27,6 +27,12 @@ Google Sheet. Paired with the `/survey` route in this repo.
    | `SHEET_ID` | The spreadsheet ID from step 1 |
    | `TURNSTILE_SECRET` | Cloudflare Turnstile secret key |
 
+   The endpoint **fails closed**: with no `TURNSTILE_SECRET` set, every
+   submission is rejected. To run without a bot check during local development,
+   also add `ALLOW_INSECURE_TURNSTILE_BYPASS` = `true` — never set this on the
+   production deployment. Rows collected under the bypass are stamped
+   `bot_check = skipped` so unchecked data stays identifiable.
+
 5. Run `rebuildCodebook` once from the editor to populate the `codebook` tab and
    to trigger the OAuth consent prompt.
 6. **Deploy → New deployment → Web app**:

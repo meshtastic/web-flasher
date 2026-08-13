@@ -300,13 +300,20 @@ function isArray(value) {
 // ---------------------------------------------------------------------------
 
 function verifyTurnstile(token) {
-  var secret = PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET')
+  var properties = PropertiesService.getScriptProperties()
+  var secret = properties.getProperty('TURNSTILE_SECRET')
 
   if (!secret) {
-    // Development deployment. Recorded on the row so nobody mistakes unchecked
-    // data for checked data later.
-    console.warn('TURNSTILE_SECRET is not set — bot check skipped.')
-    return { passed: true, mode: 'skipped' }
+    // Fail closed. A missing secret in production is a configuration error, and
+    // silently accepting everything would let bots through while the rows look
+    // no different from real ones. Bypassing requires deliberately setting a
+    // second property, so it cannot happen by omission.
+    if (properties.getProperty('ALLOW_INSECURE_TURNSTILE_BYPASS') === 'true') {
+      console.warn('TURNSTILE_SECRET is not set — bot check bypassed by explicit opt-in.')
+      return { passed: true, mode: 'skipped' }
+    }
+    console.error('TURNSTILE_SECRET is not set; rejecting submission.')
+    return { passed: false, mode: 'not-configured' }
   }
 
   if (!token || typeof token !== 'string') return { passed: false, mode: 'missing-token' }
@@ -390,7 +397,8 @@ function appendResponse(answers, payload, botCheck) {
     var row = []
     for (var k = 0; k < headers.length; k++) {
       var key = headers[k]
-      row.push(Object.prototype.hasOwnProperty.call(values, key) ? values[key] : '')
+      var cell = Object.prototype.hasOwnProperty.call(values, key) ? values[key] : ''
+      row.push(sanitizeCell(cell))
     }
 
     sheet.appendRow(row)
@@ -398,6 +406,22 @@ function appendResponse(answers, payload, botCheck) {
   finally {
     lock.releaseLock()
   }
+}
+
+/**
+ * Characters that make Sheets treat a cell as a formula.
+ *
+ * appendRow writes with user-entered semantics, so a free-text answer beginning
+ * with any of these would be evaluated rather than stored — spreadsheet formula
+ * injection, triggered the moment someone opens the results. Prefixing with an
+ * apostrophe forces the value to literal text; Sheets consumes the apostrophe
+ * on display, so the stored answer still reads exactly as submitted.
+ */
+var FORMULA_TRIGGERS = ['=', '+', '-', '@', '\t', '\r']
+
+function sanitizeCell(value) {
+  if (typeof value !== 'string' || value === '') return value
+  return FORMULA_TRIGGERS.indexOf(value.charAt(0)) === -1 ? value : "'" + value
 }
 
 function getResponsesSheet() {

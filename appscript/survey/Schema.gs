@@ -1128,11 +1128,11 @@ var QUESTIONS = [
       },
       {
         "code": "heltec-mesh-pocket-10000",
-        "label": "Heltec MeshPocket"
+        "label": "Heltec MeshPocket (heltec-mesh-pocket-10000)"
       },
       {
         "code": "heltec-mesh-pocket-5000",
-        "label": "Heltec MeshPocket"
+        "label": "Heltec MeshPocket (heltec-mesh-pocket-5000)"
       },
       {
         "code": "heltec-mesh-solar",

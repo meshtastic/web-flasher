@@ -30,7 +30,14 @@ function loadScript(): Promise<void> {
     script.async = true
     script.defer = true
     script.onload = () => resolve()
-    script.onerror = () => reject(new Error('Failed to load Turnstile'))
+    script.onerror = () => {
+      // Drop the cached rejection, otherwise one transient failure poisons every
+      // later mount for the lifetime of the page and the respondent is stuck on
+      // the ad-blocker message even after the network recovers.
+      scriptPromise = null
+      script.remove()
+      reject(new Error('Failed to load Turnstile'))
+    }
     document.head.appendChild(script)
   })
 
@@ -67,7 +74,13 @@ export function useTurnstile(siteKey: string, container: Ref<HTMLElement | null>
       return
     }
 
-    if (!container.value || !window.turnstile) return
+    if (!container.value || !window.turnstile) {
+      // Silently returning here leaves enabled=true, ready=false and no error,
+      // so the respondent sees "complete the spam check" with no widget to
+      // complete. Say what actually went wrong instead.
+      error.value = 'The spam check could not be displayed. Please reload the page.'
+      return
+    }
 
     widgetId = window.turnstile.render(container.value, {
       'sitekey': siteKey,

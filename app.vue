@@ -267,7 +267,7 @@ import {
   initModals,
   initTooltips } from 'flowbite'
 import { useI18n } from 'vue-i18n'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 
 import {
   Zap,
@@ -329,9 +329,16 @@ const openSurvey = () => {
 }
 
 const closeSurvey = () => {
+  // Pop the entry openSurvey pushed rather than pushing another, or Back would
+  // land on ?survey=1 and re-open the survey the user just closed.
+  if (window.history.state?.survey) {
+    window.history.back()
+    return
+  }
+  // Arrived directly on ?survey=1 (shared link), so there is nothing to pop.
   const url = new URL(window.location.href)
   url.searchParams.delete(SURVEY_QUERY_PARAM)
-  window.history.pushState({ survey: false }, '', url)
+  window.history.replaceState({ survey: false }, '', url)
   showSurvey.value = false
 }
 
@@ -512,6 +519,7 @@ onMounted(() => {
   syncSurveyFromUrl()
   watch(surveyAvailable, syncSurveyFromUrl)
   window.addEventListener('popstate', syncSurveyFromUrl)
+  onUnmounted(() => window.removeEventListener('popstate', syncSurveyFromUrl))
 
   // Load a PR test build when arriving via a ?pr= deep link (posted by the
   // GitHub bot comment on firmware pull requests)

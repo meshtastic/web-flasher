@@ -6,8 +6,11 @@
  * copies by hand — which would drift, and would drift silently, since a
  * too-permissive server allowlist fails open — the .gs constants are generated.
  *
- * Usage (Node 22.6+ runs TypeScript directly via type stripping):
- *   node scripts/gen-appsscript-schema.ts
+ * Requires Node 22.6+ (TypeScript type stripping). CI pins Node 20, so this is
+ * a local authoring step; the generated file is committed.
+ *
+ * Usage:
+ *   pnpm run survey:schema
  */
 
 import { writeFileSync } from 'node:fs'

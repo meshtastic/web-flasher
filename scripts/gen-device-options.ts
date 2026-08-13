@@ -16,7 +16,11 @@
  * Reads public/data/hardware-list.json, which is a protected file (see
  * .github/workflows) — read-only here, never modified.
  *
- * Usage:  node scripts/gen-device-options.ts
+ * Requires Node 22.6 or newer, which runs TypeScript directly via type
+ * stripping. CI pins Node 20, so this is a local authoring step only — the
+ * generated file is committed and nothing in the build regenerates it.
+ *
+ * Usage:  pnpm run survey:devices
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
@@ -156,6 +160,27 @@ for (const device of devices) {
   seen.add(device.code)
 }
 
+/**
+ * Two boards sharing a displayName render as identical rows in the picker, so a
+ * respondent picks one at random and neither code can be interpreted. The
+ * hardware list is read-only here, so disambiguate with the code, which is what
+ * actually distinguishes them.
+ */
+const labelCounts = new Map<string, number>()
+for (const device of devices) {
+  labelCounts.set(device.label, (labelCounts.get(device.label) ?? 0) + 1)
+}
+for (const device of devices) {
+  if ((labelCounts.get(device.label) ?? 0) > 1) device.label = `${device.label} (${device.code})`
+}
+
+const duplicateLabels = devices
+  .map(d => d.label)
+  .filter((label, i, all) => all.indexOf(label) !== i)
+if (duplicateLabels.length > 0) {
+  throw new Error(`Device labels still duplicated after disambiguation: ${duplicateLabels.join(', ')}`)
+}
+
 const vendors = [...new Set(devices.map(d => d.vendor))].sort((a, b) =>
   a.localeCompare(b),
 )
@@ -166,9 +191,10 @@ const body = `/**
  * Source:     public/data/hardware-list.json
  * Regenerate: node scripts/gen-device-options.ts
  *
- * Codes are hwModelSlug values, which are permanent Meshtastic hardware
- * identifiers — safe to use as sheet column keys and to join against the
- * flasher's own data later.
+ * Codes are platformioTarget values (with explicit overrides where that field
+ * collides), which are permanent Meshtastic hardware identifiers — safe to use
+ * as sheet column keys and to join against the flasher's own data later.
+ * NEVER change an existing code: it is the answer key for collected responses.
  */
 
 export interface DeviceOption {

@@ -5,7 +5,7 @@
         v-model="query"
         type="search"
         class="device-search"
-        placeholder="Search 88 devices…"
+        :placeholder="`Search ${DEVICE_OPTIONS.length} devices…`"
         aria-label="Search devices"
       >
       <span
@@ -112,9 +112,16 @@ const themeStore = useThemeStore()
 const query = ref('')
 const vendor = ref<string | null>(null)
 
+/**
+ * Devices matching the current search and vendor filter, plus anything already
+ * selected. Without that union a respondent who picks a device and then types a
+ * new query loses sight of the selection while it is still in their answer,
+ * which reads as the click not having registered.
+ */
 const filtered = computed(() => {
   const needle = query.value.trim().toLowerCase()
   return DEVICE_OPTIONS.filter((device) => {
+    if (props.selected.includes(device.code)) return true
     if (vendor.value && device.vendor !== vendor.value) return false
     if (!needle) return true
     return (
@@ -125,7 +132,7 @@ const filtered = computed(() => {
   })
 })
 
-// 22 of the 88 devices ship no artwork; fall back to the same placeholder the
+// Some boards ship no artwork; fall back to the same placeholder the
 // flasher uses, which has a light-mode variant.
 function imageFor(device: DeviceOption): string {
   if (device.image) return `/img/devices/${device.image}`
@@ -134,7 +141,6 @@ function imageFor(device: DeviceOption): string {
     : '/img/devices/unknown-new-light.svg'
 }
 
-// Keep a selection visible even when the current filter would hide it.
 const selected = computed(() => props.selected)
 </script>
 
@@ -208,7 +214,7 @@ const selected = computed(() => props.selected)
   list-style: none;
   padding: 0;
   margin: 0;
-  /* 88 tiles is too tall to scroll past on the way to the next question. */
+  /* The full list is too tall to scroll past on the way to the next question. */
   max-height: 26rem;
   overflow-y: auto;
 }
