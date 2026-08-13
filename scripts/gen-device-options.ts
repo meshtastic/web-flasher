@@ -16,7 +16,8 @@
  * Reads public/data/hardware-list.json, which is a protected file (see
  * .github/workflows) — read-only here, never modified.
  *
- * Requires Node 22.6+ (TypeScript type stripping); the pnpm script checks this
+ * Requires a Node with flagless TypeScript type stripping (22.18+, 23.6+, or
+ * 24+); the pnpm script feature-detects this
  * and explains the mismatch rather than failing with a syntax error. CI pins
  * Node 20, so this is a local authoring step — the output is committed and
  * nothing in the build regenerates it.

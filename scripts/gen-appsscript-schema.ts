@@ -6,7 +6,8 @@
  * copies by hand — which would drift, and would drift silently, since a
  * too-permissive server allowlist fails open — the .gs constants are generated.
  *
- * Requires Node 22.6+ (TypeScript type stripping). CI pins Node 20, so this is
+ * Requires a Node with flagless TypeScript type stripping (22.18+, 23.6+, or
+ * 24+); the pnpm script feature-detects and explains. CI pins Node 20, so this is
  * a local authoring step; the generated file is committed.
  *
  * Usage:
