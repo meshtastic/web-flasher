@@ -301,7 +301,9 @@ function isArray(value) {
 
 function verifyTurnstile(token) {
   var properties = PropertiesService.getScriptProperties()
-  var secret = properties.getProperty('TURNSTILE_SECRET')
+  // Trimmed: a stray space pasted into the property yields invalid-input-secret,
+  // which looks identical to a bad token from the outside.
+  var secret = (properties.getProperty('TURNSTILE_SECRET') || '').replace(/^\s+|\s+$/g, '')
 
   if (!secret) {
     // Fail closed. A missing secret in production is a configuration error, and
@@ -325,6 +327,13 @@ function verifyTurnstile(token) {
       muteHttpExceptions: true,
     })
     var result = JSON.parse(response.getContentText())
+    if (result.success !== true) {
+      // Cloudflare's error codes are the only way to tell a reused token
+      // (timeout-or-duplicate) from a misconfigured key (invalid-input-secret)
+      // from a genuine bot. Without them every failure looks the same from the
+      // outside, which is exactly how this cost an afternoon.
+      console.warn('Turnstile rejected a token: ' + JSON.stringify(result['error-codes'] || []))
+    }
     return { passed: result.success === true, mode: result.success ? 'verified' : 'rejected' }
   }
   catch (err) {

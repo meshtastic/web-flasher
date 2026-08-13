@@ -85,6 +85,13 @@ export function useTurnstile(siteKey: string, container: Ref<HTMLElement | null>
     widgetId = window.turnstile.render(container.value, {
       'sitekey': siteKey,
       'theme': 'auto',
+      // Tokens expire after roughly five minutes — about how long the survey
+      // takes. Without auto-refresh a respondent who solves the challenge and
+      // then reads carefully arrives at Submit holding a dead token, and the
+      // server rejects it as a failed spam check with nothing visibly wrong.
+      'refresh-expired': 'auto',
+      'retry': 'auto',
+      'retry-interval': 2000,
       'callback': (value: string) => {
         token.value = value
         error.value = ''
