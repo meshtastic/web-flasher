@@ -203,6 +203,7 @@ const formatVariantLabel = (target?: DeviceHardware) => {
 /**
  * Funnel signal for UF2 boards: the flasher's job ends at handing over the file,
  * so the download is both the start and the (deliverable) end of the flash.
+ * Used by the release links, where the browser owns the transfer once clicked.
  */
 const trackUf2Download = (target?: DeviceHardware) => {
   if (!target) return
@@ -210,7 +211,9 @@ const trackUf2Download = (target?: DeviceHardware) => {
   firmwareStore.trackDownload(target, false, 'uf2')
 }
 
-const downloadUf2FileFsForTarget = (target?: DeviceHardware) => {
+// Extracting from a zip (uploaded file or PR artifact) can fail on retrieval or
+// on a missing entry, so success is reported only once the file is saved.
+const downloadUf2FileFsForTarget = async (target?: DeviceHardware) => {
   if (!target) return
   let suffix = ''
   if (firmwareStore.shouldInstallInkHud) {
@@ -218,9 +221,16 @@ const downloadUf2FileFsForTarget = (target?: DeviceHardware) => {
   }
   const searchRegex = new RegExp(`firmware-${target.platformioTarget}${suffix}-.+.uf2`)
   console.log(searchRegex)
-  trackUf2Download(target)
-  // PR build artifacts are arch-scoped zips (e.g. esp32-s3 → esp32s3)
-  firmwareStore.downloadUf2FileSystem(searchRegex, artifactArchForDevice(target.architecture))
+  firmwareStore.trackFlashStart(target, { method: 'uf2' })
+  try {
+    // PR build artifacts are arch-scoped zips (e.g. esp32-s3 → esp32s3)
+    await firmwareStore.downloadUf2FileSystem(searchRegex, artifactArchForDevice(target.architecture))
+    firmwareStore.trackDownload(target, false, 'uf2')
+  }
+  catch (error) {
+    console.error('Error extracting UF2:', error)
+    firmwareStore.trackFlashError(error)
+  }
 }
 
 const isNewFirmware = computed(() => {

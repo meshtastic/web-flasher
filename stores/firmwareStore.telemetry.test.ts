@@ -26,6 +26,24 @@ vi.mock('~/utils/telemetry', async (importOriginal) => {
 
 vi.mock('@vercel/analytics', () => ({ track: vi.fn() }))
 
+// Enough of the flashing stack to drive the ESP paths in node: the terminal
+// needs a DOM, and the esptool transport needs a serial port.
+vi.mock('~/utils/terminal', () => ({
+  openTerminal: vi.fn(async () => ({ writeln: vi.fn(), write: vi.fn(), clear: vi.fn() })),
+}))
+vi.mock('esptool-js', () => ({
+  ESPLoader: vi.fn(),
+  Transport: vi.fn(function (this: any) {
+    this.setRTS = vi.fn()
+    this.disconnect = vi.fn()
+    this.waitForUnlock = vi.fn()
+  }),
+}))
+vi.stubGlobal('navigator', {
+  userAgent: 'vitest',
+  serial: { requestPort: vi.fn(async () => ({ ondisconnect: null, open: vi.fn(), close: vi.fn() })) },
+})
+
 const heltecV3: DeviceHardware = {
   hwModel: 43,
   hwModelSlug: 'HELTEC_V3',
@@ -43,6 +61,35 @@ const defaultEventMode = { ...eventMode }
 
 function actionNamed(name: string) {
   return addRumAction.mock.calls.find(([actionName]) => actionName === name)?.[1]
+}
+
+function actionsNamed(name: string) {
+  return addRumAction.mock.calls.filter(([actionName]) => actionName === name)
+}
+
+// A two-file update flash (app + OTA), manifest-driven.
+const MANIFEST = {
+  version: '2.7.11',
+  files: [
+    { name: 'firmware-heltec-v3-2.7.11.bin', part_name: 'app0' },
+    { name: 'mt-esp32s3-ota.bin', part_name: 'app1' },
+  ],
+  part: [
+    { name: 'app0', offset: '0x10000', subtype: 'ota_0' },
+    { name: 'app1', offset: '0x260000', subtype: 'ota_1' },
+  ],
+}
+
+/**
+ * Stand in for the flashing stack around the real startWrite(), with `write`
+ * deciding what esptool does: it is handed the real FlashOptions, so it can
+ * replay progress callbacks before resolving or rejecting.
+ */
+function stubFlashStack(store: ReturnType<typeof useFirmwareStore>, write: (options: any) => Promise<void>) {
+  store.connectEsp32 = vi.fn(async () => ({ writeFlash: (options: any) => write(options) }) as any)
+  store.fetchBinaryContent = vi.fn(async () => 'binary')
+  // Boot-log streaming: in the browser this only returns when the port closes.
+  store.readSerial = vi.fn(async () => {})
 }
 
 beforeEach(() => {
@@ -156,5 +203,92 @@ describe('flash funnel actions', () => {
     const error = actionNamed('flash_error')
     expect(error).toMatchObject({ error_kind: 'user_cancelled', event_slug: 'none' })
     expect(error).not.toHaveProperty('platformio_target')
+  })
+})
+
+describe('esp32 flash outcome', () => {
+  function espStore() {
+    const store = useFirmwareStore()
+    store.selectedFirmware = STABLE
+    store.manifest = MANIFEST as any
+    return store
+  }
+
+  it('reports one success per flash, not one per file', async () => {
+    const store = espStore()
+    stubFlashStack(store, async (options) => {
+      // esptool reports written === total at the end of EVERY file.
+      options.reportProgress(0, 100, 100)
+      options.reportProgress(1, 100, 100)
+    })
+
+    await store.updateEspFlash(heltecV3)
+
+    expect(actionsNamed('flash_success')).toHaveLength(1)
+    expect(actionsNamed('firmware_flash')).toHaveLength(1)
+    expect(actionNamed('flash_success')).toMatchObject({
+      platformio_target: 'heltec-v3',
+      method: 'esptool',
+      clean_install: false,
+      outcome_source: 'device',
+    })
+  })
+
+  it('does not report success when the write fails after the last progress callback', async () => {
+    const store = espStore()
+    stubFlashStack(store, async (options) => {
+      options.reportProgress(0, 100, 100)
+      options.reportProgress(1, 100, 100)
+      throw new Error('Timed out waiting for packet header')
+    })
+
+    await store.updateEspFlash(heltecV3)
+
+    expect(actionsNamed('flash_success')).toHaveLength(0)
+    expect(actionNamed('flash_error')).toMatchObject({
+      platformio_target: 'heltec-v3',
+      method: 'esptool',
+      error_class: 'Error',
+      error_kind: 'flash_failed',
+    })
+  })
+
+  it('reports success when the write lands, not when the boot log ends', async () => {
+    const store = espStore()
+    stubFlashStack(store, async (options) => {
+      options.reportProgress(0, 100, 100)
+      options.reportProgress(1, 100, 100)
+    })
+    // readSerial streams until the user unplugs the device, so the flash action
+    // itself never settles — success must not be waiting on it.
+    store.readSerial = vi.fn(() => new Promise<void>(() => {}))
+
+    void store.updateEspFlash(heltecV3)
+
+    await vi.waitFor(() => expect(actionsNamed('flash_success')).toHaveLength(1))
+  })
+
+  it('reports a clean install that flashes fewer files than expected', async () => {
+    const store = espStore()
+    // Only app + OTA make it into the flash list — no filesystem image, so the
+    // progress callback's `fileIndex > 1` guard never fires.
+    stubFlashStack(store, async (options) => {
+      options.reportProgress(0, 100, 100)
+      options.reportProgress(1, 100, 100)
+    })
+
+    await store.cleanInstallEspFlash(heltecV3)
+
+    expect(actionNamed('flash_success')).toMatchObject({ clean_install: true })
+  })
+})
+
+describe('uf2 filesystem extraction', () => {
+  it('fails loudly when there is nothing to extract from', async () => {
+    // Silently returning would let the caller report a flash that never happened.
+    const store = useFirmwareStore()
+    store.selectedFirmware = STABLE
+
+    await expect(store.downloadUf2FileSystem(/firmware-rak4631-.+\.uf2/)).rejects.toThrow(/No firmware zip/)
   })
 })

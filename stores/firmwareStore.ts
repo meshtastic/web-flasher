@@ -495,7 +495,11 @@ export const useFirmwareStore = defineStore('firmware', {
       if (!source && this.selectedFirmware?.prBuild && arch) {
         source = await this.getPrArchZip(arch)
       }
-      if (!source) return
+      // Throw rather than no-op: the caller reports the hand-off as a completed
+      // flash, so "nothing to extract from" has to be distinguishable.
+      if (!source) {
+        throw new Error('No firmware zip to extract a UF2 from')
+      }
       const entry = await extractZipEntry(source, filename => searchRegex.test(filename))
       if (!entry) {
         throw new Error(`Could not find file with pattern ${searchRegex} in zip`)
@@ -539,13 +543,12 @@ export const useFirmwareStore = defineStore('firmware', {
             if (written === total) {
               this.isFlashing = false
               console.log('Done flashing!')
-              // Update flash, not a clean install — the `true` here used to
-              // report every legacy update as a full erase.
-              this.trackDownload(selectedTarget, false)
             }
           },
         }
-        await this.startWrite(terminal, espLoader, transport, flashOptions)
+        // Legacy update flash, not a clean install — this used to report every
+        // one of them as a full erase.
+        await this.startWrite(terminal, espLoader, transport, flashOptions, { selectedTarget, cleanInstall: false })
       }
       catch (error: any) {
         this.handleError(error, terminal)
@@ -783,11 +786,10 @@ export const useFirmwareStore = defineStore('firmware', {
             if (written === total) {
               this.isFlashing = false
               console.log('Done flashing!')
-              this.trackDownload(selectedTarget, false)
             }
           },
         }
-        await this.startWrite(terminal, espLoader, transport, flashOptions)
+        await this.startWrite(terminal, espLoader, transport, flashOptions, { selectedTarget, cleanInstall: false })
       }
       catch (error: any) {
         this.handleError(error, terminal)
@@ -888,19 +890,25 @@ export const useFirmwareStore = defineStore('firmware', {
             if (written === total && fileIndex > 1) {
               this.isFlashing = false
               console.log('Done flashing!')
-              this.trackDownload(selectedTarget, true)
             }
           },
         }
-        await this.startWrite(terminal, espLoader, transport, flashOptions)
+        await this.startWrite(terminal, espLoader, transport, flashOptions, { selectedTarget, cleanInstall: true })
       }
       catch (error: any) {
         this.handleError(error, terminal)
       }
     },
-    async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions) {
+    async startWrite(terminal: Terminal, espLoader: ESPLoader, transport: Transport, flashOptions: FlashOptions, flashed: { selectedTarget: DeviceHardware, cleanInstall: boolean }) {
       await espLoader.writeFlash(flashOptions)
-      
+
+      // The write is the flash, so success is recorded here: reportProgress
+      // reaches written === total once per file and can do so before writeFlash
+      // rejects, while everything below is the reset and the boot-log stream —
+      // and readSerial only returns when the port closes.
+      this.trackDownload(flashed.selectedTarget, flashed.cleanInstall)
+
+
       // Perform hard reset - toggle RTS to reset the chip
       // This matches the original working reset sequence that was used before PR #297
       terminal.writeln('\x1b[33mHard resetting via RTS pin...\x1b[0m')
@@ -985,7 +993,10 @@ export const useFirmwareStore = defineStore('firmware', {
           partition_table_version: this.partitionScheme === '8MB' && selectedTarget.hasMui && supportsNew8MBPartitionTable(this.firmwareVersion) ? 'new-8mb' : 'legacy',
           timestamp: new Date().toISOString(),
           user_agent: typeof navigator === 'undefined' ? '' : navigator.userAgent,
-          url: typeof window === 'undefined' ? '' : window.location.href,
+          // Origin + path only. Query and fragment can carry anything a user was
+          // linked with, and what the flasher itself puts there (?pr=, ?event=)
+          // is already reported as pr_number / event_slug.
+          url: typeof window === 'undefined' ? '' : `${window.location.origin}${window.location.pathname}`,
         }
 
         // Final joint of the funnel. For UF2 targets the flasher only hands the
@@ -1083,11 +1094,10 @@ export const useFirmwareStore = defineStore('firmware', {
             if (written === total && fileIndex > 1) {
               this.isFlashing = false
               console.log('Done flashing!')
-              this.trackDownload(selectedTarget, true)
             }
           },
         }
-        await this.startWrite(terminal, espLoader, transport, flashOptions)
+        await this.startWrite(terminal, espLoader, transport, flashOptions, { selectedTarget, cleanInstall: true })
       }
       catch (error: any) {
         this.handleError(error, terminal)
