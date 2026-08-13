@@ -16,9 +16,10 @@
  * Reads public/data/hardware-list.json, which is a protected file (see
  * .github/workflows) — read-only here, never modified.
  *
- * Requires Node 22.6 or newer, which runs TypeScript directly via type
- * stripping. CI pins Node 20, so this is a local authoring step only — the
- * generated file is committed and nothing in the build regenerates it.
+ * Requires Node 22.6+ (TypeScript type stripping); the pnpm script checks this
+ * and explains the mismatch rather than failing with a syntax error. CI pins
+ * Node 20, so this is a local authoring step — the output is committed and
+ * nothing in the build regenerates it.
  *
  * Usage:  pnpm run survey:devices
  */

@@ -11,8 +11,8 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest",
     "test:run": "vitest run",
-    "survey:devices": "node scripts/gen-device-options.ts",
-    "survey:schema": "node scripts/gen-appsscript-schema.ts",
+    "survey:devices": "node scripts/require-modern-node.mjs && node scripts/gen-device-options.ts",
+    "survey:schema": "node scripts/require-modern-node.mjs && node scripts/gen-appsscript-schema.ts",
     "survey:generate": "pnpm run survey:devices && pnpm run survey:schema"
   },
   "dependencies": {
