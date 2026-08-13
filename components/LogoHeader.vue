@@ -100,6 +100,48 @@
       </p>
     </div>
 
+    <!-- Burning Man event branding variant -->
+    <div
+      v-else-if="eventMode.enabled && eventMode.eventTag === 'Burning Man'"
+      class="logo-header-content"
+    >
+      <div class="logo-container">
+        <div class="logo-glow">
+          <img
+            v-if="themeStore.isDark"
+            src="@/assets/img/logo.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+          <img
+            v-else
+            src="@/assets/img/logo-dark.svg"
+            class="logo-icon"
+            alt="Meshtastic Logo"
+          >
+        </div>
+        <span class="logo-separator">×</span>
+        <img
+          v-if="themeStore.isDark"
+          src="@/assets/img/burningmesh.webp"
+          class="logo-icon-event logo-icon-burningmesh"
+          alt="Burning Mesh Logo"
+        >
+        <img
+          v-else
+          src="@/assets/img/burningmesh-dark.webp"
+          class="logo-icon-event logo-icon-burningmesh"
+          alt="Burning Mesh Logo"
+        >
+      </div>
+      <h1 class="logo-title">
+        <span class="logo-title-gradient">{{ $t('header_title') }}</span>
+      </h1>
+      <p class="logo-tagline">
+        {{ eventMode.tagline || eventMode.eventName }}
+      </p>
+    </div>
+
     <!-- DEF CON event branding variant -->
     <div
       v-else-if="eventMode.enabled && eventMode.eventTag === 'DEFCON'"
@@ -385,6 +427,28 @@ const { eventMode } = useEventMode()
 
 @media (min-width: 768px) {
   .logo-icon-defcon {
+    height: 8rem;
+  }
+}
+
+/* The Burning Mesh lockup is the same art the event firmware boots to, wordmark
+   and all, so it runs a little larger than the M to keep "BURNING MESH" legible.
+   It ships in two theme-paired cuts (white figure + mint wordmark for the dark
+   header, ink figure + the light theme's green for the cream one) rather than a
+   filter, so the green survives in both. */
+.logo-icon-burningmesh {
+  height: 6rem;
+  border-radius: 0;
+}
+
+@media (min-width: 640px) {
+  .logo-icon-burningmesh {
+    height: 7rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .logo-icon-burningmesh {
     height: 8rem;
   }
 }
