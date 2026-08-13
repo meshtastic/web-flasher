@@ -313,7 +313,7 @@ const { eventMode } = useEventMode()
 const surveyAvailable = computed(() =>
   eventMode.value.enabled
   && eventMode.value.eventTag === SURVEY_EVENT_TAG
-  && Boolean(config.public.surveyWebhookUrl),
+  && Boolean(String(config.public.surveyWebhookUrl ?? '').trim()),
 )
 
 // The survey lives at ?survey=1 rather than its own route: this app has no

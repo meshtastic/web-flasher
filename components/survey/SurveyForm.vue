@@ -127,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { ArrowLeft, ArrowRight, Send } from 'lucide-vue-next'
 
 import QuestionCard from './QuestionCard.vue'
@@ -170,16 +170,31 @@ const submitError = ref('')
 const submitted = ref(false)
 
 const turnstileContainer = ref<HTMLElement | null>(null)
-const turnstile = useTurnstile(config.public.turnstileSiteKey as string, turnstileContainer)
+// Trimmed: a stray space in the deploy environment's value silently yields an
+// invalid sitekey, and Turnstile then renders nothing with no error callback.
+const turnstile = useTurnstile(
+  (config.public.turnstileSiteKey as string ?? '').trim(),
+  turnstileContainer,
+)
 
 const screen = computed<TerminalId | 'error' | 'filling'>(() => {
   if (submitted.value) return 'complete'
   return terminal.value ?? 'filling'
 })
 
-onMounted(() => {
+// Turnstile refuses to render into a hidden container, and reports nothing when
+// it does: no widget, no error callback, and the respondent only finds out at
+// submit time via "complete the spam check" with nothing to complete. The
+// widget lives inside a v-show block, so defer mounting until the respondent
+// actually reaches the last section and the container has real layout.
+const turnstileRequested = ref(false)
+
+watch(isLastSection, async (onLastSection) => {
+  if (!onLastSection || turnstileRequested.value) return
+  turnstileRequested.value = true
+  await nextTick()
   turnstile.mount()
-})
+}, { immediate: true })
 
 // Scroll the survey back to the top on section change, otherwise a long section
 // leaves the respondent halfway down the next one.
@@ -203,7 +218,7 @@ async function onSubmit() {
   submitting.value = true
   submitError.value = ''
 
-  const result = await submitSurvey(config.public.surveyWebhookUrl as string, {
+  const result = await submitSurvey((config.public.surveyWebhookUrl as string ?? '').trim(), {
     schemaVersion: SCHEMA_VERSION,
     answers: payloadAnswers(),
     durationMs: elapsedMs(),
