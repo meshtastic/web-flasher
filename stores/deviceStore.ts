@@ -5,6 +5,7 @@ import {
   vendorCobrandingTag,
 } from '~/types/resources'
 import { applyEventDeviceOverrides } from '~/utils/eventDevices'
+import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } from '~/utils/telemetry'
 
 import { MeshDevice } from '@meshtastic/core'
 import { TransportWebSerial } from '@meshtastic/transport-web-serial'
@@ -174,17 +175,18 @@ export const useDeviceStore = defineStore('device', {
         firmwareStore.$state.shouldInstallMui = true
       }
 
-      // Update Datadog RUM context with hardware model and platformio target
-      if (import.meta.client) {
-        try {
-          const { datadogRum } = await import('@datadog/browser-rum')
-          datadogRum.setGlobalContextProperty('hwModel', target.hwModel)
-          datadogRum.setGlobalContextProperty('platformioTarget', target.platformioTarget)
-        }
-        catch (error) {
-          // Datadog RUM not available, silently continue
-        }
-      }
+      // First joint of the provisioning funnel (issue #403). The context sticks
+      // to every later event in the session; the action makes "which board did
+      // they pick" countable on its own — including for the ~half of visitors
+      // who never get as far as flashing.
+      const board = boardAttributes(target)
+      setTelemetryContext({
+        // Original keys kept so existing dashboards/monitors keep resolving.
+        hwModel: target.hwModel,
+        platformioTarget: target.platformioTarget,
+        ...board,
+      })
+      addRumAction('select_board', { ...board, ...eventAttributes(eventMode) })
     },
     setSelectedTag(tag: string) {
       if (tag === 'all') {

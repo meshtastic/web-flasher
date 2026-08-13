@@ -110,6 +110,7 @@
               v-if="firmwareStore.selectedFirmware?.id && !firmwareStore.isPrBuild"
               :href="getDownloadUf2Url(variant)"
               class="w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
+              @click="trackUf2Download(variant)"
             >
               {{ formatVariantLabel(variant) }} &ndash; {{ $t('flash.uf2.download_uf2') }}
             </a>
@@ -129,6 +130,7 @@
           v-if="firmwareStore.selectedFirmware?.id && !firmwareStore.isPrBuild"
           :href="getDownloadUf2Url(deviceStore.$state.selectedTarget)"
           class="block w-full text-gray-900 bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-800 shadow-lg shadow-green-800/50 font-medium rounded-lg text-sm px-5 py-3 text-center transition-all"
+          @click="trackUf2Download(deviceStore.$state.selectedTarget)"
         >
           {{ $t('flash.uf2.download_uf2') }}
         </a>
@@ -198,7 +200,20 @@ const formatVariantLabel = (target?: DeviceHardware) => {
   return target.variant ? `${target.displayName} ${target.variant}` : target.displayName
 }
 
-const downloadUf2FileFsForTarget = (target?: DeviceHardware) => {
+/**
+ * Funnel signal for UF2 boards: the flasher's job ends at handing over the file,
+ * so the download is both the start and the (deliverable) end of the flash.
+ * Used by the release links, where the browser owns the transfer once clicked.
+ */
+const trackUf2Download = (target?: DeviceHardware) => {
+  if (!target) return
+  firmwareStore.trackFlashStart(target, { method: 'uf2' })
+  firmwareStore.trackDownload(target, false, 'uf2')
+}
+
+// Extracting from a zip (uploaded file or PR artifact) can fail on retrieval or
+// on a missing entry, so success is reported only once the file is saved.
+const downloadUf2FileFsForTarget = async (target?: DeviceHardware) => {
   if (!target) return
   let suffix = ''
   if (firmwareStore.shouldInstallInkHud) {
@@ -206,9 +221,16 @@ const downloadUf2FileFsForTarget = (target?: DeviceHardware) => {
   }
   const searchRegex = new RegExp(`firmware-${target.platformioTarget}${suffix}-.+.uf2`)
   console.log(searchRegex)
-  firmwareStore.trackDownload(target, false)
-  // PR build artifacts are arch-scoped zips (e.g. esp32-s3 → esp32s3)
-  firmwareStore.downloadUf2FileSystem(searchRegex, artifactArchForDevice(target.architecture))
+  firmwareStore.trackFlashStart(target, { method: 'uf2' })
+  try {
+    // PR build artifacts are arch-scoped zips (e.g. esp32-s3 → esp32s3)
+    await firmwareStore.downloadUf2FileSystem(searchRegex, artifactArchForDevice(target.architecture))
+    firmwareStore.trackDownload(target, false, 'uf2')
+  }
+  catch (error) {
+    console.error('Error extracting UF2:', error)
+    firmwareStore.trackFlashError(error)
+  }
 }
 
 const isNewFirmware = computed(() => {
@@ -222,6 +244,9 @@ const canInstallInkHud = computed(() => {
   return deviceStore.$state.selectedTarget?.hasInkHud === true
 })
 
+// Pure: this is bound to :href, so it runs on every render. Tracking lives in
+// the @click handler instead — calling it here counted a download each time the
+// button re-rendered, whether or not anyone clicked it.
 const getDownloadUf2Url = (target?: DeviceHardware) => {
   if (!target || !firmwareStore.selectedFirmware?.id) return ''
   const firmwareVersion = firmwareStore.selectedFirmware.id.replace('v', '')
@@ -230,8 +255,6 @@ const getDownloadUf2Url = (target?: DeviceHardware) => {
     suffix = '-inkhud'
   }
   const firmwareFile = `firmware-${target.platformioTarget}${suffix}-${firmwareVersion}.uf2`
-  firmwareStore.trackDownload(target, false)
-  console.log(firmwareFile)
   return firmwareStore.getReleaseFileUrl(firmwareFile)
 }
 </script>
