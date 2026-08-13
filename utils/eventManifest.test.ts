@@ -44,6 +44,21 @@ describe('manifestEditionToEventMode', () => {
     // Falls back to the display name so the header still reads sensibly.
     expect(cfg.firmware.title).toBe('Open Sauce 2026')
   })
+
+  it('keeps a known version informational when permanent artifacts have not shipped', () => {
+    const cfg =
+      manifestEditionToEventMode({
+        ...comingSoonEdition,
+        firmware: {
+          ...comingSoonEdition.firmware!,
+          version: '2.8.0.1cf8338',
+          title: 'Meshtastic Firmware 2.8.0.1cf8338',
+        },
+      })
+    expect(cfg.firmware.id).toBe('')
+    expect(cfg.firmware.title).toBe('Meshtastic Firmware 2.8.0.1cf8338')
+    expect(cfg.firmware.zip_url).toBeUndefined()
+  })
 })
 
 describe('resolveEventAccentVars', () => {
