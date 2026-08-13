@@ -39,121 +39,134 @@
       id="main"
       class="flex-1 text-gray-400 body-font px-3 sm:px-5"
     >
-      <transition
-        name="flash"
-        mode="out-in"
-      >
-        <div
-          v-show="!serialMonitorStore.isConnected"
-          class="container py-1 mx-auto transition duration-900 ease-in-out max-w-7xl"
+      <SurveyView
+        v-if="showSurvey"
+        @close="closeSurvey"
+      />
+
+      <template v-else>
+        <transition
+          name="flash"
+          mode="out-in"
         >
-          <div class="flex flex-col content-center justify-center">
-            <div class="flex flex-wrap sm:flex-row flex-col py-1">
-              <LogoHeader />
+          <div
+            v-show="!serialMonitorStore.isConnected"
+            class="container py-1 mx-auto transition duration-900 ease-in-out max-w-7xl"
+          >
+            <div class="flex flex-col content-center justify-center">
+              <div class="flex flex-wrap sm:flex-row flex-col py-1">
+                <LogoHeader />
+              </div>
+              <div class="header-accent-container">
+                <div class="header-accent-line" />
+              </div>
             </div>
-            <div class="header-accent-container">
-              <div class="header-accent-line" />
+
+            <SurveyBanner
+              v-if="surveyAvailable"
+              @open="openSurvey"
+            />
+
+            <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
+              <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up">
+                <div class="card-modern p-6 h-80 flex flex-col items-center relative">
+                  <div class="absolute top-3 left-3 w-8 h-8 rounded-full step-badge-circle flex items-center justify-center">
+                    <span class="step-number">1</span>
+                  </div>
+                  <img
+                    :src="selectedDeviceImage"
+                    class="h-40 w-40 mb-4 mx-auto object-contain drop-shadow-lg"
+                    :alt="$t('device.title')"
+                  >
+                  <Device />
+                </div>
+                <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
+                  {{ $t('device.title') }}
+                </h2>
+                <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
+                  {{ $t('device.instructions') }}
+                </p>
+              </div>
+              <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up-delayed">
+                <div class="card-modern p-6 h-80 flex flex-col items-center z-20 relative">
+                  <div
+                    class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
+                    :class="isStep2Enabled ? 'step-badge-circle' : 'border step-disabled'"
+                  >
+                    <span
+                      class="font-bold text-sm transition-colors duration-300"
+                      :class="isStep2Enabled ? 'step-number' : 'text-theme-muted'"
+                    >2</span>
+                  </div>
+                  <FolderDown
+                    class="h-40 w-40 p-4 mb-4 mx-auto card-icon opacity-90"
+                    :alt="$t('firmware.title')"
+                  />
+                  <Firmware />
+                </div>
+                <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
+                  {{ $t('firmware.title') }}
+                </h2>
+                <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
+                  {{ $t('firmware.instructions') }}
+                </p>
+              </div>
+              <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up-delayed-2">
+                <div class="card-modern p-6 h-80 flex flex-col items-center relative">
+                  <div
+                    class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
+                    :class="isStep3Enabled ? 'step-badge-circle' : 'border step-disabled'"
+                  >
+                    <span
+                      class="font-bold text-sm transition-colors duration-300"
+                      :class="isStep3Enabled ? 'step-number' : 'text-theme-muted'"
+                    >3</span>
+                  </div>
+                  <Zap class="h-40 w-40 p-4 mb-4 mx-auto card-icon opacity-90" />
+                  <Flash />
+                </div>
+                <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
+                  Flash
+                </h2>
+                <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
+                  {{ $t('flash.instructions') }}
+                </p>
+              </div>
             </div>
           </div>
-          <div class="flex flex-wrap sm:-m-4 -mx-2 sm:-mx-4 -mb-10 -mt-4">
-            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up">
-              <div class="card-modern p-6 h-80 flex flex-col items-center relative">
-                <div class="absolute top-3 left-3 w-8 h-8 rounded-full step-badge-circle flex items-center justify-center">
-                  <span class="step-number">1</span>
-                </div>
-                <img
-                  :src="selectedDeviceImage"
-                  class="h-40 w-40 mb-4 mx-auto object-contain drop-shadow-lg"
-                  :alt="$t('device.title')"
-                >
-                <Device />
-              </div>
-              <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
-                {{ $t('device.title') }}
-              </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
-                {{ $t('device.instructions') }}
-              </p>
-            </div>
-            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up-delayed">
-              <div class="card-modern p-6 h-80 flex flex-col items-center z-20 relative">
-                <div
-                  class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
-                  :class="isStep2Enabled ? 'step-badge-circle' : 'border step-disabled'"
-                >
-                  <span
-                    class="font-bold text-sm transition-colors duration-300"
-                    :class="isStep2Enabled ? 'step-number' : 'text-theme-muted'"
-                  >2</span>
-                </div>
-                <FolderDown
-                  class="h-40 w-40 p-4 mb-4 mx-auto card-icon opacity-90"
-                  :alt="$t('firmware.title')"
-                />
-                <Firmware />
-              </div>
-              <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
-                {{ $t('firmware.title') }}
-              </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
-                {{ $t('firmware.instructions') }}
-              </p>
-            </div>
-            <div class="p-2 sm:p-4 md:w-1/3 sm:mb-0 mb-6 animate-fade-in-up-delayed-2">
-              <div class="card-modern p-6 h-80 flex flex-col items-center relative">
-                <div
-                  class="absolute top-3 left-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300"
-                  :class="isStep3Enabled ? 'step-badge-circle' : 'border step-disabled'"
-                >
-                  <span
-                    class="font-bold text-sm transition-colors duration-300"
-                    :class="isStep3Enabled ? 'step-number' : 'text-theme-muted'"
-                  >3</span>
-                </div>
-                <Zap class="h-40 w-40 p-4 mb-4 mx-auto card-icon opacity-90" />
-                <Flash />
-              </div>
-              <h2 class="text-xl sm:text-xl font-semibold title-doto text-theme mt-5 tracking-wide">
-                Flash
-              </h2>
-              <p class="text-sm sm:text-base leading-relaxed mt-2 text-theme-muted">
-                {{ $t('flash.instructions') }}
-              </p>
-            </div>
-          </div>
+        </transition>
+        <div class="flex flex-wrap justify-center gap-2 mt-8">
+          <button
+            v-if="!serialMonitorStore.isConnected"
+            type="button"
+            class="btn-secondary"
+            @click="monitorSerial"
+          >
+            {{ $t('buttons.serial_monitor') }} <Terminal class="h-4 w-4 shrink-0" />
+          </button>
+          <!-- v-show (not v-if): Flowbite wires the dropdown/modal listeners once in
+               onMounted, so this must not unmount/remount on Serial Monitor cycles -->
+          <McToolsMenu v-show="!serialMonitorStore.isConnected" />
+          <a
+            v-if="!serialMonitorStore.isConnected"
+            href="https://meshtastic.org/docs"
+            class="btn-secondary"
+          >
+            {{ $t('buttons.meshtastic_docs') }} <BookOpen class="h-4 w-4 shrink-0" />
+          </a>
+          <a
+            v-if="!serialMonitorStore.isConnected"
+            href="https://github.com/meshtastic/web-flasher"
+            class="btn-secondary"
+          >
+            {{ $t('buttons.contribute') }}
+            <Github class="w-4 h-4 shrink-0" />
+          </a>
+          <EventDetails v-if="!serialMonitorStore.isConnected" />
+          <LanguagePicker v-if="!serialMonitorStore.isConnected" />
+          <ThemeSwitcher v-if="!serialMonitorStore.isConnected" />
         </div>
-      </transition>
-      <div class="flex flex-wrap justify-center gap-2 mt-8">
-        <button
-          v-if="!serialMonitorStore.isConnected"
-          type="button"
-          class="btn-secondary"
-          @click="monitorSerial"
-        >
-          {{ $t('buttons.serial_monitor') }} <Terminal class="h-4 w-4 shrink-0" />
-        </button>
-        <!-- v-show (not v-if): Flowbite wires the dropdown/modal listeners once in
-             onMounted, so this must not unmount/remount on Serial Monitor cycles -->
-        <McToolsMenu v-show="!serialMonitorStore.isConnected" />
-        <a
-          v-if="!serialMonitorStore.isConnected"
-          href="https://meshtastic.org/docs"
-          class="btn-secondary"
-        >
-          {{ $t('buttons.meshtastic_docs') }} <BookOpen class="h-4 w-4 shrink-0" />
-        </a>
-        <a
-          v-if="!serialMonitorStore.isConnected"
-          href="https://github.com/meshtastic/web-flasher"
-          class="btn-secondary"
-        >
-          {{ $t('buttons.contribute') }}
-          <Github class="w-4 h-4 shrink-0" />
-        </a>
-        <EventDetails v-if="!serialMonitorStore.isConnected" />
-        <LanguagePicker v-if="!serialMonitorStore.isConnected" />
-        <ThemeSwitcher v-if="!serialMonitorStore.isConnected" />
-      </div>
+      </template>
     </section>
 
     <SerialMonitor />
@@ -270,8 +283,25 @@ import { useSerialMonitorStore } from './stores/serialMonitorStore'
 import { useThemeStore } from './stores/themeStore'
 import { useToastStore } from './stores/toastStore'
 import { useEventMode } from '~/composables/useEventMode'
+import SurveyBanner from '~/components/survey/SurveyBanner.vue'
+import SurveyView from '~/components/survey/SurveyView.vue'
 
 const { t } = useI18n()
+const config = useRuntimeConfig()
+
+/**
+ * DEF CON 34 post-event survey.
+ *
+ * Gated on the resolved event edition rather than on the hostname directly, so
+ * it rides the same manifest-by-host machinery every other event feature uses
+ * (plugins/eventMode.client.ts). Hamvention, Open Sauce, FAB26 and the plain
+ * flasher all fail the eventTag check; the URL check keeps the survey off any
+ * deployment that has not configured an endpoint for it.
+ */
+const SURVEY_EVENT_TAG = 'DEFCON'
+const SURVEY_QUERY_PARAM = 'survey'
+
+const showSurvey = ref(false)
 
 const serialMonitorStore = useSerialMonitorStore()
 const firmwareStore = useFirmwareStore()
@@ -279,6 +309,37 @@ const deviceStore = useDeviceStore()
 const themeStore = useThemeStore()
 const toastStore = useToastStore()
 const { eventMode } = useEventMode()
+
+const surveyAvailable = computed(() =>
+  eventMode.value.enabled
+  && eventMode.value.eventTag === SURVEY_EVENT_TAG
+  && Boolean(config.public.surveyWebhookUrl),
+)
+
+// The survey lives at ?survey=1 rather than its own route: this app has no
+// pages/ directory, and query-param views match the existing ?device= and
+// ?event= conventions. pushState keeps the link shareable and the browser Back
+// button working without pulling in a router.
+const openSurvey = () => {
+  const url = new URL(window.location.href)
+  url.searchParams.set(SURVEY_QUERY_PARAM, '1')
+  window.history.pushState({ survey: true }, '', url)
+  showSurvey.value = true
+  window.scrollTo({ top: 0 })
+}
+
+const closeSurvey = () => {
+  const url = new URL(window.location.href)
+  url.searchParams.delete(SURVEY_QUERY_PARAM)
+  window.history.pushState({ survey: false }, '', url)
+  showSurvey.value = false
+}
+
+const syncSurveyFromUrl = () => {
+  showSurvey.value
+    = surveyAvailable.value
+      && new URLSearchParams(window.location.search).has(SURVEY_QUERY_PARAM)
+}
 
 const prBuild = computed(() => firmwareStore.selectedFirmware?.prBuild)
 
@@ -444,6 +505,13 @@ onMounted(() => {
   initDrawers()
   initAccordions()
   themeStore.initTheme()
+
+  // The event edition resolves asynchronously in plugins/eventMode.client.ts,
+  // so surveyAvailable can flip after mount — watch rather than read once, or a
+  // deep link into ?survey=1 loses the race and silently shows the flasher.
+  syncSurveyFromUrl()
+  watch(surveyAvailable, syncSurveyFromUrl)
+  window.addEventListener('popstate', syncSurveyFromUrl)
 
   // Load a PR test build when arriving via a ?pr= deep link (posted by the
   // GitHub bot comment on firmware pull requests)

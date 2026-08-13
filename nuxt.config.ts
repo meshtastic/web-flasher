@@ -45,6 +45,11 @@ export default defineNuxtConfig({
       // an SPA (ssr: false) with no server runtime to proxy through; real controls
       // are the Apps Script's required-field validation, size caps, and kill switch.
       feedbackToken: process.env.FEEDBACK_TOKEN || '',
+      // DEF CON 34 post-event survey. Empty URL = feature disabled, same
+      // convention as the feedback tool above. The Turnstile SITE key is public
+      // by design; its secret lives only in the Apps Script project.
+      surveyWebhookUrl: process.env.SURVEY_WEBHOOK_URL || '',
+      turnstileSiteKey: process.env.TURNSTILE_SITE_KEY || '',
     },
   },
   ignore: ignoredDevWatchPaths,
