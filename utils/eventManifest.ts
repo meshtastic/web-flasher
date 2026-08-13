@@ -1,5 +1,6 @@
 import type { EventFirmwareEdition, EventFirmwareResponse, EventFirmwareTheme } from '~/types/eventFirmware'
 import type { EventModeConfig } from '~/types/resources'
+import { slugify } from '~/utils/telemetry'
 
 // Same-origin bundled snapshot gates first paint, so it gets a short timeout;
 // the cross-origin live API only refreshes in the background and can wait longer.
@@ -86,6 +87,10 @@ export function manifestEditionToEventMode(edition: EventFirmwareEdition): Event
     enabled: true,
     eventName: edition.displayName,
     eventTag: edition.tag ?? edition.displayName,
+    // Analytics slug comes from the FirmwareEdition enum (e.g. DEFCON →
+    // 'defcon') rather than the firmware slug ('defcon2026'), so an event's
+    // numbers stay groupable across years and before its build ships.
+    slug: slugify(edition.edition),
     pathPrefix: fw?.slug ?? '',
     domain: edition.domain ?? '',
     firmware: {

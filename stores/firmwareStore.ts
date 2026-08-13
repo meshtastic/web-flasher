@@ -20,8 +20,20 @@ import {
   getFirmwareBaseUrl,
   GITHUB_IO_BASE,
   NIGHTLY_DIR,
+  nightlyState,
   setNightlyVersion,
 } from '~/utils/firmwareUrl'
+import {
+  addRumAction,
+  boardAttributes,
+  classifyFlashError,
+  eventAttributes,
+  type FirmwareChannel,
+  type FlashMethod,
+  logTelemetry,
+  resolveFirmwareChannel,
+  setTelemetryContext,
+} from '~/utils/telemetry'
 
 import { track } from '@vercel/analytics'
 import { useSessionStorage } from '@vueuse/core'
@@ -54,6 +66,11 @@ const firmwareApi = mande(createUrl('api/github/firmware/list'))
 // In-flight PR artifact downloads, keyed by architecture. Kept outside the
 // store state so the promises are not made reactive.
 const prZipPromises = new Map<string, Promise<Blob>>()
+
+// Attributes of the flash currently in progress, captured at flash_start so the
+// success/error actions describe the same attempt. Outside state for the same
+// reason as above — it is telemetry bookkeeping, not UI state.
+let activeFlash: Record<string, unknown> | undefined
 
 /**
  * Fetch release notes from meshtastic.github.io
@@ -176,6 +193,21 @@ export const useFirmwareStore = defineStore('firmware', {
       return targets.some(t => t.board === pioTarget || t.board === `${pioTarget}-tft` || t.board === `${pioTarget}-inkhud`)
     },
     percentDone: state => `${state.flashPercentDone}%`,
+    /**
+     * Which section the selected firmware came from (stable / alpha / preview /
+     * nightly / pr / event / local upload). Reported with every funnel action so
+     * flash success rates can be split by release channel.
+     */
+    firmwareChannel(state): FirmwareChannel {
+      return resolveFirmwareChannel({
+        firmware: state.selectedFirmware,
+        hasLocalFile: (state.selectedFile?.name || '').length > 0,
+        isEventMode: eventMode.enabled,
+        nightlyId: nightlyState.id,
+        alphaIds: state.alpha.map(f => f.id),
+        previewIds: state.previews.map(f => f.id),
+      })
+    },
     firmwareVersion: state => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: state => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true,
     // Guard the name too, not just the file: a File is only ever set from a real
@@ -447,16 +479,11 @@ export const useFirmwareStore = defineStore('firmware', {
         }
       }
 
-      // Update Datadog RUM context with firmware version
-      if (import.meta.client) {
-        try {
-          const { datadogRum } = await import('@datadog/browser-rum')
-          datadogRum.setGlobalContextProperty('firmware_version', firmware.id)
-        }
-        catch (error) {
-          console.error('Error setting Datadog RUM context:', error)
-        }
-      }
+      // Carry the firmware onto every later RUM/Logs event in the session.
+      setTelemetryContext({
+        firmware_version: firmware.id,
+        firmware_channel: this.firmwareChannel,
+      })
     },
     getReleaseFileUrl(fileName: string): string {
       // PR build files come from artifact zips, not meshtastic.github.io
@@ -487,6 +514,7 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     async updateEspFlashLegacy(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal()
+      this.trackFlashStart(selectedTarget, { method: 'esptool', cleanInstall: false })
 
       try {
         console.log(`Legacy update flash: ${fileName} at offset 0x10000`)
@@ -511,7 +539,9 @@ export const useFirmwareStore = defineStore('firmware', {
             if (written === total) {
               this.isFlashing = false
               console.log('Done flashing!')
-              this.trackDownload(selectedTarget, true)
+              // Update flash, not a clean install — the `true` here used to
+              // report every legacy update as a full erase.
+              this.trackDownload(selectedTarget, false)
             }
           },
         }
@@ -525,6 +555,7 @@ export const useFirmwareStore = defineStore('firmware', {
       console.error('Error flashing:', error)
       terminal.writeln('')
       terminal.writeln(`\x1b[38;5;9m${error}\x1b[0m`)
+      this.trackFlashError(error)
     },
     /**
      * Get the partition offset from the manifest for a given partition name
@@ -682,6 +713,7 @@ export const useFirmwareStore = defineStore('firmware', {
       }
 
       const terminal = await openTerminal()
+      this.trackFlashStart(selectedTarget, { method: 'esptool', cleanInstall: false })
 
       try {
         const filesToFlash: Array<{ data: string, address: number }> = []
@@ -773,6 +805,7 @@ export const useFirmwareStore = defineStore('firmware', {
       }
 
       const terminal = await openTerminal()
+      this.trackFlashStart(selectedTarget, { method: 'esptool', cleanInstall: true })
 
       try {
         const filesToFlash: Array<{ data: string, address: number }> = []
@@ -892,7 +925,47 @@ export const useFirmwareStore = defineStore('firmware', {
         throw new Error('Serial port is not defined')
       }
     },
-    trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean) {
+    /**
+     * Attributes shared by every action in the flash funnel: which board, which
+     * firmware, and which event edition (if any) it was flashed at.
+     */
+    flashAttributes(selectedTarget: DeviceHardware, method: FlashMethod, isCleanInstall: boolean) {
+      return {
+        ...boardAttributes(selectedTarget),
+        ...eventAttributes(eventMode),
+        firmware_version: this.selectedFirmware?.id || '',
+        firmware_channel: this.firmwareChannel,
+        pr_number: this.selectedFirmware?.prBuild?.prNumber,
+        method,
+        clean_install: isCleanInstall,
+      }
+    },
+    /**
+     * Second joint of the funnel: the user started a flash. Emitted before the
+     * serial port picker opens, so start-vs-finish counts show how many attempts
+     * never made it to a device.
+     */
+    trackFlashStart(selectedTarget: DeviceHardware, options: { method: FlashMethod, cleanInstall?: boolean }) {
+      activeFlash = this.flashAttributes(selectedTarget, options.method, options.cleanInstall ?? false)
+      addRumAction('flash_start', activeFlash)
+    },
+    /**
+     * Final joint: the flash failed. Uses the attributes captured at
+     * flash_start so the failure is attributed to the right board/firmware.
+     */
+    trackFlashError(error: unknown) {
+      const context = {
+        ...(activeFlash ?? eventAttributes(eventMode)),
+        ...classifyFlashError(error),
+        flash_percent_done: this.flashPercentDone,
+      }
+      activeFlash = undefined
+      addRumAction('flash_error', context)
+      logTelemetry('warn', 'Firmware flash failed', { event_type: 'flash_error', ...context })
+    },
+    trackDownload(selectedTarget: DeviceHardware, isCleanInstall: boolean, method: FlashMethod = 'esptool') {
+      // This attempt is over either way — never attribute a later failure to it.
+      activeFlash = undefined
       if (selectedTarget.hwModelSlug?.length > 0) {
         // Vercel Analytics tracking
         track('Download', {
@@ -900,49 +973,44 @@ export const useFirmwareStore = defineStore('firmware', {
           arch: selectedTarget.architecture,
           cleanInstall: isCleanInstall,
           version: this.selectedFirmware?.id || '',
+          event: String(eventAttributes(eventMode).event_slug),
           count: 1,
         })
 
         // Datadog tracking - both RUM and Logs for comprehensive coverage
-        if (import.meta.client) {
-          const flashData = {
-            firmware_version: this.selectedFirmware?.id || '',
-            pr_number: this.selectedFirmware?.prBuild?.prNumber,
-            hw_model: selectedTarget.hwModel,
-            hw_model_slug: selectedTarget.hwModelSlug,
-            platformio_target: selectedTarget.platformioTarget,
-            architecture: selectedTarget.architecture,
-            clean_install: isCleanInstall,
-            support_level: selectedTarget.supportLevel || 3,
-            has_mui: selectedTarget.hasMui || false,
-            partition_scheme: this.partitionScheme || 'default',
-            partition_table_version: this.partitionScheme === '8MB' && selectedTarget.hasMui && supportsNew8MBPartitionTable(this.firmwareVersion) ? 'new-8mb' : 'legacy',
-            timestamp: new Date().toISOString(),
-            user_agent: navigator.userAgent,
-            url: window.location.href,
-          }
-
-          // RUM Action (for user experience correlation, subject to sampling)
-          import('@datadog/browser-rum').then(({ datadogRum }) => {
-            datadogRum.addAction('firmware_flash', flashData)
-          }).catch((error) => {
-            console.warn('Datadog RUM not available for flash tracking:', error)
-          })
-
-          // Datadog Logs (for precise counting, no sampling)
-          import('@datadog/browser-logs').then(({ datadogLogs }) => {
-            datadogLogs.logger.info('Firmware flash completed', {
-              event_type: 'firmware_flash',
-              ...flashData,
-            })
-          }).catch((error) => {
-            console.warn('Datadog Logs not available for flash tracking:', error)
-          })
+        const flashData = {
+          ...this.flashAttributes(selectedTarget, method, isCleanInstall),
+          has_mui: selectedTarget.hasMui || false,
+          partition_scheme: this.partitionScheme || 'default',
+          partition_table_version: this.partitionScheme === '8MB' && selectedTarget.hasMui && supportsNew8MBPartitionTable(this.firmwareVersion) ? 'new-8mb' : 'legacy',
+          timestamp: new Date().toISOString(),
+          user_agent: typeof navigator === 'undefined' ? '' : navigator.userAgent,
+          url: typeof window === 'undefined' ? '' : window.location.href,
         }
+
+        // Final joint of the funnel. For UF2 targets the flasher only hands the
+        // file to the browser — the drag-and-drop onto the device is not
+        // observable — so outcome_source distinguishes a confirmed write from a
+        // delivered download when computing success rates.
+        addRumAction('flash_success', {
+          ...flashData,
+          outcome_source: method === 'uf2' ? 'download' : 'device',
+        })
+
+        // Original action name, kept alongside flash_success so existing
+        // dashboards and monitors keep reporting.
+        addRumAction('firmware_flash', flashData)
+
+        // Datadog Logs (for precise counting, no sampling)
+        logTelemetry('info', 'Firmware flash completed', {
+          event_type: 'firmware_flash',
+          ...flashData,
+        })
       }
     },
     async cleanInstallEspFlashLegacy(fileName: string, otaFileName: string, littleFsFileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal()
+      this.trackFlashStart(selectedTarget, { method: 'esptool', cleanInstall: true })
 
       try {
         this.port = await navigator.serial.requestPort({})
