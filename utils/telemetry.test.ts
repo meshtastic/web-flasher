@@ -1,10 +1,11 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect } from 'vitest'
 import {
   boardAttributes,
   classifyFlashError,
   eventAttributes,
   NO_EVENT_SLUG,
   resolveFirmwareChannel,
+  setActiveEventSlug,
   slugify,
 } from './telemetry'
 import type { DeviceHardware, FirmwareResource } from '~/types/api'
@@ -24,11 +25,13 @@ const defcon: EventModeConfig = {
   enabled: true,
   eventName: 'DEF CON 34',
   eventTag: 'DEFCON',
-  slug: 'defcon',
   pathPrefix: 'defcon2026',
   domain: 'defcon.meshtastic.org',
   firmware: { id: 'v2.7.26.abc1234', title: 'Meshtastic Firmware 2.7.26.abc1234' },
 }
+
+// The plugin resolves the edition once per page load; reset it between tests.
+afterEach(() => setActiveEventSlug(''))
 
 describe('slugify', () => {
   it('lowercases and collapses separators', () => {
@@ -59,7 +62,8 @@ describe('boardAttributes', () => {
 })
 
 describe('eventAttributes', () => {
-  it('tags traffic with the active edition', () => {
+  it('tags traffic with the resolved edition', () => {
+    setActiveEventSlug('DEFCON')
     expect(eventAttributes(defcon)).toEqual({
       event_mode: true,
       event_slug: 'defcon',
@@ -67,9 +71,16 @@ describe('eventAttributes', () => {
     })
   })
 
-  it('falls back to the tag when an edition carries no slug', () => {
-    const { slug: _slug, ...noSlug } = defcon
-    expect(eventAttributes(noSlug as EventModeConfig).event_slug).toBe('defcon')
+  it('keeps an edition groupable across yearly builds', () => {
+    // Whatever year's build is live, OPEN_SAUCE stays 'open_sauce'.
+    setActiveEventSlug('OPEN_SAUCE')
+    expect(eventAttributes({ ...defcon, eventName: 'Open Sauce 2026', eventTag: 'Open Sauce' }).event_slug)
+      .toBe('open_sauce')
+  })
+
+  it('falls back to the tag for static events with no manifest edition', () => {
+    expect(eventAttributes({ ...defcon, eventName: 'Orlando Hamcation 2026', eventTag: 'Hamcation' }).event_slug)
+      .toBe('hamcation')
   })
 
   it('buckets non-event traffic so a group-by keeps it', () => {

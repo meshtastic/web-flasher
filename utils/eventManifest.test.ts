@@ -44,13 +44,6 @@ describe('manifestEditionToEventMode', () => {
     // Falls back to the display name so the header still reads sensibly.
     expect(cfg.firmware.title).toBe('Open Sauce 2026')
   })
-
-  it('derives the analytics slug from the edition, not the yearly build', () => {
-    // Stays 'open_sauce' across builds and before one ships, so an event's
-    // telemetry groups together year over year.
-    expect(manifestEditionToEventMode(shippedEdition).slug).toBe('open_sauce')
-    expect(manifestEditionToEventMode(comingSoonEdition).slug).toBe('open_sauce')
-  })
 })
 
 describe('resolveEventAccentVars', () => {

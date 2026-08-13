@@ -35,7 +35,6 @@ function enableDefconEventMode() {
     enabled: true,
     eventName: 'DEF CON 34',
     eventTag: 'DEFCON',
-    slug: 'defcon',
     pathPrefix: 'defcon34',
     domain: 'defcon.meshtastic.org',
     firmware: {
@@ -87,7 +86,6 @@ describe('firmwareStore event mode', () => {
       enabled: true,
       eventName: 'DEF CON 34',
       eventTag: 'DEFCON',
-      slug: 'defcon',
       pathPrefix: '',
       domain: 'defcon.meshtastic.org',
       firmware: { id: '', title: 'DEF CON 34' },

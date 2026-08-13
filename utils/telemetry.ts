@@ -71,6 +71,21 @@ export function boardAttributes(target?: DeviceHardware): Record<string, unknown
   }
 }
 
+// Analytics slug of the resolved event edition, set once by
+// plugins/eventMode.client.ts. Held here rather than on EventModeConfig so the
+// identifier the manifest agrees on (the FirmwareEdition enum) is what every
+// event attaches, without the display-facing config carrying a telemetry field.
+let activeEventSlug = ''
+
+/**
+ * Record the edition the flasher resolved, e.g. 'DEFCON' → 'defcon'. Preferred
+ * over the event tag because the enum is stable across yearly builds and is set
+ * even before an event's firmware ships.
+ */
+export function setActiveEventSlug(edition: string): void {
+  activeEventSlug = slugify(edition)
+}
+
 /**
  * Attributes identifying the event edition the flasher is locked to. Always
  * emits `event_slug` (falling back to `none`) so a group-by never drops the
@@ -82,7 +97,8 @@ export function eventAttributes(config?: EventModeConfig): Record<string, unknow
   }
   return {
     event_mode: true,
-    event_slug: config.slug || slugify(config.eventTag || config.eventName) || NO_EVENT_SLUG,
+    // Static events (no manifest edition, e.g. Hamcation) fall back to the tag.
+    event_slug: activeEventSlug || slugify(config.eventTag || config.eventName) || NO_EVENT_SLUG,
     event_name: config.eventName,
   }
 }

@@ -20,10 +20,6 @@ export interface EventModeConfig {
   enabled: boolean;
   eventName: string;
   eventTag: string;
-  // Stable, lowercase identifier for the event itself (e.g. 'defcon'), used to
-  // scope analytics. Unlike pathPrefix it does not change between yearly builds
-  // and is set even before an event's firmware ships.
-  slug: string;
   pathPrefix: string;
   domain: string;
   firmware: FirmwareResource;
@@ -59,7 +55,6 @@ const hamcationEventMode: EventModeConfig = {
   enabled: false,
   eventName: 'Orlando Hamcation 2026',
   eventTag: 'Hamcation',
-  slug: 'hamcation',
   pathPrefix: 'hamcation2026',
   domain: 'hamcation.meshtastic.org',
   firmware: {
@@ -84,7 +79,6 @@ export const eventMode = reactive<EventModeConfig>({
   enabled: false,
   eventName: '',
   eventTag: '',
-  slug: '',
   pathPrefix: '',
   domain: '',
   firmware: { id: '', title: '' },

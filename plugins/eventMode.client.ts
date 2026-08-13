@@ -1,7 +1,7 @@
 import { fetchApiManifest, fetchBundledManifest, hostMatches, isFirmwareDowngrade, manifestEditionToEventMode, resolveActiveEdition, applyEventTheme } from '~/utils/eventManifest'
 import type { EventFirmwareResponse } from '~/types/eventFirmware'
 import { eventMode, setActiveEventMode, staticEventModes } from '~/types/resources'
-import { eventAttributes, setTelemetryContext } from '~/utils/telemetry'
+import { eventAttributes, setActiveEventSlug, setTelemetryContext } from '~/utils/telemetry'
 import { setActiveEventEdition } from '~/composables/useEventEdition'
 
 // Resolve the active event edition for the current host. ssr:false guarantees
@@ -37,6 +37,9 @@ export default defineNuxtPlugin(async () => {
     // display — set only alongside setActiveEventMode so the two never diverge.
     setActiveEventEdition(edition)
     applyEventTheme(edition.theme)
+    // The FirmwareEdition enum is the identifier analytics groups by — stable
+    // across yearly builds, unlike the firmware path slug ('defcon2026').
+    setActiveEventSlug(edition.edition)
     tagSessionWithEvent()
     return true
   }

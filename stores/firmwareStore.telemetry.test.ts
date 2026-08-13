@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { eventMode, setActiveEventMode } from '~/types/resources'
 import { setGlobalI18n } from '~/utils/i18n'
+import { setActiveEventSlug } from '~/utils/telemetry'
 import type { DeviceHardware } from '~/types/api'
 import { useFirmwareStore } from './firmwareStore'
 
@@ -53,6 +54,7 @@ beforeEach(() => {
 
 afterEach(() => {
   setActiveEventMode(defaultEventMode as any)
+  setActiveEventSlug('')
 })
 
 describe('flash funnel actions', () => {
@@ -76,11 +78,12 @@ describe('flash funnel actions', () => {
   })
 
   it('scopes a flash to the event the flasher is locked to', () => {
+    // What plugins/eventMode.client.ts does once the edition resolves.
+    setActiveEventSlug('DEFCON')
     setActiveEventMode({
       enabled: true,
       eventName: 'DEF CON 34',
       eventTag: 'DEFCON',
-      slug: 'defcon',
       pathPrefix: 'defcon34',
       domain: 'defcon.meshtastic.org',
       firmware: { id: 'v2.8.0.c800fc8', title: 'Meshtastic Firmware 2.8.0.c800fc8' },
