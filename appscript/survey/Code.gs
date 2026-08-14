@@ -96,8 +96,26 @@ function validateSubmission(payload) {
   if (duration < MIN_FILL_MS) return fail('Rejected.')
 
   // 4. Bot check.
+  //
+  // The failure modes need distinct messages. "No token reached the server" and
+  // "Cloudflare rejected this token" have entirely different causes — a broken
+  // widget versus an expired token versus a misconfigured key — and collapsing
+  // them into one string makes the difference invisible from the outside, which
+  // is precisely how this became hard to diagnose.
   var botCheck = verifyTurnstile(payload.turnstileToken)
-  if (!botCheck.passed) return fail('Spam check failed. Please reload the page and try again.')
+  if (!botCheck.passed) {
+    if (botCheck.mode === 'missing-token') {
+      return fail('The spam check did not complete. Please reload the page and try again.')
+    }
+    if (botCheck.mode === 'not-configured') {
+      return fail('The spam check is not configured on the server. Please report this.')
+    }
+    if (botCheck.mode === 'error') {
+      return fail('The spam check could not be reached. Please try again in a moment.')
+    }
+    var codes = (botCheck.codes || []).join(', ')
+    return fail('Spam check rejected' + (codes ? ' (' + codes + ')' : '') + '. Please reload the page and try again.')
+  }
 
   // 5. Answers.
   var answers = payload.answers
@@ -334,7 +352,11 @@ function verifyTurnstile(token) {
       // outside, which is exactly how this cost an afternoon.
       console.warn('Turnstile rejected a token: ' + JSON.stringify(result['error-codes'] || []))
     }
-    return { passed: result.success === true, mode: result.success ? 'verified' : 'rejected' }
+    return {
+      passed: result.success === true,
+      mode: result.success ? 'verified' : 'rejected',
+      codes: result['error-codes'] || [],
+    }
   }
   catch (err) {
     console.error('Turnstile verification error: ' + err)

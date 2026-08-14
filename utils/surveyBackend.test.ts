@@ -127,10 +127,21 @@ describe('survey backend — anti-spam', () => {
     }).ok).toBe(false)
   })
 
-  it('rejects a missing Turnstile token when a secret is configured', () => {
-    expect(submit((p) => {
+  it('distinguishes a missing token from a rejected one', () => {
+    // These have entirely different causes — a broken widget versus an expired
+    // token — so they must not surface as the same message.
+    const missing = submit((p) => {
       p.turnstileToken = ''
-    }).ok).toBe(false)
+    })
+    expect(missing.ok).toBe(false)
+    expect(missing.message).toContain('did not complete')
+
+    turnstileSucceeds = false
+    gs = loadBackend()
+    const rejected = submit()
+    expect(rejected.ok).toBe(false)
+    expect(rejected.message).toContain('rejected')
+    expect(rejected.message).not.toContain('did not complete')
   })
 
   it('rejects a token Cloudflare refuses', () => {
