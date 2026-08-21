@@ -68,7 +68,7 @@
           </span>
         </div>
         <a
-          :href="uf2File"
+          :href="deviceStore.eraseUf2File"
           download=""
           class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
         >
@@ -132,21 +132,12 @@ import {
   Info,
 } from 'lucide-vue-next'
 import { track } from '@vercel/analytics'
-import { computed } from 'vue'
 
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
 
 const deviceStore = useDeviceStore()
 const firmwareStore = useFirmwareStore()
-
-const uf2File = computed(() => {
-  if (!deviceStore.isSelectedNrf) {
-    return '/uf2/pico_erase.uf2'
-  }
-
-  return deviceStore.isSoftDevice7point3 ? '/uf2/nrf_erase_sd7_3.uf2' : '/uf2/nrf_erase2.uf2'
-})
 
 const closeModal = () => {
   document.getElementById('erase-modal')?.click() // Flowbite bug

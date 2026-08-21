@@ -92,18 +92,45 @@ export const useDeviceStore = defineStore('device', {
     isSelectedNrf(): boolean {
       return this.selectedArchitecture.startsWith('nrf52')
     },
+    /**
+     * Whether the selected nRF52 target's bootloader carries SoftDevice S140
+     * v7.3.0 (app base 0x27000) rather than v6.1.1 (app base 0x26000). This
+     * picks the factory-erase UF2: the v6.1.1 build is flashed at 0x26000,
+     * which on a v7.3.0 device overwrites the last page of the SoftDevice and
+     * leaves the board unbootable until the bootloader + SoftDevice package is
+     * reflashed (#85, #145).
+     *
+     * Every Seeed nRF52840 board ships the v7.3.0 bootloader (see
+     * meshtastic/nrf52_factory_erase), so Seeed is treated as v7.3.0 by default
+     * rather than adding each new board here one at a time. Mis-serving the
+     * v7.3.0 file to a v6.1.1 board is the benign direction (recoverable with
+     * a normal firmware reflash), so defaulting towards v7.3.0 is the safe bet.
+     */
     isSoftDevice7point3(): boolean {
-      const sd73Devices = ['WIO_WM1110', 'TRACKER_T1000_E', 'XIAO_NRF52_KIT', 'SEEED_SOLAR_NODE', 'SEEED_WIO_TRACKER_L1', 'SEEED_WIO_TRACKER_L1_EINK']
-      return sd73Devices.includes(this.selectedTarget?.hwModelSlug || '')
+      const sd73Devices = [
+        'WIO_WM1110',
+        'TRACKER_T1000_E',
+        'XIAO_NRF52_KIT',
+        'SEEED_SOLAR_NODE',
+        'SEEED_WIO_TRACKER_L1',
+        'SEEED_WIO_TRACKER_L1_EINK',
+        'MESH_TRACKER_X1',
+      ]
+      const target = this.selectedTarget
+      if (!target) return false
+      if (sd73Devices.includes(target.hwModelSlug || '')) return true
+      return this.isSelectedNrf && (target.tags?.includes('Seeed') ?? false)
     },
     /**
-     * UF2 erase is offered for nRF52840/RP2040 targets, minus devices where the
-     * erase UF2 is not safe to use.
+     * Factory-erase UF2 (under /public/uf2) for the selected target. The nRF52
+     * build has to match the target's SoftDevice layout — see
+     * isSoftDevice7point3 for what happens when it doesn't.
      */
-    supportsUf2Erase(): boolean {
-      const noEraseUf2Devices = ['MESH_TRACKER_X1']
-      return ['nrf52840', 'rp2040'].includes(this.selectedArchitecture)
-        && !noEraseUf2Devices.includes(this.selectedTarget?.hwModelSlug || '')
+    eraseUf2File(): string {
+      if (!this.isSelectedNrf) {
+        return '/uf2/pico_erase.uf2'
+      }
+      return this.isSoftDevice7point3 ? '/uf2/nrf_erase_sd7_3.uf2' : '/uf2/nrf_erase2.uf2'
     },
     enterDfuVersion(): string {
       if (this.isSelectedNrf) {
