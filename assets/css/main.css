@@ -610,6 +610,15 @@
     color: #67EA94;
   }
 
+  /* Device card product link - accent hover, theme-aware */
+  .product-link a:hover {
+    color: #137136; /* meshtastic-700 */
+  }
+
+  :root[data-theme="dark"] .product-link a:hover {
+    color: #A3F3C3; /* meshtastic-200 */
+  }
+
   /* Connection status button - disconnected state */
   .connection-status-disconnected {
     border-color: var(--border-default);

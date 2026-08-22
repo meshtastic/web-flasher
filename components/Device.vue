@@ -159,6 +159,9 @@
               <h2 class="text-xl sm:text-xl font-semibold text-theme">
                 {{ $t('device.supported_devices') }}
               </h2>
+              <p class="max-w-xl mx-auto mt-2 text-[11px] leading-[1.55] text-theme-muted">
+                {{ $t('device.affiliate_disclosure') }}
+              </p>
             </div>
             <div
               v-for="device in uniqueDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)"
