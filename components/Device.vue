@@ -46,6 +46,8 @@
           <DeviceHeader />
           <div class="flex-1 overflow-y-auto">
           <div class="flex flex-col gap-3 py-3 px-3">
+                <!-- eslint-disable-next-line vue/html-indent -->
+            <DeviceSearch v-model="searchQuery" />
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
               <button
                 type="button"
@@ -215,22 +217,26 @@ import {
   Info,
   Rocket,
 } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { shouldAutoSelectMui, useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
+import { matchesDeviceSearch } from '../utils/deviceSearch'
 import DeviceDetail from './DeviceDetail.vue'
-import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
 
 const { t } = useI18n()
 
 const store = useDeviceStore()
 const firmwareStore = useFirmwareStore()
+const searchQuery = ref('')
 store.fetchList()
 
 const uniqueDevices = computed(() => {
   const seen = new Set<string>()
   return store.sortedDevices.filter((device) => {
+    if (!matchesDeviceSearch(device, searchQuery.value)) return false
+
     const groupKey = device.key || `${device.hwModel}-${device.displayName}`
     if (seen.has(groupKey)) {
       return false
