@@ -51,6 +51,30 @@
           </ul>
         </template>
 
+        <!-- Board hidden as not actively supported: nightly is the only build -->
+        <template v-else-if="nightlyOnly">
+          <div class="px-4 py-2 text-sm text-cyan-400 font-semibold border-theme-bottom">
+            {{ $t('firmware.nightly') }}
+          </div>
+          <ul
+            class="py-2 text-sm text-theme-muted"
+            aria-labelledby="dropdownInformationButton"
+          >
+            <li>
+              <a
+                href="#"
+                class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
+                @click="setSelectedFirmware(store.unlockNightly!)"
+              >
+                {{ (store.unlockNightly?.title || '').replace('Meshtastic Firmware ', '') }}
+              </a>
+            </li>
+          </ul>
+          <div class="px-4 py-3 w-full sm:w-96 max-w-sm text-xs text-warning break-words">
+            {{ $t('firmware.nightly_only_unsupported') }}
+          </div>
+        </template>
+
         <!-- Normal Mode: Full firmware list -->
         <template v-else>
           <div
@@ -213,6 +237,7 @@ import { useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import type { FirmwareResource } from '~/types/api'
 import { useEventMode } from '~/composables/useEventMode'
+import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 
 const { t } = useI18n()
 
@@ -234,6 +259,16 @@ const selectedVersion = computed(() => {
 
 const canSelectFirmware = computed(() => {
   return (deviceStore.selectedTarget?.hwModel ?? 0) > 0
+})
+
+/**
+ * For a board the registry does not mark activelySupported, develop is the only
+ * branch guaranteed to still build its variant, so the nightly is the single
+ * build offered. The Konami reveal is itself gated on that nightly existing, so
+ * this branch never renders an empty list.
+ */
+const nightlyOnly = computed(() => {
+  return isUnsupportedDevice(deviceStore.selectedTarget) && !!store.unlockNightly
 })
 
 const openFile = () => {

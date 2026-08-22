@@ -5,6 +5,7 @@ import {
   vendorCobrandingTag,
 } from '~/types/resources'
 import { applyEventDeviceOverrides } from '~/utils/eventDevices'
+import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } from '~/utils/telemetry'
 
 import { MeshDevice } from '@meshtastic/core'
@@ -41,6 +42,10 @@ export const useDeviceStore = defineStore('device', {
       selectedTarget: <DeviceHardware | undefined>undefined,
       tag: <string | undefined>undefined,
       apiTargets: <DeviceHardware[]>[],
+      // Boards the registry does not mark activelySupported - both the too-new
+      // and the long-retired. Held back from `targets` until the Konami code
+      // reveals them; see unsupportedTargetsUnlocked below.
+      unsupportedApiTargets: <DeviceHardware[]>[],
       isConnecting: false,
       abortController: <AbortController | undefined>undefined,
       readerClosed: <Promise<any> | undefined>undefined,
@@ -58,7 +63,18 @@ export const useDeviceStore = defineStore('device', {
     targets(): DeviceHardware[] {
       // Co-branded builds are pinned to one vendor's devices; never widen them.
       if (vendorCobrandingTag.length > 0) return this.apiTargets
-      return applyEventDeviceOverrides(this.apiTargets, eventMode.enabled ? eventMode.eventTag : undefined)
+      const base = applyEventDeviceOverrides(this.apiTargets, eventMode.enabled ? eventMode.eventTag : undefined)
+      if (!this.unsupportedTargetsUnlocked) return base
+      return base.concat(this.unsupportedApiTargets)
+    },
+    /**
+     * Whether boards the registry does not mark activelySupported are showing.
+     * Gated on the Konami code *and* a published nightly of the eligible
+     * series, so a revealed board always has a build to flash it with.
+     */
+    unsupportedTargetsUnlocked(): boolean {
+      if (vendorCobrandingTag.length > 0 || eventMode.enabled) return false
+      return useFirmwareStore().unsupportedDevicesUnlocked
     },
     filteredDevices(): DeviceHardware[] {
       if (this.tag) {
@@ -173,19 +189,22 @@ export const useDeviceStore = defineStore('device', {
       }
     },
     setTargetsList(targets: DeviceHardware[]) {
+      // meshtasticd targets are never flashable from here, whatever their
+      // support status, so they are dropped from both lists up front.
+      const flashable = targets.filter(
+        (t: DeviceHardware) => !t.architecture.toLowerCase().startsWith('portduino'),
+      )
       if (vendorCobrandingTag.length > 0) {
-        this.apiTargets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported
-            && !t.architecture.toLowerCase().startsWith('portduino')
-            && t.tags?.includes(vendorCobrandingTag),
+        this.apiTargets = flashable.filter(
+          (t: DeviceHardware) => t.activelySupported && t.tags?.includes(vendorCobrandingTag),
         )
+        // Co-branded builds are pinned to one vendor's supported devices and
+        // are never widened, so nothing is held back for them.
+        this.unsupportedApiTargets = []
+        return
       }
-      else {
-        this.apiTargets = targets.filter(
-          (t: DeviceHardware) => t.activelySupported
-            && !t.architecture.toLowerCase().startsWith('portduino'),
-        )
-      }
+      this.apiTargets = flashable.filter((t: DeviceHardware) => t.activelySupported)
+      this.unsupportedApiTargets = flashable.filter(isUnsupportedDevice)
     },
     async setSelectedTarget(target: DeviceHardware) {
       this.selectedTarget = target
@@ -193,7 +212,17 @@ export const useDeviceStore = defineStore('device', {
       const firmwareStore = useFirmwareStore()
 
       await new Promise(_ => setTimeout(_, 250))
-      if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && !firmwareStore.prDeepLinkPending && firmwareStore.stable.length > 0) {
+      // A board the registry does not mark activelySupported is pinned to the
+      // nightly, overriding whatever was selected for the previous target:
+      // develop is the only branch guaranteed to still build its variant.
+      // Firmware.vue offers nothing else while such a board is selected, so
+      // this is the only build it can ever be flashed with. The reveal is
+      // gated on this nightly existing, so it is present here.
+      if (isUnsupportedDevice(target)) {
+        const nightly = firmwareStore.unlockNightly
+        if (nightly) firmwareStore.setSelectedFirmware(nightly)
+      }
+      else if (!firmwareStore.hasFirmwareFile && !firmwareStore.hasOnlineFirmware && !firmwareStore.prDeepLinkPending && firmwareStore.stable.length > 0) {
         firmwareStore.setSelectedFirmware(firmwareStore.stable[0])
       }
 
