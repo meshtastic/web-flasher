@@ -33,7 +33,8 @@
     "auto_detect": "Auto-detect",
     "supported_devices": "Supported Devices",
     "diy_devices": "Community Supported Devices",
-    "ham_license_required": "Amateur radio band — an amateur radio license is required to transmit"
+    "ham_license_required": "Amateur radio band — an amateur radio license is required to transmit",
+    "not_actively_supported": "Not actively supported — nightly firmware only"
   },
   "firmware": {
     "title": "Firmware",
@@ -67,7 +68,8 @@
     "refresh_later": "Refresh the page later to try again.",
     "upload_alternative": "Alternatively, you can upload a firmware.zip file from the Github releases or an individual firmware-update.bin file for an ESP32 based device by clicking the icon.",
     "upload_tooltip": "Upload your own firmware release zip or bin.",
-    "icon": "icon"
+    "icon": "icon",
+    "nightly_only_unsupported": "This board is not actively supported. Nightly builds are the only firmware offered for it, because develop is the only branch guaranteed to still build its variant."
   },
   "flash": {
     "title": "Flash",

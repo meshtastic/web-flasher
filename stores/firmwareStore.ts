@@ -23,6 +23,7 @@ import {
   nightlyState,
   setNightlyVersion,
 } from '~/utils/firmwareUrl'
+import { findUnlockNightly } from '~/utils/unsupportedDevices'
 import {
   addRumAction,
   boardAttributes,
@@ -169,7 +170,8 @@ export const useFirmwareStore = defineStore('firmware', {
       isConnected: false,
       port: <SerialPort | undefined>{},
       couldntFetchFirmwareApi: false,
-      // Konami code easter eggs (retro theme + chirpy flash background) only.
+      // Konami code: retro theme, chirpy flash background, and the boards the
+      // registry hides as not activelySupported (see unlockNightly).
       konamiUnlocked: useSessionStorage('konamiUnlocked', false),
       hasManifest: false,
       manifest: <FirmwareManifest | undefined>undefined,
@@ -207,6 +209,21 @@ export const useFirmwareStore = defineStore('firmware', {
         alphaIds: state.alpha.map(f => f.id),
         previewIds: state.previews.map(f => f.id),
       })
+    },
+    /**
+     * The nightly that boards hidden as not activelySupported may be flashed
+     * with, once the Konami code has revealed them. Undefined before the
+     * nightly index resolves, in event mode (pinned to a single build), and for
+     * any nightly below the series floor - each of which keeps those boards out
+     * of the picker, so a revealed board always has something to flash.
+     */
+    unlockNightly(state): FirmwareResource | undefined {
+      if (eventMode.enabled) return undefined
+      return findUnlockNightly(state.nightly)
+    },
+    /** Whether the picker should reveal the boards the registry hides. */
+    unsupportedDevicesUnlocked(): boolean {
+      return this.konamiUnlocked && !!this.unlockNightly
     },
     firmwareVersion: state => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: state => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true,
