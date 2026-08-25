@@ -37,9 +37,18 @@ describe('not-actively-supported devices behind the Konami code', () => {
     // vi.hoisted() because a global `document` present at import time sends
     // @vue/runtime-dom down its browser path and it fails on createElement.
     ;(globalThis as any).document = { getElementById: () => null }
+    // setSelectedTarget calls setSelectedFirmware without awaiting it, and that
+    // fetches release notes and the release manifest. Stub both so the tests
+    // stay offline and leave no request running past the assertion.
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      text: async () => '',
+      json: async () => ({ version: '', targets: [] }),
+    })))
   })
 
   afterEach(() => {
+    vi.unstubAllGlobals()
     delete (globalThis as any).document
   })
 
@@ -98,5 +107,36 @@ describe('not-actively-supported devices behind the Konami code', () => {
 
     await store.setSelectedTarget(SUPPORTED)
     expect(firmware.selectedFirmware?.id).toBe(STABLE.id)
+  })
+
+  it('marks a not-actively-supported board as nightly-only, and no other board', async () => {
+    const store = useDeviceStore()
+    const firmware = useFirmwareStore()
+    firmware.nightly = [NIGHTLY]
+    firmware.stable = [STABLE]
+
+    expect(store.nightlyOnlyTarget).toBe(false)
+
+    await store.setSelectedTarget(UNSUPPORTED)
+    expect(store.nightlyOnlyTarget).toBe(true)
+
+    await store.setSelectedTarget(SUPPORTED)
+    expect(store.nightlyOnlyTarget).toBe(false)
+  })
+
+  it('drops a locally uploaded file when a not-actively-supported board is selected', async () => {
+    const store = useDeviceStore()
+    const firmware = useFirmwareStore()
+    firmware.nightly = [NIGHTLY]
+    firmware.stable = [STABLE]
+    await firmware.setFirmwareFile({ name: 'firmware-2.7.11.zip' } as File)
+    expect(firmware.hasFirmwareFile).toBe(true)
+
+    // Firmware.vue refuses the upload control for these boards, so the only way
+    // a file can be present is from a board selected earlier. The nightly pin
+    // has to clear it, or downloadUf2FileSystem would still prefer the file.
+    await store.setSelectedTarget(UNSUPPORTED)
+    expect(firmware.hasFirmwareFile).toBe(false)
+    expect(firmware.selectedFirmware?.id).toBe(NIGHTLY.id)
   })
 })

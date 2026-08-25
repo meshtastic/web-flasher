@@ -25,7 +25,7 @@
         class="text-xs font-medium me-2 px-2.5 py-0.5 h-6 rounded bg-cyan-700 dark:bg-cyan-800 text-white dark:text-gray-100"
         :title="$t('device.not_actively_supported')"
       >
-        {{ $t('firmware.nightly') }}
+        {{ $t('device.unreleased') }}
       </span>
       <span
         v-for="tag in props.device.tags"

@@ -76,6 +76,17 @@ export const useDeviceStore = defineStore('device', {
       if (vendorCobrandingTag.length > 0 || eventMode.enabled) return false
       return useFirmwareStore().unsupportedDevicesUnlocked
     },
+    /**
+     * Whether the selected board is one the registry does not mark
+     * activelySupported. Those are pinned to the nightly - `develop` is the
+     * only branch guaranteed to still build the variant - so neither another
+     * release nor a locally uploaded zip or bin may be flashed onto one: both
+     * would carry firmware built for different hardware. Firmware.vue offers
+     * only the nightly and refuses the upload; Flash.vue enforces the same.
+     */
+    nightlyOnlyTarget(): boolean {
+      return isUnsupportedDevice(this.selectedTarget)
+    },
     filteredDevices(): DeviceHardware[] {
       if (this.tag) {
         return this.targets.filter(t => t.tags?.includes(this.tag ?? '') || t.architecture === this.tag)

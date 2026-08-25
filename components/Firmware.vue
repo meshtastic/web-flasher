@@ -52,7 +52,7 @@
         </template>
 
         <!-- Board hidden as not actively supported: nightly is the only build -->
-        <template v-else-if="nightlyOnly">
+        <template v-else-if="nightlyOnly && store.unlockNightly">
           <div class="px-4 py-2 text-sm text-cyan-400 font-semibold border-theme-bottom">
             {{ $t('firmware.nightly') }}
           </div>
@@ -61,13 +61,13 @@
             aria-labelledby="dropdownInformationButton"
           >
             <li>
-              <a
-                href="#"
-                class="block px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
+              <button
+                type="button"
+                class="block w-full text-left px-4 py-2 hover:text-meshtastic-dark hover:bg-surface-secondary cursor-pointer transition-colors"
                 @click="setSelectedFirmware(store.unlockNightly!)"
               >
                 {{ (store.unlockNightly?.title || '').replace('Meshtastic Firmware ', '') }}
-              </a>
+              </button>
             </li>
           </ul>
           <div class="px-4 py-3 w-full sm:w-96 max-w-sm text-xs text-warning break-words">
@@ -197,15 +197,16 @@
     </Teleport>
     <button
       data-tooltip-target="tooltip-file"
-      class="btn-icon mx-2"
+      class="btn-icon mx-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
       type="button"
       for="file-upload"
       accept=".zip,.bin"
+      :disabled="nightlyOnly"
       @click="openFile()"
     >
       <FolderOpen
         class="h-4 w-4"
-        :class="{ 'animate-bounce text-meshtastic': (store.couldntFetchFirmwareApi && canSelectFirmware) }"
+        :class="{ 'animate-bounce text-meshtastic': (store.couldntFetchFirmwareApi && canSelectFirmware && !nightlyOnly) }"
       />
     </button>
     <div
@@ -213,7 +214,7 @@
       role="tooltip"
       class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-theme transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip bg-surface-modal"
     >
-      {{ $t('firmware.upload_tooltip') }}
+      {{ nightlyOnly ? $t('firmware.upload_disabled_unsupported') : $t('firmware.upload_tooltip') }}
       <div
         class="tooltip-arrow"
         data-popper-arrow
@@ -237,7 +238,6 @@ import { useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import type { FirmwareResource } from '~/types/api'
 import { useEventMode } from '~/composables/useEventMode'
-import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 
 const { t } = useI18n()
 
@@ -264,18 +264,22 @@ const canSelectFirmware = computed(() => {
 /**
  * For a board the registry does not mark activelySupported, develop is the only
  * branch guaranteed to still build its variant, so the nightly is the single
- * build offered. The Konami reveal is itself gated on that nightly existing, so
- * this branch never renders an empty list.
+ * build offered: the dropdown lists nothing else and the upload control is
+ * refused, since a zip or bin from anywhere else was built for different
+ * hardware. The Konami reveal is itself gated on that nightly existing, so the
+ * dropdown branch never renders an empty list.
  */
-const nightlyOnly = computed(() => {
-  return isUnsupportedDevice(deviceStore.selectedTarget) && !!store.unlockNightly
-})
+const nightlyOnly = computed(() => deviceStore.nightlyOnlyTarget)
 
 const openFile = () => {
+  if (nightlyOnly.value) return
   document.getElementById('file_upload')?.click()
 }
 
 const setFirmwareFile = (event: any) => {
+  // Guarded here too: the markup disables the control, but a file must never
+  // reach the store for a board pinned to the nightly.
+  if (nightlyOnly.value) return
   store.setFirmwareFile(event.target.files[0])
 }
 
