@@ -21,6 +21,13 @@
         {{ props.device.architecture.replace('-', '') }}
       </span>
       <span
+        v-if="isUnsupportedDevice(props.device)"
+        class="text-xs font-medium me-2 px-2.5 py-0.5 h-6 rounded bg-cyan-700 dark:bg-cyan-800 text-white dark:text-gray-100"
+        :title="$t('device.not_actively_supported')"
+      >
+        {{ $t('device.unreleased') }}
+      </span>
+      <span
         v-for="tag in props.device.tags"
         class="text-xs font-medium px-2.5 py-0.5 h-6 rounded bg-indigo-600 dark:bg-indigo-500 text-white dark:text-gray-100 me-1"
       >
@@ -82,6 +89,7 @@
 import type { DeviceHardware } from '~/types/api'
 import { supportedVendorDeviceTags } from '~/types/resources'
 import { requiresHamLicense } from '~/utils/deviceBadges'
+import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import { computed } from 'vue'
 

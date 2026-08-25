@@ -179,6 +179,10 @@ const preflightCheck = async () => {
 // Either we have a custom zip file or a selected firmware release
 const canFlash = computed(() => {
   const hasDevice = deviceStore.selectedTarget?.hwModel > 0
+  // A board the registry does not mark activelySupported is pinned to the
+  // nightly, so a local upload is never a valid source for one - Firmware.vue
+  // refuses the upload, and this refuses to flash anything that slipped past.
+  if (deviceStore.nightlyOnlyTarget && firmwareStore.hasFirmwareFile) return false
   const hasFirmware = firmwareStore.hasFirmwareFile || firmwareStore.hasOnlineFirmware
   return !serialMonitorStore.isConnected && hasDevice && hasFirmware
     && (fileExistsOnServer.value || firmwareStore.hasFirmwareFile)
