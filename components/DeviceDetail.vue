@@ -68,10 +68,15 @@
           :href="deviceUrl"
           target="_blank"
           rel="noopener"
-          title="Manufacturer page (external link)"
-          class="text-theme hover:opacity-80"
+          title="Product link (external)"
+          class="inline-flex items-center gap-[9px] text-[10.5px] text-meshtastic-dark cursor-pointer transition-colors duration-200 ease-out"
+          @click.stop
         >
-          <Link2Icon class="w-6 h-6 text-meshtastic transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-12 cursor-default" />
+          <Tag
+            class="w-[22px] h-[22px] shrink-0"
+            :stroke-width="2"
+          />
+          {{ $t('device.product_link') }}
         </a>
       </div>
     </div>
@@ -88,7 +93,7 @@ import { computed } from 'vue'
 import {
   BadgeCheck,
   ShieldAlert,
-  Link2Icon,
+  Tag,
 } from 'lucide-vue-next'
 
 const firmwareStore = useFirmwareStore()
