@@ -90,4 +90,4 @@ export function setActiveEventMode(config: EventModeConfig): void {
 }
 
 export const vendorCobrandingTag = "";
-export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow", "M5Stack", "NomadStar", "muzi"];
+export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow", "M5Stack", "NomadStar", "muzi", "Meshnology"];

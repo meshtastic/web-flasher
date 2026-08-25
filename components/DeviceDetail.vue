@@ -16,7 +16,7 @@
         />
       </div>
     </h5>
-    <div class="flex justify-start w-full">
+    <div class="flex flex-wrap gap-y-1 justify-start w-full">
       <span class="text-xs font-medium me-2 px-2.5 py-0.5 h-6 rounded bg-blue-600 dark:bg-blue-900 text-white dark:text-gray-100">
         {{ props.device.architecture.replace('-', '') }}
       </span>

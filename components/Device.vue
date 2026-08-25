@@ -126,6 +126,14 @@
               >
                 muzi ᴡᴏʀᴋꜱ
               </button>
+              <button
+                v-if="vendorCobrandingTag.length === 0"
+                type="button"
+                class="tag-pill tag-pill-inactive shrink-0"
+                @click="store.setSelectedTag('Meshnology')"
+              >
+                Meshnology
+              </button>
             </div>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
               <button
