@@ -3,9 +3,11 @@ import type { PrBuildResponse } from '~/types/api'
 /**
  * Map a device hardware architecture to the firmware CI artifact arch token.
  * Artifacts are named firmware-{arch}-{version} where arch has no dashes
- * (e.g. device 'esp32-s3' → artifact 'esp32s3').
+ * (e.g. device 'esp32-s3' → artifact 'esp32s3'). All STM32 variants (STM32WL
+ * today) share one 'stm32' artifact bundle.
  */
 export function artifactArchForDevice(architecture: string): string {
+  if (architecture.toLowerCase().startsWith('stm32')) return 'stm32'
   return architecture.replace(/-/g, '')
 }
 

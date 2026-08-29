@@ -10,6 +10,7 @@ import { defineStore } from 'pinia'
 import type { Terminal } from '@xterm/xterm'
 import { supportsNew8MBPartitionTable } from '~/utils/versionUtils'
 import { convertToBinaryString } from '~/utils/fileUtils'
+import { flashStm32Firmware } from '~/utils/stm32/flashStm32'
 import { openTerminal } from '~/utils/terminal'
 import {
   currentPrerelease,
@@ -39,7 +40,7 @@ import {
 import { track } from '@vercel/analytics'
 import { useSessionStorage } from '@vueuse/core'
 import { extractZipEntry } from '~/utils/zipUtils'
-import { buildPrReleaseNotes } from '~/utils/prBuild'
+import { artifactArchForDevice, buildPrReleaseNotes } from '~/utils/prBuild'
 import { t } from '~/utils/i18n'
 
 import type {
@@ -57,6 +58,7 @@ import {
   type ReleaseManifest,
 } from '../types/manifest'
 
+import { useDeviceStore } from './deviceStore'
 import { createUrl } from './store'
 import { useToastStore } from './toastStore'
 
@@ -576,6 +578,70 @@ export const useFirmwareStore = defineStore('firmware', {
       terminal.writeln('')
       terminal.writeln(`\x1b[38;5;9m${error}\x1b[0m`)
       this.trackFlashError(error)
+    },
+    /**
+     * Flash an STM32 target over the AN3155 USART ROM bootloader. Mirrors the
+     * ESP32 actions for terminal / telemetry / progress; the low-level protocol
+     * lives in utils/stm32. `shouldCleanInstall` selects a full mass-erase over
+     * a firmware-region-only erase that keeps the LittleFS/config tail.
+     */
+    async flashStm32(selectedTarget: DeviceHardware) {
+      const deviceStore = useDeviceStore()
+      const terminal = await openTerminal()
+      const cleanInstall = this.shouldCleanInstall
+      this.trackFlashStart(selectedTarget, { method: 'stm32', cleanInstall })
+
+      try {
+        if (this.isPrBuild) {
+          this.prActiveArch = artifactArchForDevice(selectedTarget.architecture)
+        }
+        const fileName = `firmware-${selectedTarget.platformioTarget}-${this.firmwareVersion}.bin`
+        terminal.writeln(`\x1b[33mLoading ${fileName}\x1b[0m`)
+        const binaryString = await this.fetchBinaryContent(fileName)
+        const image = Uint8Array.from(binaryString, c => c.charCodeAt(0) & 0xff)
+
+        terminal.writeln('\x1b[33mRequesting bootloader mode…\x1b[0m')
+        const port = await deviceStore.enterStm32Bootloader(t)
+
+        this.port = port
+        this.isConnected = true
+        this.isFlashing = true
+        this.flashPercentDone = 0
+        port.ondisconnect = () => {
+          this.isConnected = false
+        }
+
+        // Write fills 0-90%, read-back verify the last 10%.
+        await flashStm32Firmware(port, image, {
+          massErase: cleanInstall,
+          onStatus: line => terminal.writeln(`\x1b[36m${line}\x1b[0m`),
+          onProgress: (phase, done, total) => {
+            this.flashPercentDone = phase === 'write'
+              ? Math.round((done / total) * 90)
+              : 90 + Math.round((done / total) * 10)
+          },
+        })
+
+        this.flashPercentDone = 100
+        this.isFlashing = false
+        this.trackDownload(selectedTarget, cleanInstall, 'stm32')
+
+        // Reopen at 8N1 and stream the boot log, like the ESP32 path. A monitor
+        // failure must not fail an already-completed flash.
+        terminal.writeln('\x1b[32mFlash complete — reading boot log…\x1b[0m')
+        try {
+          await new Promise(resolve => setTimeout(resolve, 400))
+          await port.open({ baudRate: 115200 })
+          await this.readSerial(port, terminal)
+        }
+        catch (monitorError) {
+          terminal.writeln(`\x1b[33mCould not open the serial monitor: ${monitorError}\x1b[0m`)
+        }
+      }
+      catch (error: any) {
+        this.isFlashing = false
+        this.handleError(error, terminal)
+      }
     },
     /**
      * Get the partition offset from the manifest for a given partition name
