@@ -1,5 +1,12 @@
-import { describe, it, expect } from 'vitest'
-import { getManifestBasePath, getFirmwareBaseUrl, GITHUB_IO_BASE } from './firmwareUrl'
+import { describe, it, expect, afterEach } from 'vitest'
+import {
+  getManifestBasePath,
+  getFirmwareBaseUrl,
+  isNightlyVersion,
+  setNightlyVersion,
+  GITHUB_IO_BASE,
+  NIGHTLY_BASE,
+} from './firmwareUrl'
 import { eventMode } from '~/types/resources'
 
 // Derived from the active event config so the tests don't go stale when the
@@ -77,10 +84,51 @@ describe('firmwareUrl', () => {
     })
   })
 
-  describe('GITHUB_IO_BASE', () => {
-    it('has the correct base URL', () => {
+  // Nightlies are served flat from their own host, not a firmware-<version>/ folder
+  describe('nightly', () => {
+    const nightlyId = 'v2.8.1.97d916e'
+
+    // Module-level state; clear it or later cases inherit the pin
+    afterEach(() => setNightlyVersion(''))
+
+    it('routes the registered nightly to the nightly host', () => {
+      setNightlyVersion(nightlyId)
+      expect(getFirmwareBaseUrl(nightlyId)).toBe(NIGHTLY_BASE)
+    })
+
+    it('routes the nightly without the v prefix too', () => {
+      setNightlyVersion(nightlyId)
+      expect(getFirmwareBaseUrl('2.8.1.97d916e')).toBe(NIGHTLY_BASE)
+      expect(isNightlyVersion('2.8.1.97d916e')).toBe(true)
+    })
+
+    it('matches a nightly id registered without the v prefix', () => {
+      setNightlyVersion('2.8.1.97d916e')
+      expect(getFirmwareBaseUrl(nightlyId)).toBe(NIGHTLY_BASE)
+    })
+
+    it('leaves every other version on meshtastic.github.io', () => {
+      setNightlyVersion(nightlyId)
+      expect(getFirmwareBaseUrl('2.7.19.abcdef')).toBe(`${GITHUB_IO_BASE}/firmware-2.7.19.abcdef`)
+      expect(getFirmwareBaseUrl(eventVersion)).toBe(`${GITHUB_IO_BASE}/${eventBasePath}`)
+      expect(isNightlyVersion('2.7.19.abcdef')).toBe(false)
+    })
+
+    it('matches nothing before a nightly has been discovered', () => {
+      expect(isNightlyVersion(nightlyId)).toBe(false)
+      expect(getFirmwareBaseUrl(nightlyId)).toBe(`${GITHUB_IO_BASE}/firmware-2.8.1.97d916e`)
+    })
+  })
+
+  describe('base URLs', () => {
+    it('has the correct github.io base URL', () => {
       console.log(`[BASE URL] GITHUB_IO_BASE = ${GITHUB_IO_BASE}`)
       expect(GITHUB_IO_BASE).toBe('https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master')
+    })
+
+    it('has the correct nightly base URL', () => {
+      console.log(`[BASE URL] NIGHTLY_BASE = ${NIGHTLY_BASE}`)
+      expect(NIGHTLY_BASE).toBe('https://nightly.meshtastic.org')
     })
   })
 })

@@ -18,8 +18,7 @@ import {
 } from '~/types/resources'
 import {
   getFirmwareBaseUrl,
-  GITHUB_IO_BASE,
-  NIGHTLY_DIR,
+  NIGHTLY_BASE,
   nightlyState,
   setNightlyVersion,
 } from '~/utils/firmwareUrl'
@@ -299,13 +298,13 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     /**
      * Discover the current develop "nightly" build published to
-     * meshtastic.github.io/firmware-nightly/. Skipped entirely in event mode
-     * (never on event firmwares).
+     * nightly.meshtastic.org. Skipped entirely in event mode (never on event
+     * firmwares).
      */
     async fetchNightly() {
       if (eventMode.enabled) return
       try {
-        const response = await fetch(`${GITHUB_IO_BASE}/${NIGHTLY_DIR}/index.json`)
+        const response = await fetch(`${NIGHTLY_BASE}/index.json`)
         if (!response.ok) return // 404 before the first nightly is published -> no section
         const data = await response.json() as { version?: string, id?: string, title?: string }
         const id = data.id ?? (data.version ? `v${data.version}` : undefined)
@@ -313,7 +312,7 @@ export const useFirmwareStore = defineStore('firmware', {
           console.warn('Nightly index.json missing id/version', data)
           return // malformed pointer -> don't surface a broken entry
         }
-        setNightlyVersion(id) // register so getManifestBasePath routes it to firmware-nightly/
+        setNightlyVersion(id) // register so getFirmwareBaseUrl routes it to NIGHTLY_BASE
         const version = id.replace(/^v/, '')
         this.nightly = [{
           id,
