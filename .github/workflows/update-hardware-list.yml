@@ -5,6 +5,14 @@ on:
     - cron: '0 0,6,12,18 * * *'  # Run every 6 hours
   workflow_dispatch:     # Allow manual triggering
 
+# Same deployment the app itself talks to (see API_ORIGIN in nuxt.config.ts), so the
+# offline fallback snapshot below can never disagree with what the flasher fetches at
+# runtime. Edge caching does not make this stale: /resource/deviceHardware is a document
+# compiled into the Worker bundle, and the Worker sets cross_version_cache: false, so the
+# only thing that can change it -- a deploy -- also cold-starts the cache.
+env:
+  API_ORIGIN: https://apiv2.meshtastic.org
+
 jobs:
   update-hardware-list:
     runs-on: ubuntu-latest
@@ -24,8 +32,9 @@ jobs:
       - name: Fetch latest device hardware data
         id: fetch-data
         run: |
-          # Fetch data from API
-          curl -s --fail https://api.meshtastic.org/resource/deviceHardware > /tmp/new-hardware-list.json
+          # Fetch data from API. --fail aborts the step on a non-2xx rather than
+          # writing an error page over the snapshot.
+          curl -s --fail "$API_ORIGIN/resource/deviceHardware" > /tmp/new-hardware-list.json
           
           # Ensure the output is valid JSON
           if ! jq empty /tmp/new-hardware-list.json 2>/dev/null; then

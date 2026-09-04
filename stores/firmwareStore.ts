@@ -326,7 +326,8 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     /**
      * Load a pull request's CI build as a selectable firmware version.
-     * Resolves PR metadata and artifact info through api.meshtastic.org.
+     * Resolves PR metadata and artifact info through the API origin
+     * (API_ORIGIN — see stores/store.ts).
      * @param prNumber - The meshtastic/firmware pull request number
      * @returns True if the PR build was loaded and selected
      */
