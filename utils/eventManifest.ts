@@ -1,5 +1,6 @@
 import type { EventFirmwareEdition, EventFirmwareResponse, EventFirmwareTheme } from '~/types/eventFirmware'
 import type { EventModeConfig } from '~/types/resources'
+import { createUrl } from '~/stores/store'
 
 // Same-origin bundled snapshot gates first paint, so it gets a short timeout;
 // the cross-origin live API only refreshes in the background and can wait longer.
@@ -37,13 +38,17 @@ export async function fetchBundledManifest(): Promise<EventFirmwareResponse> {
 }
 
 /**
- * Live manifest from the API (source of truth, fresh dates/versions). The `/api`
- * prefix is proxied to api.meshtastic.org (see nuxt.config.ts). Returns null on
- * any failure; the caller keeps the bundled result. Fetched in the background so
- * a slow/unreachable API never blocks first paint.
+ * Live manifest from the API (source of truth, fresh dates/versions). Returns
+ * null on any failure; the caller keeps the bundled result. Fetched in the
+ * background so a slow/unreachable API never blocks first paint.
+ *
+ * Goes through createUrl, NOT a bare `/api/...`: same-origin only works behind
+ * the dev proxy. In production flash.meshtastic.org has no /api rewrite, so the
+ * SPA fallback answered with its own index.html — a 200 whose json() threw, and
+ * this refresh silently never resolved an edition.
  */
 export async function fetchApiManifest(): Promise<EventFirmwareResponse | null> {
-  return fetchManifest('/api/resource/eventFirmware', API_TIMEOUT_MS)
+  return fetchManifest(createUrl('api/resource/eventFirmware'), API_TIMEOUT_MS)
 }
 
 /**

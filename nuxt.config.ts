@@ -1,6 +1,12 @@
 // nuxt.config.ts
 import { defineNuxtConfig } from 'nuxt/config'
 
+// Origin the built app's `api/...` calls resolve to, and the default target of the
+// dev proxy below — so one variable moves the whole app between API deployments.
+// apiv2.meshtastic.org is the Cloudflare Worker rewrite of api.meshtastic.org;
+// API_ORIGIN=https://api.meshtastic.org rolls back to the Railway server.
+const apiOrigin = process.env.API_ORIGIN || 'https://apiv2.meshtastic.org'
+
 const ignoredDevWatchPaths = [
   '**/.claude/**',
   '**/.git/**',
@@ -69,6 +75,12 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [],
+    // Vite statically replaces `process.env.NODE_ENV` and nothing else; in the
+    // browser `process.env` is an empty unenv shim. Inline the API origin the
+    // same way so stores/store.ts reads a real value client-side.
+    define: {
+      'process.env.API_ORIGIN': JSON.stringify(apiOrigin),
+    },
     // xz-decompress is a UMD bundle (with inlined WASM). Pre-bundle it so esbuild
     // takes its CommonJS branch; served raw, its UMD global path dereferences an
     // undefined `this` in ESM context and throws.
@@ -84,9 +96,9 @@ export default defineNuxtConfig({
       },
       proxy: {
         '^/api/.*': {
-          // Point at a local api.meshtastic.org instance with e.g.
-          // API_PROXY_TARGET=http://localhost:4000 pnpm dev
-          target: process.env.API_PROXY_TARGET ?? 'https://api.meshtastic.org/',
+          // Follows API_ORIGIN by default; point at a local API instance with
+          // e.g. API_PROXY_TARGET=http://localhost:4000 pnpm dev
+          target: process.env.API_PROXY_TARGET ?? apiOrigin,
           changeOrigin: true,
           followRedirects: true,
           rewrite: path => path.replace(/^\/api/, ''),
