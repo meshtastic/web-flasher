@@ -98,7 +98,7 @@ describe('firmwareStore PR builds', () => {
       const payload = await loadPr(store)
 
       expect(fetchMock).toHaveBeenCalledTimes(1)
-      expect(fetchMock).toHaveBeenCalledWith('https://api.meshtastic.org/github/firmware/pr/10665')
+      expect(fetchMock).toHaveBeenCalledWith('https://apiv2.meshtastic.org/github/firmware/pr/10665')
 
       expect(store.selectedFirmware?.id).toBe('v2.8.0.7a414be')
       expect(store.selectedFirmware?.prBuild?.prNumber).toBe(10665)
@@ -151,7 +151,7 @@ describe('firmwareStore PR builds', () => {
       expect(second).toBe(first)
       // 1 metadata call + 1 artifact download
       expect(fetchMock).toHaveBeenCalledTimes(2)
-      expect(fetchMock).toHaveBeenLastCalledWith('https://api.meshtastic.org/github/firmware/artifact/7523942107/download')
+      expect(fetchMock).toHaveBeenLastCalledWith('https://apiv2.meshtastic.org/github/firmware/artifact/7523942107/download')
       expect(store.prDownload).toBeUndefined()
     })
 
