@@ -73,7 +73,7 @@ const prZipPromises = new Map<string, Promise<Blob>>()
 let activeFlash: Record<string, unknown> | undefined
 
 /**
- * Fetch release notes from meshtastic.github.io
+ * Fetch release notes from release.meshtastic.org
  */
 async function fetchReleaseNotes(version: string): Promise<string> {
   try {
@@ -262,7 +262,7 @@ export const useFirmwareStore = defineStore('firmware', {
 
       firmwareApi.get<FirmwareReleases>()
         .then(async (response: FirmwareReleases) => {
-          // Fetch release notes for each firmware version from meshtastic.github.io
+          // Fetch release notes for each firmware version from release.meshtastic.org
           const fetchReleaseNotesForList = async (releases: FirmwareResource[]) => {
             for (const release of releases) {
               // Only fetch if we don't already have release notes from the API
@@ -472,7 +472,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.releaseManifest = undefined
 
       // PR builds carry their targets list and synthesized release notes with
-      // them — nothing is hosted on meshtastic.github.io for these versions
+      // them — nothing is hosted on release.meshtastic.org for these versions
       if (firmware.prBuild) {
         this.releaseManifest = { version: firmware.prBuild.version, targets: firmware.prBuild.targets }
       }
@@ -503,7 +503,7 @@ export const useFirmwareStore = defineStore('firmware', {
       })
     },
     getReleaseFileUrl(fileName: string): string {
-      // PR build files come from artifact zips, not meshtastic.github.io
+      // PR build files come from artifact zips, not release.meshtastic.org
       if (!this.selectedFirmware?.id || this.selectedFirmware.prBuild) return ''
       return `${getFirmwareBaseUrl(this.selectedFirmware.id)}/${fileName}`
     },

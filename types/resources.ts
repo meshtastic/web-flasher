@@ -60,7 +60,6 @@ const hamcationEventMode: EventModeConfig = {
   firmware: {
     id: `v${eventFirmwareId}`,
     title: `Meshtastic Firmware ${eventFirmwareId}`,
-    zip_url: `https://github.com/meshtastic/meshtastic.github.io/raw/master/event/hamcation2026/firmware-${eventFirmwareId}.zip`,
     release_notes: hamcationReleaseNotes,
   },
 };

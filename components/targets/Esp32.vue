@@ -362,7 +362,7 @@ const cleanInstallEsp32 = async () => {
     await firmwareStore.cleanInstallEspFlash(selectedTarget)
   }
   else if (firmwareStore.isPrBuild) {
-    // PR builds have no files on meshtastic.github.io for the legacy path
+    // PR builds have no files on release.meshtastic.org for the legacy path
     useToastStore().error(t('firmware.pr.flash_error_title'), t('firmware.pr.manifest_missing'))
   }
   else {
@@ -411,7 +411,7 @@ const updateEsp32 = async () => {
     await firmwareStore.updateEspFlash(selectedTarget)
   }
   else if (firmwareStore.isPrBuild) {
-    // PR builds have no files on meshtastic.github.io for the legacy path
+    // PR builds have no files on release.meshtastic.org for the legacy path
     useToastStore().error(t('firmware.pr.flash_error_title'), t('firmware.pr.manifest_missing'))
   }
   else {
