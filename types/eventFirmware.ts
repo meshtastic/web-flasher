@@ -22,7 +22,7 @@ export interface EventFirmwareTheme {
 }
 
 export interface EventFirmwareBuild {
-  slug: string // meshtastic.github.io event path segment, e.g. "defcon2026"
+  slug: string // release.meshtastic.org event path segment, e.g. "defcon2026"
   version?: string | null
   id?: string | null
   title?: string | null

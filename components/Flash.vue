@@ -137,7 +137,7 @@ const preflightCheck = async () => {
     return
   }
 
-  // PR builds have no files on meshtastic.github.io — availability comes
+  // PR builds have no files on release.meshtastic.org — availability comes
   // from the build's targets list instead of HEAD requests
   if (firmwareStore.isPrBuild) {
     fileExistsOnServer.value = firmwareStore.isPrTargetAvailable(deviceStore.$state.selectedTarget.platformioTarget)

@@ -11,7 +11,7 @@ vi.hoisted(() => {
 })
 
 const EVENT_VERSION = '2.8.0.c800fc8'
-const EVENT_BASE = `https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/event/defcon34/firmware-${EVENT_VERSION}`
+const EVENT_BASE = `https://release.meshtastic.org/event/defcon34/${EVENT_VERSION}`
 
 const RELEASE_MANIFEST = {
   version: EVENT_VERSION,

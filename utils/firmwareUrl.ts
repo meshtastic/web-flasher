@@ -1,10 +1,12 @@
 import { reactive } from 'vue'
 import { eventMode } from '~/types/resources'
 
-export const GITHUB_IO_BASE = 'https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master'
+// Releases live in the meshtastic-firmware-release R2 bucket, one directory per
+// version at the bucket root (see the publish-firmware job in meshtastic/firmware's
+// main_matrix.yml).
+export const RELEASE_BASE = 'https://release.meshtastic.org'
 
-// Nightlies moved off meshtastic.github.io to their own host, same flat layout
-// as the old firmware-nightly/ folder: everything sits at the root.
+// Nightlies live in their own bucket/host, flat: everything sits at the root.
 export const NIGHTLY_BASE = 'https://nightly.meshtastic.org'
 
 // Nightly (develop) build version, discovered at runtime from
@@ -25,7 +27,7 @@ export function isNightlyVersion(version: string): boolean {
 }
 
 /**
- * Determine the correct base path for a firmware version within meshtastic.github.io
+ * Determine the correct base path for a firmware version within release.meshtastic.org
  * Event firmware uses a special path, while normal firmware uses the standard path
  * @param version - The firmware version (with or without 'v' prefix)
  * @returns The base path for fetching firmware files
@@ -35,9 +37,9 @@ export function getManifestBasePath(version: string): string {
   const eventVersion = eventMode.firmware.id.replace(/^v/, '')
   // Check if this is the event firmware version
   if (cleanVersion === eventVersion) {
-    return `event/${eventMode.pathPrefix}/firmware-${cleanVersion}`
+    return `event/${eventMode.pathPrefix}/${cleanVersion}`
   }
-  return `firmware-${cleanVersion}`
+  return cleanVersion
 }
 
 /**
@@ -48,5 +50,5 @@ export function getManifestBasePath(version: string): string {
 export function getFirmwareBaseUrl(version: string): string {
   // The nightly lives on its own host, flat at the root
   if (isNightlyVersion(version)) return NIGHTLY_BASE
-  return `${GITHUB_IO_BASE}/${getManifestBasePath(version)}`
+  return `${RELEASE_BASE}/${getManifestBasePath(version)}`
 }
