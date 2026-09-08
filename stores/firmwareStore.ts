@@ -18,11 +18,11 @@ import {
 } from '~/types/resources'
 import {
   getFirmwareBaseUrl,
-  GITHUB_IO_BASE,
-  NIGHTLY_DIR,
+  NIGHTLY_BASE,
   nightlyState,
   setNightlyVersion,
 } from '~/utils/firmwareUrl'
+import { findUnlockNightly } from '~/utils/unsupportedDevices'
 import {
   addRumAction,
   boardAttributes,
@@ -73,7 +73,7 @@ const prZipPromises = new Map<string, Promise<Blob>>()
 let activeFlash: Record<string, unknown> | undefined
 
 /**
- * Fetch release notes from meshtastic.github.io
+ * Fetch release notes from release.meshtastic.org
  */
 async function fetchReleaseNotes(version: string): Promise<string> {
   try {
@@ -169,7 +169,8 @@ export const useFirmwareStore = defineStore('firmware', {
       isConnected: false,
       port: <SerialPort | undefined>{},
       couldntFetchFirmwareApi: false,
-      // Konami code easter eggs (retro theme + chirpy flash background) only.
+      // Konami code: retro theme, chirpy flash background, and the boards the
+      // registry hides as not activelySupported (see unlockNightly).
       konamiUnlocked: useSessionStorage('konamiUnlocked', false),
       hasManifest: false,
       manifest: <FirmwareManifest | undefined>undefined,
@@ -207,6 +208,21 @@ export const useFirmwareStore = defineStore('firmware', {
         alphaIds: state.alpha.map(f => f.id),
         previewIds: state.previews.map(f => f.id),
       })
+    },
+    /**
+     * The nightly that boards hidden as not activelySupported may be flashed
+     * with, once the Konami code has revealed them. Undefined before the
+     * nightly index resolves, in event mode (pinned to a single build), and for
+     * any nightly below the series floor - each of which keeps those boards out
+     * of the picker, so a revealed board always has something to flash.
+     */
+    unlockNightly(state): FirmwareResource | undefined {
+      if (eventMode.enabled) return undefined
+      return findUnlockNightly(state.nightly)
+    },
+    /** Whether the picker should reveal the boards the registry hides. */
+    unsupportedDevicesUnlocked(): boolean {
+      return this.konamiUnlocked && !!this.unlockNightly
     },
     firmwareVersion: state => state.selectedFirmware?.id ? state.selectedFirmware.id.replace('v', '') : '.+',
     canShowFlash: state => state.selectedFirmware?.id ? state.hasSeenReleaseNotes : true,
@@ -246,7 +262,7 @@ export const useFirmwareStore = defineStore('firmware', {
 
       firmwareApi.get<FirmwareReleases>()
         .then(async (response: FirmwareReleases) => {
-          // Fetch release notes for each firmware version from meshtastic.github.io
+          // Fetch release notes for each firmware version from release.meshtastic.org
           const fetchReleaseNotesForList = async (releases: FirmwareResource[]) => {
             for (const release of releases) {
               // Only fetch if we don't already have release notes from the API
@@ -282,13 +298,13 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     /**
      * Discover the current develop "nightly" build published to
-     * meshtastic.github.io/firmware-nightly/. Skipped entirely in event mode
-     * (never on event firmwares).
+     * nightly.meshtastic.org. Skipped entirely in event mode (never on event
+     * firmwares).
      */
     async fetchNightly() {
       if (eventMode.enabled) return
       try {
-        const response = await fetch(`${GITHUB_IO_BASE}/${NIGHTLY_DIR}/index.json`)
+        const response = await fetch(`${NIGHTLY_BASE}/index.json`)
         if (!response.ok) return // 404 before the first nightly is published -> no section
         const data = await response.json() as { version?: string, id?: string, title?: string }
         const id = data.id ?? (data.version ? `v${data.version}` : undefined)
@@ -296,7 +312,7 @@ export const useFirmwareStore = defineStore('firmware', {
           console.warn('Nightly index.json missing id/version', data)
           return // malformed pointer -> don't surface a broken entry
         }
-        setNightlyVersion(id) // register so getManifestBasePath routes it to firmware-nightly/
+        setNightlyVersion(id) // register so getFirmwareBaseUrl routes it to NIGHTLY_BASE
         const version = id.replace(/^v/, '')
         this.nightly = [{
           id,
@@ -309,7 +325,8 @@ export const useFirmwareStore = defineStore('firmware', {
     },
     /**
      * Load a pull request's CI build as a selectable firmware version.
-     * Resolves PR metadata and artifact info through api.meshtastic.org.
+     * Resolves PR metadata and artifact info through the API origin
+     * (API_ORIGIN — see stores/store.ts).
      * @param prNumber - The meshtastic/firmware pull request number
      * @returns True if the PR build was loaded and selected
      */
@@ -455,7 +472,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.releaseManifest = undefined
 
       // PR builds carry their targets list and synthesized release notes with
-      // them — nothing is hosted on meshtastic.github.io for these versions
+      // them — nothing is hosted on release.meshtastic.org for these versions
       if (firmware.prBuild) {
         this.releaseManifest = { version: firmware.prBuild.version, targets: firmware.prBuild.targets }
       }
@@ -486,7 +503,7 @@ export const useFirmwareStore = defineStore('firmware', {
       })
     },
     getReleaseFileUrl(fileName: string): string {
-      // PR build files come from artifact zips, not meshtastic.github.io
+      // PR build files come from artifact zips, not release.meshtastic.org
       if (!this.selectedFirmware?.id || this.selectedFirmware.prBuild) return ''
       return `${getFirmwareBaseUrl(this.selectedFirmware.id)}/${fileName}`
     },

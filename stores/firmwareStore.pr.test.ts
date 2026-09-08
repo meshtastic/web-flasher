@@ -93,12 +93,12 @@ beforeEach(() => {
 
 describe('firmwareStore PR builds', () => {
   describe('loadPrFirmware', () => {
-    it('selects the PR build and synthesizes the release manifest without touching meshtastic.github.io', async () => {
+    it('selects the PR build and synthesizes the release manifest without touching release.meshtastic.org', async () => {
       const store = useFirmwareStore()
       const payload = await loadPr(store)
 
       expect(fetchMock).toHaveBeenCalledTimes(1)
-      expect(fetchMock).toHaveBeenCalledWith('https://api.meshtastic.org/github/firmware/pr/10665')
+      expect(fetchMock).toHaveBeenCalledWith('https://apiv2.meshtastic.org/github/firmware/pr/10665')
 
       expect(store.selectedFirmware?.id).toBe('v2.8.0.7a414be')
       expect(store.selectedFirmware?.prBuild?.prNumber).toBe(10665)
@@ -151,7 +151,7 @@ describe('firmwareStore PR builds', () => {
       expect(second).toBe(first)
       // 1 metadata call + 1 artifact download
       expect(fetchMock).toHaveBeenCalledTimes(2)
-      expect(fetchMock).toHaveBeenLastCalledWith('https://api.meshtastic.org/github/firmware/artifact/7523942107/download')
+      expect(fetchMock).toHaveBeenLastCalledWith('https://apiv2.meshtastic.org/github/firmware/artifact/7523942107/download')
       expect(store.prDownload).toBeUndefined()
     })
 
@@ -247,7 +247,7 @@ describe('firmwareStore PR builds', () => {
 
       expect(loaded).toBe(false)
       expect(store.hasManifest).toBe(false)
-      expect(fetchMock).toHaveBeenCalledTimes(1) // metadata only, no github.io requests
+      expect(fetchMock).toHaveBeenCalledTimes(1) // metadata only, no release host requests
     })
 
     it('returns false when the zip is missing the manifest', async () => {
@@ -315,17 +315,17 @@ describe('firmwareStore PR builds', () => {
       expect(store.getReleaseFileUrl('firmware-rak11200-2.8.0.7a414be.bin')).toBe('')
     })
 
-    it('still serves meshtastic.github.io URLs for regular releases', async () => {
+    it('still serves release.meshtastic.org URLs for regular releases', async () => {
       const store = useFirmwareStore()
       fetchMock.mockResolvedValue(new Response('', { status: 404 }))
 
       await store.setSelectedFirmware({ id: 'v2.7.15.567b8ea', title: 'Meshtastic Firmware 2.7.15.567b8ea Beta' })
 
       expect(store.getReleaseFileUrl('firmware-tbeam-2.7.15.567b8ea.bin'))
-        .toBe('https://raw.githubusercontent.com/meshtastic/meshtastic.github.io/master/firmware-2.7.15.567b8ea/firmware-tbeam-2.7.15.567b8ea.bin')
-      // The regular path still fetches release notes and manifest from github.io
+        .toBe('https://release.meshtastic.org/2.7.15.567b8ea/firmware-tbeam-2.7.15.567b8ea.bin')
+      // The regular path still fetches release notes and manifest from the release host
       const urls = fetchMock.mock.calls.map(call => String(call[0]))
-      expect(urls.some(url => url.includes('raw.githubusercontent.com'))).toBe(true)
+      expect(urls.some(url => url.includes('release.meshtastic.org'))).toBe(true)
     })
   })
 

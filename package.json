@@ -29,7 +29,7 @@
     "@xterm/xterm": "^6.0.0",
     "@zip.js/zip.js": "^2.8.14",
     "crypto-js": "^4.2.0",
-    "dompurify": "^3.4.11",
+    "dompurify": "^3.4.13",
     "esptool-js": "^0.5.7",
     "file-saver": "^2.0.5",
     "flowbite": "^3.1.2",
@@ -54,7 +54,7 @@
     "@vite-pwa/nuxt": "^1.1.0",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
-    "postcss": "^8.5.18",
+    "postcss": "^8.5.23",
     "tailwindcss": "^3.4.19",
     "vitest": "^4.1.0"
   }

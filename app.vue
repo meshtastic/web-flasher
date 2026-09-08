@@ -482,7 +482,9 @@ window.addEventListener('keydown', (event) => {
     konamiCodeIndex.value++
     if (konamiCodeIndex.value === konamiKeys.length) {
       // Pre-release and nightly builds are available to everyone now, so the
-      // code only turns on the easter eggs.
+      // code turns on the easter eggs and reveals the boards the device
+      // registry hides as not activelySupported - those can only be flashed
+      // with the nightly, see utils/unsupportedDevices.ts.
       console.log('Unlocking easter eggs')
       firmwareStore.$state.konamiUnlocked = true
       document.body.classList.add('konami-code')
