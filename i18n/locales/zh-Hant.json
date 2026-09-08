@@ -29,7 +29,9 @@
     "subheading": "如果您連線的裝置已安裝 Meshtastic，可自動偵測：",
     "auto_detect": "自動偵測",
     "supported_devices": "支援的裝置",
-    "diy_devices": "DIY 裝置"
+    "diy_devices": "DIY 裝置",
+    "product_link": "產品",
+    "affiliate_disclosure": "產品連結可能是聯盟行銷連結，透過這些連結購買商品可能會讓 Meshtastic 獲得佣金。"
   },
   "firmware": {
     "title": "韌體",

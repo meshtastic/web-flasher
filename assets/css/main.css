@@ -612,11 +612,7 @@
 
   /* Device card product link - accent hover, theme-aware */
   .product-link a:hover {
-    color: #137136; /* meshtastic-700 */
-  }
-
-  :root[data-theme="dark"] .product-link a:hover {
-    color: #A3F3C3; /* meshtastic-200 */
+    color: var(--accent-dark);
   }
 
   /* Connection status button - disconnected state */

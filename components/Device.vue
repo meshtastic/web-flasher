@@ -187,19 +187,24 @@
               <DeviceDetail :device="device" />
             </div>
           </div>
-          <div
-            v-else
-            class="p-2 sm:p-3 m-1 sm:m-2 flex flex-wrap items-center justify-center gap-3"
-          >
-            <div
-              v-for="device in uniqueDevices"
-              class="device-card w-full sm:w-auto sm:max-w-sm"
-              @click="store.setSelectedTarget(device)"
-            >
-              <DeviceDetail :device="device" />
+              <div
+                v-else
+                class="p-2 sm:p-3 m-1 sm:m-2 flex flex-wrap items-center justify-center gap-3"
+              >
+                <div class="w-full text-center mb-2">
+                  <p class="max-w-xl mx-auto mt-2 text-[11px] leading-[1.55] text-theme-muted">
+                    {{ $t('device.affiliate_disclosure') }}
+                  </p>
+                </div>
+                <div
+                  v-for="device in uniqueDevices"
+                  class="device-card w-full sm:w-auto sm:max-w-sm"
+                  @click="store.setSelectedTarget(device)"
+                >
+                  <DeviceDetail :device="device" />
+                </div>
+              </div>
             </div>
-          </div>
-          </div>
           </div>
         </div>
       </div>

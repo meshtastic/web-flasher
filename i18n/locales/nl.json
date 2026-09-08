@@ -32,7 +32,9 @@
     "subheading": "If your connected device already has Meshtastic installed, you can automatically detect it:",
     "auto_detect": "Automatisch detecteren",
     "supported_devices": "Ondersteunde apparaten",
-    "diy_devices": "DIY apparaten"
+    "diy_devices": "DIY apparaten",
+    "product_link": "Product",
+    "affiliate_disclosure": "Productlinks kunnen affiliatelinks zijn — aankopen kunnen Meshtastic een commissie opleveren."
   },
   "firmware": {
     "title": "Firmware",

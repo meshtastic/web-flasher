@@ -32,7 +32,9 @@
     "subheading": "Si Meshtastic est déjà installé sur votre appareil connecté, vous pouvez le détecter automatiquement :",
     "auto_detect": "Détection automatique",
     "supported_devices": "Périphériques supportés",
-    "diy_devices": "Dispositifs DIY"
+    "diy_devices": "Dispositifs DIY",
+    "product_link": "Produit",
+    "affiliate_disclosure": "Les liens vers les produits peuvent être des liens d’affiliation — les achats peuvent rapporter une commission à Meshtastic."
   },
   "firmware": {
     "title": "Micrologiciel",

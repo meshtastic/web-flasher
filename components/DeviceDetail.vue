@@ -75,8 +75,7 @@
           :href="deviceUrl"
           target="_blank"
           rel="noopener"
-          title="Product link (external)"
-          class="inline-flex items-center gap-[9px] text-[10.5px] text-meshtastic-dark cursor-pointer transition-colors duration-200 ease-out"
+          class="inline-flex items-center gap-2 text-[10.5px] text-theme-accent cursor-pointer transition-colors duration-200 ease-out"
           @click.stop
         >
           <Tag

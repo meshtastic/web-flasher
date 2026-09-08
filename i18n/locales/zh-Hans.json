@@ -29,7 +29,9 @@
     "subheading": "如果您所连接的设备已经安装了Meshtastic ，您可以自动检测：",
     "auto_detect": "自动检测",
     "supported_devices": "支持的设备",
-    "diy_devices": "DIY 设备"
+    "diy_devices": "DIY 设备",
+    "product_link": "产品",
+    "affiliate_disclosure": "产品链接可能是联盟营销链接，通过这些链接购买商品可能会让 Meshtastic 获得佣金。"
   },
   "firmware": {
     "title": "固件",
