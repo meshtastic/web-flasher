@@ -610,6 +610,11 @@
     color: #67EA94;
   }
 
+  /* Device card product link - accent hover, theme-aware */
+  .product-link a:hover {
+    color: var(--accent-dark);
+  }
+
   /* Connection status button - disconnected state */
   .connection-status-disconnected {
     border-color: var(--border-default);

@@ -32,7 +32,9 @@
     "subheading": "Om din anslutna enhet redan har Meshtastic installerat kan du automatiskt identifiera den:",
     "auto_detect": "Automatisk identifiering",
     "supported_devices": "Enheter som stöds",
-    "diy_devices": "Gör-det-själv-enheter"
+    "diy_devices": "Gör-det-själv-enheter",
+    "product_link": "Produkt",
+    "affiliate_disclosure": "Produktlänkar kan vara affiliatelänkar. Köp kan ge Meshtastic provision."
   },
   "firmware": {
     "title": "Firmware",

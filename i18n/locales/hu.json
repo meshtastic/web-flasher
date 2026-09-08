@@ -32,7 +32,9 @@
     "subheading": "Ha az eszközön már fut a Meshtastic, automatikusan felismerhető:",
     "auto_detect": "Automatikus felismerés",
     "supported_devices": "Támogatott eszközök",
-    "diy_devices": "DIY eszközök"
+    "diy_devices": "DIY eszközök",
+    "product_link": "Termék",
+    "affiliate_disclosure": "A termékekre mutató hivatkozások partnerhivatkozások lehetnek. A vásárlások után a Meshtastic jutalékot kaphat."
   },
   "firmware": {
     "title": "Firmware",

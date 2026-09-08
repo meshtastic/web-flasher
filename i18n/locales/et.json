@@ -32,7 +32,9 @@
     "subheading": "Kui ühendatavas seadmes on juba Meshtastic paigaldatud, võid selle automaatselt leida:",
     "auto_detect": "Leia automaatselt",
     "supported_devices": "Toetatud seadmed",
-    "diy_devices": "DIY seadmed"
+    "diy_devices": "DIY seadmed",
+    "product_link": "Toode",
+    "affiliate_disclosure": "Tootelingid võivad olla partnerlingid. Ostud võivad tuua Meshtasticule vahendustasu."
   },
   "firmware": {
     "title": "Püsivara",
