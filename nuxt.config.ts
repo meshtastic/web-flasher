@@ -3,9 +3,9 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 // Origin the built app's `api/...` calls resolve to, and the default target of the
 // dev proxy below — so one variable moves the whole app between API deployments.
-// apiv2.meshtastic.org is the Cloudflare Worker rewrite of api.meshtastic.org;
+// api.meshtastic.org is the Cloudflare Worker rewrite of api.meshtastic.org;
 // API_ORIGIN=https://api.meshtastic.org rolls back to the Railway server.
-const apiOrigin = process.env.API_ORIGIN || 'https://apiv2.meshtastic.org'
+const apiOrigin = process.env.API_ORIGIN || 'https://api.meshtastic.org'
 
 const ignoredDevWatchPaths = [
   '**/.claude/**',

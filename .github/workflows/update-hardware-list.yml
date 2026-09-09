@@ -11,7 +11,7 @@ on:
 # compiled into the Worker bundle, and the Worker sets cross_version_cache: false, so the
 # only thing that can change it -- a deploy -- also cold-starts the cache.
 env:
-  API_ORIGIN: https://apiv2.meshtastic.org
+  API_ORIGIN: https://api.meshtastic.org
 
 jobs:
   update-hardware-list:

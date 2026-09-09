@@ -12,14 +12,14 @@ describe('createUrl', () => {
     vi.unstubAllEnvs()
   })
 
-  it('defaults to the v2 API deployment', () => {
-    expect(API_ORIGIN).toBe('https://apiv2.meshtastic.org')
+  it('defaults to the API deployment', () => {
+    expect(API_ORIGIN).toBe('https://api.meshtastic.org')
   })
 
   it('strips the api/ prefix and resolves against the API origin', () => {
-    expect(createUrl('api/resource/deviceHardware')).toBe('https://apiv2.meshtastic.org/resource/deviceHardware')
-    expect(createUrl('api/github/firmware/list')).toBe('https://apiv2.meshtastic.org/github/firmware/list')
-    expect(createUrl('api/resource/eventFirmware')).toBe('https://apiv2.meshtastic.org/resource/eventFirmware')
+    expect(createUrl('api/resource/deviceHardware')).toBe('https://api.meshtastic.org/resource/deviceHardware')
+    expect(createUrl('api/github/firmware/list')).toBe('https://api.meshtastic.org/github/firmware/list')
+    expect(createUrl('api/resource/eventFirmware')).toBe('https://api.meshtastic.org/resource/eventFirmware')
   })
 
   it('keeps the API on https even when the page is not', () => {

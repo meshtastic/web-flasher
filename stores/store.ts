@@ -1,7 +1,7 @@
 /**
  * Origin every `api/...` call resolves to in a built app.
  *
- * apiv2.meshtastic.org is the Cloudflare Worker rewrite of the API (meshtastic/api
+ * api.meshtastic.org is the Cloudflare Worker rewrite of the API (meshtastic/api
  * `v2` branch). It serves the same documents as api.meshtastic.org — byte-identical
  * for /resource/deviceHardware — behind Workers Caching, and sends a static
  * `Access-Control-Allow-Origin: *` rather than the old per-origin allowlist.
@@ -11,7 +11,7 @@
  * change. Vite inlines the value into the client bundle; see `vite.define` in
  * nuxt.config.ts, without which `process.env` is an empty shim in the browser.
  */
-export const API_ORIGIN = process.env.API_ORIGIN || 'https://apiv2.meshtastic.org'
+export const API_ORIGIN = process.env.API_ORIGIN || 'https://api.meshtastic.org'
 
 export function createUrl(relativeUrl: string) {
   // In development the `api/` prefix is kept and served same-origin, so Vite's
