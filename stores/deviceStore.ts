@@ -46,6 +46,9 @@ export const useDeviceStore = defineStore('device', {
       // and the long-retired. Held back from `targets` until the Konami code
       // reveals them; see unsupportedTargetsUnlocked below.
       unsupportedApiTargets: <DeviceHardware[]>[],
+      // User attests the DFU drive's INFO_UF2.TXT carries a Factory-Erase:
+      // line, so eraseUf2File serves the bootloader-native erase file.
+      bootloaderFactoryErase: false,
       isConnecting: false,
       abortController: <AbortController | undefined>undefined,
       readerClosed: <Promise<any> | undefined>undefined,
@@ -152,10 +155,24 @@ export const useDeviceStore = defineStore('device', {
      * Factory-erase UF2 (under /public/uf2) for the selected target. The nRF52
      * build has to match the target's SoftDevice layout — see
      * isSoftDevice7point3 for what happens when it doesn't.
+     *
+     * meshtastic_factory_erase.uf2 is the exception: a single 512-byte UF2
+     * block with family ID 0x4D455348 ("MESH") and no payload, from
+     * Adafruit_nRF52_Bootloader_OTAFIX tools/ (c8ccd1d, MIT). It is not an
+     * application at all - a bootloader that recognises the family erases its
+     * own App Data reservation (LittleFS config, keys, bonds, node DB) and
+     * leaves the installed firmware in place, so one file fits every nRF52
+     * board regardless of SoftDevice. Older bootloaders ignore the family and
+     * silently do nothing, and the flasher cannot read the drive to tell them
+     * apart, so it is only served when the user attests that INFO_UF2.TXT
+     * shows the Factory-Erase: line.
      */
     eraseUf2File(): string {
       if (!this.isSelectedNrf) {
         return '/uf2/pico_erase.uf2'
+      }
+      if (this.bootloaderFactoryErase) {
+        return '/uf2/meshtastic_factory_erase.uf2'
       }
       return this.isSoftDevice7point3 ? '/uf2/nrf_erase_sd7_3.uf2' : '/uf2/nrf_erase2.uf2'
     },
@@ -219,6 +236,8 @@ export const useDeviceStore = defineStore('device', {
     },
     async setSelectedTarget(target: DeviceHardware) {
       this.selectedTarget = target
+      // The attestation is about one board's bootloader, not the next one's.
+      this.bootloaderFactoryErase = false
       document.getElementById('device-modal')?.click()
       const firmwareStore = useFirmwareStore()
 

@@ -149,6 +149,8 @@ Key files:
 - `components/targets/EraseUf2.vue` - Erase functionality for UF2 devices
 - `firmwareStore.downloadUf2FileSystem()` - Extracts UF2 from zip file
 
+Erase files live in `public/uf2/` and `deviceStore.eraseUf2File` picks one. For nRF52 the pick is by SoftDevice layout (`nrf_erase2.uf2` for S140 6.1.1, `nrf_erase_sd7_3.uf2` for 7.3.0, via `isSoftDevice7point3`) because those are applications flashed at the app base. `meshtastic_factory_erase.uf2` is different: a single board-agnostic UF2 block (family `0x4D455348`) that a bootloader with the `Factory-Erase:` line in its `INFO_UF2.TXT` acts on itself, erasing only app data and keeping the installed firmware; older bootloaders ignore it silently. The flasher cannot read the drive, so the file is served only when the user ticks the attestation checkbox in `EraseUf2.vue` (`deviceStore.bootloaderFactoryErase`), which also hides the serial-monitor step. The checkbox resets on target change.
+
 ### ESP32 Flashing
 ESP32 flashing uses the WebSerial API with esptool.js. There are two approaches:
 
