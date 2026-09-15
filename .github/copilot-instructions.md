@@ -43,7 +43,14 @@ These guidelines help keep contributions consistent in this project.
 
 ## Design Standards
 
-All UI must comply with the [Meshtastic Client Design Standards](https://raw.githubusercontent.com/meshtastic/design/refs/heads/master/standards/meshtastic_design_standards_latest.md). Fetch and review this document before making any UI changes.
+All UI must comply with the [Meshtastic Client Design Standards](https://github.com/meshtastic/design/tree/master/standards). That link is the standards index, which always names the current version. Fetch and review that version before making any UI changes.
+
+Do not fetch `meshtastic_design_standards_latest.md` over HTTP. It is a symlink, and GitHub serves a symlink as its target's filename, so the blob and raw views return 35 bytes with HTTP 200 and no error — the fetch looks like it worked and yields no standards. If a tool needs that file directly, the contents API resolves it:
+
+```shell
+gh api repos/meshtastic/design/contents/standards/meshtastic_design_standards_latest.md \
+  -H "Accept: application/vnd.github.raw"
+```
 
 ### Brand Colors
 
