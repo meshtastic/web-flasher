@@ -15,6 +15,8 @@ describe('prBuild', () => {
       ['esp32-c6', 'esp32c6'],
       ['nrf52840', 'nrf52840'],
       ['rp2040', 'rp2040'],
+      ['stm32', 'stm32'],
+      ['stm32wl', 'stm32'],
     ])('maps device architecture %s to artifact arch %s', (device, artifact) => {
       const result = artifactArchForDevice(device)
       expect(result).toBe(artifact)
