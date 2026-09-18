@@ -29,7 +29,7 @@ describe('deviceTier', () => {
     expect(deviceTier(board({ supportLevel: 3, tags: ['LilyGo'] }))).toBe('community')
   })
 
-  it('puts a maker vendor in the maker tier', () => {
+  it('puts a board the registry marks isMaker in the maker tier', () => {
     expect(deviceTier(board({
       hwModel: 148,
       hwModelSlug: 'AXIOMETA_GENESIS_MINI',
@@ -38,18 +38,28 @@ describe('deviceTier', () => {
       displayName: 'Axiometa Genesis Mini',
       supportLevel: 1,
       tags: ['Axiometa'],
+      isMaker: true,
     }))).toBe('maker')
   })
 
-  it('demotes a maker vendor at supportLevel 3 to community', () => {
-    expect(deviceTier(board({ supportLevel: 3, tags: ['Axiometa'] }))).toBe('community')
+  it('does not need a vendor tag to be a maker board', () => {
+    expect(deviceTier(board({ supportLevel: 1, tags: undefined, isMaker: true }))).toBe('maker')
+  })
+
+  it('demotes a maker board at supportLevel 3 to community', () => {
+    expect(deviceTier(board({ supportLevel: 3, tags: ['Axiometa'], isMaker: true }))).toBe('community')
   })
 
   it('leaves an unrecognised vendor in community even at supportLevel 1', () => {
-    // Meshnology, Waveshare and RadioMaster are graded 1 or 2 upstream but are
-    // neither Backer/Partner nor maker vendors.
+    // Meshnology, Waveshare and RadioMaster are graded 1 or 2 upstream but the
+    // registry marks none of them isMaker, so they stay where they are today.
     expect(deviceTier(board({ supportLevel: 1, tags: ['Meshnology'] }))).toBe('community')
     expect(deviceTier(board({ supportLevel: 2, tags: ['Waveshare'] }))).toBe('community')
+  })
+
+  it('treats isMaker false and isMaker absent the same way', () => {
+    expect(deviceTier(board({ supportLevel: 1, tags: ['Axiometa'], isMaker: false }))).toBe('community')
+    expect(deviceTier(board({ supportLevel: 1, tags: ['Axiometa'] }))).toBe('community')
   })
 
   it('treats a missing supportLevel as 3', () => {
@@ -62,7 +72,7 @@ describe('deviceTier', () => {
     expect(deviceTier(board({ tags: undefined }))).toBe('community')
   })
 
-  it('prefers the supported tier when a board carries both a vendor and a maker tag', () => {
-    expect(deviceTier(board({ tags: ['Axiometa', 'RAK'] }))).toBe('supported')
+  it('prefers the supported tier for a Backer/Partner board the registry also marks isMaker', () => {
+    expect(deviceTier(board({ tags: ['RAK'], isMaker: true }))).toBe('supported')
   })
 })

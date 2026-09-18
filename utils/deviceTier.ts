@@ -1,12 +1,17 @@
 import type { DeviceHardware } from '~/types/api'
-import { makerVendorDeviceTags, supportedVendorDeviceTags } from '~/types/resources'
+import { supportedVendorDeviceTags } from '~/types/resources'
 
 /**
- * How prominently a board is presented in the device picker. This is the
- * vendor relationship, not the registry's capability grade: `supportLevel` is
- * validated upstream to {1,2,3} and means flagship / niche / legacy, so it
- * cannot carry a commercial rung. The vendor tag decides the rung, and
- * supportLevel only demotes legacy hardware out of the top two.
+ * How prominently a board is presented in the device picker.
+ *
+ * The maker rung is the registry's call, carried on the entry as `isMaker`,
+ * rather than a vendor allow-list this repo would have to keep in step. The
+ * top rung is still the hard-coded `supportedVendorDeviceTags`, which is the
+ * Backer/Partner relationship and is not something the registry publishes.
+ *
+ * `supportLevel` is a capability grade, not a rung: it is validated upstream to
+ * {1,2,3} and means flagship / niche / legacy. It only demotes legacy hardware
+ * out of the top two bands.
  */
 export type DeviceTier = 'supported' | 'maker' | 'community'
 
@@ -25,8 +30,9 @@ export function deviceTier(device: DeviceHardware): DeviceTier {
   // put it last and the product link stayed hidden.
   if ((device.supportLevel ?? 3) === 3) return 'community'
 
+  // Backer/Partner outranks maker, for a board that is somehow both.
   const tags = device.tags ?? []
   if (tags.some(tag => supportedVendorDeviceTags.includes(tag))) return 'supported'
-  if (tags.some(tag => makerVendorDeviceTags.includes(tag))) return 'maker'
+  if (device.isMaker) return 'maker'
   return 'community'
 }

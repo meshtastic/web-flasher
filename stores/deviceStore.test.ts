@@ -106,7 +106,7 @@ describe('deviceStore sortedDevices', () => {
       makeTarget({ hwModel: 2, displayName: 'Level 2', supportLevel: 2, tags: ['B&Q'] }),
       makeTarget({ hwModel: 3, displayName: 'Level 3', supportLevel: 3, tags: ['LilyGo'] }),
       makeTarget({ hwModel: 4, displayName: 'Untiered', supportLevel: undefined, tags: ['Heltec'] }),
-      makeTarget({ hwModel: 5, displayName: 'Maker', supportLevel: 1, tags: ['Axiometa'] }),
+      makeTarget({ hwModel: 5, displayName: 'Maker', supportLevel: 1, tags: ['Axiometa'], isMaker: true }),
     ]
     expect(store.sortedDevices).toHaveLength(store.filteredDevices.length)
     expect(store.sortedDevices.map(d => d.displayName).sort())
@@ -138,6 +138,7 @@ describe('deviceStore maker tier filter', () => {
     displayName: 'Axiometa Genesis Mini',
     supportLevel: 1,
     tags: ['Axiometa'],
+    isMaker: true,
   })
   const legacyLilygo = makeTarget({ hwModel: 4, displayName: 'LILYGO T-Beam', supportLevel: 3, tags: ['LilyGo'] })
 
