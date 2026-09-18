@@ -4,6 +4,7 @@ import {
   eventMode,
   vendorCobrandingTag,
 } from '~/types/resources'
+import { MAKER_TIER_FILTER, deviceTier } from '~/utils/deviceTier'
 import { applyEventDeviceOverrides } from '~/utils/eventDevices'
 import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } from '~/utils/telemetry'
@@ -89,6 +90,11 @@ export const useDeviceStore = defineStore('device', {
     },
     filteredDevices(): DeviceHardware[] {
       if (this.tag) {
+        // The maker pill selects a tier, not a vendor, so one pill covers every
+        // maker vendor instead of the row gaining one per vendor.
+        if (this.tag === MAKER_TIER_FILTER) {
+          return this.targets.filter(t => deviceTier(t) === 'maker')
+        }
         return this.targets.filter(t => t.tags?.includes(this.tag ?? '') || t.architecture === this.tag)
       }
       return this.targets

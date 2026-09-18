@@ -123,3 +123,46 @@ describe('deviceStore sortedDevices', () => {
     expect(store.sortedDevices.map(d => d.supportLevel)).toEqual([1, 2, 3])
   })
 })
+
+describe('deviceStore maker tier filter', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  const rak = makeTarget({ hwModel: 9, displayName: 'RAK WisBlock 4631', supportLevel: 1, tags: ['RAK'] })
+  const axiometa = makeTarget({
+    hwModel: 148,
+    hwModelSlug: 'AXIOMETA_GENESIS_MINI',
+    platformioTarget: 'axiometa-genesis-mini',
+    architecture: 'esp32-s3',
+    displayName: 'Axiometa Genesis Mini',
+    supportLevel: 1,
+    tags: ['Axiometa'],
+  })
+  const legacyLilygo = makeTarget({ hwModel: 4, displayName: 'LILYGO T-Beam', supportLevel: 3, tags: ['LilyGo'] })
+
+  it('selects every maker board, whatever its vendor tag', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [rak, axiometa, legacyLilygo]
+    store.setSelectedTag('maker')
+    expect(store.filteredDevices.map(d => d.displayName)).toEqual(['Axiometa Genesis Mini'])
+  })
+
+  it('still filters by vendor tag and by architecture', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [rak, axiometa, legacyLilygo]
+    store.setSelectedTag('RAK')
+    expect(store.filteredDevices.map(d => d.displayName)).toEqual(['RAK WisBlock 4631'])
+    store.setSelectedTag('esp32-s3')
+    expect(store.filteredDevices.map(d => d.displayName)).toEqual(['Axiometa Genesis Mini'])
+  })
+
+  it('clears the tier filter when the pill is toggled off', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [rak, axiometa, legacyLilygo]
+    store.setSelectedTag('maker')
+    store.setSelectedTag('maker')
+    expect(store.tag).toBeUndefined()
+    expect(store.filteredDevices).toHaveLength(3)
+  })
+})
