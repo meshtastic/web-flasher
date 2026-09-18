@@ -2,22 +2,26 @@
   <div class="flex flex-col items-center p-2 w-full sm:w-56">
     <h5 class="mb-1 text-xs sm:text-[0.75rem] text-theme">
       {{ props.device.displayName }}
-      <div class="float-right items-center mx-1">
+      <div
+        class="float-right items-center mx-1"
+        :title="tierLabel"
+      >
         <BadgeCheck
           v-if="tier === 'supported'"
           class="w-6 h-6 text-tier-supported opacity-75"
-          :title="$t('device.supported_devices')"
+          aria-hidden="true"
         />
         <Wrench
           v-else-if="tier === 'maker'"
           class="w-6 h-6 text-tier-maker opacity-75"
-          :title="$t('device.maker_devices')"
+          aria-hidden="true"
         />
         <ShieldAlert
           v-else
           class="w-6 h-6 text-tier-community opacity-75"
-          :title="$t('device.diy_devices')"
+          aria-hidden="true"
         />
+        <span class="sr-only">{{ tierLabel }}</span>
       </div>
     </h5>
     <div class="flex flex-wrap justify-start w-full gap-y-1">
@@ -100,6 +104,7 @@ import { deviceTier } from '~/utils/deviceTier'
 import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import {
   BadgeCheck,
@@ -117,7 +122,21 @@ const props = defineProps({
   },
 })
 
+const { t } = useI18n()
+
 const tier = computed(() => deviceTier(props.device))
+
+/**
+ * The tier's name, for the mark's tooltip and its screen-reader text. The
+ * marks differ only by colour and shape otherwise, and a lucide icon carries
+ * no accessible name of its own - a `title` attribute on an <svg> renders
+ * neither a tooltip nor a label.
+ */
+const tierLabel = computed(() => {
+  if (tier.value === 'supported') return t('device.supported_devices')
+  if (tier.value === 'maker') return t('device.maker_devices')
+  return t('device.diy_devices')
+})
 
 const deviceUrl = computed(() => {
   if (props.device.url) {
