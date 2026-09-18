@@ -17,9 +17,13 @@
   --text-muted: #9ca3af;
   --text-inverse: #1f2937;
 
-  /* Device picker tier colours. Declared values, deliberately NOT derived from
-     --accent: applyEventTheme() rewrites the accent per event edition, and a
-     tier hue that moves with it would collide with the neighbouring rung. */
+  /* Device picker tier colours, shared by each band's heading and its card
+     mark. Declared values, deliberately NOT var(--accent), for two reasons:
+     applyEventTheme() rewrites --accent (and --primary-color, --accent-dark,
+     --accent-glow, --accent-subtle) per event edition, so a tier hue derived
+     from it would drift edition to edition and could land on its neighbour;
+     and in the light theme --accent is #1A9B4A, which is 3.5:1 on the cream
+     modal ground and fails the 4.5:1 a 20px/600 heading needs. */
   --tier-supported: #67ea94;
   --tier-maker: #7dd3fc;
   --tier-community: #e8a33e;
