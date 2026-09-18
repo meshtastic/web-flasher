@@ -33,6 +33,7 @@
     "auto_detect": "Auto-detect",
     "supported_devices": "Supported Devices",
     "maker_devices": "Maker Devices",
+    "makers": "Makers",
     "diy_devices": "Community Supported Devices",
     "ham_license_required": "Amateur radio band — an amateur radio license is required to transmit",
     "product_link": "Product",

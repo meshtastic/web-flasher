@@ -10,6 +10,14 @@ import { makerVendorDeviceTags, supportedVendorDeviceTags } from '~/types/resour
  */
 export type DeviceTier = 'supported' | 'maker' | 'community'
 
+/**
+ * Filter value that selects the whole maker tier rather than one vendor, so
+ * the picker carries a single Makers pill instead of gaining one per vendor
+ * the way the Backer/Partner row does. deviceStore.filteredDevices matches it
+ * against the tier; no vendor tag in the registry uses this name.
+ */
+export const MAKER_TIER_FILTER = 'maker'
+
 export function deviceTier(device: DeviceHardware): DeviceTier {
   // A missing supportLevel counts as 3, matching deviceStore's sort order and
   // boardAttributes' telemetry. Device.vue used to test `!= 3`, which let an
