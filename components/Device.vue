@@ -126,6 +126,18 @@
               >
                 muzi ᴡᴏʀᴋꜱ
               </button>
+              <template v-if="vendorCobrandingTag.length === 0">
+                <button
+                  v-for="tag in stockedMakerTags"
+                  :key="tag"
+                  type="button"
+                  class="tag-pill tag-pill-inactive shrink-0 gap-[7px]"
+                  @click="store.setSelectedTag(tag)"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-tier-maker" />
+                  {{ tag }}
+                </button>
+              </template>
             </div>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
               <button
@@ -156,7 +168,7 @@
             class="p-2 sm:p-3 m-1 sm:m-2 flex flex-wrap items-center justify-center gap-3"
           >
             <div class="w-full text-center mb-2">
-              <h2 class="text-xl sm:text-xl font-semibold text-theme">
+              <h2 class="text-xl sm:text-xl font-semibold text-tier-supported">
                 {{ $t('device.supported_devices') }}
               </h2>
               <p class="max-w-xl mx-auto mt-2 text-[11px] leading-[1.55] text-theme-muted">
@@ -164,23 +176,41 @@
               </p>
             </div>
             <div
-              v-for="device in uniqueDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)"
+              v-for="device in supportedDevices"
+              :key="device.key || `${device.hwModel}-${device.displayName}`"
               class="device-card w-full sm:w-auto sm:max-w-sm"
               @click="setSelectedTarget(device)"
             >
               <DeviceDetail :device="device" />
             </div>
+            <template v-if="makerDevices.length > 0">
+              <div class="divider-glow my-4" />
+              <div class="w-full text-center mb-2">
+                <h2 class="text-xl sm:text-xl font-semibold text-tier-maker">
+                  {{ $t('device.maker_devices') }}
+                </h2>
+              </div>
+              <div
+                v-for="device in makerDevices"
+                :key="device.key || `${device.hwModel}-${device.displayName}`"
+                class="device-card w-full sm:w-auto sm:max-w-sm"
+                @click="setSelectedTarget(device)"
+              >
+                <DeviceDetail :device="device" />
+              </div>
+            </template>
             <div class="divider-glow my-4" />
             <div
-              v-if="uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"
+              v-if="communityDevices.length > 0"
               class="w-full text-center"
             >
-              <h2 class="text-xl sm:text-xl font-semibold text-warning">
+              <h2 class="text-xl sm:text-xl font-semibold text-tier-community">
                 {{ $t('device.diy_devices') }}
               </h2>
             </div>
             <div
-              v-for="device in uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)"
+              v-for="device in communityDevices"
+              :key="device.key || `${device.hwModel}-${device.displayName}`"
               class="device-card w-full sm:w-auto sm:max-w-sm"
               @click="setSelectedTarget(device)"
             >
@@ -215,9 +245,10 @@
 <script lang="ts" setup>
 import type { DeviceHardware } from '~/types/api'
 import {
-  supportedVendorDeviceTags,
+  makerVendorDeviceTags,
   vendorCobrandingTag,
 } from '~/types/resources'
+import { deviceTier } from '~/utils/deviceTier'
 
 import {
   Info,
@@ -248,9 +279,20 @@ const uniqueDevices = computed(() => {
   })
 })
 
-const isSupporterDevice = (device: DeviceHardware) => {
-  return device.tags?.some((tag: string) => supportedVendorDeviceTags.includes(tag))
-}
+/**
+ * Maker vendors the registry actually carries. Derived from the unfiltered
+ * target list, not from the visible band, so selecting another vendor's pill
+ * does not remove the pill you would use to get back. A maker vendor with no
+ * boards yet gets no pill rather than one that filters to nothing.
+ */
+const stockedMakerTags = computed(() =>
+  makerVendorDeviceTags.filter(tag =>
+    store.targets.some(d => d.tags?.includes(tag) && deviceTier(d) === 'maker')))
+
+// sortedDevices already orders by tier, so each band keeps the store's order.
+const supportedDevices = computed(() => uniqueDevices.value.filter(d => deviceTier(d) === 'supported'))
+const makerDevices = computed(() => uniqueDevices.value.filter(d => deviceTier(d) === 'maker'))
+const communityDevices = computed(() => uniqueDevices.value.filter(d => deviceTier(d) === 'community'))
 
 const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device)

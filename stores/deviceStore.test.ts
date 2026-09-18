@@ -89,3 +89,37 @@ describe('deviceStore factory-erase UF2 selection', () => {
     expect(store.isSoftDevice7point3).toBe(false)
   })
 })
+
+describe('deviceStore sortedDevices', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  // sortedDevices concatenates three supportLevel buckets by hand, so a board
+  // carrying a value none of them match would vanish from the picker entirely
+  // — and from alphanautStore's hardware-override list, which reads the same
+  // getter. Assert the invariant rather than the buckets.
+  it('returns every input device, whatever its supportLevel', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [
+      makeTarget({ hwModel: 1, displayName: 'Level 1', supportLevel: 1, tags: ['RAK'] }),
+      makeTarget({ hwModel: 2, displayName: 'Level 2', supportLevel: 2, tags: ['B&Q'] }),
+      makeTarget({ hwModel: 3, displayName: 'Level 3', supportLevel: 3, tags: ['LilyGo'] }),
+      makeTarget({ hwModel: 4, displayName: 'Untiered', supportLevel: undefined, tags: ['Heltec'] }),
+      makeTarget({ hwModel: 5, displayName: 'Maker', supportLevel: 1, tags: ['Axiometa'] }),
+    ]
+    expect(store.sortedDevices).toHaveLength(store.filteredDevices.length)
+    expect(store.sortedDevices.map(d => d.displayName).sort())
+      .toEqual(['Level 1', 'Level 2', 'Level 3', 'Maker', 'Untiered'])
+  })
+
+  it('orders the supported buckets ahead of legacy hardware', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [
+      makeTarget({ hwModel: 3, displayName: 'Level 3', supportLevel: 3, tags: ['LilyGo'] }),
+      makeTarget({ hwModel: 2, displayName: 'Level 2', supportLevel: 2, tags: ['B&Q'] }),
+      makeTarget({ hwModel: 1, displayName: 'Level 1', supportLevel: 1, tags: ['RAK'] }),
+    ]
+    expect(store.sortedDevices.map(d => d.supportLevel)).toEqual([1, 2, 3])
+  })
+})
