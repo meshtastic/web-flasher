@@ -16,6 +16,13 @@
   --text-default: #e5e7eb;
   --text-muted: #9ca3af;
   --text-inverse: #1f2937;
+
+  /* Device picker tier colours. Declared values, deliberately NOT derived from
+     --accent: applyEventTheme() rewrites the accent per event edition, and a
+     tier hue that moves with it would collide with the neighbouring rung. */
+  --tier-supported: #67ea94;
+  --tier-maker: #7dd3fc;
+  --tier-community: #e8a33e;
   
   /* Surface colors */
   --surface-primary: rgba(39, 39, 42, 0.6);
@@ -93,6 +100,11 @@
   --text-default: #1a1a1a;
   --text-muted: #4a4a4a;
   --text-inverse: #ffffff;
+
+  /* Darkened for the cream ground: the dark-theme values sit at 1.7:1 here. */
+  --tier-supported: #137136;
+  --tier-maker: #075985;
+  --tier-community: #a16207;
   
   /* Surface colors - warm cream whites */
   --surface-primary: rgba(252, 250, 247, 1);
@@ -205,6 +217,20 @@
   }
   .text-theme-accent {
     color: var(--accent);
+  }
+
+  /* Device picker tier colours, heading and card mark sharing one token */
+  .text-tier-supported {
+    color: var(--tier-supported);
+  }
+  .text-tier-maker {
+    color: var(--tier-maker);
+  }
+  .text-tier-community {
+    color: var(--tier-community);
+  }
+  .bg-tier-maker {
+    background: var(--tier-maker);
   }
   
   /* Theme-aware link styles */

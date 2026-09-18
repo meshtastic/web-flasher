@@ -90,3 +90,9 @@ export function setActiveEventMode(config: EventModeConfig): void {
 
 export const vendorCobrandingTag = "";
 export const supportedVendorDeviceTags = ["RAK", "B&Q", "LilyGo", "Seeed", "Heltec", "DIY", "Elecrow", "M5Stack", "NomadStar", "muzi"];
+/**
+ * Independent hardware makers building on Meshtastic. Ranked between the
+ * vendors above and Community Supported: firmware is built and tested for
+ * these boards, but they are not Backer or Partner hardware.
+ */
+export const makerVendorDeviceTags = ["Axiometa"];
