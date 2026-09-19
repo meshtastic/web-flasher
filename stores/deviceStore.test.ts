@@ -89,3 +89,81 @@ describe('deviceStore factory-erase UF2 selection', () => {
     expect(store.isSoftDevice7point3).toBe(false)
   })
 })
+
+describe('deviceStore sortedDevices', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  // sortedDevices concatenates three supportLevel buckets by hand, so a board
+  // carrying a value none of them match would vanish from the picker entirely
+  // — and from alphanautStore's hardware-override list, which reads the same
+  // getter. Assert the invariant rather than the buckets.
+  it('returns every input device, whatever its supportLevel', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [
+      makeTarget({ hwModel: 1, displayName: 'Level 1', supportLevel: 1, tags: ['RAK'] }),
+      makeTarget({ hwModel: 2, displayName: 'Level 2', supportLevel: 2, tags: ['B&Q'] }),
+      makeTarget({ hwModel: 3, displayName: 'Level 3', supportLevel: 3, tags: ['LilyGo'] }),
+      makeTarget({ hwModel: 4, displayName: 'Untiered', supportLevel: undefined, tags: ['Heltec'] }),
+      makeTarget({ hwModel: 5, displayName: 'Maker', supportLevel: 1, tags: ['Axiometa'], isMaker: true }),
+    ]
+    expect(store.sortedDevices).toHaveLength(store.filteredDevices.length)
+    expect(store.sortedDevices.map(d => d.displayName).sort())
+      .toEqual(['Level 1', 'Level 2', 'Level 3', 'Maker', 'Untiered'])
+  })
+
+  it('orders the supported buckets ahead of legacy hardware', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [
+      makeTarget({ hwModel: 3, displayName: 'Level 3', supportLevel: 3, tags: ['LilyGo'] }),
+      makeTarget({ hwModel: 2, displayName: 'Level 2', supportLevel: 2, tags: ['B&Q'] }),
+      makeTarget({ hwModel: 1, displayName: 'Level 1', supportLevel: 1, tags: ['RAK'] }),
+    ]
+    expect(store.sortedDevices.map(d => d.supportLevel)).toEqual([1, 2, 3])
+  })
+})
+
+describe('deviceStore maker tier filter', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  const rak = makeTarget({ hwModel: 9, displayName: 'RAK WisBlock 4631', supportLevel: 1, tags: ['RAK'] })
+  const axiometa = makeTarget({
+    hwModel: 148,
+    hwModelSlug: 'AXIOMETA_GENESIS_MINI',
+    platformioTarget: 'axiometa-genesis-mini',
+    architecture: 'esp32-s3',
+    displayName: 'Axiometa Genesis Mini',
+    supportLevel: 1,
+    tags: ['Axiometa'],
+    isMaker: true,
+  })
+  const legacyLilygo = makeTarget({ hwModel: 4, displayName: 'LILYGO T-Beam', supportLevel: 3, tags: ['LilyGo'] })
+
+  it('selects every maker board, whatever its vendor tag', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [rak, axiometa, legacyLilygo]
+    store.setSelectedTag('maker')
+    expect(store.filteredDevices.map(d => d.displayName)).toEqual(['Axiometa Genesis Mini'])
+  })
+
+  it('still filters by vendor tag and by architecture', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [rak, axiometa, legacyLilygo]
+    store.setSelectedTag('RAK')
+    expect(store.filteredDevices.map(d => d.displayName)).toEqual(['RAK WisBlock 4631'])
+    store.setSelectedTag('esp32-s3')
+    expect(store.filteredDevices.map(d => d.displayName)).toEqual(['Axiometa Genesis Mini'])
+  })
+
+  it('clears the tier filter when the pill is toggled off', () => {
+    const store = useDeviceStore()
+    store.apiTargets = [rak, axiometa, legacyLilygo]
+    store.setSelectedTag('maker')
+    store.setSelectedTag('maker')
+    expect(store.tag).toBeUndefined()
+    expect(store.filteredDevices).toHaveLength(3)
+  })
+})

@@ -16,6 +16,17 @@
   --text-default: #e5e7eb;
   --text-muted: #9ca3af;
   --text-inverse: #1f2937;
+
+  /* Device picker tier colours, shared by each band's heading and its card
+     mark. Declared values, deliberately NOT var(--accent), for two reasons:
+     applyEventTheme() rewrites --accent (and --primary-color, --accent-dark,
+     --accent-glow, --accent-subtle) per event edition, so a tier hue derived
+     from it would drift edition to edition and could land on its neighbour;
+     and in the light theme --accent is #1A9B4A, which is 3.5:1 on the cream
+     modal ground and fails the 4.5:1 a 20px/600 heading needs. */
+  --tier-supported: #67ea94;
+  --tier-maker: #7dd3fc;
+  --tier-community: #e8a33e;
   
   /* Surface colors */
   --surface-primary: rgba(39, 39, 42, 0.6);
@@ -48,6 +59,7 @@
   /* Tag colors */
   --tag-active-bg: rgba(103, 234, 148, 0.2);
   --tag-active-border: #67ea94;
+  --tag-active-text: #67ea94;
   --tag-inactive-bg: rgba(39, 39, 42, 0.5);
   --tag-inactive-border: rgb(63, 63, 70);
   --tag-inactive-text: rgb(161, 161, 170);
@@ -93,6 +105,11 @@
   --text-default: #1a1a1a;
   --text-muted: #4a4a4a;
   --text-inverse: #ffffff;
+
+  /* Darkened for the cream ground: the dark-theme values sit at 1.7:1 here. */
+  --tier-supported: #137136;
+  --tier-maker: #075985;
+  --tier-community: #a16207;
   
   /* Surface colors - warm cream whites */
   --surface-primary: rgba(252, 250, 247, 1);
@@ -122,6 +139,9 @@
   /* Tag colors */
   --tag-active-bg: rgba(103, 234, 148, 0.18);
   --tag-active-border: #22c55e;
+  /* Not --accent: #1A9B4A on the tinted pill is 3.2:1, and a 12px/500 label
+     needs 4.5:1. meshtastic-700 gets it to 5.4:1. */
+  --tag-active-text: #137136;
   --tag-inactive-bg: rgba(255, 253, 250, 0.9);
   --tag-inactive-border: rgba(0, 0, 0, 0.1);
   --tag-inactive-text: #4a4a4a;
@@ -205,6 +225,20 @@
   }
   .text-theme-accent {
     color: var(--accent);
+  }
+
+  /* Device picker tier colours, heading and card mark sharing one token */
+  .text-tier-supported {
+    color: var(--tier-supported);
+  }
+  .text-tier-maker {
+    color: var(--tier-maker);
+  }
+  .text-tier-community {
+    color: var(--tier-community);
+  }
+  .bg-tier-maker {
+    background: var(--tier-maker);
   }
   
   /* Theme-aware link styles */
@@ -465,7 +499,7 @@
   .tag-pill-active {
     background: var(--tag-active-bg);
     border-color: var(--accent);
-    color: var(--accent);
+    color: var(--tag-active-text);
     box-shadow: 0 0 15px var(--accent-glow);
   }
 
@@ -482,6 +516,47 @@
     background: var(--tag-inactive-bg-hover);
   }
 
+  /* Board count inside a filter pill. Subordinate to the vendor name by size
+     and by sitting in its own chip - NOT by dimming the text, which is what
+     the first cut did: #a1a1aa at 0.55 came out 2.8:1, against the 4.5:1 an
+     11px label needs. Every combination below clears 4.5:1. Tabular figures
+     and a min-width keep the row from reflowing as counts change. */
+  .tag-pill-count {
+    margin-inline-start: 6px;
+    padding: 0 5px;
+    min-width: 19px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 10.5px;
+    line-height: 16px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+  .tag-pill-active .tag-pill-count {
+    background: rgba(103, 234, 148, 0.1);
+  }
+  :root[data-theme="light"] .tag-pill-count {
+    background: rgba(0, 0, 0, 0.07);
+  }
+  :root[data-theme="light"] .tag-pill-active .tag-pill-count {
+    background: rgba(19, 113, 54, 0.1);
+  }
+
+  /* A filter pill is a control: give it the same lift .btn-primary has, so the
+     row reads as interactive rather than as a set of labels. */
+  .tag-pill:hover {
+    transform: translateY(-1px);
+  }
+  .tag-pill:active {
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tag-pill:hover,
+    .tag-pill:active {
+      transform: none;
+    }
+  }
+
   /* Architecture filter tag pills */
   .tag-pill-arch {
     background: rgba(99, 102, 241, 0.2);
@@ -492,6 +567,21 @@
   .tag-pill-arch:hover {
     background: rgba(99, 102, 241, 0.3);
     border-color: rgb(129, 140, 248);
+  }
+
+  /* Selected architecture: same indigo family, filled rather than tinted, so
+     it reads as chosen without borrowing the accent the vendor pills use. */
+  .tag-pill-arch-active {
+    background: rgba(99, 102, 241, 0.55);
+    border-color: rgb(129, 140, 248);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
+  }
+
+  :root[data-theme="light"] .tag-pill-arch-active {
+    background: rgba(79, 70, 229, 0.9);
+    border-color: rgb(67, 56, 202);
+    color: #ffffff;
   }
 
   /* Light mode architecture tags - darker for readability */

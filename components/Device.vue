@@ -49,89 +49,37 @@
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
               <button
                 type="button"
-                class="tag-pill tag-pill-active shrink-0"
+                class="tag-pill shrink-0"
+                :class="store.tag ? 'tag-pill-inactive' : 'tag-pill-active'"
                 @click="store.setSelectedTag('all')"
               >
                 {{ $t('device.all_devices') }}
+                <span class="tag-pill-count">{{ store.targets.length }}</span>
               </button>
               <button
-                v-if="vendorCobrandingTag.length === 0"
+                v-for="filter in vendorFilters"
+                :key="filter.tag"
                 type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('RAK')"
+                class="tag-pill shrink-0"
+                :class="store.tag === filter.tag ? 'tag-pill-active' : 'tag-pill-inactive'"
+                @click="store.setSelectedTag(filter.tag)"
               >
-                RAK
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('B&Q')"
-              >
-                B&Q
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('LilyGo')"
-              >
-                LilyGo
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('Seeed')"
-              >
-                Seeed
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('Heltec')"
-              >
-                Heltec
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('Elecrow')"
-              >
-                Elecrow
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('M5Stack')"
-              >
-                M5Stack
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('NomadStar')"
-              >
-                NomadStar
-              </button>
-              <button
-                v-if="vendorCobrandingTag.length === 0"
-                type="button"
-                class="tag-pill tag-pill-inactive shrink-0"
-                @click="store.setSelectedTag('muzi')"
-              >
-                muzi ᴡᴏʀᴋꜱ
+                <span
+                  v-if="filter.dotClass"
+                  class="w-1.5 h-1.5 rounded-full me-[7px] shrink-0"
+                  :class="filter.dotClass"
+                />
+                {{ filter.label }}
+                <span class="tag-pill-count">{{ filter.count }}</span>
               </button>
             </div>
             <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
               <button
                 v-for="arch in store.allArchs"
+                :key="arch"
                 type="button"
-                class="tag-pill tag-pill-arch shrink-0"
+                class="tag-pill shrink-0"
+                :class="store.tag === arch ? 'tag-pill-arch-active' : 'tag-pill-arch'"
                 @click="store.setSelectedTag(arch)"
               >
                 {{ arch }}
@@ -156,7 +104,10 @@
             class="p-2 sm:p-3 m-1 sm:m-2 flex flex-wrap items-center justify-center gap-3"
           >
             <div class="w-full text-center mb-2">
-              <h2 class="text-xl sm:text-xl font-semibold text-theme">
+              <h2
+                v-if="supportedDevices.length > 0"
+                class="text-xl sm:text-xl font-semibold text-tier-supported"
+              >
                 {{ $t('device.supported_devices') }}
               </h2>
               <p class="max-w-xl mx-auto mt-2 text-[11px] leading-[1.55] text-theme-muted">
@@ -164,28 +115,51 @@
               </p>
             </div>
             <div
-              v-for="device in uniqueDevices.filter(d => isSupporterDevice(d) && d.supportLevel != 3)"
+              v-for="device in supportedDevices"
+              :key="device.key || `${device.hwModel}-${device.displayName}`"
               class="device-card w-full sm:w-auto sm:max-w-sm"
               @click="setSelectedTarget(device)"
             >
               <DeviceDetail :device="device" />
             </div>
-            <div class="divider-glow my-4" />
-            <div
-              v-if="uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3).length > 0"
-              class="w-full text-center"
-            >
-              <h2 class="text-xl sm:text-xl font-semibold text-warning">
-                {{ $t('device.diy_devices') }}
-              </h2>
-            </div>
-            <div
-              v-for="device in uniqueDevices.filter(d => !isSupporterDevice(d) || d.supportLevel == 3)"
-              class="device-card w-full sm:w-auto sm:max-w-sm"
-              @click="setSelectedTarget(device)"
-            >
-              <DeviceDetail :device="device" />
-            </div>
+            <template v-if="makerDevices.length > 0">
+              <div
+                v-if="supportedDevices.length > 0"
+                class="divider-glow my-4"
+              />
+              <div class="w-full text-center mb-2">
+                <h2 class="text-xl sm:text-xl font-semibold text-tier-maker">
+                  {{ $t('device.maker_devices') }}
+                </h2>
+              </div>
+              <div
+                v-for="device in makerDevices"
+                :key="device.key || `${device.hwModel}-${device.displayName}`"
+                class="device-card w-full sm:w-auto sm:max-w-sm"
+                @click="setSelectedTarget(device)"
+              >
+                <DeviceDetail :device="device" />
+              </div>
+            </template>
+            <template v-if="communityDevices.length > 0">
+              <div
+                v-if="supportedDevices.length > 0 || makerDevices.length > 0"
+                class="divider-glow my-4"
+              />
+              <div class="w-full text-center">
+                <h2 class="text-xl sm:text-xl font-semibold text-tier-community">
+                  {{ $t('device.diy_devices') }}
+                </h2>
+              </div>
+              <div
+                v-for="device in communityDevices"
+                :key="device.key || `${device.hwModel}-${device.displayName}`"
+                class="device-card w-full sm:w-auto sm:max-w-sm"
+                @click="setSelectedTarget(device)"
+              >
+                <DeviceDetail :device="device" />
+              </div>
+            </template>
           </div>
               <div
                 v-else
@@ -214,10 +188,8 @@
 
 <script lang="ts" setup>
 import type { DeviceHardware } from '~/types/api'
-import {
-  supportedVendorDeviceTags,
-  vendorCobrandingTag,
-} from '~/types/resources'
+import { vendorCobrandingTag } from '~/types/resources'
+import { MAKER_TIER_FILTER, deviceTier } from '~/utils/deviceTier'
 
 import {
   Info,
@@ -248,9 +220,55 @@ const uniqueDevices = computed(() => {
   })
 })
 
-const isSupporterDevice = (device: DeviceHardware) => {
-  return device.tags?.some((tag: string) => supportedVendorDeviceTags.includes(tag))
-}
+/**
+ * The Backer/Partner vendors, in the order the row has always shown them.
+ * `supportedVendorDeviceTags` also carries DIY, which is a build style rather
+ * than a vendor and has never had a pill.
+ */
+const VENDOR_FILTERS: { tag: string, label: string }[] = [
+  { tag: 'RAK', label: 'RAK' },
+  { tag: 'B&Q', label: 'B&Q' },
+  { tag: 'LilyGo', label: 'LilyGo' },
+  { tag: 'Seeed', label: 'Seeed' },
+  { tag: 'Heltec', label: 'Heltec' },
+  { tag: 'Elecrow', label: 'Elecrow' },
+  { tag: 'M5Stack', label: 'M5Stack' },
+  { tag: 'NomadStar', label: 'NomadStar' },
+  { tag: 'muzi', label: 'muzi ᴡᴏʀᴋꜱ' },
+]
+
+/**
+ * Vendor pills with the number of boards behind each, and the Makers pill
+ * last. Counts come from the unfiltered target list, so they stay put while a
+ * filter is applied and a pill never becomes the one you cannot get back to.
+ * A vendor the registry currently ships nothing for gets no pill rather than
+ * one that filters to an empty modal.
+ */
+const vendorFilters = computed(() => {
+  const counts = new Map<string, number>()
+  for (const device of store.targets) {
+    for (const tag of device.tags ?? []) counts.set(tag, (counts.get(tag) ?? 0) + 1)
+  }
+  const filters = VENDOR_FILTERS
+    .map(vendor => ({ ...vendor, count: counts.get(vendor.tag) ?? 0, dotClass: '' }))
+    .filter(vendor => vendor.count > 0)
+
+  const makerCount = store.targets.filter(d => deviceTier(d) === 'maker').length
+  if (makerCount > 0) {
+    filters.push({
+      tag: MAKER_TIER_FILTER,
+      label: t('device.makers'),
+      count: makerCount,
+      dotClass: 'bg-tier-maker',
+    })
+  }
+  return filters
+})
+
+// sortedDevices already orders by tier, so each band keeps the store's order.
+const supportedDevices = computed(() => uniqueDevices.value.filter(d => deviceTier(d) === 'supported'))
+const makerDevices = computed(() => uniqueDevices.value.filter(d => deviceTier(d) === 'maker'))
+const communityDevices = computed(() => uniqueDevices.value.filter(d => deviceTier(d) === 'community'))
 
 const setSelectedTarget = (device: DeviceHardware) => {
   store.setSelectedTarget(device)
