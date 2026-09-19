@@ -516,16 +516,30 @@
     background: var(--tag-inactive-bg-hover);
   }
 
-  /* Board count inside a filter pill. Tabular figures so the pills do not
-     jiggle as counts change width, and dimmed so the vendor name still leads. */
+  /* Board count inside a filter pill. Subordinate to the vendor name by size
+     and by sitting in its own chip - NOT by dimming the text, which is what
+     the first cut did: #a1a1aa at 0.55 came out 2.8:1, against the 4.5:1 an
+     11px label needs. Every combination below clears 4.5:1. Tabular figures
+     and a min-width keep the row from reflowing as counts change. */
   .tag-pill-count {
     margin-inline-start: 6px;
-    font-size: 11px;
+    padding: 0 5px;
+    min-width: 19px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 10.5px;
+    line-height: 16px;
     font-variant-numeric: tabular-nums;
-    opacity: 0.55;
+    text-align: center;
   }
   .tag-pill-active .tag-pill-count {
-    opacity: 0.8;
+    background: rgba(103, 234, 148, 0.1);
+  }
+  :root[data-theme="light"] .tag-pill-count {
+    background: rgba(0, 0, 0, 0.07);
+  }
+  :root[data-theme="light"] .tag-pill-active .tag-pill-count {
+    background: rgba(19, 113, 54, 0.1);
   }
 
   /* A filter pill is a control: give it the same lift .btn-primary has, so the
