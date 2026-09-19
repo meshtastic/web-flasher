@@ -6,7 +6,6 @@ import {
 } from '~/types/resources'
 import { MAKER_TIER_FILTER, deviceTier } from '~/utils/deviceTier'
 import { applyEventDeviceOverrides } from '~/utils/eventDevices'
-import { applyPendingDevices } from '~/utils/pendingDevices'
 import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } from '~/utils/telemetry'
 
@@ -65,9 +64,7 @@ export const useDeviceStore = defineStore('device', {
     targets(): DeviceHardware[] {
       // Co-branded builds are pinned to one vendor's devices; never widen them.
       if (vendorCobrandingTag.length > 0) return this.apiTargets
-      const base = applyPendingDevices(
-        applyEventDeviceOverrides(this.apiTargets, eventMode.enabled ? eventMode.eventTag : undefined),
-      )
+      const base = applyEventDeviceOverrides(this.apiTargets, eventMode.enabled ? eventMode.eventTag : undefined)
       if (!this.unsupportedTargetsUnlocked) return base
       return base.concat(this.unsupportedApiTargets)
     },
