@@ -32,6 +32,26 @@ declare global {
 
 const firmwareApi = mande(createUrl('api/resource/deviceHardware'))
 
+/**
+ * ============================ TEMPORARY - DO NOT MERGE ============================
+ * Boards promoted to activelySupported so the Maker band is visible on this
+ * branch's preview deployment. The registry publishes the Axiometa Genesis Mini
+ * with activelySupported: false, which correctly hides it behind the Konami
+ * gate until a build exists.
+ *
+ * It does not exist yet: the firmware variant landed on develop 2026-09-17,
+ * the current nightly (2.8.1.67e8aaf) was cut 2026-09-16, and every
+ * firmware-axiometa-genesis-mini-* URL 404s. Promoting the board here also
+ * un-pins it from the nightly, so the Firmware step will offer stable and
+ * alpha releases that do not contain the build either - the Flash button stays
+ * disabled whichever is picked.
+ *
+ * Revert this constant and its use below before merging. The real fix is a
+ * published binary, then activelySupported: true in meshtastic/api.
+ * ==================================================================================
+ */
+const PREVIEW_FORCE_SUPPORTED: string[] = ['AXIOMETA_GENESIS_MINI']
+
 export const shouldAutoSelectMui = (target: DeviceHardware) => {
   return target.hasMui === true && target.platformioTarget !== 'heltec-v4'
 }
@@ -208,9 +228,11 @@ export const useDeviceStore = defineStore('device', {
     setTargetsList(targets: DeviceHardware[]) {
       // meshtasticd targets are never flashable from here, whatever their
       // support status, so they are dropped from both lists up front.
-      const flashable = targets.filter(
-        (t: DeviceHardware) => !t.architecture.toLowerCase().startsWith('portduino'),
-      )
+      const flashable = targets
+        .filter((t: DeviceHardware) => !t.architecture.toLowerCase().startsWith('portduino'))
+        .map((t: DeviceHardware) => (PREVIEW_FORCE_SUPPORTED.includes(t.hwModelSlug)
+          ? { ...t, activelySupported: true }
+          : t))
       if (vendorCobrandingTag.length > 0) {
         this.apiTargets = flashable.filter(
           (t: DeviceHardware) => t.activelySupported && t.tags?.includes(vendorCobrandingTag),
