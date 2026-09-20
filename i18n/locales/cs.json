@@ -32,9 +32,7 @@
     "subheading": "Pokud je již připojené zařízení Meshtastic nainstalováno, můžete ho automaticky detekovat:",
     "auto_detect": "Automaticky detekovat",
     "supported_devices": "Podporované zařízení",
-    "diy_devices": "DIY zařízení",
-    "product_link": "Produkt",
-    "affiliate_disclosure": "Odkazy na produkty mohou být partnerské odkazy. Nákupy mohou přinést projektu Meshtastic provizi."
+    "diy_devices": "DIY zařízení"
   },
   "firmware": {
     "title": "Firmware",

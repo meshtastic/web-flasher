@@ -32,9 +32,7 @@
     "subheading": "接続されているデバイスにすでに Meshtastic がインストールされている場合は、自動的に検出できます：",
     "auto_detect": "自動検出",
     "supported_devices": "対応しているデバイス",
-    "diy_devices": "DIY Devices",
-    "product_link": "製品",
-    "affiliate_disclosure": "製品リンクはアフィリエイトリンクの場合があり、購入により Meshtastic が紹介料を受け取ることがあります。"
+    "diy_devices": "DIY Devices"
   },
   "firmware": {
     "title": "ファームウェア",
