@@ -2,8 +2,13 @@
 
 Copyright © 2024 Meshtastic LLC. All Rights Reserved.
 
-## In reference to the GNU GPLv3 License terms defined in Section 7e
-Images (or assets) in this directory are protected under international copyright laws and treaties. Unauthorized reproduction, distribution, modification, or use of these images in any form, commercial or otherwise, outside of official Meshtastic creative works or its Backers and Partners is strictly prohibited without prior written consent from the copyright holder (Meshtastic LLC).
+## Asset License Exception
+
+While the code in this repository is licensed under the GNU GPLv3, the device illustrations contained in this directory are not covered by the GPLv3.
+
+These assets are proprietary and protected by international copyright laws. Unauthorized reproduction, distribution, modification, or use of these assets is strictly prohibited except as Meshtastic LLC permits in writing.
+
+Each file is an original illustration of a device sold by its manufacturer. The drawing is Meshtastic's work. The product it depicts, and that manufacturer's own logos, marks, and trade dress, remain theirs, and this notice grants no right to either.
 
 ## SVG Export Guidelines
 
