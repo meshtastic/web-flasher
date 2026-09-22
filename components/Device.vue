@@ -46,7 +46,7 @@
           <DeviceHeader />
           <div class="flex-1 overflow-y-auto">
           <div class="flex flex-col gap-3 py-3 px-3">
-            <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
                 type="button"
                 class="tag-pill shrink-0"
@@ -73,7 +73,7 @@
                 <span class="tag-pill-count">{{ filter.count }}</span>
               </button>
             </div>
-            <div class="flex flex-wrap items-center gap-2 sm:gap-3 overflow-x-auto">
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
                 v-for="arch in store.allArchs"
                 :key="arch"
