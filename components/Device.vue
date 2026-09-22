@@ -64,11 +64,6 @@
                 :class="store.tag === filter.tag ? 'tag-pill-active' : 'tag-pill-inactive'"
                 @click="store.setSelectedTag(filter.tag)"
               >
-                <span
-                  v-if="filter.dotClass"
-                  class="w-1.5 h-1.5 rounded-full me-[7px] shrink-0"
-                  :class="filter.dotClass"
-                />
                 {{ filter.label }}
                 <span class="tag-pill-count">{{ filter.count }}</span>
               </button>
@@ -250,17 +245,12 @@ const vendorFilters = computed(() => {
     for (const tag of device.tags ?? []) counts.set(tag, (counts.get(tag) ?? 0) + 1)
   }
   const filters = VENDOR_FILTERS
-    .map(vendor => ({ ...vendor, count: counts.get(vendor.tag) ?? 0, dotClass: '' }))
+    .map(vendor => ({ ...vendor, count: counts.get(vendor.tag) ?? 0 }))
     .filter(vendor => vendor.count > 0)
 
   const makerCount = store.targets.filter(d => deviceTier(d) === 'maker').length
   if (makerCount > 0) {
-    filters.push({
-      tag: MAKER_TIER_FILTER,
-      label: t('device.makers'),
-      count: makerCount,
-      dotClass: 'bg-tier-maker',
-    })
+    filters.push({ tag: MAKER_TIER_FILTER, label: t('device.makers'), count: makerCount })
   }
   return filters
 })
