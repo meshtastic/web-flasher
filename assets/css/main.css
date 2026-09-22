@@ -237,9 +237,6 @@
   .text-tier-community {
     color: var(--tier-community);
   }
-  .bg-tier-maker {
-    background: var(--tier-maker);
-  }
   
   /* Theme-aware link styles */
   .link-theme {
