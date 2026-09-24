@@ -10,6 +10,7 @@ import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } f
 
 import { MeshDevice } from '@meshtastic/core'
 import { TransportWebSerial } from '@meshtastic/transport-web-serial'
+import { rebootMeshtasticToBootloader } from '~/utils/stm32/meshtasticBootloader'
 
 // biome-ignore lint/style/useImportType: WUT?
 import type { DeviceHardware } from '../types/api'
@@ -159,6 +160,18 @@ export const useDeviceStore = defineStore('device', {
       }
       return this.isSoftDevice7point3 ? '/uf2/nrf_erase_sd7_3.uf2' : '/uf2/nrf_erase2.uf2'
     },
+    isSelectedStm32(): boolean {
+      return this.selectedArchitecture.startsWith('stm32')
+    },
+    /**
+     * Minimum firmware whose STM32 build handles the enter_dfu_mode_request
+     * admin message (meshtastic/firmware commit 01bd4cfb, PR #10158, first
+     * released in v2.7.22). Below this the software bootloader entry is a no-op
+     * and the user must trigger the ROM bootloader with BOOT0.
+     */
+    enterStm32BootloaderVersion(): string {
+      return '2.7.22'
+    },
     enterDfuVersion(): string {
       if (this.isSelectedNrf) {
         return '2.2.17'
@@ -170,6 +183,11 @@ export const useDeviceStore = defineStore('device', {
 
       if (this.isSelectedNrf) {
         return t('flash.dfu_action_doubleclick')
+      }
+      if (this.isSelectedStm32) {
+        // No Crowdin key yet (i18n/locales is a protected path); inline until a
+        // maintainer adds flash.dfu_action_boot0.
+        return 'pressing and holding the BOOT0 button while power-cycling the device.'
       }
       return t('flash.dfu_action_bootsel')
     },
@@ -424,6 +442,53 @@ export const useDeviceStore = defineStore('device', {
       // Give the device a moment to recognize the 1200 baud connection
       await new Promise(resolve => setTimeout(resolve, 500))
       await this.port?.close()
+    },
+    /**
+     * Reboot a running STM32 Meshtastic device into its AN3155 ROM bootloader
+     * and return the SAME serial port — closed, but still granted — so the
+     * flasher can reopen it at 8E1 without a second port picker. If the request
+     * is a no-op (firmware < enterStm32BootloaderVersion, or the device is
+     * unresponsive), the port is still returned; the flasher's sync() then fails
+     * and tells the user to use the manual BOOT0 steps.
+     */
+    async enterStm32Bootloader(tFunc?: (key: string) => string): Promise<SerialPort> {
+      const toastStore = useToastStore()
+      const firmwareStore = useFirmwareStore()
+      const serialMonitorStore = useSerialMonitorStore()
+
+      const isPortBusy = firmwareStore.isConnected || firmwareStore.isReaderLocked
+        || serialMonitorStore.isConnected || serialMonitorStore.isReaderLocked
+      if (isPortBusy) {
+        toastStore.error(
+          tFunc?.('serial.busy_title') || 'Serial Port Busy',
+          tFunc?.('serial.busy_message') || 'A serial connection is already open. Please close it before flashing.',
+        )
+        throw new Error('serial port busy')
+      }
+
+      this.isConnecting = true
+      try {
+        const port = this.port ?? await navigator.serial.requestPort()
+        this.port = port
+        try {
+          await rebootMeshtasticToBootloader(port)
+        }
+        catch (error) {
+          // Unresponsive / pre-2.7.22: the AN3155 sync that follows will fail
+          // and prompt the user for manual BOOT0.
+          console.warn('enterStm32Bootloader:', error)
+          try {
+            await port.close()
+          }
+          catch { /* already closed */ }
+        }
+        // Let the MCU reset and the USB-serial bridge settle before the reopen.
+        await new Promise(resolve => setTimeout(resolve, 400))
+        return port
+      }
+      finally {
+        this.isConnecting = false
+      }
     },
     async autoSelectHardware(tFunc?: (key: string) => string) {
       const toastStore = useToastStore()
