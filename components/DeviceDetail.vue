@@ -1,22 +1,30 @@
 <template>
   <div class="flex flex-col items-center p-2 w-full sm:w-56">
-    <h5
-      class="mb-1 text-xs sm:text-[0.75rem] text-theme"
-      :class="{ 'text-yellow-400': !isSupporterDevice(props.device) }"
-    >
+    <h5 class="mb-1 text-xs sm:text-[0.75rem] text-theme">
       {{ props.device.displayName }}
-      <div class="float-right items-center mx-1">
+      <div
+        class="float-right items-center mx-1"
+        :title="tierLabel"
+      >
         <BadgeCheck
-          v-if="isSupporterDevice(props.device)"
-          class="w-6 h-6 text-green-400 opacity-75"
+          v-if="tier === 'supported'"
+          class="w-6 h-6 text-tier-supported opacity-75"
+          aria-hidden="true"
+        />
+        <Wrench
+          v-else-if="tier === 'maker'"
+          class="w-6 h-6 text-tier-maker opacity-75"
+          aria-hidden="true"
         />
         <ShieldAlert
           v-else
-          class="w-6 h-6 text-yellow-400 opacity-75"
+          class="w-6 h-6 text-tier-community opacity-75"
+          aria-hidden="true"
         />
+        <span class="sr-only">{{ tierLabel }}</span>
       </div>
     </h5>
-    <div class="flex justify-start w-full">
+    <div class="flex flex-wrap justify-start w-full gap-y-1">
       <span class="text-xs font-medium me-2 px-2.5 py-0.5 h-6 rounded bg-blue-600 dark:bg-blue-900 text-white dark:text-gray-100">
         {{ props.device.architecture.replace('-', '') }}
       </span>
@@ -48,7 +56,7 @@
       >
     </div>
     <div
-      v-if="props.device.images && isSupporterDevice(props.device)"
+      v-if="props.device.images?.length"
       class="relative w-24 h-24 sm:w-32 sm:h-32 m-2"
     >
       <img
@@ -91,16 +99,18 @@
 
 <script lang="ts" setup>
 import type { DeviceHardware } from '~/types/api'
-import { supportedVendorDeviceTags } from '~/types/resources'
 import { requiresHamLicense } from '~/utils/deviceBadges'
+import { deviceTier } from '~/utils/deviceTier'
 import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import {
   BadgeCheck,
   ShieldAlert,
   Tag,
+  Wrench,
 } from 'lucide-vue-next'
 
 const firmwareStore = useFirmwareStore()
@@ -112,10 +122,21 @@ const props = defineProps({
   },
 })
 
-const isSupporterDevice = (device: DeviceHardware) => {
-  // Add your logic to determine if the device is a supporter device
-  return device.tags?.some(t => supportedVendorDeviceTags.includes(t))
-}
+const { t } = useI18n()
+
+const tier = computed(() => deviceTier(props.device))
+
+/**
+ * The tier's name, for the mark's tooltip and its screen-reader text. The
+ * marks differ only by colour and shape otherwise, and a lucide icon carries
+ * no accessible name of its own - a `title` attribute on an <svg> renders
+ * neither a tooltip nor a label.
+ */
+const tierLabel = computed(() => {
+  if (tier.value === 'supported') return t('device.supported_devices')
+  if (tier.value === 'maker') return t('device.maker_devices')
+  return t('device.diy_devices')
+})
 
 const deviceUrl = computed(() => {
   if (props.device.url) {
