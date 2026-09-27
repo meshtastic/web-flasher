@@ -58,6 +58,7 @@
               <div class="flex-1 overflow-y-auto p-3 sm:p-4 relative z-10">
                 <TargetsUf2 v-if="['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)" />
                 <TargetsEsp32 v-if="deviceStore.selectedArchitecture.startsWith('esp32')" />
+                <TargetsStm32 v-if="deviceStore.isSelectedStm32" />
               </div>
             </div>
           </div>
@@ -147,6 +148,10 @@ const preflightCheck = async () => {
   if (['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)) {
     const firmwareVersion = firmwareStore.selectedFirmware!.id.replace('v', '')
     const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
+    fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile))
+  }
+  else if (deviceStore.isSelectedStm32) {
+    const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}.bin`
     fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile))
   }
   else if (deviceStore.selectedArchitecture.startsWith('esp32')) {

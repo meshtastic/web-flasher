@@ -89,3 +89,25 @@ describe('deviceStore factory-erase UF2 selection', () => {
     expect(store.isSoftDevice7point3).toBe(false)
   })
 })
+
+describe('deviceStore STM32 selection', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  it.each(['stm32', 'stm32wl'])('recognises architecture %s as STM32', (architecture) => {
+    const store = useDeviceStore()
+    store.selectedTarget = makeTarget({ architecture })
+    expect(store.isSelectedStm32).toBe(true)
+  })
+
+  it.each(['esp32', 'esp32-s3', 'nrf52840', 'rp2040'])('does not treat %s as STM32', (architecture) => {
+    const store = useDeviceStore()
+    store.selectedTarget = makeTarget({ architecture })
+    expect(store.isSelectedStm32).toBe(false)
+  })
+
+  it('pins the STM32 bootloader-entry firmware to 2.7.22', () => {
+    expect(useDeviceStore().enterStm32BootloaderVersion).toBe('2.7.22')
+  })
+})
