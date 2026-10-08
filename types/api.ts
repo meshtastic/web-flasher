@@ -75,4 +75,5 @@ export interface DeviceHardware {
   url?: string,
   key?: string; // Optional key to differentiate multiple entries for the same hwModel
   variant?: string; // Optional variant to differentiate multiple entries for the same hwModel
+  isMaker?: boolean; // Independent maker hardware: ranked below Backer/Partner, above Community
 }
