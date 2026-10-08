@@ -32,9 +32,7 @@
     "subheading": "연결된 장치에 이미 Meshtastic이 설치되어 있다면, 이를 자동으로 감지할 수 있습니다:",
     "auto_detect": "자동 감지",
     "supported_devices": "지원되는 장치",
-    "diy_devices": "DIY 장치",
-    "product_link": "제품",
-    "affiliate_disclosure": "제품 링크는 제휴 링크일 수 있으며, 구매 시 Meshtastic이 수수료를 받을 수 있습니다."
+    "diy_devices": "DIY 장치"
   },
   "firmware": {
     "title": "펌웨어",
