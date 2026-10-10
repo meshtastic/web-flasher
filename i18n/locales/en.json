@@ -125,7 +125,11 @@
       "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
       "dfu_warning": "This operation will erase your device completely.",
       "wait_for_drive": "Wait for the drive to disappear, then open a serial monitor to complete the erase process.",
-      "close_instructions": "Close this popup to select a firmware version and begin flashing."
+      "close_instructions": "Close this popup to select a firmware version and begin flashing.",
+      "bootloader_attest": "My bootloader's INFO_UF2.TXT shows a Factory-Erase line",
+      "bootloader_attest_hint": "Open INFO_UF2.TXT on the DFU drive and look for a line starting with Factory-Erase. Without it the bootloader ignores the file and nothing is erased.",
+      "bootloader_wait_title": "Wait for the drive to come back",
+      "bootloader_wait_for_drive": "About half a second after the copy finishes the drive disappears, then returns a couple of seconds later ready for a firmware file. Your installed firmware stays: unplug instead and it boots factory-fresh."
     }
   },
   "buttons": {

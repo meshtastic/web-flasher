@@ -23,6 +23,8 @@ function makeTarget(overrides: Partial<DeviceHardware>): DeviceHardware {
 
 const SD73_ERASE = '/uf2/nrf_erase_sd7_3.uf2'
 const SD611_ERASE = '/uf2/nrf_erase2.uf2'
+const PICO_ERASE = '/uf2/pico_erase.uf2'
+const FACTORY_ERASE = '/uf2/meshtastic_factory_erase.uf2'
 
 describe('deviceStore factory-erase UF2 selection', () => {
   beforeEach(() => {
@@ -81,11 +83,33 @@ describe('deviceStore factory-erase UF2 selection', () => {
   it('serves the RP2040 erase file to rp2040 targets', () => {
     const store = useDeviceStore()
     store.selectedTarget = makeTarget({ hwModelSlug: 'RPI_PICO', architecture: 'rp2040', tags: ['Raspberry Pi'] })
-    expect(store.eraseUf2File).toBe('/uf2/pico_erase.uf2')
+    expect(store.eraseUf2File).toBe(PICO_ERASE)
   })
 
   it('is not SoftDevice 7.3 when nothing is selected', () => {
     const store = useDeviceStore()
     expect(store.isSoftDevice7point3).toBe(false)
+  })
+
+  it('defaults to no bootloader attestation', () => {
+    const store = useDeviceStore()
+    expect(store.bootloaderFactoryErase).toBe(false)
+  })
+
+  it.each([
+    ['MESH_TRACKER_X1', ['Seeed']],
+    ['RAK4631', ['RAK']],
+  ])('serves the bootloader factory-erase file to %s once attested, whatever its SoftDevice', (slug, tags) => {
+    const store = useDeviceStore()
+    store.selectedTarget = makeTarget({ hwModelSlug: slug, tags })
+    store.bootloaderFactoryErase = true
+    expect(store.eraseUf2File).toBe(FACTORY_ERASE)
+  })
+
+  it('ignores the attestation for rp2040 targets', () => {
+    const store = useDeviceStore()
+    store.selectedTarget = makeTarget({ hwModelSlug: 'RPI_PICO', architecture: 'rp2040', tags: ['Raspberry Pi'] })
+    store.bootloaderFactoryErase = true
+    expect(store.eraseUf2File).toBe(PICO_ERASE)
   })
 })
