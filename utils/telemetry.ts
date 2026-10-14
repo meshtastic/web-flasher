@@ -21,7 +21,7 @@ import type { DeviceHardware, FirmwareResource } from '~/types/api'
 import type { EventModeConfig } from '~/types/resources'
 
 /** How the firmware reached the device. */
-export type FlashMethod = 'esptool' | 'uf2'
+export type FlashMethod = 'esptool' | 'uf2' | 'stm32'
 
 export type FirmwareChannel
   = | 'stable'
