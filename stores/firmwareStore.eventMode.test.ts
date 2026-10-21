@@ -68,6 +68,11 @@ describe('firmwareStore event mode', () => {
     expect(fetchMock).toHaveBeenCalledWith(`${EVENT_BASE}/firmware-${EVENT_VERSION}.json`)
     expect(store.releaseManifest).toEqual(RELEASE_MANIFEST)
     expect(store.selectedFirmware?.id).toBe(`v${EVENT_VERSION}`)
+
+    // With the manifest resolved, variant availability is a lookup rather than
+    // a guess - event domains gate the Flash button the same way as the rest.
+    expect(store.targetVariants('tlora-t3s3-epaper')).toMatchObject({ stock: true, unknown: false })
+    expect(store.targetVariants('t-deck').unknown).toBe(false)
   })
 
   it('does not re-resolve the locked firmware once the manifest is loaded', async () => {

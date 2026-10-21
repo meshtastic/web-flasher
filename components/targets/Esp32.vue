@@ -206,6 +206,7 @@ import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
 import { useToastStore } from '../../stores/toastStore'
 import { listZipEntries } from '~/utils/zipUtils'
+import { canChooseMui, pinnedMui } from '~/utils/firmwareVariants'
 import ReleaseNotes from './ReleaseNotes.vue'
 
 const { t } = useI18n()
@@ -274,11 +275,40 @@ const isNewFirmware = computed(() => {
   return !firmwareStore.firmwareVersion.includes('2.5')
 })
 
+/** Which display builds this release published for the selected board. */
+const variants = computed(() =>
+  firmwareStore.targetVariants(deviceStore.$state.selectedTarget?.platformioTarget ?? ''),
+)
+
 const canInstallMui = computed(() => {
   if (!isNewFirmware.value)
     return false
-    // Can't install MUI if we're installing the WebUI
-  return deviceStore.$state.selectedTarget.hasMui === true && !firmwareStore.shouldBundleWebUI
+  // Can't install MUI if we're installing the WebUI
+  if (firmwareStore.shouldBundleWebUI)
+    return false
+  const hasMui = deviceStore.$state.selectedTarget?.hasMui === true
+  // Still fetching the board list: hold the toggle back rather than show one
+  // that is about to disappear.
+  if (firmwareStore.releaseManifestPending)
+    return false
+  // Nothing to go on at all. Releases with no manifest get a probed board list
+  // instead (see Flash.vue), so this is only reached before any board or
+  // firmware is settled - keep the old behaviour there.
+  if (variants.value.unknown)
+    return hasMui
+  // Otherwise only offer a choice this release can honour. Crowpanel and the
+  // Wio Tracker L2 ship -tft alone, unphone and the Heltec V4 R8 OLED ship no
+  // -tft at all; a toggle there just points at a build that 404s.
+  return canChooseMui(variants.value, hasMui)
+})
+
+// With only one variant built there is nothing to choose, so pin the setting to
+// it rather than leaving a stale value pointing at a build that was never
+// published. pinnedMui returns undefined whenever the toggle is on screen, so
+// this cannot fight the checkbox, and it holds off until the manifest resolves.
+watchEffect(() => {
+  const pinned = pinnedMui(variants.value, deviceStore.$state.selectedTarget?.hasMui === true)
+  if (pinned !== undefined) firmwareStore.$state.shouldInstallMui = pinned
 })
 
 const canInstallInkHud = computed(() => {
@@ -309,35 +339,14 @@ watch(() => firmwareStore.$state.shouldCleanInstall, async () => {
   }
 })
 
-const targetPrefix = computed(() => {
-  let pioSuffix = ''
-  // Crowpanel ends with -tft, so don't add -tft suffix
-  if (firmwareStore.$state.shouldInstallMui && !deviceStore.$state.selectedTarget.platformioTarget.endsWith('-tft')) {
-    pioSuffix = '-tft'
-  }
-  else if (firmwareStore.$state.shouldInstallInkHud) {
-    pioSuffix = '-inkhud'
-  }
-  return `${deviceStore.$state.selectedTarget.platformioTarget}${pioSuffix}-${firmwareStore.firmwareVersion}`
-})
-
 /**
- * Get the target board name with variant suffix (without version)
- * Used for looking up the target in the release manifest and loading the mt.json
+ * The target board name with its variant suffix (without the version). Used to
+ * look the target up in the release manifest and to load its mt.json. Resolved
+ * in deviceStore so the flash gate in Flash.vue names the same board.
  */
-const targetBoard = computed(() => {
-  const selectedTarget = deviceStore.$state.selectedTarget
-  if (!selectedTarget) return ''
-  let pioSuffix = ''
-  // Crowpanel ends with -tft, so don't add -tft suffix
-  if (firmwareStore.$state.shouldInstallMui && !selectedTarget.platformioTarget.endsWith('-tft')) {
-    pioSuffix = '-tft'
-  }
-  else if (firmwareStore.$state.shouldInstallInkHud) {
-    pioSuffix = '-inkhud'
-  }
-  return `${selectedTarget.platformioTarget}${pioSuffix}`
-})
+const targetBoard = computed(() => deviceStore.selectedTargetBoard)
+
+const targetPrefix = computed(() => `${targetBoard.value}-${firmwareStore.firmwareVersion}`)
 
 const cleanInstallEsp32 = async () => {
   const selectedTarget = deviceStore.$state.selectedTarget

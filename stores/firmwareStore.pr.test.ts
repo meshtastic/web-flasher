@@ -339,5 +339,16 @@ describe('firmwareStore PR builds', () => {
       expect(store.isPrTargetAvailable('t-deck')).toBe(true)
       expect(store.isPrTargetAvailable('tbeam')).toBe(false)
     })
+
+    it('accepts an inkhud-only board', async () => {
+      const store = useFirmwareStore()
+      await loadPr(store, makePayload({
+        targets: [{ board: 'heltec-vision-master-e290-inkhud', platform: 'esp32s3' }],
+      }))
+
+      expect(store.isPrTargetAvailable('heltec-vision-master-e290')).toBe(true)
+      expect(store.isPrTargetAvailable('heltec-vision-master-e290-inkhud')).toBe(true)
+      expect(store.isPrTargetAvailable('heltec-vision-master-e213')).toBe(false)
+    })
   })
 })
