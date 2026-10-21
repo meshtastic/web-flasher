@@ -96,6 +96,17 @@ describe('deviceStore selectedTargetBoard', () => {
     expect(deviceStore.selectedTargetBoard).toBe('t-deck-tft')
   })
 
+  it('follows the toggle for a local upload, not the previous release', async () => {
+    // The Wio Tracker L2's release build is -tft only; a local zip is not that
+    // release, so the upload must not be searched for an entry by that name.
+    const store = select(board({ platformioTarget: 'seeed_wio_tracker_L2', hasMui: true }), false)
+    expect(store.selectedTargetBoard).toBe('seeed_wio_tracker_L2-tft')
+
+    await useFirmwareStore().setFirmwareFile(new File(['x'], 'firmware.zip'))
+    expect(store.selectedVariant).toBe('stock')
+    expect(store.selectedTargetBoard).toBe('seeed_wio_tracker_L2')
+  })
+
   it('is empty with no board selected', () => {
     expect(useDeviceStore().selectedTargetBoard).toBe('')
   })

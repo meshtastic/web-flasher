@@ -105,6 +105,36 @@ describe('firmwareStore release variants', () => {
     expect(store.releaseManifestPending).toBe(false)
   })
 
+  it('ignores the previous release once a local file is selected', async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(RELEASE_MANIFEST))
+    const store = useFirmwareStore()
+    await store.setSelectedFirmware(firmware())
+    expect(store.targetVariants('seeed_wio_tracker_L2')).toMatchObject({ stock: false, mui: true })
+
+    await store.setFirmwareFile(new File(['x'], 'firmware-2.8.1.8e6a88d.zip'))
+
+    // The zip decides what it contains, not whatever release was selected
+    // before it - otherwise the variant pinned here picks an entry by a name
+    // the upload may not carry.
+    expect(store.releaseBoards).toBeUndefined()
+    expect(store.targetVariants('seeed_wio_tracker_L2').unknown).toBe(true)
+    expect(store.releaseManifest).toBeUndefined()
+    expect(store.manifest).toBeUndefined()
+    expect(store.releaseManifestPending).toBe(false)
+  })
+
+  it('lets a local file win over any release boards it is holding', () => {
+    // setFirmwareFile clears the release itself, so this pins the getter's own
+    // contract: whatever order state is written in, an upload is never
+    // described by a release's board list.
+    const store = useFirmwareStore()
+    store.$state.releaseManifest = RELEASE_MANIFEST
+    store.$state.selectedFile = new File(['x'], 'firmware.zip')
+
+    expect(store.releaseBoards).toBeUndefined()
+    expect(store.targetVariants('t-deck').unknown).toBe(true)
+  })
+
   it('falls back to probed boards when there is no manifest', async () => {
     // v2.7.15: Flash.vue probes the names the board could use and records the
     // ones that exist, so the chooser and the filename logic get real data.

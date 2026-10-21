@@ -213,8 +213,13 @@ export const useFirmwareStore = defineStore('firmware', {
      * is no release manifest to consult - which is the case for releases before
      * v2.7.23, and briefly while a newly selected release fetches its own.
      */
-    releaseBoards: (state): Set<string> | undefined =>
-      state.releaseManifest ? new Set(state.releaseManifest.targets.map(t => t.board)) : state.probedBoards,
+    releaseBoards: (state): Set<string> | undefined => {
+      // A local upload is not a release: what some previously selected release
+      // built says nothing about which variants are inside the user's zip, and
+      // letting it decide would pick an entry the zip may not contain.
+      if ((state.selectedFile?.name || '').length > 0) return undefined
+      return state.releaseManifest ? new Set(state.releaseManifest.targets.map(t => t.board)) : state.probedBoards
+    },
     /** Whether the selected release's board list is still being fetched. */
     releaseManifestPending(): boolean {
       return this.hasOnlineFirmware && !this.releaseManifestResolved
@@ -583,6 +588,14 @@ export const useFirmwareStore = defineStore('firmware', {
       // Restore MUI setting if it was enabled (for devices that support it)
       this.shouldInstallMui = currentMuiSetting
       this.hasManifest = false
+      // Drop everything describing the release that was selected before: its
+      // board list must not pick a variant out of this zip, and its target
+      // manifest would otherwise still satisfy the manifest-driven flash path
+      // even though hasManifest is false.
+      this.releaseManifest = undefined
+      this.releaseManifestResolved = true
+      this.probedBoards = undefined
+      this.manifest = undefined
     },
     async updateEspFlashLegacy(fileName: string, selectedTarget: DeviceHardware) {
       const terminal = await openTerminal()
