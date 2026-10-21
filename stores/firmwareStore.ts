@@ -184,6 +184,11 @@ export const useFirmwareStore = defineStore('firmware', {
       // "the board list has not arrived yet", which otherwise look identical
       // and would have callers probing for files mid-fetch.
       releaseManifestResolved: true,
+      // Board names confirmed to exist on a release that publishes no manifest,
+      // discovered by probing the handful of names the selected board could
+      // use. Stands in for releaseManifest.targets on those releases so the
+      // chooser and the filename logic work from real data there too.
+      probedBoards: <Set<string> | undefined>undefined,
       eventModeEnabled: eventMode.enabled,
     }
   },
@@ -209,7 +214,7 @@ export const useFirmwareStore = defineStore('firmware', {
      * v2.7.23, and briefly while a newly selected release fetches its own.
      */
     releaseBoards: (state): Set<string> | undefined =>
-      state.releaseManifest ? new Set(state.releaseManifest.targets.map(t => t.board)) : undefined,
+      state.releaseManifest ? new Set(state.releaseManifest.targets.map(t => t.board)) : state.probedBoards,
     /** Whether the selected release's board list is still being fetched. */
     releaseManifestPending(): boolean {
       return this.hasOnlineFirmware && !this.releaseManifestResolved
@@ -506,6 +511,7 @@ export const useFirmwareStore = defineStore('firmware', {
       this.manifest = undefined
       this.releaseManifest = undefined
       this.releaseManifestResolved = false
+      this.probedBoards = undefined
 
       // PR builds carry their targets list and synthesized release notes with
       // them — nothing is hosted on release.meshtastic.org for these versions

@@ -102,6 +102,7 @@
 
 <script lang="ts" setup>
 import { checkIfRemoteFileExists } from '~/utils/fileUtils'
+import { type FirmwareVariant, variantBoard } from '~/utils/firmwareVariants'
 
 import { Trash } from 'lucide-vue-next'
 
@@ -114,9 +115,11 @@ const firmwareStore = useFirmwareStore()
 const deviceStore = useDeviceStore()
 const serialMonitorStore = useSerialMonitorStore()
 
+/** Whether the legacy board-list probe below is still in flight. */
+const legacyProbePending = ref(false)
+
 /**
- * Whether the selected release published a flashable build for this board, or
- * undefined when there is no board list to consult.
+ * Whether the selected release published a flashable build for this board.
  *
  * The release manifest lists every board built for the version - including the
  * -tft and -inkhud variants, and nRF and RP2040 boards as well as ESP32 - and
@@ -124,50 +127,64 @@ const serialMonitorStore = useSerialMonitorStore()
  * lookup with no network probing. It used to HEAD the *plain* board name even
  * for a device whose only build is the -tft one, which left the Wio Tracker L2
  * permanently unflashable. Being a computed, it also re-resolves on its own
- * when the manifest arrives after the firmware selection it belongs to.
+ * when the board list arrives after the firmware selection it belongs to.
  */
-const boardPublished = computed<boolean | undefined>(() => {
+const boardPublished = computed<boolean>(() => {
   const pioTarget = deviceStore.$state.selectedTarget?.platformioTarget
   if (!firmwareStore.hasOnlineFirmware || !pioTarget) return false
-  // Still fetching the board list: nothing to flash yet, and probing now would
-  // ask about a release that is about to answer for itself.
-  if (firmwareStore.releaseManifestPending) return false
+  // Still working out which boards exist: nothing to flash yet.
+  if (firmwareStore.releaseManifestPending || legacyProbePending.value) return false
   const { stock, mui, inkhud, unknown } = firmwareStore.targetVariants(pioTarget)
-  if (unknown) return undefined
+  if (unknown) return false
   return stock || mui || inkhud
 })
 
 /**
- * Files to probe on a release that publishes no board list - v2.7.15 and older.
+ * Board names to probe on a release that publishes no board list - v2.7.15 and
+ * older, the only one of the six the dropdown offers.
  *
- * Asks the same question the manifest answers: does this release carry *any*
- * build for the board? Probing only the plain name would keep a -tft-only
- * board locked out, and probing only the selected variant would lock the user
- * out of the dialog that holds the toggle for changing it. -update.bin is the
- * file the legacy flash path fetches, so gate and flash agree; it stands in
- * for the clean-install trio too.
+ * Every name the selected board could use, so the probe answers the same
+ * question the manifest does and its result can stand in for the manifest.
+ * Deliberately independent of the MUI/InkHUD toggles: that keeps flipping one
+ * from re-probing, and stops the result that *sets* those toggles from
+ * feeding back into what gets probed.
  */
-const legacyCandidates = computed<string[]>(() => {
-  const pioTarget = deviceStore.$state.selectedTarget?.platformioTarget
-  if (boardPublished.value !== undefined || !pioTarget) return []
-  const extension = ['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture) ? '.uf2' : '-update.bin'
-  const boards = [...new Set([pioTarget, deviceStore.selectedTargetBoard])]
-  return boards
-    .map(board => firmwareStore.getReleaseFileUrl(`firmware-${board}-${firmwareStore.firmwareVersion}${extension}`))
-    .filter(url => url.length > 0)
+const legacyProbeBoards = computed<string[]>(() => {
+  const target = deviceStore.$state.selectedTarget
+  if (!firmwareStore.hasOnlineFirmware || firmwareStore.releaseManifestPending) return []
+  if (firmwareStore.$state.releaseManifest || !target?.platformioTarget) return []
+  const variants: FirmwareVariant[] = ['stock']
+  if (target.hasMui === true) variants.push('mui')
+  if (target.hasInkHud === true) variants.push('inkhud')
+  return [...new Set(variants.map(variant => variantBoard(target.platformioTarget, variant)))]
 })
 
-const legacyFileExists = ref(false)
-
-// Keyed on the joined URLs so flipping a toggle between two variants of the
-// same pair does not re-probe what was already asked.
-watch(() => legacyCandidates.value.join('|'), async (key) => {
+// -update.bin is the file the legacy flash path fetches, so what is probed and
+// what is flashed agree; it stands in for the clean-install trio too.
+watch(() => legacyProbeBoards.value.join('|'), async (key, _previous, onCleanup) => {
+  let superseded = false
+  onCleanup(() => {
+    superseded = true
+  })
+  // Clear first: a board list left over from the previous board would keep the
+  // Flash button enabled for this one until the probe came back.
+  firmwareStore.$state.probedBoards = undefined
   if (!key) {
-    legacyFileExists.value = false
+    legacyProbePending.value = false
     return
   }
-  const found = await Promise.all(legacyCandidates.value.map(checkIfRemoteFileExists))
-  legacyFileExists.value = found.some(Boolean)
+  legacyProbePending.value = true
+  const boards = legacyProbeBoards.value
+  const extension = ['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture) ? '.uf2' : '-update.bin'
+  const found = await Promise.all(boards.map((board) => {
+    const url = firmwareStore.getReleaseFileUrl(`firmware-${board}-${firmwareStore.firmwareVersion}${extension}`)
+    return url ? checkIfRemoteFileExists(url) : Promise.resolve(false)
+  }))
+  // A newer selection may have started its own probe while this one was in
+  // flight; letting the slower, older one land would overwrite its answer.
+  if (superseded) return
+  firmwareStore.$state.probedBoards = new Set(boards.filter((_, index) => found[index]))
+  legacyProbePending.value = false
 }, { immediate: true })
 
 // Either we have a custom zip file or a selected firmware release
@@ -179,7 +196,7 @@ const canFlash = computed(() => {
   if (deviceStore.nightlyOnlyTarget && firmwareStore.hasFirmwareFile) return false
   const hasFirmware = firmwareStore.hasFirmwareFile || firmwareStore.hasOnlineFirmware
   return !serialMonitorStore.isConnected && hasDevice && hasFirmware
-    && ((boardPublished.value ?? legacyFileExists.value) || firmwareStore.hasFirmwareFile)
+    && (boardPublished.value || firmwareStore.hasFirmwareFile)
 })
 </script>
 

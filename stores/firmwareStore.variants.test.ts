@@ -93,9 +93,29 @@ describe('firmwareStore release variants', () => {
 
   it('never reports a PR build as pending', async () => {
     const store = useFirmwareStore()
-    store.$state.releaseManifest = { version: VERSION, targets: [{ board: 't-deck-tft', platform: 'esp32s3' }] }
+    await store.setSelectedFirmware({
+      ...firmware(),
+      prBuild: { version: VERSION, targets: [{ board: 't-deck-tft', platform: 'esp32s3' }] },
+    } as FirmwareResource)
 
+    // hasOnlineFirmware is true here, so this exercises releaseManifestResolved
+    // rather than passing because no firmware is selected.
+    expect(store.hasOnlineFirmware).toBe(true)
+    expect(store.releaseManifestResolved).toBe(true)
     expect(store.releaseManifestPending).toBe(false)
+  })
+
+  it('falls back to probed boards when there is no manifest', async () => {
+    // v2.7.15: Flash.vue probes the names the board could use and records the
+    // ones that exist, so the chooser and the filename logic get real data.
+    fetchMock.mockResolvedValue(new Response('', { status: 404 }))
+    const store = useFirmwareStore()
+    await store.setSelectedFirmware(firmware())
+    expect(store.targetVariants('unphone').unknown).toBe(true)
+
+    store.$state.probedBoards = new Set(['unphone'])
+    expect(store.targetVariants('unphone')).toMatchObject({ stock: true, mui: false, unknown: false })
+    expect(store.isTargetAvailable('unphone')).toBe(true)
   })
 
   it('reports unknown for a release that publishes no board list', async () => {
@@ -111,8 +131,16 @@ describe('firmwareStore release variants', () => {
 
   it('answers from the manifest synthesized for a PR build', async () => {
     const store = useFirmwareStore()
-    store.$state.releaseManifest = { version: VERSION, targets: [{ board: 't-deck-tft', platform: 'esp32s3' }] }
+    // Go through setSelectedFirmware so the PR path synthesizes the manifest
+    // itself; assigning releaseManifest directly would leave selectedFirmware
+    // unset and prove nothing about how a PR build resolves.
+    await store.setSelectedFirmware({
+      ...firmware(),
+      prBuild: { version: VERSION, targets: [{ board: 't-deck-tft', platform: 'esp32s3' }] },
+    } as FirmwareResource)
 
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(store.isPrBuild).toBe(true)
     expect(store.targetVariants('t-deck')).toMatchObject({ stock: false, mui: true, unknown: false })
     expect(store.isTargetAvailable('t-deck-tft')).toBe(true)
     expect(store.isTargetAvailable('t-deck')).toBe(false)

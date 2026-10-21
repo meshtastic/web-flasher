@@ -291,8 +291,9 @@ const canInstallMui = computed(() => {
   // that is about to disappear.
   if (firmwareStore.releaseManifestPending)
     return false
-  // No release manifest - v2.7.15 and older - means no board list to check, so
-  // keep offering the toggle and let the flash gate probe the chosen variant.
+  // Nothing to go on at all. Releases with no manifest get a probed board list
+  // instead (see Flash.vue), so this is only reached before any board or
+  // firmware is settled - keep the old behaviour there.
   if (variants.value.unknown)
     return hasMui
   // Otherwise only offer a choice this release can honour. Crowpanel and the
