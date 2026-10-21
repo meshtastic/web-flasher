@@ -6,6 +6,11 @@ import {
 } from '~/types/resources'
 import { applyEventDeviceOverrides } from '~/utils/eventDevices'
 import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
+import {
+  type FirmwareVariant,
+  resolveSelectedVariant,
+  variantBoard,
+} from '~/utils/firmwareVariants'
 import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } from '~/utils/telemetry'
 
 import { MeshDevice } from '@meshtastic/core'
@@ -86,6 +91,33 @@ export const useDeviceStore = defineStore('device', {
      */
     nightlyOnlyTarget(): boolean {
       return isUnsupportedDevice(this.selectedTarget)
+    },
+    /**
+     * Which build of the selected board is going to be flashed. Derived from
+     * what the release actually published rather than read straight off the
+     * MUI/InkHUD toggles, so a flag left over from a previously selected board
+     * can never name a build that does not exist.
+     */
+    selectedVariant(): FirmwareVariant {
+      const target = this.selectedTarget
+      const firmwareStore = useFirmwareStore()
+      return resolveSelectedVariant({
+        availability: firmwareStore.targetVariants(target?.platformioTarget ?? ''),
+        hasMui: target?.hasMui === true,
+        hasInkHud: target?.hasInkHud === true,
+        shouldInstallMui: firmwareStore.shouldInstallMui,
+        shouldInstallInkHud: firmwareStore.shouldInstallInkHud,
+      })
+    },
+    /**
+     * The board name to look up and build firmware filenames from - the
+     * PlatformIO env with the variant suffix the selected build needs. Shared
+     * by the flash gate and the flashing code so the two never disagree.
+     */
+    selectedTargetBoard(): string {
+      const pioTarget = this.selectedTarget?.platformioTarget
+      if (!pioTarget) return ''
+      return variantBoard(pioTarget, this.selectedVariant)
     },
     filteredDevices(): DeviceHardware[] {
       if (this.tag) {

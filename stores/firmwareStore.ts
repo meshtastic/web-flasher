@@ -24,6 +24,10 @@ import {
 } from '~/utils/firmwareUrl'
 import { findUnlockNightly } from '~/utils/unsupportedDevices'
 import {
+  resolveVariants,
+  type VariantAvailability,
+} from '~/utils/firmwareVariants'
+import {
   addRumAction,
   boardAttributes,
   classifyFlashError,
@@ -175,6 +179,11 @@ export const useFirmwareStore = defineStore('firmware', {
       hasManifest: false,
       manifest: <FirmwareManifest | undefined>undefined,
       releaseManifest: <ReleaseManifest | undefined>undefined,
+      // Whether the release manifest fetch for the selected firmware has
+      // settled. Distinguishes "this release publishes no board list" from
+      // "the board list has not arrived yet", which otherwise look identical
+      // and would have callers probing for files mid-fetch.
+      releaseManifestResolved: true,
       eventModeEnabled: eventMode.enabled,
     }
   },
@@ -191,7 +200,33 @@ export const useFirmwareStore = defineStore('firmware', {
     isPrTargetAvailable: state => (pioTarget: string): boolean => {
       const targets = state.selectedFirmware?.prBuild?.targets
       if (!targets) return false
-      return targets.some(t => t.board === pioTarget || t.board === `${pioTarget}-tft` || t.board === `${pioTarget}-inkhud`)
+      const { stock, mui, inkhud } = resolveVariants(pioTarget, new Set(targets.map(t => t.board)))
+      return stock || mui || inkhud
+    },
+    /**
+     * Every board name the selected release published, or undefined when there
+     * is no release manifest to consult - which is the case for releases before
+     * v2.7.23, and briefly while a newly selected release fetches its own.
+     */
+    releaseBoards: (state): Set<string> | undefined =>
+      state.releaseManifest ? new Set(state.releaseManifest.targets.map(t => t.board)) : undefined,
+    /** Whether the selected release's board list is still being fetched. */
+    releaseManifestPending(): boolean {
+      return this.hasOnlineFirmware && !this.releaseManifestResolved
+    },
+    /**
+     * Which of a board's display variants this release built. Answers for
+     * releases, nightlies, event builds and PR builds alike - the manifest is
+     * synthesized from the artifact's targets for the latter - so availability
+     * never needs a network probe.
+     *
+     * The outer getter is the cached computed, so the ~150-entry Set is built
+     * once per manifest change rather than once per render; reading
+     * `releaseBoards` inside the returned closure would defeat that.
+     */
+    targetVariants(): (pioTarget: string) => VariantAvailability {
+      const boards = this.releaseBoards
+      return (pioTarget: string) => resolveVariants(pioTarget, boards)
     },
     percentDone: state => `${state.flashPercentDone}%`,
     /**
@@ -470,11 +505,13 @@ export const useFirmwareStore = defineStore('firmware', {
       this.hasManifest = false
       this.manifest = undefined
       this.releaseManifest = undefined
+      this.releaseManifestResolved = false
 
       // PR builds carry their targets list and synthesized release notes with
       // them — nothing is hosted on release.meshtastic.org for these versions
       if (firmware.prBuild) {
         this.releaseManifest = { version: firmware.prBuild.version, targets: firmware.prBuild.targets }
+        this.releaseManifestResolved = true
       }
 
       // Fetch release notes if not already present
@@ -490,10 +527,18 @@ export const useFirmwareStore = defineStore('firmware', {
       // Fetch the release manifest that lists all available targets
       if (firmware.id && !firmware.prBuild) {
         const releaseManifest = await fetchReleaseManifest(firmware.id)
-        if (releaseManifest) {
-          this.releaseManifest = releaseManifest
-          console.log(`Loaded release manifest for ${firmware.id} with ${releaseManifest.targets.length} targets`)
+        // A newer selection may have superseded this one mid-fetch; letting a
+        // stale result mark itself resolved would unblock the wrong release.
+        if (this.selectedFirmware?.id === firmware.id) {
+          if (releaseManifest) {
+            this.releaseManifest = releaseManifest
+            console.log(`Loaded release manifest for ${firmware.id} with ${releaseManifest.targets.length} targets`)
+          }
+          this.releaseManifestResolved = true
         }
+      }
+      else {
+        this.releaseManifestResolved = true
       }
 
       // Carry the firmware onto every later RUM/Logs event in the session.
@@ -651,8 +696,7 @@ export const useFirmwareStore = defineStore('firmware', {
      * @returns True if the target exists in the release manifest
      */
     isTargetAvailable(targetBoard: string): boolean {
-      if (!this.releaseManifest?.targets) return false
-      return this.releaseManifest.targets.some(t => t.board === targetBoard)
+      return !!this.releaseBoards?.has(targetBoard)
     },
     /**
      * Load the target-specific manifest for a given target board

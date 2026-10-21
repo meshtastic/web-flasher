@@ -114,67 +114,61 @@ const firmwareStore = useFirmwareStore()
 const deviceStore = useDeviceStore()
 const serialMonitorStore = useSerialMonitorStore()
 
-const fileExistsOnServer = ref(false)
-
-watch(() => firmwareStore.$state.selectedFirmware, async () => {
-  await preflightCheck()
+/**
+ * Whether the selected release published a flashable build for this board, or
+ * undefined when there is no board list to consult.
+ *
+ * The release manifest lists every board built for the version - including the
+ * -tft and -inkhud variants, and nRF and RP2040 boards as well as ESP32 - and
+ * is synthesized from the artifact's targets for PR builds, so this is a plain
+ * lookup with no network probing. It used to HEAD the *plain* board name even
+ * for a device whose only build is the -tft one, which left the Wio Tracker L2
+ * permanently unflashable. Being a computed, it also re-resolves on its own
+ * when the manifest arrives after the firmware selection it belongs to.
+ */
+const boardPublished = computed<boolean | undefined>(() => {
+  const pioTarget = deviceStore.$state.selectedTarget?.platformioTarget
+  if (!firmwareStore.hasOnlineFirmware || !pioTarget) return false
+  // Still fetching the board list: nothing to flash yet, and probing now would
+  // ask about a release that is about to answer for itself.
+  if (firmwareStore.releaseManifestPending) return false
+  const { stock, mui, inkhud, unknown } = firmwareStore.targetVariants(pioTarget)
+  if (unknown) return undefined
+  return stock || mui || inkhud
 })
 
-watch(() => deviceStore.$state.selectedTarget, async () => {
-  await preflightCheck()
+/**
+ * Files to probe on a release that publishes no board list - v2.7.15 and older.
+ *
+ * Asks the same question the manifest answers: does this release carry *any*
+ * build for the board? Probing only the plain name would keep a -tft-only
+ * board locked out, and probing only the selected variant would lock the user
+ * out of the dialog that holds the toggle for changing it. -update.bin is the
+ * file the legacy flash path fetches, so gate and flash agree; it stands in
+ * for the clean-install trio too.
+ */
+const legacyCandidates = computed<string[]>(() => {
+  const pioTarget = deviceStore.$state.selectedTarget?.platformioTarget
+  if (boardPublished.value !== undefined || !pioTarget) return []
+  const extension = ['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture) ? '.uf2' : '-update.bin'
+  const boards = [...new Set([pioTarget, deviceStore.selectedTargetBoard])]
+  return boards
+    .map(board => firmwareStore.getReleaseFileUrl(`firmware-${board}-${firmwareStore.firmwareVersion}${extension}`))
+    .filter(url => url.length > 0)
 })
 
-const preflightCheck = async () => {
-  firmwareStore.$state.hasManifest = false
+const legacyFileExists = ref(false)
 
-  if (!firmwareStore.hasOnlineFirmware) {
-    fileExistsOnServer.value = false
+// Keyed on the joined URLs so flipping a toggle between two variants of the
+// same pair does not re-probe what was already asked.
+watch(() => legacyCandidates.value.join('|'), async (key) => {
+  if (!key) {
+    legacyFileExists.value = false
     return
   }
-
-  if (!deviceStore.$state.selectedTarget) {
-    fileExistsOnServer.value = false
-    return
-  }
-
-  // PR builds have no files on release.meshtastic.org — availability comes
-  // from the build's targets list instead of HEAD requests
-  if (firmwareStore.isPrBuild) {
-    fileExistsOnServer.value = firmwareStore.isPrTargetAvailable(deviceStore.$state.selectedTarget.platformioTarget)
-    return
-  }
-
-  if (['nrf52840', 'rp2040'].includes(deviceStore.selectedArchitecture)) {
-    const firmwareVersion = firmwareStore.selectedFirmware!.id.replace('v', '')
-    const firmwareFile = `firmware-${deviceStore.selectedTarget.platformioTarget}-${firmwareVersion}.uf2`
-    fileExistsOnServer.value = await checkIfRemoteFileExists(firmwareStore.getReleaseFileUrl(firmwareFile))
-  }
-  else if (deviceStore.selectedArchitecture.startsWith('esp32')) {
-    const basePrefix = `firmware-${deviceStore.$state.selectedTarget.platformioTarget}-${firmwareStore.firmwareVersion}`
-    let manifestExists = false
-    const manifestName = `${basePrefix}.mt.json`
-    const manifestUrl = firmwareStore.getReleaseFileUrl(manifestName)
-    manifestExists = manifestUrl ? await checkIfRemoteFileExists(manifestUrl) : false
-    firmwareStore.$state.hasManifest = manifestExists
-
-    if (manifestExists) {
-      const binUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}.bin`)
-      const factoryUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}.factory.bin`)
-      const [binExists, factoryExists] = await Promise.all([
-        binUrl ? checkIfRemoteFileExists(binUrl) : Promise.resolve(false),
-        factoryUrl ? checkIfRemoteFileExists(factoryUrl) : Promise.resolve(false),
-      ])
-      fileExistsOnServer.value = binExists || factoryExists
-    }
-    else {
-      const updateFileUrl = firmwareStore.getReleaseFileUrl(`${basePrefix}-update.bin`)
-      fileExistsOnServer.value = updateFileUrl ? await checkIfRemoteFileExists(updateFileUrl) : false
-    }
-  }
-  else {
-    fileExistsOnServer.value = false
-  }
-}
+  const found = await Promise.all(legacyCandidates.value.map(checkIfRemoteFileExists))
+  legacyFileExists.value = found.some(Boolean)
+}, { immediate: true })
 
 // Either we have a custom zip file or a selected firmware release
 const canFlash = computed(() => {
@@ -185,7 +179,7 @@ const canFlash = computed(() => {
   if (deviceStore.nightlyOnlyTarget && firmwareStore.hasFirmwareFile) return false
   const hasFirmware = firmwareStore.hasFirmwareFile || firmwareStore.hasOnlineFirmware
   return !serialMonitorStore.isConnected && hasDevice && hasFirmware
-    && (fileExistsOnServer.value || firmwareStore.hasFirmwareFile)
+    && ((boardPublished.value ?? legacyFileExists.value) || firmwareStore.hasFirmwareFile)
 })
 </script>
 
