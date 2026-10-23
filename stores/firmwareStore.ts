@@ -639,6 +639,10 @@ export const useFirmwareStore = defineStore('firmware', {
       console.error('Error flashing:', error)
       terminal.writeln('')
       terminal.writeln(`\x1b[38;5;9m${error}\x1b[0m`)
+      const msg = error?.message || String(error)
+      if (/permission|access|denied|failed to open/i.test(msg)) {
+        terminal.writeln('\x1b[33mTip: On Linux, ensure your user account has serial port permissions (sudo usermod -a -G dialout $USER) and reconnect the device.\x1b[0m')
+      }
       this.trackFlashError(error)
     },
     /**
