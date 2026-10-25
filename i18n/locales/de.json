@@ -32,9 +32,7 @@
     "subheading": "Wenn Ihr angeschlossenes Gerät bereits Meshtastic installiert hat, können Sie die Version automatisch erkennen lassen:",
     "auto_detect": "Automatisch erkennen",
     "supported_devices": "Unterstützte Geräte",
-    "diy_devices": "Eigenbaugeräte",
-    "product_link": "Produkt",
-    "affiliate_disclosure": "Produktlinks können Affiliate-Links sein. Durch Käufe kann Meshtastic eine Provision erhalten."
+    "diy_devices": "Eigenbaugeräte"
   },
   "firmware": {
     "title": "Firmware",
