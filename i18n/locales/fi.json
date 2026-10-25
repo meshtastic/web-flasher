@@ -32,9 +32,7 @@
     "subheading": "Jos kytkettyyn laitteeseen on jo Meshtastic asennettu, voit tunnistaa sen automaattisesti:",
     "auto_detect": "Tunnista automaattisesti",
     "supported_devices": "Tuetut laitteet",
-    "diy_devices": "DIY-laitteet",
-    "product_link": "Tuote",
-    "affiliate_disclosure": "Tuotelinkit voivat olla kumppanuuslinkkejä. Ostoksista voi kertyä Meshtasticille palkkio."
+    "diy_devices": "DIY-laitteet"
   },
   "firmware": {
     "title": "Laiteohjelmisto",
