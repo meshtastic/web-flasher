@@ -13,6 +13,13 @@ import {
   variantBoard,
 } from '~/utils/firmwareVariants'
 import { addRumAction, boardAttributes, eventAttributes, setTelemetryContext } from '~/utils/telemetry'
+import {
+  bootloaderEraseAssetUrl,
+  fetchMaintenanceUf2Manifest,
+  otafixReleasePageUrl,
+  supportsOtafix,
+} from '~/utils/maintenanceUf2'
+import type { MaintenanceUf2Image, MaintenanceUf2Manifest } from '~/types/maintenanceUf2'
 
 import { MeshDevice } from '@meshtastic/core'
 import { TransportWebSerial } from '@meshtastic/transport-web-serial'
@@ -72,6 +79,10 @@ export const useDeviceStore = defineStore('device', {
       // and the long-retired. Held back from `targets` until the Konami code
       // reveals them; see unsupportedTargetsUnlocked below.
       unsupportedApiTargets: <DeviceHardware[]>[],
+      // api.meshtastic.org resource/maintenanceUf2; null until fetched or when
+      // the API is unreachable, in which case only the bundled erase images show.
+      maintenanceUf2: <MaintenanceUf2Manifest | null>null,
+      maintenanceUf2Fetched: false,
       isConnecting: false,
       abortController: <AbortController | undefined>undefined,
       readerClosed: <Promise<any> | undefined>undefined,
@@ -217,6 +228,26 @@ export const useDeviceStore = defineStore('device', {
       }
       return this.isSoftDevice7point3 ? '/uf2/nrf_erase_sd7_3.uf2' : '/uf2/nrf_erase2.uf2'
     },
+    /**
+     * The board-agnostic factory-erase image the Meshtastic nRF52 bootloader
+     * (OTAFIX 2.4 and later) consumes, with its pinned digest. Null when the
+     * manifest is not loaded or the target is not nRF52; older bootloaders
+     * ignore the file, so it is offered next to the layout-specific images.
+     */
+    bootloaderEraseImage(): (MaintenanceUf2Image & { url: string }) | null {
+      if (!this.isSelectedNrf) return null
+      const image = this.maintenanceUf2?.erase?.nrf52Bootloader
+      const url = bootloaderEraseAssetUrl(this.maintenanceUf2)
+      if (!image || !url) return null
+      return { ...image, url }
+    },
+    /** Whether the pinned bootloader release ships a build for the selected target. */
+    bootloaderUpdateAvailable(): boolean {
+      return supportsOtafix(this.maintenanceUf2, this.selectedTarget)
+    },
+    bootloaderReleasePageUrl(): string | null {
+      return otafixReleasePageUrl(this.maintenanceUf2)
+    },
     enterDfuVersion(): string {
       if (this.isSelectedNrf) {
         return '2.2.17'
@@ -233,7 +264,17 @@ export const useDeviceStore = defineStore('device', {
     },
   },
   actions: {
+    /**
+     * Fetched once per session, in the background; fetchList is called from
+     * both Device.vue and Firmware.vue, so the flag keeps this to one request.
+     */
+    async fetchMaintenanceUf2() {
+      if (this.maintenanceUf2Fetched) return
+      this.maintenanceUf2Fetched = true
+      this.maintenanceUf2 = await fetchMaintenanceUf2Manifest()
+    },
     async fetchList() {
+      this.fetchMaintenanceUf2()
       try {
         // First try to fetch from the API
         const targets = await firmwareApi.get<DeviceHardware[]>()

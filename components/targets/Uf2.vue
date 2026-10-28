@@ -1,6 +1,7 @@
 <template>
   <div class="space-y-6">
     <ReleaseNotes />
+    <NrfBootloaderNotice v-if="firmwareStore.canShowFlash" />
     <ol
       v-if="firmwareStore.canShowFlash"
       class="relative ms-3.5 mb-6 border-theme-left"
@@ -159,6 +160,7 @@ import { useFirmwareStore } from '../../stores/firmwareStore'
 import { artifactArchForDevice } from '~/utils/prBuild'
 import type { DeviceHardware } from '~/types/api'
 import ReleaseNotes from './ReleaseNotes.vue'
+import NrfBootloaderNotice from './NrfBootloaderNotice.vue'
 
 const deviceStore = useDeviceStore()
 const firmwareStore = useFirmwareStore()
