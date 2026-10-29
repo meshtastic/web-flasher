@@ -15,8 +15,8 @@
  *
  * Without this, an unsupported Node fails deep in the module loader with a
  * syntax error pointing at a type annotation, which reads like a broken script
- * rather than a toolchain mismatch. CI pins Node 20, so that is a realistic
- * default for anyone who has not switched locally.
+ * rather than a toolchain mismatch. CI and `.nvmrc` pin Node 24, which strips
+ * types natively, so this mostly catches a local Node older than `.nvmrc`.
  *
  * Deliberately not an `engines` field: the app itself builds fine on Node 20,
  * and constraining the whole package would flag every install.
