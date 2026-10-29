@@ -18,9 +18,9 @@
  *
  * Requires a Node with flagless TypeScript type stripping (22.18+, 23.6+, or
  * 24+); the pnpm script feature-detects this
- * and explains the mismatch rather than failing with a syntax error. CI pins
- * Node 20, so this is a local authoring step — the output is committed and
- * nothing in the build regenerates it.
+ * and explains the mismatch rather than failing with a syntax error. This is a
+ * local authoring step: the output is committed, and nothing in CI or the build
+ * invokes the `survey:*` scripts that regenerate it.
  *
  * Usage:  pnpm run survey:devices
  */

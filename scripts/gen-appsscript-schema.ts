@@ -7,8 +7,9 @@
  * too-permissive server allowlist fails open — the .gs constants are generated.
  *
  * Requires a Node with flagless TypeScript type stripping (22.18+, 23.6+, or
- * 24+); the pnpm script feature-detects and explains. CI pins Node 20, so this is
- * a local authoring step; the generated file is committed.
+ * 24+); the pnpm script feature-detects and explains. Nothing in CI or the
+ * build invokes this, so it stays a local authoring step; the generated file
+ * is committed.
  *
  * Usage:
  *   pnpm run survey:schema

@@ -28,7 +28,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: .nvmrc
+          # `.nvmrc` is a major-only selector, and setup-node prefers a
+          # matching build already in the runner tool cache. Without this,
+          # CI can keep running a 24.x that predates a security release.
+          check-latest: true
           cache: pnpm
 
       - name: Install dependencies
