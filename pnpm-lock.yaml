@@ -1381,25 +1381,17 @@ packages:
       vue-i18n:
         optional: true
 
-  '@intlify/core-base@10.0.7':
-    resolution: {integrity: sha512-mE71aUH5baH0me8duB4FY5qevUJizypHsYw3eCvmOx07QvmKppgOONx3dYINxuA89Z2qkAGb/K6Nrpi7aAMwew==}
-    engines: {node: '>= 16'}
-
   '@intlify/core-base@10.0.8':
     resolution: {integrity: sha512-FoHslNWSoHjdUBLy35bpm9PV/0LVI/DSv9L6Km6J2ad8r/mm0VaGg06C40FqlE8u2ADcGUM60lyoU7Myo4WNZQ==}
     engines: {node: '>= 16'}
 
-  '@intlify/core@10.0.7':
-    resolution: {integrity: sha512-4n9tKt0/HcPrXfm0ceQlNC/wsgrrfXyHwRHSSiekMAy5vkOBc4PJXB5aUHGGkkH0dDdlkYyxUWqhZ3V64+gcKw==}
+  '@intlify/core@10.0.8':
+    resolution: {integrity: sha512-2BbgN0aeuYHOHe7kVlTr2XxyrnLQZ/4/Y0Pw8luU67723+AqVYqxB7ZG1FzLCVNwAmzdVZMjKzFpgOzdUSdBfw==}
     engines: {node: '>= 16'}
 
   '@intlify/h3@0.6.1':
     resolution: {integrity: sha512-hFMcqWXCoFNZkraa+JF7wzByGdE0vGi8rUs7CTFrE4hE3X2u9QcelH8VRO8mPgJDH+TgatzvrVp6iZsWVluk2A==}
     engines: {node: '>= 18'}
-
-  '@intlify/message-compiler@10.0.7':
-    resolution: {integrity: sha512-nrC4cDL/UHZSUqd8sRbVz+DPukzZ8NnG5OK+EB/nlxsH35deyzyVkXP/QuR8mFZrISJ+4hCd6VtCQCcT+RO+5g==}
-    engines: {node: '>= 16'}
 
   '@intlify/message-compiler@10.0.8':
     resolution: {integrity: sha512-DV+sYXIkHVd5yVb2mL7br/NEUwzUoLBsMkV3H0InefWgmYa34NLZUvMCGi5oWX+Hqr2Y2qUxnVrnOWF4aBlgWg==}
@@ -8666,30 +8658,20 @@ snapshots:
     optionalDependencies:
       vue-i18n: 10.0.8(vue@3.5.26(typescript@5.7.3))
 
-  '@intlify/core-base@10.0.7':
-    dependencies:
-      '@intlify/message-compiler': 10.0.7
-      '@intlify/shared': 10.0.7
-
   '@intlify/core-base@10.0.8':
     dependencies:
       '@intlify/message-compiler': 10.0.8
       '@intlify/shared': 10.0.8
 
-  '@intlify/core@10.0.7':
+  '@intlify/core@10.0.8':
     dependencies:
-      '@intlify/core-base': 10.0.7
-      '@intlify/shared': 10.0.7
+      '@intlify/core-base': 10.0.8
+      '@intlify/shared': 10.0.8
 
   '@intlify/h3@0.6.1':
     dependencies:
-      '@intlify/core': 10.0.7
+      '@intlify/core': 10.0.8
       '@intlify/utils': 0.13.0
-
-  '@intlify/message-compiler@10.0.7':
-    dependencies:
-      '@intlify/shared': 10.0.7
-      source-map-js: 1.2.1
 
   '@intlify/message-compiler@10.0.8':
     dependencies:
