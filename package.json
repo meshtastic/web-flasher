@@ -20,7 +20,7 @@
     "@datadog/browser-rum": "^6.25.2",
     "@meshtastic/core": "npm:@jsr/meshtastic__core@^2.6.4",
     "@meshtastic/transport-web-serial": "npm:@jsr/meshtastic__transport-web-serial@^0.2.1",
-    "@nuxtjs/i18n": "^9.5.6",
+    "@nuxtjs/i18n": "^10.6.0",
     "@pinia/nuxt": "^0.10.1",
     "@vercel/analytics": "^1.6.1",
     "@vueuse/core": "^12.8.2",
