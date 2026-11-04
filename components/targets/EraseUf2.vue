@@ -67,6 +67,22 @@
             {{ !deviceStore.isSelectedNrf ? $t('flash.erase_uf2.warning') : '' }}
           </span>
         </div>
+        <div
+          v-if="deviceStore.isSelectedNrf"
+          class="mb-4"
+        >
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input
+              v-model="deviceStore.$state.bootloaderFactoryErase"
+              type="checkbox"
+              class="w-4 h-4 rounded accent-meshtastic-500"
+            >
+            <span class="text-sm text-theme">{{ $t('flash.erase_uf2.bootloader_attest') }}</span>
+          </label>
+          <p class="mt-1 text-xs text-theme-muted">
+            {{ $t('flash.erase_uf2.bootloader_attest_hint') }}
+          </p>
+        </div>
         <a
           :href="deviceStore.eraseUf2File"
           download=""
@@ -82,21 +98,30 @@
         <span class="absolute -start-4 step-badge">
           4
         </span>
-        <h3 class="mb-1 text-lg font-semibold text-theme">
-          {{ $t('buttons.serial_monitor') }}
-        </h3>
-        <div class="py-2 text-theme-muted">
-          {{ $t('flash.erase_uf2.wait_for_drive') }}
-        </div>
-        <div>
-          <button
-            v-if="deviceStore.isSelectedNrf"
-            class="text-black inline-flex w-[250px] justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-            @click="openSerial"
-          >
+        <template v-if="deviceStore.bootloaderFactoryErase">
+          <h3 class="mb-1 text-lg font-semibold text-theme">
+            {{ $t('flash.erase_uf2.bootloader_wait_title') }}
+          </h3>
+          <div class="py-2 text-theme-muted">
+            {{ $t('flash.erase_uf2.bootloader_wait_for_drive') }}
+          </div>
+        </template>
+        <template v-else>
+          <h3 class="mb-1 text-lg font-semibold text-theme">
             {{ $t('buttons.serial_monitor') }}
-          </button>
-        </div>
+          </h3>
+          <div class="py-2 text-theme-muted">
+            {{ $t('flash.erase_uf2.wait_for_drive') }}
+          </div>
+          <div>
+            <button
+              class="text-black inline-flex w-[250px] justify-center bg-meshtastic hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              @click="openSerial"
+            >
+              {{ $t('buttons.serial_monitor') }}
+            </button>
+          </div>
+        </template>
       </li>
       <li
         v-if="deviceStore.isSelectedNrf"
