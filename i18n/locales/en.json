@@ -127,7 +127,19 @@
       "warning": "After erasing flash, this operation will not be available again until new Meshtastic firmware is flashed on the device.",
       "dfu_warning": "This operation will erase your device completely.",
       "wait_for_drive": "Wait for the drive to disappear, then open a serial monitor to complete the erase process.",
-      "close_instructions": "Close this popup to select a firmware version and begin flashing."
+      "close_instructions": "Close this popup to select a firmware version and begin flashing.",
+      "bootloader_file_hint": "Recommended: open INFO_UF2.TXT on the DFU drive. If it has a Factory-Erase line, this file works on any board. Older bootloaders ignore it.",
+      "download_bootloader_file": "Download factory erase UF2",
+      "softdevice_file_hint": "No Factory-Erase line: use the SoftDevice-specific file for this board.",
+      "download_softdevice_file": "Download SoftDevice erase UF2",
+      "bootloader_file_skip_serial": "If you copied the factory erase UF2, the bootloader erases on its own and the drive comes back in DFU mode: skip the serial monitor and continue to the firmware step. For the SoftDevice-specific file:",
+      "download_failed_title": "Download failed",
+      "download_failed_message": "The factory erase file could not be downloaded or did not match its checksum. Use the SoftDevice-specific file instead."
+    },
+    "bootloader": {
+      "update_available": "Bootloader {tag} is available for this board.",
+      "update_guide": "Update guide",
+      "release_page": "Release"
     }
   },
   "buttons": {

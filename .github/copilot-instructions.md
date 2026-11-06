@@ -154,7 +154,9 @@ UF2 flashing is a simple download-based approach:
 Key files:
 - `components/targets/Uf2.vue` - UI for UF2 download steps
 - `components/targets/EraseUf2.vue` - Erase functionality for UF2 devices
+- `components/targets/NrfBootloaderNotice.vue` - Link to the nRF52 bootloader update docs and release for boards the pinned bootloader ships
 - `firmwareStore.downloadUf2FileSystem()` - Extracts UF2 from zip file
+- `utils/maintenanceUf2.ts` - `api.meshtastic.org/resource/maintenanceUf2` manifest: the board-agnostic `meshtastic_factory_erase.uf2` (served by the API, SHA-256 checked before download) and `otafixSupportedTargets`. The SoftDevice-specific erase images under `public/uf2/` are the fallback for older bootloaders and when the API is unreachable.
 
 ### ESP32 Flashing
 ESP32 flashing uses the WebSerial API with esptool.js. There are two approaches:

@@ -3,6 +3,7 @@
     <h3 class="text-lg font-semibold text-theme">
       {{ $t('flash.erase_flash') }} {{ deviceStore.$state.selectedTarget?.displayName }}
     </h3>
+    <NrfBootloaderNotice />
     <ol class="relative ms-3.5 mb-4 md:mb-5 border-theme-left">
       <li class="mb-10 ms-8">
         <span class="absolute -start-4 step-badge">
@@ -67,7 +68,31 @@
             {{ !deviceStore.isSelectedNrf ? $t('flash.erase_uf2.warning') : '' }}
           </span>
         </div>
+        <template v-if="deviceStore.bootloaderEraseImage">
+          <div class="py-2 text-theme-muted">
+            {{ $t('flash.erase_uf2.bootloader_file_hint') }}
+          </div>
+          <button
+            type="button"
+            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black disabled:opacity-60"
+            :disabled="bootloaderEraseDownloading"
+            @click="downloadBootloaderErase"
+          >
+            {{ $t('flash.erase_uf2.download_bootloader_file') }}
+          </button>
+          <div class="py-2 text-theme-muted">
+            {{ $t('flash.erase_uf2.softdevice_file_hint') }}
+          </div>
+          <a
+            :href="deviceStore.eraseUf2File"
+            download=""
+            class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none rounded-lg border-theme hover:bg-surface-secondary focus:z-10 focus:ring-4 focus:ring-gray-200 text-theme"
+          >
+            {{ $t('flash.erase_uf2.download_softdevice_file') }}
+          </a>
+        </template>
         <a
+          v-else
           :href="deviceStore.eraseUf2File"
           download=""
           class="inline-flex w-[250px] justify-center items-center py-2 px-3 text-sm font-medium focus:outline-none bg-meshtastic rounded-lg hover:bg-white focus:z-10 focus:ring-4 focus:ring-gray-200 text-black"
@@ -86,6 +111,9 @@
           {{ $t('buttons.serial_monitor') }}
         </h3>
         <div class="py-2 text-theme-muted">
+          <template v-if="deviceStore.bootloaderEraseImage">
+            {{ $t('flash.erase_uf2.bootloader_file_skip_serial') }}
+          </template>
           {{ $t('flash.erase_uf2.wait_for_drive') }}
         </div>
         <div>
@@ -132,12 +160,43 @@ import {
   Info,
 } from 'lucide-vue-next'
 import { track } from '@vercel/analytics'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useDeviceStore } from '../../stores/deviceStore'
 import { useFirmwareStore } from '../../stores/firmwareStore'
+import { useToastStore } from '../../stores/toastStore'
+import { downloadVerifiedUf2 } from '~/utils/maintenanceUf2'
+import NrfBootloaderNotice from './NrfBootloaderNotice.vue'
 
 const deviceStore = useDeviceStore()
 const firmwareStore = useFirmwareStore()
+const toastStore = useToastStore()
+const { t } = useI18n()
+
+const bootloaderEraseDownloading = ref(false)
+
+// The asset is cross-origin, where an anchor's download attribute is ignored,
+// so it is fetched, checked against the manifest digest and saved by hand.
+const downloadBootloaderErase = async () => {
+  const image = deviceStore.bootloaderEraseImage
+  if (!image || bootloaderEraseDownloading.value) return
+  bootloaderEraseDownloading.value = true
+  try {
+    await downloadVerifiedUf2(image.url, image.sha256, image.fileName)
+  }
+  catch (error) {
+    console.error('Error downloading factory erase UF2:', error)
+    toastStore.addToast({
+      type: 'error',
+      title: t('flash.erase_uf2.download_failed_title'),
+      message: t('flash.erase_uf2.download_failed_message'),
+    })
+  }
+  finally {
+    bootloaderEraseDownloading.value = false
+  }
+}
 
 const closeModal = () => {
   document.getElementById('erase-modal')?.click() // Flowbite bug

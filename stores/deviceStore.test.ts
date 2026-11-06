@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import type { DeviceHardware } from '~/types/api'
 import { useDeviceStore } from './deviceStore'
@@ -165,5 +165,71 @@ describe('deviceStore maker tier filter', () => {
     store.setSelectedTag('maker')
     expect(store.tag).toBeUndefined()
     expect(store.filteredDevices).toHaveLength(3)
+  })
+})
+
+describe('deviceStore bootloader erase and update facts', () => {
+  const manifest = {
+    manifestVersion: 1,
+    otafixReleaseTag: '0.9.2-OTAFIX2.5',
+    otafixBase: 'https://github.com/meshtastic/nRF52_Bootloader/releases/download/0.9.2-OTAFIX2.5',
+    erase: {
+      nrf52Bootloader: { fileName: 'meshtastic_factory_erase.uf2', sha256: 'ab'.repeat(32) },
+    },
+    otafixSupportedTargets: ['rak4631'],
+  }
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('offers nothing until the manifest is loaded', () => {
+    const store = useDeviceStore()
+    store.selectedTarget = makeTarget({ platformioTarget: 'rak4631', tags: ['RAK'] })
+    expect(store.bootloaderEraseImage).toBeNull()
+    expect(store.bootloaderUpdateAvailable).toBe(false)
+    expect(store.bootloaderReleasePageUrl).toBeNull()
+  })
+
+  it('offers the board-agnostic erase image to every nRF52 target once loaded', () => {
+    const store = useDeviceStore()
+    store.maintenanceUf2 = manifest
+    store.selectedTarget = makeTarget({ platformioTarget: 'heltec-mesh-pocket-5000', tags: ['Heltec'] })
+    expect(store.bootloaderEraseImage).toEqual({
+      fileName: 'meshtastic_factory_erase.uf2',
+      sha256: 'ab'.repeat(32),
+      url: 'https://api.meshtastic.org/resource/maintenanceUf2/asset/meshtastic_factory_erase.uf2',
+    })
+    expect(store.bootloaderUpdateAvailable).toBe(false)
+  })
+
+  it('flags a bootloader update only for targets the release ships', () => {
+    const store = useDeviceStore()
+    store.maintenanceUf2 = manifest
+    store.selectedTarget = makeTarget({ platformioTarget: 'rak4631', tags: ['RAK'] })
+    expect(store.bootloaderUpdateAvailable).toBe(true)
+    expect(store.bootloaderReleasePageUrl)
+      .toBe('https://github.com/meshtastic/nRF52_Bootloader/releases/tag/0.9.2-OTAFIX2.5')
+  })
+
+  it('never offers the nRF52 erase image to an RP2040 target', () => {
+    const store = useDeviceStore()
+    store.maintenanceUf2 = manifest
+    store.selectedTarget = makeTarget({ hwModelSlug: 'RPI_PICO', architecture: 'rp2040' })
+    expect(store.bootloaderEraseImage).toBeNull()
+  })
+
+  it('fetches the manifest once', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify(manifest), { status: 200 }))
+    vi.stubGlobal('fetch', fetchMock)
+    const store = useDeviceStore()
+    await store.fetchMaintenanceUf2()
+    await store.fetchMaintenanceUf2()
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(store.maintenanceUf2?.otafixReleaseTag).toBe('0.9.2-OTAFIX2.5')
   })
 })
