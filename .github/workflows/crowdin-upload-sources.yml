@@ -1,9 +1,9 @@
 name: Crowdin Upload Sources Action
 
 on:
-  push:                  # Watch source en.json for changes on master
-    paths: [ '/i18n/locales/en.json' ]
-    branches: [ master ]
+  push:                  # Watch source en.json for changes on main
+    paths: [ 'i18n/locales/en.json' ]
+    branches: [ main ]
   workflow_dispatch:     # Allow manual triggering
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
           upload_sources: true
           upload_translations: false
           download_translations: false
-          crowdin_branch_name: 'master'
+          crowdin_branch_name: 'main'
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
