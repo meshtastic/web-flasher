@@ -5,6 +5,7 @@ import {
   vendorCobrandingTag,
 } from '~/types/resources'
 import { MAKER_TIER_FILTER, deviceTier } from '~/utils/deviceTier'
+import { deviceIllustrations } from '~/utils/deviceImages'
 import { applyEventDeviceOverrides } from '~/utils/eventDevices'
 import { isUnsupportedDevice } from '~/utils/unsupportedDevices'
 import {
@@ -265,6 +266,7 @@ export const useDeviceStore = defineStore('device', {
         .map((t: DeviceHardware) => (PREVIEW_FORCE_SUPPORTED.includes(t.hwModelSlug)
           ? { ...t, activelySupported: true }
           : t))
+        .map((t: DeviceHardware) => ({ ...t, images: deviceIllustrations(t.images) }))
       if (vendorCobrandingTag.length > 0) {
         this.apiTargets = flashable.filter(
           (t: DeviceHardware) => t.activelySupported && t.tags?.includes(vendorCobrandingTag),
