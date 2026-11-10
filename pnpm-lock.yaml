@@ -5137,9 +5137,6 @@ packages:
     resolution: {integrity: sha512-XT9ewWAC43tiAV7xDAPflMkG0qOPn2QjHqlgX8FOqmWa/rxnyYDulF9T0F7tRy1u+TVTmK/M//6VIOye+2zDXg==}
     engines: {node: '>=20'}
 
-  lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
-
   lodash-es@4.18.1:
     resolution: {integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==}
 
@@ -12290,7 +12287,7 @@ snapshots:
       classnames: 2.5.1
       floating-vue: 5.2.2(@nuxt/kit@3.21.10(magicast@0.5.4))(vue@3.5.26(typescript@5.7.3))
       flowbite: 2.5.2
-      lodash-es: 4.17.21
+      lodash-es: 4.18.1
       nanoid: 5.0.9
       tailwind-merge: 2.6.0
       tailwindcss: 3.4.19
@@ -13129,10 +13126,7 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
 
-  lodash-es@4.17.21: {}
-
-  lodash-es@4.18.1:
-    optional: true
+  lodash-es@4.18.1: {}
 
   lodash.debounce@4.0.8: {}
 
