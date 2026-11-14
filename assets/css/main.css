@@ -79,7 +79,11 @@
   --modal-bg-start: rgba(39, 39, 42, 0.95);
   --modal-bg-end: rgba(24, 24, 27, 0.98);
   --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-  
+
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.14);
+  --scrollbar-thumb-hover: var(--accent-subtle);
+
   /* Flash header colors */
   --flash-header-bg-start: rgba(39, 39, 42, 0.85);
   --flash-header-bg-end: rgba(24, 24, 27, 0.95);
@@ -161,7 +165,11 @@
   --modal-bg-start: rgba(252, 250, 247, 1);
   --modal-bg-end: rgba(245, 243, 239, 1);
   --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
-  
+
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+  --scrollbar-thumb-hover: var(--accent-subtle);
+
   /* Flash header colors */
   --flash-header-bg-start: rgba(252, 250, 247, 0.95);
   --flash-header-bg-end: rgba(245, 243, 239, 0.98);
@@ -194,7 +202,39 @@
       linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-velvet) 40%, var(--bg-ink) 100%);
     transition: background 0.3s ease, color 0.3s ease;
   }
-  
+
+  html {
+    scrollbar-gutter: stable;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner {
+      background: var(--scrollbar-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbar-thumb);
+      background-clip: padding-box;
+      border: 3px solid transparent;
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--scrollbar-thumb-hover);
+    }
+
+    ::-webkit-scrollbar-button {
+      display: none;
+    }
+  }
+
   /* Smooth scrolling for mobile */
   @media (max-width: 768px) {
     * {
