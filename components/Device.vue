@@ -276,12 +276,15 @@ const uniqueDevices = computed(() => {
   const seen = new Set<string>()
   const query = normalizedQuery.value
   return store.sortedDevices.filter((device) => {
+    if (query && !matchesQuery(device, query)) {
+      return false
+    }
     const groupKey = device.key || `${device.hwModel}-${device.displayName}`
     if (seen.has(groupKey)) {
       return false
     }
     seen.add(groupKey)
-    return !query || matchesQuery(device, query)
+    return true
   })
 })
 
