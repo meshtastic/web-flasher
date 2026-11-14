@@ -81,8 +81,8 @@
   --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 
   --scrollbar-track: transparent;
-  --scrollbar-thumb: rgba(255, 255, 255, 0.14);
-  --scrollbar-thumb-hover: var(--accent-subtle);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.4);
+  --scrollbar-thumb-hover: var(--accent);
 
   /* Flash header colors */
   --flash-header-bg-start: rgba(39, 39, 42, 0.85);
@@ -167,8 +167,8 @@
   --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
 
   --scrollbar-track: transparent;
-  --scrollbar-thumb: rgba(0, 0, 0, 0.18);
-  --scrollbar-thumb-hover: var(--accent-subtle);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.45);
+  --scrollbar-thumb-hover: var(--accent-dark);
 
   /* Flash header colors */
   --flash-header-bg-start: rgba(252, 250, 247, 0.95);
