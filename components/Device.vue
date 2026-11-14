@@ -44,7 +44,10 @@
         >
           <div class="modal-content relative flex flex-col h-[90vh] overflow-hidden rounded-2xl shadow-2xl text-theme">
           <DeviceHeader />
-          <div class="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+          <div
+            :id="resultsId"
+            class="flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+          >
           <div class="flex flex-col gap-3 py-3 px-3">
             <div class="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
@@ -80,29 +83,47 @@
                 {{ arch }}
               </button>
             </div>
-            <div class="relative">
+            <div
+              role="search"
+              class="relative"
+            >
+              <label
+                :for="searchInputId"
+                class="sr-only"
+              >{{ $t('device.search_label') }}</label>
               <Search
                 class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-theme-muted"
                 aria-hidden="true"
               />
               <input
+                :id="searchInputId"
+                ref="searchInput"
                 v-model="searchQuery"
                 type="search"
-                :placeholder="$t('device.search_placeholder')"
-                :aria-label="$t('device.search_placeholder')"
+                :placeholder="$t('device.search_label')"
+                :aria-controls="resultsId"
                 autocomplete="off"
                 spellcheck="false"
-                class="w-full pl-9 pr-9 py-2 text-sm rounded-lg bg-surface-primary border border-theme text-theme [&::-webkit-search-cancel-button]:appearance-none"
+                class="w-full pl-9 pr-9 py-2 text-sm rounded-lg bg-surface-primary border border-theme text-theme placeholder:[color:var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] focus:border-transparent [&::-webkit-search-cancel-button]:appearance-none"
               >
               <button
                 v-if="searchQuery"
                 type="button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-theme-muted hover:text-theme"
+                class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-theme-muted hover:text-theme focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
                 :aria-label="$t('device.clear_search')"
-                @click="searchQuery = ''"
+                @click="clearSearch"
               >
-                <X class="h-4 w-4" />
+                <X
+                  class="h-4 w-4"
+                  aria-hidden="true"
+                />
               </button>
+              <p
+                role="status"
+                class="sr-only"
+              >
+                {{ searchAnnouncement }}
+              </p>
             </div>
           </div>
           <div
@@ -227,7 +248,8 @@ import { shouldAutoSelectMui, useDeviceStore } from '../stores/deviceStore'
 import { useFirmwareStore } from '../stores/firmwareStore'
 import DeviceDetail from './DeviceDetail.vue'
 import { useI18n } from 'vue-i18n'
-import { computed, ref } from 'vue'
+import { computed, ref, useId, useTemplateRef } from 'vue'
+import { refDebounced } from '@vueuse/core'
 
 const { t } = useI18n()
 
@@ -235,8 +257,16 @@ const store = useDeviceStore()
 const firmwareStore = useFirmwareStore()
 store.fetchList()
 
+const searchInputId = useId()
+const resultsId = useId()
+const searchInput = useTemplateRef<HTMLInputElement>('searchInput')
 const searchQuery = ref('')
 const normalizedQuery = computed(() => searchQuery.value.trim().toLowerCase())
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  searchInput.value?.focus()
+}
 
 const matchesQuery = (device: DeviceHardware, query: string) =>
   [device.displayName, device.platformioTarget, device.hwModelSlug, device.architecture, ...(device.tags ?? [])]
@@ -254,6 +284,11 @@ const uniqueDevices = computed(() => {
     return !query || matchesQuery(device, query)
   })
 })
+
+const searchSummary = computed(() =>
+  normalizedQuery.value ? t('device.search_results', uniqueDevices.value.length) : '',
+)
+const searchAnnouncement = refDebounced(searchSummary, 500)
 
 /**
  * The Backer/Partner vendors, in the order the row has always shown them.
