@@ -27,6 +27,9 @@
                 <Cpu class="w-4 h-4" />
                 {{ $t('flash.esp32.reset_button') }}
               </button>
+              <p class="mt-3 text-xs opacity-75">
+                {{ $t('flash.esp32.linux_permission_tip') }}
+              </p>
             </div>
           </div>
         </div>
