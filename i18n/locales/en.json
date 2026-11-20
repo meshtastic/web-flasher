@@ -80,6 +80,7 @@
   "flash": {
     "title": "Flash",
     "instructions": "Flash your device. Choose whether you wish to update your device or wipe the flash and install from scratch.",
+    "not_in_release": "The selected release has no build for {device}. Choose another release.",
     "erase_flash": "Erase Flash",
     "erase_flash_prefix": "Erase Flash of",
     "dfu_action_doubleclick": "double-clicking RST button.",

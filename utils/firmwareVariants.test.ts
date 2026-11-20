@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   canChooseMui,
+  isMissingFromRelease,
   pinnedMui,
   resolveSelectedVariant,
   resolveVariants,
@@ -172,5 +173,21 @@ describe('resolveSelectedVariant', () => {
       availability: resolveVariants('t-deck', undefined),
       shouldInstallMui: true,
     }))).toBe('mui')
+  })
+})
+
+describe('isMissingFromRelease', () => {
+  it('is true when the board list is known and holds no build of the board', () => {
+    expect(isMissingFromRelease(resolveVariants('rak_wismesh_pocket', V281))).toBe(true)
+  })
+
+  it('is false when any variant was built', () => {
+    expect(isMissingFromRelease(resolveVariants('t-deck', V281))).toBe(false)
+    expect(isMissingFromRelease(resolveVariants('seeed_wio_tracker_L2', V281))).toBe(false)
+    expect(isMissingFromRelease(resolveVariants('t-echo-inkhud', V281))).toBe(false)
+  })
+
+  it('is false while there is no board list to consult', () => {
+    expect(isMissingFromRelease(resolveVariants('rak_wismesh_pocket', undefined))).toBe(false)
   })
 })
