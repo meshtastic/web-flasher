@@ -1,5 +1,12 @@
 <template>
-  <div class="relative inline-flex items-center gap-2">
+  <div class="relative inline-flex flex-wrap items-center justify-center gap-2">
+    <p
+      v-if="notInRelease"
+      role="status"
+      class="order-last w-full text-center text-sm text-theme-muted"
+    >
+      {{ $t('flash.not_in_release', { device: deviceStore.selectedTarget?.displayName }) }}
+    </p>
     <button
       data-modal-target="flash-modal"
       data-modal-toggle="flash-modal"
@@ -102,7 +109,7 @@
 
 <script lang="ts" setup>
 import { checkIfRemoteFileExists } from '~/utils/fileUtils'
-import { type FirmwareVariant, variantBoard } from '~/utils/firmwareVariants'
+import { type FirmwareVariant, isMissingFromRelease, variantBoard } from '~/utils/firmwareVariants'
 
 import { Trash } from 'lucide-vue-next'
 
@@ -137,6 +144,18 @@ const boardPublished = computed<boolean>(() => {
   const { stock, mui, inkhud, unknown } = firmwareStore.targetVariants(pioTarget)
   if (unknown) return false
   return stock || mui || inkhud
+})
+
+/**
+ * Whether the Flash button is disabled only because the selected release never
+ * built this board. Says nothing until the release's board list is known, and
+ * never applies to a local upload, which is not a release.
+ */
+const notInRelease = computed<boolean>(() => {
+  const pioTarget = deviceStore.$state.selectedTarget?.platformioTarget
+  if (!firmwareStore.hasOnlineFirmware || firmwareStore.hasFirmwareFile || !pioTarget) return false
+  if (firmwareStore.releaseManifestPending || legacyProbePending.value) return false
+  return isMissingFromRelease(firmwareStore.targetVariants(pioTarget))
 })
 
 /**
