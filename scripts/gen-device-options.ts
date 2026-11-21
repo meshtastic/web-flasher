@@ -44,7 +44,8 @@ const here = dirname(fileURLToPath(import.meta.url))
 const inputPath = join(here, '..', 'public', 'data', 'hardware-list.json')
 const outputPath = join(here, '..', 'components', 'survey', 'devices.generated.ts')
 
-const hardware: HardwareEntry[] = JSON.parse(readFileSync(inputPath, 'utf8'))
+const hardware: HardwareEntry[] = (JSON.parse(readFileSync(inputPath, 'utf8')) as HardwareEntry[])
+  .filter(entry => entry.architecture !== 'virtual')
 
 /**
  * Devices actually seen at DEF CON 34, most common first.

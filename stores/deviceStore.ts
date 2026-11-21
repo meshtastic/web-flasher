@@ -258,10 +258,11 @@ export const useDeviceStore = defineStore('device', {
       }
     },
     setTargetsList(targets: DeviceHardware[]) {
-      // meshtasticd targets are never flashable from here, whatever their
-      // support status, so they are dropped from both lists up front.
       const flashable = targets
-        .filter((t: DeviceHardware) => !t.architecture.toLowerCase().startsWith('portduino'))
+        .filter((t: DeviceHardware) => {
+          const architecture = t.architecture.toLowerCase()
+          return !architecture.startsWith('portduino') && architecture !== 'virtual'
+        })
         .map((t: DeviceHardware) => (PREVIEW_FORCE_SUPPORTED.includes(t.hwModelSlug)
           ? { ...t, activelySupported: true }
           : t))
