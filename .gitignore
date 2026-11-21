@@ -96,3 +96,6 @@ sw.*
 
 .playwright-mcp
 .vscode/settings.json
+
+# Claude Code worktrees
+.claude/worktrees/
