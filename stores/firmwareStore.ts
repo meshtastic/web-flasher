@@ -80,14 +80,15 @@ export function validateEspFlashWriteBounds(
   files: Array<{ data: string, address: number }>,
   partitionScheme: string | undefined,
 ): void {
-  if (!partitionScheme) return
   const capacities: Record<string, number> = {
     '4MB': 4 * 1024 * 1024,
     '8MB': 8 * 1024 * 1024,
     '16MB': 16 * 1024 * 1024,
   }
-  const capacity = capacities[partitionScheme]
-  if (!capacity) return
+  const capacity = partitionScheme ? capacities[partitionScheme] : undefined
+  if (!capacity) {
+    throw new Error(`Cannot validate ESP32 flash writes without a known partition scheme${partitionScheme ? `: ${partitionScheme}` : ''}`)
+  }
 
   for (const file of files) {
     if (file.address < 0 || file.address + file.data.length > capacity) {
@@ -184,7 +185,7 @@ export const useFirmwareStore = defineStore('firmware', {
       shouldBundleWebUI: false,
       shouldInstallMui: false,
       shouldInstallInkHud: false,
-      partitionScheme: <string | undefined>{},
+      partitionScheme: <string | undefined>undefined,
       flashPercentDone: 0,
       isFlashing: false,
       flashingIndex: 0,
@@ -631,9 +632,11 @@ export const useFirmwareStore = defineStore('firmware', {
         const transport = new Transport(this.port, true)
         const espLoader = await this.connectEsp32(transport, terminal)
         const content = await this.fetchBinaryContent(fileName)
+        const fileArray = [{ data: content, address: 0x10000 }]
+        validateEspFlashWriteBounds(fileArray, this.partitionScheme)
         this.isFlashing = true
         const flashOptions: FlashOptions = {
-          fileArray: [{ data: content, address: 0x10000 }],
+          fileArray,
           flashSize: 'keep',
           eraseAll: false,
           compress: true,
@@ -1181,13 +1184,13 @@ export const useFirmwareStore = defineStore('firmware', {
         console.log(`Flashing ${otaFileName} at offset 0x${otaOffset.toString(16)}`)
         console.log(`Flashing ${littleFsFileName} at offset 0x${spiffsOffset.toString(16)}`)
 
-        this.isFlashing = true
         const fileArray = [
           { data: appContent, address: 0x00 },
           { data: otaContent, address: otaOffset },
           { data: littleFsContent, address: spiffsOffset },
         ]
         validateEspFlashWriteBounds(fileArray, this.partitionScheme)
+        this.isFlashing = true
         const flashOptions: FlashOptions = {
           fileArray,
           flashSize: 'keep',

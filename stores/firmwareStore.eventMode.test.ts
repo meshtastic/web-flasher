@@ -157,4 +157,10 @@ describe('validateEspFlashWriteBounds', () => {
       { data: 'x'.repeat(0x100), address: 0x00 },
     ], '16MB')).not.toThrow()
   })
+
+  it('rejects writes when the partition scheme is unknown', () => {
+    expect(() => validateEspFlashWriteBounds([
+      { data: 'x'.repeat(0x100), address: 0x00 },
+    ], undefined)).toThrow(/known partition scheme/)
+  })
 })

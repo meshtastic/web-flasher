@@ -355,7 +355,7 @@ const cleanInstallEsp32 = async () => {
     return
   }
   if (firmwareStore.hasFirmwareFile && !firmwareStore.isZipFile) {
-    useToastStore().error(t('firmware.single_bin_clean_install_title'), t('firmware.single_bin_clean_install'))
+    useToastStore().error(t('firmware.title'), t('firmware.instructions'))
     return
   }
 
