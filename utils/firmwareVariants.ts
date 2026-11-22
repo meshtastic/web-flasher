@@ -24,6 +24,9 @@ const VARIANT_SUFFIX: Record<FirmwareVariant, string> = {
  * yield that same board rather than `-tft-tft`.
  */
 export function variantBoard(pioTarget: string, variant: FirmwareVariant): string {
+  if (pioTarget === 'heltec-v4-r8-oled' && variant === 'mui') {
+    return 'heltec-v4-r8-tft'
+  }
   const suffix = VARIANT_SUFFIX[variant]
   if (!suffix || pioTarget.endsWith(suffix)) return pioTarget
   return `${pioTarget}${suffix}`
