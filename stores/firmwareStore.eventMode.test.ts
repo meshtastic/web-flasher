@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { eventMode, setActiveEventMode } from '~/types/resources'
 import { setGlobalI18n } from '~/utils/i18n'
-import { useFirmwareStore } from './firmwareStore'
+import { useFirmwareStore, validateEspFlashWriteBounds } from './firmwareStore'
 
 // The store module reads window.location at import time (createUrl).
 // vi.hoisted runs before the imports above are evaluated.
@@ -135,5 +135,26 @@ describe('fetchBinaryContent', () => {
     fetchMock.mockResolvedValueOnce(new Response('404: Not Found', { status: 404 }))
 
     await expect(store.fetchBinaryContent('bleota-s3.bin')).rejects.toThrow(/HTTP 404/)
+  })
+
+  it('does not reuse a single uploaded factory image for other flash entries', async () => {
+    const store = useFirmwareStore()
+    await store.setFirmwareFile(new File(['factory'], 'firmware-tlora-t3s3-epaper-2.8.0.factory.bin'))
+
+    await expect(store.fetchBinaryContent('bleota-s3.bin')).rejects.toThrow(/single uploaded .factory.bin/)
+  })
+})
+
+describe('validateEspFlashWriteBounds', () => {
+  it('rejects writes that exceed the selected flash capacity', () => {
+    expect(() => validateEspFlashWriteBounds([
+      { data: 'x'.repeat(0x370001), address: 0xc90000 },
+    ], '16MB')).toThrow(/exceeds the 16MB/)
+  })
+
+  it('accepts writes that fit inside the selected flash capacity', () => {
+    expect(() => validateEspFlashWriteBounds([
+      { data: 'x'.repeat(0x100), address: 0x00 },
+    ], '16MB')).not.toThrow()
   })
 })

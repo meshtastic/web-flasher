@@ -44,6 +44,8 @@
   "firmware": {
     "title": "Firmware",
     "select_firmware": "Select Firmware",
+    "single_bin_clean_install_title": "Full Erase and Install unavailable",
+    "single_bin_clean_install": "A single uploaded .bin file cannot provide the app, OTA, and filesystem images required for Full Erase and Install. Upload a release zip or use Update Flash.",
     "pull_request": "Pull Request",
     "pr": {
       "title": "PR #{pr}",

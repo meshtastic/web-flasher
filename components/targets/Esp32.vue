@@ -354,6 +354,10 @@ const cleanInstallEsp32 = async () => {
     console.error('No target selected')
     return
   }
+  if (firmwareStore.hasFirmwareFile && !firmwareStore.isZipFile) {
+    useToastStore().error(t('firmware.single_bin_clean_install_title'), t('firmware.single_bin_clean_install'))
+    return
+  }
 
   // Coerce the partition scheme to be the same as the selected target for all 2.6.2+ firmwares
   if (selectedTarget.partitionScheme && twoPointSixPointTwoOrGreater.value) {

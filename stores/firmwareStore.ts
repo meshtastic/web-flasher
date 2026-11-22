@@ -76,6 +76,26 @@ const prZipPromises = new Map<string, Promise<Blob>>()
 // reason as above — it is telemetry bookkeeping, not UI state.
 let activeFlash: Record<string, unknown> | undefined
 
+export function validateEspFlashWriteBounds(
+  files: Array<{ data: string, address: number }>,
+  partitionScheme: string | undefined,
+): void {
+  if (!partitionScheme) return
+  const capacities: Record<string, number> = {
+    '4MB': 4 * 1024 * 1024,
+    '8MB': 8 * 1024 * 1024,
+    '16MB': 16 * 1024 * 1024,
+  }
+  const capacity = capacities[partitionScheme]
+  if (!capacity) return
+
+  for (const file of files) {
+    if (file.address < 0 || file.address + file.data.length > capacity) {
+      throw new Error(`ESP32 flash write at 0x${file.address.toString(16)} exceeds the ${partitionScheme} flash capacity`)
+    }
+  }
+}
+
 /**
  * Fetch release notes from release.meshtastic.org
  */
@@ -839,6 +859,7 @@ export const useFirmwareStore = defineStore('firmware', {
         if (filesToFlash.length === 0) {
           throw new Error('No files found to flash')
         }
+        validateEspFlashWriteBounds(filesToFlash, this.partitionScheme)
 
         this.port = await navigator.serial.requestPort({})
         this.isConnected = true
@@ -942,6 +963,7 @@ export const useFirmwareStore = defineStore('firmware', {
         if (filesToFlash.length === 0) {
           throw new Error('No files found to flash')
         }
+        validateEspFlashWriteBounds(filesToFlash, this.partitionScheme)
 
         this.port = await navigator.serial.requestPort({})
         this.isConnected = true
@@ -1104,6 +1126,9 @@ export const useFirmwareStore = defineStore('firmware', {
       this.trackFlashStart(selectedTarget, { method: 'esptool', cleanInstall: true })
 
       try {
+        if (this.selectedFile && !this.isZipFile) {
+          throw new Error('Full erase and install requires a release zip or firmware selected from the release list. A single uploaded .bin file cannot provide all three flash images.')
+        }
         this.port = await navigator.serial.requestPort({})
         this.isConnected = true
         this.port.ondisconnect = () => {
@@ -1157,12 +1182,14 @@ export const useFirmwareStore = defineStore('firmware', {
         console.log(`Flashing ${littleFsFileName} at offset 0x${spiffsOffset.toString(16)}`)
 
         this.isFlashing = true
+        const fileArray = [
+          { data: appContent, address: 0x00 },
+          { data: otaContent, address: otaOffset },
+          { data: littleFsContent, address: spiffsOffset },
+        ]
+        validateEspFlashWriteBounds(fileArray, this.partitionScheme)
         const flashOptions: FlashOptions = {
-          fileArray: [
-            { data: appContent, address: 0x00 },
-            { data: otaContent, address: otaOffset },
-            { data: littleFsContent, address: spiffsOffset },
-          ],
+          fileArray,
           flashSize: 'keep',
           eraseAll: true,
           compress: true,
@@ -1219,9 +1246,16 @@ export const useFirmwareStore = defineStore('firmware', {
       if (this.selectedFile && this.isZipFile) {
         console.log('Looking for file matching pattern:', fileName)
         const entry = await extractZipEntry(this.selectedFile, (filename) => {
+          const regex = new RegExp(fileName)
+          if (!regex.test(filename)) return false
+          if (fileName.includes('firmware-') && fileName.endsWith('.bin') && !fileName.endsWith('.factory.bin')) {
+            if (filename.endsWith('.factory.bin') || filename.endsWith('-update.bin')) return false
+          }
+          if (fileName.endsWith('.factory.bin') && !filename.endsWith('.factory.bin')) return false
+          if (fileName.endsWith('-update.bin') && !filename.endsWith('-update.bin')) return false
           if (fileName.startsWith('firmware-tbeam-.'))
             return !filename.includes('s3') && new RegExp(fileName).test(filename) && (fileName.endsWith('update.bin') === filename.endsWith('update.bin'))
-          return new RegExp(fileName).test(filename) && (fileName.endsWith('update.bin') === filename.endsWith('update.bin'))
+          return fileName.endsWith('update.bin') === filename.endsWith('update.bin')
         })
         if (entry) {
           console.log('Found file:', entry.filename)
@@ -1230,6 +1264,12 @@ export const useFirmwareStore = defineStore('firmware', {
         }
       }
       else if (this.selectedFile && !this.isZipFile) {
+        if (this.isFactoryBin) {
+          throw new Error('A single uploaded .factory.bin cannot be reused for OTA or filesystem flash images')
+        }
+        if (!fileName.includes('update.bin')) {
+          throw new Error(`Cannot fetch ${fileName} from a single uploaded firmware file`)
+        }
         const buffer = await this.selectedFile.arrayBuffer()
         return convertToBinaryString(new Uint8Array(buffer))
       }
