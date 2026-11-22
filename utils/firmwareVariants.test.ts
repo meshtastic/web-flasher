@@ -15,6 +15,7 @@ const V281 = new Set([
   't-deck-tft',
   'unphone',
   'heltec-v4-r8-oled',
+  'heltec-v4-r8-tft',
   'seeed_wio_tracker_L2-tft',
   'elecrow-adv-35-tft',
   't-echo',
@@ -37,6 +38,7 @@ describe('variantBoard', () => {
     // Crowpanel: asking for its MUI build must not produce -tft-tft.
     expect(variantBoard('elecrow-adv-35-tft', 'mui')).toBe('elecrow-adv-35-tft')
     expect(variantBoard('heltec-mesh-pocket-5000-inkhud', 'inkhud')).toBe('heltec-mesh-pocket-5000-inkhud')
+    expect(variantBoard('heltec-v4-r8-oled', 'mui')).toBe('heltec-v4-r8-tft')
   })
 })
 
@@ -58,7 +60,19 @@ describe('resolveVariants', () => {
 
   it('reports stock only when the -tft build is absent', () => {
     expect(resolveVariants('unphone', V281)).toEqual({ stock: true, mui: false, inkhud: false, unknown: false })
-    expect(resolveVariants('heltec-v4-r8-oled', V281)).toEqual({ stock: true, mui: false, inkhud: false, unknown: false })
+  })
+
+  it('resolves the Heltec V4 R8 OLED and TFT env names separately', () => {
+    expect(resolveVariants('heltec-v4-r8-oled', V281)).toEqual({ stock: true, mui: true, inkhud: false, unknown: false })
+  })
+
+  it('does not substitute a TFT-only build for the Heltec V4 R8 OLED target', () => {
+    expect(resolveVariants('heltec-v4-r8-oled', new Set(['heltec-v4-r8-tft']))).toEqual({
+      stock: false,
+      mui: false,
+      inkhud: false,
+      unknown: false,
+    })
   })
 
   it('reports nothing built for a board missing from the release', () => {
