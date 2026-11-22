@@ -66,6 +66,15 @@ describe('resolveVariants', () => {
     expect(resolveVariants('heltec-v4-r8-oled', V281)).toEqual({ stock: true, mui: true, inkhud: false, unknown: false })
   })
 
+  it('does not substitute a TFT-only build for the Heltec V4 R8 OLED target', () => {
+    expect(resolveVariants('heltec-v4-r8-oled', new Set(['heltec-v4-r8-tft']))).toEqual({
+      stock: false,
+      mui: false,
+      inkhud: false,
+      unknown: false,
+    })
+  })
+
   it('reports nothing built for a board missing from the release', () => {
     expect(resolveVariants('seeed_meshpager_x2', V281)).toEqual({ stock: false, mui: false, inkhud: false, unknown: false })
   })

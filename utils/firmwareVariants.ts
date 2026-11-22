@@ -70,6 +70,12 @@ export function resolveVariants(
 ): VariantAvailability {
   if (!boards) return NOTHING_KNOWN
 
+  if (pioTarget === 'heltec-v4-r8-oled') {
+    const stock = boards.has(pioTarget)
+    const mui = stock && boards.has('heltec-v4-r8-tft')
+    return { stock, mui, inkhud: false, unknown: false }
+  }
+
   // An env that names its own variant is that variant, so looking up all three
   // names would find the same board twice and report a choice that isn't there.
   const intrinsic = intrinsicVariant(pioTarget)

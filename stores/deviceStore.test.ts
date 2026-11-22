@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import type { DeviceHardware } from '~/types/api'
-import { useDeviceStore } from './deviceStore'
+import { shouldAutoSelectMui, useDeviceStore } from './deviceStore'
 
 // The store module reads window.location at import time (createUrl).
 // vi.hoisted runs before the imports above are evaluated.
@@ -23,6 +23,22 @@ function makeTarget(overrides: Partial<DeviceHardware>): DeviceHardware {
 
 const SD73_ERASE = '/uf2/nrf_erase_sd7_3.uf2'
 const SD611_ERASE = '/uf2/nrf_erase2.uf2'
+
+describe('shouldAutoSelectMui', () => {
+  it('keeps Heltec V4 R8 OLED on stock until the display is chosen explicitly', () => {
+    expect(shouldAutoSelectMui(makeTarget({
+      platformioTarget: 'heltec-v4-r8-oled',
+      hasMui: true,
+    }))).toBe(false)
+  })
+
+  it('keeps regular MUI targets on automatic selection', () => {
+    expect(shouldAutoSelectMui(makeTarget({
+      platformioTarget: 't-deck',
+      hasMui: true,
+    }))).toBe(true)
+  })
+})
 
 describe('deviceStore factory-erase UF2 selection', () => {
   beforeEach(() => {

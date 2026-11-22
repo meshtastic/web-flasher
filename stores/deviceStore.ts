@@ -58,7 +58,9 @@ const firmwareApi = mande(createUrl('api/resource/deviceHardware'))
 const PREVIEW_FORCE_SUPPORTED: string[] = ['AXIOMETA_GENESIS_MINI']
 
 export const shouldAutoSelectMui = (target: DeviceHardware) => {
-  return target.hasMui === true && target.platformioTarget !== 'heltec-v4'
+  return target.hasMui === true
+    && target.platformioTarget !== 'heltec-v4'
+    && target.platformioTarget !== 'heltec-v4-r8-oled'
 }
 
 export const useDeviceStore = defineStore('device', {
