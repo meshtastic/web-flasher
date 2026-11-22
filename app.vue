@@ -283,6 +283,7 @@ import { useSerialMonitorStore } from './stores/serialMonitorStore'
 import { useThemeStore } from './stores/themeStore'
 import { useToastStore } from './stores/toastStore'
 import { useEventMode } from '~/composables/useEventMode'
+import { resolveDeviceQuery } from '~/utils/deviceQuery'
 import SurveyBanner from '~/components/survey/SurveyBanner.vue'
 import SurveyView from '~/components/survey/SurveyView.vue'
 
@@ -355,13 +356,13 @@ const prDeviceNotBuilt = computed(() => {
   return !!target?.platformioTarget && firmwareStore.isPrBuild && !firmwareStore.isPrTargetAvailable(target.platformioTarget)
 })
 
-// Wait for the device hardware list (fetched by Device.vue) to be available
-const waitForDeviceTargets = () => new Promise((resolve) => {
-  if (deviceStore.targets.length > 0) {
+// Wait (up to 10s) for a store list to be populated
+const waitForLength = getLength => new Promise((resolve) => {
+  if (getLength() > 0) {
     resolve(true)
     return
   }
-  const unwatch = watch(() => deviceStore.targets.length, (length) => {
+  const unwatch = watch(getLength, (length) => {
     if (length > 0) {
       clearTimeout(timeout)
       unwatch()
@@ -374,30 +375,26 @@ const waitForDeviceTargets = () => new Promise((resolve) => {
   }, 10000)
 })
 
-// Pre-select a device from a ?device= query param. Accepts CI board names,
-// which may carry a -tft/-inkhud variant suffix that maps to a toggle here.
+// Pre-select a device from a ?device= query param. See utils/deviceQuery.ts
+// for the accepted forms (platformio target, CI board name, hw model slug/number).
 const selectDeviceFromQuery = async (deviceParam) => {
   if (!deviceParam) return
-  if (!(await waitForDeviceTargets())) return
-  let target = deviceStore.targets.find(item => item.platformioTarget === deviceParam)
-  if (!target && deviceParam.endsWith('-tft')) {
-    target = deviceStore.targets.find(item => item.platformioTarget === deviceParam.slice(0, -'-tft'.length))
-    if (target) {
-      firmwareStore.$state.shouldInstallMui = true
-    }
-  }
-  else if (!target && deviceParam.endsWith('-inkhud')) {
-    target = deviceStore.targets.find(item => item.platformioTarget === deviceParam.slice(0, -'-inkhud'.length))
-    if (target) {
-      firmwareStore.$state.shouldInstallInkHud = true
-    }
-  }
-  if (target) {
-    deviceStore.setSelectedTarget(target)
-  }
-  else {
+  // The device hardware list is fetched by Device.vue
+  if (!(await waitForLength(() => deviceStore.targets.length))) return
+  const match = resolveDeviceQuery(deviceParam, deviceStore.targets)
+  if (!match) {
     toastStore.warning(t('firmware.title'), t('firmware.pr.device_unknown'))
+    return
   }
+  if (match.shouldInstallMui) firmwareStore.$state.shouldInstallMui = true
+  if (match.shouldInstallInkHud) firmwareStore.$state.shouldInstallInkHud = true
+  // setSelectedTarget defaults to the latest stable only if the release list
+  // has already landed, so give it the chance to (best effort - event mode and
+  // PR links pre-select their own build and never populate it).
+  if (!eventMode.value.enabled && !firmwareStore.prFirmware) {
+    await waitForLength(() => firmwareStore.stable.length)
+  }
+  deviceStore.setSelectedTarget(match.target)
 }
 
 const monitorSerial = async () => {
@@ -524,17 +521,20 @@ onMounted(() => {
   onUnmounted(() => window.removeEventListener('popstate', syncSurveyFromUrl))
 
   // Load a PR test build when arriving via a ?pr= deep link (posted by the
-  // GitHub bot comment on firmware pull requests)
-  if (!eventMode.value.enabled) {
-    const params = new URLSearchParams(window.location.search)
-    const prNumber = Number.parseInt(params.get('pr') ?? '', 10)
-    if (Number.isInteger(prNumber) && prNumber > 0) {
-      firmwareStore.loadPrFirmware(prNumber).then((loaded) => {
-        if (loaded) {
-          selectDeviceFromQuery(params.get('device'))
-        }
-      })
-    }
+  // GitHub bot comment on firmware pull requests). Its ?device= is only
+  // applied once the build loads. A bare ?device= (e.g. linked from the web
+  // client) pre-selects the board on its own.
+  const params = new URLSearchParams(window.location.search)
+  const prNumber = Number.parseInt(params.get('pr') ?? '', 10)
+  if (!eventMode.value.enabled && Number.isInteger(prNumber) && prNumber > 0) {
+    firmwareStore.loadPrFirmware(prNumber).then((loaded) => {
+      if (loaded) {
+        selectDeviceFromQuery(params.get('device'))
+      }
+    })
+  }
+  else {
+    selectDeviceFromQuery(params.get('device'))
   }
 })
 </script>
