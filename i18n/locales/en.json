@@ -107,7 +107,8 @@
       "complete": "complete",
       "partition_app": "app",
       "partition_ota": "ota",
-      "partition_fs": "fs"
+      "partition_fs": "fs",
+      "linux_permission_tip": "Linux users: If your device cannot be opened, ensure your user account is in the 'dialout' group (sudo usermod -a -G dialout $USER), then log out and back in (or restart your session) for permissions to take effect."
     },
     "uf2": {
       "enter_dfu_mode": "Enter (UF2) DFU Mode",
