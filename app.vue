@@ -283,6 +283,7 @@ import { useSerialMonitorStore } from './stores/serialMonitorStore'
 import { useThemeStore } from './stores/themeStore'
 import { useToastStore } from './stores/toastStore'
 import { useEventMode } from '~/composables/useEventMode'
+import { resolveDeviceQuery } from '~/utils/deviceQuery'
 import SurveyBanner from '~/components/survey/SurveyBanner.vue'
 import SurveyView from '~/components/survey/SurveyView.vue'
 
@@ -374,30 +375,22 @@ const waitForDeviceTargets = () => new Promise((resolve) => {
   }, 10000)
 })
 
-// Pre-select a device from a ?device= query param. Accepts CI board names,
-// which may carry a -tft/-inkhud variant suffix that maps to a toggle here.
-const selectDeviceFromQuery = async (deviceParam) => {
-  if (!deviceParam) return
+// Pre-select a device from a ?device= (CI board name) or ?hwModel= query param.
+// See utils/deviceQuery.ts for how each is matched.
+const selectDeviceFromQuery = async (params) => {
+  const device = params.get('device')
+  const hwModel = params.get('hwModel')
+  if (!device && !hwModel) return
   if (!(await waitForDeviceTargets())) return
-  let target = deviceStore.targets.find(item => item.platformioTarget === deviceParam)
-  if (!target && deviceParam.endsWith('-tft')) {
-    target = deviceStore.targets.find(item => item.platformioTarget === deviceParam.slice(0, -'-tft'.length))
-    if (target) {
-      firmwareStore.$state.shouldInstallMui = true
-    }
-  }
-  else if (!target && deviceParam.endsWith('-inkhud')) {
-    target = deviceStore.targets.find(item => item.platformioTarget === deviceParam.slice(0, -'-inkhud'.length))
-    if (target) {
-      firmwareStore.$state.shouldInstallInkHud = true
-    }
-  }
-  if (target) {
-    deviceStore.setSelectedTarget(target)
-  }
-  else {
+  const match = resolveDeviceQuery({ device, hwModel }, deviceStore.targets)
+  if (!match || match.kind === 'ambiguous') return
+  if (match.kind === 'unknown') {
     toastStore.warning(t('firmware.title'), t('firmware.pr.device_unknown'))
+    return
   }
+  if (match.installMui) firmwareStore.$state.shouldInstallMui = true
+  if (match.installInkHud) firmwareStore.$state.shouldInstallInkHud = true
+  deviceStore.setSelectedTarget(match.target)
 }
 
 const monitorSerial = async () => {
@@ -524,17 +517,20 @@ onMounted(() => {
   onUnmounted(() => window.removeEventListener('popstate', syncSurveyFromUrl))
 
   // Load a PR test build when arriving via a ?pr= deep link (posted by the
-  // GitHub bot comment on firmware pull requests)
-  if (!eventMode.value.enabled) {
-    const params = new URLSearchParams(window.location.search)
-    const prNumber = Number.parseInt(params.get('pr') ?? '', 10)
-    if (Number.isInteger(prNumber) && prNumber > 0) {
-      firmwareStore.loadPrFirmware(prNumber).then((loaded) => {
-        if (loaded) {
-          selectDeviceFromQuery(params.get('device'))
-        }
-      })
-    }
+  // GitHub bot comment on firmware pull requests), then select its ?device=.
+  // Without ?pr=, a ?device= or ?hwModel= link (the web client's "Open
+  // flasher" passes the connected radio's hwModel) selects that board.
+  const params = new URLSearchParams(window.location.search)
+  const prNumber = Number.parseInt(params.get('pr') ?? '', 10)
+  if (!eventMode.value.enabled && Number.isInteger(prNumber) && prNumber > 0) {
+    firmwareStore.loadPrFirmware(prNumber).then((loaded) => {
+      if (loaded) {
+        selectDeviceFromQuery(params)
+      }
+    })
+  }
+  else {
+    selectDeviceFromQuery(params)
   }
 })
 </script>
