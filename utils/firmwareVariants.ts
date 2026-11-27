@@ -143,3 +143,13 @@ export function resolveSelectedVariant(opts: {
   if (shouldInstallInkHud && hasInkHud) return 'inkhud'
   return 'stock'
 }
+
+/**
+ * Whether the release's board list is known and holds no build of the board.
+ * `unknown` (no manifest, or one still loading) is not "missing": reporting it
+ * as such would tell the user a board is absent from a release that may carry it.
+ */
+export function isMissingFromRelease(availability: VariantAvailability): boolean {
+  if (availability.unknown) return false
+  return !availability.stock && !availability.mui && !availability.inkhud
+}
