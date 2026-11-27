@@ -211,6 +211,7 @@ describe('esp32 flash outcome', () => {
     const store = useFirmwareStore()
     store.selectedFirmware = STABLE
     store.manifest = MANIFEST as any
+    store.partitionScheme = '4MB'
     return store
   }
 
