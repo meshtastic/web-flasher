@@ -245,8 +245,7 @@ const { eventMode } = useEventMode()
 const store = useFirmwareStore()
 const deviceStore = useDeviceStore()
 store.fetchList()
-// Temporarily hide nightly builds by leaving nightly discovery disabled.
-// store.fetchNightly()
+store.fetchNightly()
 
 const selectedVersion = computed(() => {
   if (store.$state.selectedFirmware?.id) {
