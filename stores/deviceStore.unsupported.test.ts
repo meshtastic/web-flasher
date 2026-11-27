@@ -24,6 +24,7 @@ function makeTarget(overrides: Partial<DeviceHardware>): DeviceHardware {
 const SUPPORTED = makeTarget({ hwModel: 43, platformioTarget: 'heltec-v3' })
 const UNSUPPORTED = makeTarget({ hwModel: 139, platformioTarget: 'heltec-mesh-tower-v2', activelySupported: false })
 const MESHTASTICD = makeTarget({ hwModel: 121, platformioTarget: 'native', architecture: 'portduino', activelySupported: false })
+const VIRTUAL_NODE = makeTarget({ hwModel: 254, platformioTarget: 'virtual-node', architecture: 'virtual', activelySupported: false })
 
 const NIGHTLY: FirmwareResource = { id: 'v2.8.2.bbb2222', title: 'Meshtastic Firmware 2.8.2 Nightly' }
 const OLD_NIGHTLY: FirmwareResource = { id: 'v2.7.9.aaa1111', title: 'Meshtastic Firmware 2.7.9 Nightly' }
@@ -82,6 +83,15 @@ describe('not-actively-supported devices behind the Konami code', () => {
     const store = useDeviceStore()
     const firmware = useFirmwareStore()
     store.setTargetsList([SUPPORTED, MESHTASTICD])
+    firmware.konamiUnlocked = true
+    firmware.nightly = [NIGHTLY]
+    expect(store.targets.map(t => t.platformioTarget)).toEqual(['heltec-v3'])
+  })
+
+  it('never reveals a virtual node, which has no firmware to flash', () => {
+    const store = useDeviceStore()
+    const firmware = useFirmwareStore()
+    store.setTargetsList([SUPPORTED, VIRTUAL_NODE])
     firmware.konamiUnlocked = true
     firmware.nightly = [NIGHTLY]
     expect(store.targets.map(t => t.platformioTarget)).toEqual(['heltec-v3'])
