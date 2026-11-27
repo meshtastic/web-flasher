@@ -356,13 +356,15 @@ const prDeviceNotBuilt = computed(() => {
   return !!target?.platformioTarget && firmwareStore.isPrBuild && !firmwareStore.isPrTargetAvailable(target.platformioTarget)
 })
 
-// Wait for the device hardware list (fetched by Device.vue) to be available
+// Wait for the device hardware list (fetched by Device.vue) to be available.
+// Watches apiTargets, not targets: on an event domain targets already holds the
+// event-only boards before the fetch lands.
 const waitForDeviceTargets = () => new Promise((resolve) => {
-  if (deviceStore.targets.length > 0) {
+  if (deviceStore.apiTargets.length > 0) {
     resolve(true)
     return
   }
-  const unwatch = watch(() => deviceStore.targets.length, (length) => {
+  const unwatch = watch(() => deviceStore.apiTargets.length, (length) => {
     if (length > 0) {
       clearTimeout(timeout)
       unwatch()
@@ -382,15 +384,17 @@ const selectDeviceFromQuery = async (params) => {
   const hwModel = params.get('hwModel')
   if (!device && !hwModel) return
   if (!(await waitForDeviceTargets())) return
-  const match = resolveDeviceQuery({ device, hwModel }, deviceStore.targets)
+  const match = resolveDeviceQuery({ device, hwModel }, deviceStore.targets, deviceStore.unsupportedApiTargets)
   if (!match || match.kind === 'ambiguous') return
   if (match.kind === 'unknown') {
     toastStore.warning(t('firmware.title'), t('firmware.pr.device_unknown'))
     return
   }
+  // Toggles go on after the target: selecting it can select the default
+  // firmware, which clears InkHUD.
+  await deviceStore.setSelectedTarget(match.target)
   if (match.installMui) firmwareStore.$state.shouldInstallMui = true
   if (match.installInkHud) firmwareStore.$state.shouldInstallInkHud = true
-  deviceStore.setSelectedTarget(match.target)
 }
 
 const monitorSerial = async () => {

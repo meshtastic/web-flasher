@@ -9,7 +9,9 @@ import type { DeviceHardware } from '~/types/api'
  * HardwareModel number a connected radio reports, which is what the web client
  * knows about the radio it is talking to. Several boards share one hwModel
  * (the Tracksenger variants, Pico and Pico W, ...), so a shared one is left for
- * the user to pick rather than guessed.
+ * the user to pick rather than guessed. That includes boards held back from
+ * `targets` (`hidden`): a model one of them shares is still ambiguous, even
+ * though only one of its boards can be picked.
  */
 export type DeviceQueryMatch
   = | { kind: 'target', target: DeviceHardware, installMui?: boolean, installInkHud?: boolean }
@@ -19,6 +21,7 @@ export type DeviceQueryMatch
 export function resolveDeviceQuery(
   params: { device?: string | null, hwModel?: string | null },
   targets: DeviceHardware[],
+  hidden: DeviceHardware[] = [],
 ): DeviceQueryMatch | undefined {
   const device = params.device?.trim()
   if (device) return resolveDeviceName(device, targets)
@@ -30,10 +33,11 @@ export function resolveDeviceQuery(
   if (!/^\d+$/.test(hwModelParam) || !Number.isSafeInteger(hwModel) || hwModel <= 0) {
     return { kind: 'unknown' }
   }
-  const candidates = targets.filter(target => target.hwModel === hwModel)
-  if (candidates.length === 1) return { kind: 'target', target: candidates[0]! }
+  // A Set, since a hidden board is also in `targets` once it has been revealed.
+  const candidates = [...new Set([...targets, ...hidden])].filter(target => target.hwModel === hwModel)
   if (candidates.length > 1) return { kind: 'ambiguous', candidates }
-  return { kind: 'unknown' }
+  const target = targets.find(target => target.hwModel === hwModel)
+  return target ? { kind: 'target', target } : { kind: 'unknown' }
 }
 
 function resolveDeviceName(device: string, targets: DeviceHardware[]): DeviceQueryMatch {

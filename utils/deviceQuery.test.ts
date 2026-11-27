@@ -17,6 +17,8 @@ const HELTEC_V4 = board({ hwModel: 110, hwModelSlug: 'HELTEC_V4', platformioTarg
 const PICO = board({ hwModel: 47, hwModelSlug: 'RPI_PICO', platformioTarget: 'pico', architecture: 'rp2040' })
 const PICO_W = board({ hwModel: 47, hwModelSlug: 'RPI_PICO', platformioTarget: 'picow', architecture: 'rp2040' })
 const TARGETS = [RAK, HELTEC_V4, PICO, PICO_W]
+const RAK_1W = board({ hwModel: 117, hwModelSlug: 'RAK3401', platformioTarget: 'rak3401-1watt' })
+const REPEATER_MINI_HP = board({ hwModel: 117, hwModelSlug: 'RAK3401', platformioTarget: 'rak_wismesh_repeater_mini_hp', activelySupported: false })
 
 describe('resolveDeviceQuery', () => {
   it('returns nothing when the link names no board', () => {
@@ -53,5 +55,19 @@ describe('resolveDeviceQuery', () => {
     for (const hwModel of ['999', '0', '-9', '9.5', 'RAK4631', '1e1']) {
       expect(resolveDeviceQuery({ hwModel }, TARGETS)).toEqual({ kind: 'unknown' })
     }
+  })
+
+  it('does not guess when the hwModel is shared with a hidden board', () => {
+    expect(resolveDeviceQuery({ hwModel: '117' }, [...TARGETS, RAK_1W], [REPEATER_MINI_HP]))
+      .toEqual({ kind: 'ambiguous', candidates: [RAK_1W, REPEATER_MINI_HP] })
+  })
+
+  it('counts a revealed hidden board once', () => {
+    expect(resolveDeviceQuery({ hwModel: '117' }, [RAK_1W, REPEATER_MINI_HP], [REPEATER_MINI_HP]))
+      .toEqual({ kind: 'ambiguous', candidates: [RAK_1W, REPEATER_MINI_HP] })
+  })
+
+  it('does not select a hidden board, even the only one with that hwModel', () => {
+    expect(resolveDeviceQuery({ hwModel: '117' }, TARGETS, [REPEATER_MINI_HP])).toEqual({ kind: 'unknown' })
   })
 })
